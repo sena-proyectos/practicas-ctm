@@ -1,12 +1,19 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Back-end para el proyecto de practicas en el sena",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "Back-end",
+    "back-end",
+    "server",
+    "node",
+    "javascript"
+  ],
+  "author": "ConanGH-S",
+  "license": "MIT"
 }
