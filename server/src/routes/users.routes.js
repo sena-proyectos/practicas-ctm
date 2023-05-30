@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createUser, getTeachers, getTeachersById, getUserById, getUsers, login } from '../controllers/users.controllers'
+import { createUser, getTeachers, getTeachersById, getUserById, getUsers, login } from '../controllers/users.controllers.js'
 
 const userRoutes = Router()
 
@@ -12,3 +12,5 @@ userRoutes.get('/teacher/:id', getTeachersById)
 // * POST
 userRoutes.post('/register', createUser)
 userRoutes.post('/login', login)
+
+export { userRoutes }
