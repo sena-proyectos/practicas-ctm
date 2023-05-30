@@ -1,8 +1,8 @@
 import bycrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 
 import { pool } from '../config/db.js'
 import { handleHTTP } from '../utils/errorsHandler.js'
+import { checkExistingUser, checkLoginData, comparePassword, generateToken } from '../middlewares/users.middlewares.js'
 
 export const getUsers = async (_req, res) => {
   try {
@@ -42,11 +42,6 @@ export const getTeachersById = async ({ params }, res) => {
   }
 }
 
-const checkExistingUser = async ({ idNumber }) => {
-  const [user] = await pool.query('SELECT * FROM usuarios WHERE num_documento = ?', [idNumber])
-  return user.length > 0
-}
-
 export const createUser = async ({ body }, res) => {
   const { nombres: name, apellidos: lastName, tipo_documento: idType, num_documento: idNumber, correo_electronico: email, num_celular: phoneNumber, id_rol: role, contrasena: password } = body
   try {
@@ -62,23 +57,6 @@ export const createUser = async ({ body }, res) => {
     return handleHTTP(res, 'ERROR_CREATE_USER')
   }
 }
-
-const checkLoginData = ({ data }) => {
-  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm
-
-  if (!data) return false
-
-  if (!data.idNumber) return false
-  if (data.idNumber === isNaN) return false
-  if (data.idNumber.length < 6) return false
-
-  if (!data.password) return false
-  if (data.password === passwordRegex) return false
-
-  return true
-}
-
-const comparePassword = async ({ password, dbPassword }) => await bycrypt.compare(password, dbPassword)
 
 export const login = async ({ body }, res) => {
   const { num_documento: idNumber, contrasena: password } = body
@@ -99,6 +77,3 @@ export const login = async ({ body }, res) => {
     return handleHTTP(res, 'ERROR_LOGIN')
   }
 }
-
-// ! TOKENS
-const generateToken = (payload) => jwt.sign({ data: payload }, 'secret', { expiresIn: '3h', algorithm: 'HS256' })
