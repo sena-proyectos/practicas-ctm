@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import { FiMail } from "react-icons/fi";
+import { FiEye } from "react-icons/fi";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <main>
+        <section className="sideLogin">
+          <header>
+            <h1>SENA</h1>
+          </header>
+          <div className="formLogin">
+            <h2>BIENVENIDO DE VUELTA</h2>
+            <span className="descripcionLogin">
+              Es un placer tenerte de nuevo aquí
+            </span>
+            <form action="">
+              <div className="">
+                <FiMail className="icon" />
+                <input type="text" placeholder="example@example.com" />
+              </div>
+              <div className="">
+                <FiEye className="icon" />
+                <input type="password" placeholder="********" />
+              </div>
+              <button>Iniciar Sesión</button>
+            </form>
+          </div>
+          <footer>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed,
+              accusamus quisquam recusandae in necessitatibus nobis omnis cum
+              quo debitis voluptatum beatae deleniti. Beatae eaque commodi dolor
+              accusantium nam quibusdam sunt.
+            </p>
+          </footer>
+        </section>
+
+        <section className="sectionVerde">
+          
+        </section>
+      </main>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
