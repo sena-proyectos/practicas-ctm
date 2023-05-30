@@ -8,17 +8,17 @@ export const checkExistingUser = async ({ idNumber }) => {
   return user.length > 0
 }
 
-export const checkLoginData = ({ data }) => {
+export const checkLoginData = ({ idNumber, password }) => {
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm
 
-  if (!data) return false
+  if (!idNumber && !password) return false
 
-  if (!data.idNumber) return false
-  if (data.idNumber === isNaN) return false
-  if (data.idNumber.length < 6) return false
+  if (!idNumber) return false
+  if (idNumber === isNaN) return false
+  if (idNumber.length < 6) return false
 
-  if (!data.password) return false
-  if (data.password === passwordRegex) return false
+  if (!password) return false
+  if (password === passwordRegex) return false
 
   return true
 }

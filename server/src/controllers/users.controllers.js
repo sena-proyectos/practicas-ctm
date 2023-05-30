@@ -43,14 +43,14 @@ export const getTeachersById = async ({ params }, res) => {
 }
 
 export const createUser = async ({ body }, res) => {
-  const { nombres: name, apellidos: lastName, tipo_documento: idType, num_documento: idNumber, correo_electronico: email, num_celular: phoneNumber, id_rol: role, contrasena: password } = body
+  const { nombre: name, apellido: lastName, tipo_documento: idType, num_documento: idNumber, correo_electronico: email, num_celular: phoneNumber, id_rol: role, contrasena: password } = body
   try {
     const existingUser = await checkExistingUser({ idNumber })
-    if (!existingUser) throw handleHTTP(res, 'El usuario ya existe')
+    if (existingUser) throw Error
 
     const hashPassword = await bycrypt.hash(password, 10)
 
-    await pool.query('INSERT INTO tbl_usuarios (nombres, apellidos, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena) VALUE (?, ?, ?, ?, ?, ?, ?, ?)', [name, lastName, idType, idNumber, email, phoneNumber, role, hashPassword])
+    await pool.query('INSERT INTO usuarios (nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena) VALUE (?, ?, ?, ?, ?, ?, IFNULL(?, 1), ?)', [name, lastName, idType, idNumber, email, phoneNumber, role, hashPassword])
 
     res.status(200).json(true)
   } catch (error) {
@@ -62,17 +62,17 @@ export const login = async ({ body }, res) => {
   const { num_documento: idNumber, contrasena: password } = body
   try {
     const checkData = checkLoginData({ idNumber, password })
-    if (!checkData) throw handleHTTP(res, 'Datos incorrectos')
+    if (!checkData) throw Error
 
-    const [user] = await pool.query('SELECT * FROM usuarios WHERE correo_electronico = ?', [idNumber])
-    if (!user) throw handleHTTP(res, 'El usuario no existe')
+    const [user] = await pool.query('SELECT * FROM usuarios WHERE num_documento = ?', [idNumber])
+    if (!user) throw Error
 
     const dbPassword = user[0].contrasena
     const isMatch = await comparePassword({ password, dbPassword })
-    if (!isMatch) throw handleHTTP(res, 'Contraseña incorrecta')
+    if (!isMatch) throw Error
 
     const token = generateToken(user)
-    res.status(200).set('Authorization', `Bearer ${token}`)
+    res.status(200).json({ data: `Bearer ${token}` })
   } catch (error) {
     return handleHTTP(res, 'ERROR_LOGIN')
   }
