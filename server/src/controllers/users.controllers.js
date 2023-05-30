@@ -7,7 +7,7 @@ import { checkExistingUser, checkLoginData, comparePassword, generateToken } fro
 export const getUsers = async (_req, res) => {
   try {
     const [users] = await pool.query('SELECT * FROM usuarios')
-    res.status(200).json(users)
+    res.status(200).json({ data: users })
   } catch (error) {
     return handleHTTP(res, 'ERROR_GET_USERS')
   }
@@ -17,7 +17,7 @@ export const getUserById = async ({ params }, res) => {
   const { id } = params
   try {
     const [user] = await pool.query('SELECT * FROM usuarios WHERE id_usuario = ?', [id])
-    res.status(200).json(user)
+    res.status(200).json({ data: user })
   } catch (error) {
     return handleHTTP(res, 'ERROR_GET_USER')
   }
@@ -25,8 +25,8 @@ export const getUserById = async ({ params }, res) => {
 
 export const getTeachers = async (_req, res) => {
   try {
-    const [teachers] = await pool.query('SELECT * FROM usuarios WHERE id_rol = 2', [])
-    res.status(200).json(teachers)
+    const [teachers] = await pool.query('SELECT * FROM usuarios WHERE id_rol = 2')
+    res.status(200).json({ data: teachers })
   } catch (error) {
     return handleHTTP(res, 'ERROR_GET_TEACHERS')
   }
@@ -36,7 +36,7 @@ export const getTeachersById = async ({ params }, res) => {
   const { id } = params
   try {
     const [teacher] = await pool.query('SELECT * FROM usuarios WHERE id_rol = 2 AND id_usuario = ?', [id])
-    res.status(200).json(teacher)
+    res.status(200).json({ data: teacher })
   } catch (error) {
     return handleHTTP(res, 'ERROR_GET_TEACHER')
   }
