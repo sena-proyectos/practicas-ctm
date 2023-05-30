@@ -1,35 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Form } from "./components/Login";
+// import { useEffect } from "react";
+// import jwt_decode from 'jwt-decode';
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+ 
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   if (token) {
+  //      const decodedToken = jwt_decode(token);
+  //      const userRole = decodedToken.role;
+  //     // Realiza cualquier acción adicional en función del rol del usuario
+  //     // console.log('Rol del usuario:', userRole);
+  //   }
+  // }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+     <Form/>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
