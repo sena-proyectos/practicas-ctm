@@ -1,7 +1,7 @@
 import bycrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
-import { pool } from '../config/db'
+import { pool } from '../config/db.js'
 
 export const checkExistingUser = async ({ idNumber }) => {
   const [user] = await pool.query('SELECT * FROM usuarios WHERE num_documento = ?', [idNumber])
