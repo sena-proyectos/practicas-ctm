@@ -1,42 +1,79 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* * {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 55% 45%;
+}
+
+.sideLogin {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-auto-rows: 30% 50% 20%;
+}
+
+header {
+  place-self: center;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.formLogin {
+  place-self: center;
+}
+
+h2 {
+  font-size: 20px;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.descripcionLogin{
+  font-size: 25px;
+  color: #777777;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sectionVerde {
+  background-color: #39a900;
+  width: 100%;
+  height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+input {
+  width: 22em;
+  height: 28px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  font-size: 12px;
 }
 
-.card {
-  padding: 2em;
+button {
+  width: 22em;
+  height: 30px;
+  border-radius: 5px;
+  background-color: #39a900;
+  border: 0px;
+  color: white;
+  font-weight: bolder;
 }
 
-.read-the-docs {
-  color: #888;
+.icon {
+  width: 15px;
+  height: 15px;
+  margin: 3px 0px 0 5px;
 }
+
+form{
+  display: flex;
+  flex-direction: column;
+}
+
+section {
+  width: 50%;
+}
+
+footer {
+  place-self: flex-end;
+} */
