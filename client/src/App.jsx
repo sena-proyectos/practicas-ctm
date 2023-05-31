@@ -1,10 +1,11 @@
-import { Form } from "./components/Login";
+// import { Form } from "./components/Login";
 // import { useEffect } from "react";
 // import jwt_decode from 'jwt-decode';
 import "./App.css";
+import { Routing } from "./routes/routes";
+
 
 function App() {
- 
   // useEffect(() => {
   //   const token = localStorage.getItem('token');
   //   if (token) {
@@ -17,7 +18,7 @@ function App() {
 
   return (
     <>
-     <Form/>
+        <Routing/>
     </>
   );
 }

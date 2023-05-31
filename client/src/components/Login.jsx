@@ -1,40 +1,35 @@
-import { useState } from "react";
+import { useRef } from "react";
 import axios from "axios";
 
-import { ValidateEmail, ValidatePassword } from "./validaciones";
+import { ValidateIdentity, ValidatePassword } from "./validaciones";
 
 export function Form() {
-  const API_REST_URL = "https://reqres.in/api/login";
+  const API_REST_URL = "http://localhost:3000/api/login";
 
   // Capturar valores de los inputs
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handleChangePass = (event) => {
-    setPassword(event.target.value);
-  };
+  const identity = useRef(null)
+  const password = useRef(null)
 
   // funcion que valida los campos y hace el respectivo inicio de sesión
   const saveData = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) return alert("Digite todos los campos");
+    console.log(identity, password);
+
+    if (!identity || !password) return alert("Digite todos los campos");
     let validacionExitosa = true;
 
-    const esCorreoValido = ValidateEmail(email);
+    const esidentidadValido = ValidateIdentity(identity);
     const esContraseñaValida = ValidatePassword(password);
 
-    if (!esCorreoValido || !esContraseñaValida) {
+    if (!esidentidadValido || !esContraseñaValida) {
       validacionExitosa = false;
 
-      if (!esCorreoValido && !esContraseñaValida) {
-        alert("Correo y contraseña inválidos");
-      } else if (!esCorreoValido) {
-        alert("Correo electrónico inválido");
+      if (!esidentidadValido && !esContraseñaValida) {
+        alert("Número de identificación y contraseña inválidos");
+      } else if (!esidentidadValido) {
+        alert("Número de identificación inválido");
       } else {
         alert(
           "Contraseña inválida, debe tener una mayúscula, una minúscula, un número y un mínimo de 8 caracteres."
@@ -45,14 +40,15 @@ export function Form() {
     if (validacionExitosa) {
       try {
         const response = await axios.post(API_REST_URL, {
-          email,
-          password,
+          num_documento: identity,
+          contrasena: password,
         });
 
-        const { token } = response.data
+        const { data } = response.data;
+        localStorage.setItem("data", JSON.stringify(data));
+        
 
-        localStorage.setItem('token', token);
-        console.log('Inicio de sesión exitoso');
+        console.log("Inicio de sesión exitoso");
 
         console.log(response.data);
         // Realiza cualquier acción adicional después de iniciar sesión correctamente
@@ -66,21 +62,19 @@ export function Form() {
   return (
     <section>
       <form>
-        <label>Correo</label>
+        <label>Número de identificación</label>
         <input
-          placeholder="Ingresa tu correo"
-          type="email"
-          value={email}
-          onChange={handleChange}
+          placeholder="Número de identificación"
+          type="text"
+          ref={identity}
           autoComplete="off"
         />
 
         <label>Contraseña</label>
         <input
-          placeholder="Ingresa tu contraseña"
+          placeholder="Contraseña"
           type="password"
-          value={password}
-          onChange={handleChangePass}
+          ref={password}
         />
 
         <button onClick={saveData}>Iniciar sesión</button>
