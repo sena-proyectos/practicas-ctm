@@ -30,7 +30,8 @@ const App = () => {
                 </span>
                 <input type="search" name="q" className="py-1.5 text-sm text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72" placeholder="*********" autoComplete="on" />
               </div>
-              <button>Iniciar Sesión</button>
+              <hr className="w-4/5 mx-auto bg-slate-500 h-[1px] my-2" />
+              <button className="bg-primary rounded-md w-72 py-1.5 mx-auto text-white text-sm font-semibold">Iniciar Sesión</button>
             </form>
           </div>
         </section>
