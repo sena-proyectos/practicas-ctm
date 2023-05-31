@@ -6,14 +6,14 @@ import { FiEye } from 'react-icons/fi'
 function App() {
   return (
     <>
-      <main className="grid grid-cols-2">
-        <section className="sideLogin">
-          <header>
-            <h1 className="text-red-700">SENA</h1>
+      <main className="grid grid-cols-2-55-45 h-screen">
+        <section className="grid grid-rows-2-30-70">
+          <header className="grid place-items-center">
+            <h1 className="font-bold text-4xl">SENA</h1>
           </header>
-          <div className="formLogin">
-            <h2>BIENVENIDO DE VUELTA</h2>
-            <span className="descripcionLogin">Es un placer tenerte de nuevo aquí</span>
+          <div className="flex flex-col justify-self-center">
+            <h2 className="font-bold text-lg text-center">BIENVENIDO DE VUELTA</h2>
+            <span className="font-light text-sm ">Es un placer para nosotros tenerte de nuevo aquí</span>
             <form action="">
               <div className="">
                 <FiMail className="icon" />
@@ -26,12 +26,9 @@ function App() {
               <button>Iniciar Sesión</button>
             </form>
           </div>
-          <footer>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed, accusamus quisquam recusandae in necessitatibus nobis omnis cum quo debitis voluptatum beatae deleniti. Beatae eaque commodi dolor accusantium nam quibusdam sunt.</p>
-          </footer>
         </section>
 
-        <section className="sectionVerde"></section>
+        <section className="bg-primary"></section>
       </main>
     </>
   )
