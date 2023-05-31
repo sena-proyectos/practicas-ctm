@@ -1,9 +1,12 @@
 // import { useState } from "react";
 import './App.css'
-import { FiMail } from 'react-icons/fi'
-import { FiEye } from 'react-icons/fi'
+import { AiOutlineIdcard } from 'react-icons/ai'
+import { BiLockAlt } from 'react-icons/bi'
 
-function App() {
+const App = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
+  }
   return (
     <>
       <main className="grid grid-cols-2-55-45 h-screen">
@@ -14,14 +17,18 @@ function App() {
           <div className="flex flex-col justify-self-center">
             <h2 className="font-bold text-lg text-center">BIENVENIDO DE VUELTA</h2>
             <span className="font-light text-sm ">Es un placer para nosotros tenerte de nuevo aquí</span>
-            <form action="">
-              <div className="">
-                <FiMail className="icon" />
-                <input type="text" placeholder="example@example.com" />
+            <form action="" className="flex flex-col justify-center my-4 gap-3" onSubmit={handleSubmit}>
+              <div className="relative text-gray-400 mx-auto">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                  <AiOutlineIdcard />
+                </span>
+                <input type="search" name="q" className="py-1.5 text-sm text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72" placeholder="1017924888" autoComplete="on" />
               </div>
-              <div className="">
-                <FiEye className="icon" />
-                <input type="password" placeholder="********" />
+              <div className="relative text-gray-400 mx-auto">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                  <BiLockAlt />
+                </span>
+                <input type="search" name="q" className="py-1.5 text-sm text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72" placeholder="*********" autoComplete="on" />
               </div>
               <button>Iniciar Sesión</button>
             </form>

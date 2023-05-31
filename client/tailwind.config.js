@@ -12,6 +12,9 @@ export default {
       gridTemplateRows: {
         '2-30-70': '30% 70%',
       },
+      borderWidth: {
+        1: '1.5px',
+      },
     },
   },
   plugins: [],
