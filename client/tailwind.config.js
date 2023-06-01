@@ -11,7 +11,7 @@ export default {
         '2-55-45': '55% 45%',
       },
       gridTemplateRows: {
-        '2-30-70': '30% 70%',
+        '2-30-70': '10rem 70%',
       },
       borderWidth: {
         1: '1.5px',
