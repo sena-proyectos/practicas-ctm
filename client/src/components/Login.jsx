@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { ValidateIdentity, ValidatePassword } from "./validaciones";
 
-export function Form() {
+export function Login() {
   const API_REST_URL = "http://localhost:3000/api/login";
 
   // Capturar valores de los inputs
