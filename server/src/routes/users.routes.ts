@@ -1,7 +1,7 @@
-import { Router } from 'express'
+import { type IRouter, Router } from 'express'
 import { createUser, getTeachers, getTeachersById, getUserById, getUsers, login } from '../controllers/users.controllers.js'
 
-const userRoutes = Router()
+const userRoutes: IRouter = Router()
 
 // * GET
 userRoutes.get('/users', getUsers)
