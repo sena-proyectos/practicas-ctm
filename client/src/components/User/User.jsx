@@ -61,7 +61,11 @@ const User = () => {
         </div>
       </section>
 
-      <section className="hidden md:bg-primary md:block"></section>
+      <section className="hidden md:bg-primary md:block">
+        <div className="flex flex-col justify-center items-center h-screen">
+          <img className="h-56 w-auto" src="public/logo2.png" alt="logoSena" />
+        </div>
+      </section>
     </main>
   )
 }
