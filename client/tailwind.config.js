@@ -16,6 +16,15 @@ export default {
       borderWidth: {
         1: '1.5px',
       },
+      animation: {
+        'slide-background': 'slideBackground 5s infinite',
+      },
+      keyframes: {
+        slideBackground: {
+          '0%': { backgroundPosition: '0% 0%' },
+          '100%': { backgroundPosition: '100% 0%' },
+        },
+      },
     },
   },
   plugins: [],
