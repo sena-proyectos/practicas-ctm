@@ -3,7 +3,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
 import { Button } from '../button/button'
 
-export const Form = ({ inputs }) => {
+const Form = ({ inputs }) => {
   const passwordIcons = {
     openEye: <AiOutlineEye />,
     closeEye: <AiOutlineEyeInvisible />,
@@ -46,3 +46,5 @@ export const Form = ({ inputs }) => {
     </form>
   )
 }
+
+export { Form }

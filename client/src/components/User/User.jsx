@@ -16,7 +16,7 @@ const User = () => {
     { icon: <IoPersonOutline />, placeholder: 'Nombre', type: 'text' },
     { icon: <IoPersonOutline />, placeholder: 'Apellidos', type: 'text' },
     { icon: <AiOutlineIdcard />, placeholder: 'Tipo Documento', type: 'text' },
-    { icon: <AiOutlineMail />, placeholder: 'correo@correo.com', type: 'text' },
+    { icon: <AiOutlineMail />, placeholder: 'correo@correo.com', type: 'email' },
     { icon: <AiOutlinePhone />, placeholder: '3183577499', type: 'text' },
     { icon: <BiLockAlt />, placeholder: '********', type: 'password' },
   ]
