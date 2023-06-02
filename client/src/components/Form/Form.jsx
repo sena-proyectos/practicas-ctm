@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
-import { Button } from '../button/button'
+import { Button } from '../Button/Button'
 
 const Form = ({ inputs }) => {
   const passwordIcons = {
