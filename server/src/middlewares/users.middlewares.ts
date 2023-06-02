@@ -6,18 +6,19 @@ import { type passwordCompare, type LoginData, type idNumber } from '../models/u
 
 export const checkExistingUser = async ({ idNumber }: idNumber): Promise<boolean> => {
   const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [idNumber])
+  console.log(user)
   const check: boolean = Array.isArray(user) && user.length > 0
   return check
 }
 
 export const checkLoginData = ({ idNumber, password }: LoginData): boolean => {
-  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
 
   if (Number.isNaN(idNumber) && password.length === 0) return false
   if (idNumber === 0) return false
   if (password === undefined || idNumber === undefined) return false
   if (String(idNumber).toString().length < 6) return false
-  if (password.match(passwordRegex) != null) return false
+  if (password.match(passwordRegex) == null) return false
 
   return true
 }

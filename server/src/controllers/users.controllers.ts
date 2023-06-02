@@ -50,15 +50,17 @@ export const createUser = async ({ body }: Request<userForm>, res: Response): Pr
   const { nombre: name, apellido: lastName, tipo_documento: idType, num_documento: idNumber, correo_electronico: email, num_celular: phoneNumber, id_rol: role, contrasena: password } = body
   try {
     const existingUser: boolean = await checkExistingUser({ idNumber })
-    if (existingUser) throw Error()
+    console.log(existingUser)
+    if (existingUser) throw Error('EXISTING_USER')
 
     const hashPassword: string = await bycrypt.hash(password, 10)
 
-    await connection.query('INSERT INTO usuarios (nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena) VALUE (?, ?, ?, ?, ?, ?, IFNULL(?, 1), ?)', [name, lastName, idType, idNumber, email, phoneNumber, role, hashPassword])
+    await connection.query('INSERT INTO usuarios (nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena) VALUE (?, ?, IFNULL(?, "cc"), ?, ?, ?, IFNULL(?, 2), ?)', [name, lastName, idType, idNumber, email, phoneNumber, role, hashPassword])
 
     return res.status(httpStatus.OK).json(true)
   } catch (error) {
-    return handleHTTP(res, 'ERROR_CREATE_USER')
+    return res.status(httpStatus.BAD_REQUEST).json({ message: error })
+    // return handleHTTP(res, 'ERROR_CREATE_USER')
   }
 }
 
@@ -77,8 +79,8 @@ export const login = async ({ body }: Request<LoginData>, res: Response): Promis
     if (!isMatch) throw Error
 
     const token: string = generateToken(user)
-    return res.status(httpStatus.OK).json({ data: `Bearer ${token}` })
+    return res.status(httpStatus.OK).json({ key: `Bearer ${token}` })
   } catch (error) {
-    return handleHTTP(res, 'ERROR_LOGIN')
+    return handleHTTP(res, 'ERROR_LOGIN_USER')
   }
 }
