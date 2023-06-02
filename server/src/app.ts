@@ -1,7 +1,7 @@
 import express, { type IRouter, type Application, type Response } from 'express'
 import cors, { type CorsOptions } from 'cors'
 
-import { indexRoutes, userRoutes } from './routes/routes.js'
+import { indexRoutes, roleRoutes, userRoutes } from './routes/routes.js'
 
 const app: Application = express()
 
@@ -19,7 +19,7 @@ const APILINK = '/api'
 
 app.use(indexRoutes)
 
-const routes: [IRouter] = [userRoutes]
+const routes: IRouter[] = [userRoutes, roleRoutes]
 
 for (const route of routes) {
   app.use(APILINK, route)
