@@ -61,15 +61,15 @@ export const Form = ({ inputs, isLoginForm }) => {
                 <span onClick={handlePassword} className='absolute inset-y-0 right-0 flex items-center pr-3 text-slate-600 cursor-pointer hover:text-slate-800 transition'>
                   {showPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                 </span>
-                <input type={showPassword} name={item.nameInput} className='py-1.5 text-sm text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
+                <input type={showPassword} name={item.nameInput} className='py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
               </>
             ) : (
-              <input type={item.type} name={item.nameInput} className='py-1.5 text-sm text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
+              <input type={item.type} name={item.nameInput} className='py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
             )}
           </div>
         )
       })}
-      <hr className='w-4/5 mx-auto bg-slate-500 h-[1px] my-2' />
+      <hr className='w-4/5 mx-auto bg-slate-300 h-[1px] my-2' />
       <Button value={'Iniciar Sesión'} bg={'bg-primary'} />
     </form>
   )
