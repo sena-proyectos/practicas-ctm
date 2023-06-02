@@ -1,13 +1,13 @@
 import express, { type IRouter, type Application, type Response } from 'express'
 import cors, { type CorsOptions } from 'cors'
 
-import { indexRoutes, roleRoutes, userRoutes } from './routes/routes.js'
+import { indexRoutes, roleRoutes, userRoutes, inscriptionRoutes, practicalStageRoutes } from './routes/routes.js'
 
 const app: Application = express()
 
 const options: CorsOptions = {
   origin: '*',
-  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  methods: ['GET', 'POST', 'PATCH'],
   optionsSuccessStatus: 200,
   allowedHeaders: ['Content-Type', 'Authorization']
 }
@@ -19,7 +19,7 @@ const APILINK = '/api'
 
 app.use(indexRoutes)
 
-const routes: IRouter[] = [userRoutes, roleRoutes]
+const routes: IRouter[] = [userRoutes, roleRoutes, inscriptionRoutes, practicalStageRoutes]
 
 for (const route of routes) {
   app.use(APILINK, route)
