@@ -37,6 +37,7 @@ export const Form = ({ inputs, isLoginForm }) => {
     const response = await axios.post(`http://localhost:3000/api/${postRoute}`, data)
     const { key } = isLoginForm && (await response.data)
     const token = isLoginForm && (await key.split(' ')[1])
+    console.log(token)
   }
 
   const handleInputChange = (e, index) => {

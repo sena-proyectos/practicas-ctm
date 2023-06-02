@@ -27,9 +27,10 @@ export const getPracticalStageById = async ({ params }: Request<id>, res: Respon
 export const createPracticalStage = async ({ body }: Request<PracticalStages>, res: Response): Promise<Response> => {
   const { tipo_modalidad_practica, num_horas_minimas_modalidad_practica, num_horas_maximas_modalidad_practica } = body
   try {
-    await connection.query('INSERT INTO modalidades_etapa_practica (tipo_modalidad_practica,num_horas_minimas_modalidad_practica,num_horas_maximas_modalidad_practica,) VALUE (?, ?, ?)', [tipo_modalidad_practica, num_horas_minimas_modalidad_practica, num_horas_maximas_modalidad_practica])
+    await connection.query('INSERT INTO modalidades_etapa_practica (tipo_modalidad_practica,num_horas_minimas_modalidad_practica,num_horas_maximas_modalidad_practica) VALUE (?, ?, ?)', [tipo_modalidad_practica, num_horas_minimas_modalidad_practica, num_horas_maximas_modalidad_practica])
     return res.status(httpStatus.OK).json(true)
   } catch (error) {
-    return handleHTTP(res, 'ERROR_CREATE_PRACTICAL_STAGE')
+    return res.status(httpStatus.BAD_REQUEST).json({ error })
+    // return handleHTTP(res, error)
   }
 }
