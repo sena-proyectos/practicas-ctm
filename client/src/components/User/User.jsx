@@ -47,7 +47,7 @@ const User = () => {
         <div className='flex flex-col justify-self-center'>
           {selectedButton === 'login' ? <h2 className='font-bold text-lg text-center'>{title.login}</h2> : <h2 className='font-bold text-lg text-center'>{title.register}</h2>}
           <span className='font-light text-sm '>Es un placer para nosotros tenerte aquí</span>
-          <div className={`flex flex-row justify-items-center bg-gray rounded-lg w-72 h-10 mx-auto my-2.5 relative`}>
+          <div className={`flex flex-row justify-items-center bg-gray rounded-lg w-72 ${selectedButton === 'register' ? 'h-[2.53rem]' : 'h-10'} mx-auto my-2.5 relative`}>
             <div className={`absolute bg-white w-32 h-7 mt-1.5 ml-2 rounded-md transition-all`} ref={divRef}></div>
             <button className='rounded-md w-32 h-8 m-auto text-black text-sm z-10' onClick={() => handleButtonClick('login')}>
               Iniciar sesión

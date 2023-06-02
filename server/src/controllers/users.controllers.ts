@@ -50,7 +50,6 @@ export const createUser = async ({ body }: Request<userForm>, res: Response): Pr
   const { nombre: name, apellido: lastName, tipo_documento: idType, num_documento: idNumber, correo_electronico: email, num_celular: phoneNumber, id_rol: role, contrasena: password } = body
   try {
     const existingUser: boolean = await checkExistingUser({ idNumber })
-    console.log(existingUser)
     if (existingUser) throw Error('EXISTING_USER')
 
     const hashPassword: string = await bycrypt.hash(password, 10)
