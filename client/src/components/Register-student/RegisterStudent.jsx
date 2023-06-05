@@ -2,6 +2,7 @@ import { AiOutlineUser } from 'react-icons/ai'
 import { Button } from '../button/button'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { Siderbar } from '../Siderbar/Sidebar'
 
 const RegisterStudent = () => {
   const dataInscription = [
@@ -50,7 +51,8 @@ const RegisterStudent = () => {
   return (
     <>
       <section className='grid grid-cols-2-20r-80'>
-        <aside className=' bg-red-400 min-h-screen' />
+        {/* <Siderbar /> */}
+        <div className='bg-red-500'></div>
         <section className='grid grid-rows-2-25-75'>
           <h1 className='text-center uppercase font-bold text-3xl place-self-center'>Inscribe a un aprendiz</h1>
           <section className='h-4/5 overflow-hidden'>

@@ -5,7 +5,8 @@ export default {
     extend: {
       colors: {
         primary: '#39A900',
-        gray: '#D9D9D9'
+        gray: '#D9D9D9',
+        secondary: '#00324D'
       },
       gridTemplateColumns: {
         '2-55-45': '55% 45%',
@@ -13,6 +14,7 @@ export default {
       },
       gridTemplateRows: {
         '2-30-70': '10rem 70%',
+        '3-10-78-12': '7rem 78% 12%',
         '2-25-75': '10rem auto'
       },
       borderWidth: {

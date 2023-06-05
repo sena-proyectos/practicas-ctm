@@ -3,8 +3,9 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
 import { Button } from '../button/button'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
-export const Form = ({ inputs, isLoginForm }) => {
+const Form = ({ inputs, isLoginForm }) => {
   const passwordIcons = {
     openEye: <AiOutlineEye />,
     closeEye: <AiOutlineEyeInvisible />
@@ -71,7 +72,11 @@ export const Form = ({ inputs, isLoginForm }) => {
         )
       })}
       <hr className='w-4/5 mx-auto bg-slate-300 h-[1px] my-2' />
-      <Button value={'Iniciar Sesión'} bg={'bg-primary'} />
+      <Link to={'/home'}>
+        <Button value={'Iniciar Sesión'} bg={'bg-primary'} />
+      </Link>
     </form>
   )
 }
+
+export { Form }
