@@ -1,8 +1,16 @@
-import { AiOutlineUser } from "react-icons/ai";
-import { Button } from "../button/button";
-import axios from "axios";
 import { useEffect, useState, useRef } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+
 import { Siderbar } from "../Siderbar/Sidebar";
+import { Button } from "../button/button";
+import { AiOutlineUser } from "react-icons/ai";
+
+import {
+  ValidateIdentity,
+  ValidateEmail,
+  ValidateInputs,
+} from "../../validation/ExpresionesRegulares";
 
 const RegisterStudent = () => {
   const dataInscription = [
@@ -94,45 +102,55 @@ const RegisterStudent = () => {
     { value: "Proyecto formativo", name: "Proyecto formativo" },
   ];
 
-  /* const [modalities, setModalities] = useState([{}])
-  useEffect(() => {
-    const getModalities = () => {
-      axios
-        .get('http://localhost:3000/api/practical-stages')
-        .then((response) => {
-          setModalities(response.data)
-        })
-        .catch((error) => {
-          throw new Error(error)
-        })
-    }
-    getModa lities()
-  }, [])*/
-
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // capturar valores de todos los inputs del formulario y guardarlos en una constante y mostarlos en consola
     const formValues = Object.fromEntries(new FormData(e.target));
 
+    // Validaciones de los campos con los imports de las expresiones regulares
+
+    const isIdentityValid = ValidateIdentity(formValues.numero_documento_aprendiz_inscripcion);
+  
+  if (!isIdentityValid) {
+    // El número de identidad no es válido, muestra el mensaje de error con SweetAlert
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: '¡El número de identidad no es válido!',
+    });
+    return;
+  }
+
+    ValidateInputs(
+      formValues.nombres_aprendiz_inscripcion,
+      formValues.apellidos_aprendiz_inscripcion,
+      formValues.tipo_documento_aprendiz_inscripcion,
+      formValues.numero_documento_aprendiz_inscripcion,
+      formValues.correo_electronico_aprendiz_inscripcion,
+      formValues.numero_telefono_aprendiz_inscripcion,
+      formValues.numero_ficha_aprendiz_inscripcion,
+      formValues.programa_formacion_aprendiz_inscripcion,
+      formValues.tipo_modalidad_aprendiz_inscripcion,
+      formValues.inicio_etapa_practica_aprendiz_inscripcion,
+      formValues.fin_etapa_practica_aprendiz_inscripcion
+    );
+    // capturar valores de todos los inputs del formulario y guardarlos en una constante y mostarlos en consola
+
     // enviar los datos al backend digitados
-    sendDataInscription(formValues);
+    // sendDataInscription(formValues);
   };
 
   // enviar los datos al backend por medio de axios
-  const sendDataInscription = async (data) => {
-    const response = await axios.post(
-      "http://localhost:3000/api/create-inscription",
-      data
-    );
-  };
+  // const sendDataInscription = async (data) => {
+  //   const response = await axios.post(
+  //     "http://localhost:3000/api/create-inscription",
+  //     data
+  //   );
 
-  // vaciar los inputs 
-  const deleteData = () => {
-    
-  };
-  
+  // };
+
+  // vaciar los inputs
+  const deleteData = () => {};
 
   return (
     <>
