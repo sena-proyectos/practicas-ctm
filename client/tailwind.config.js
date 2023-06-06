@@ -15,10 +15,12 @@ export default {
       },
       gridTemplateColumns: {
         '2-55-45': '55% 45%',
+        '2-20r-80': '20rem auto',
       },
       gridTemplateRows: {
         '2-30-70': '10rem 70%',
         '3-10-78-12': '7rem 78% 12%',
+        '2-25-75': '10rem auto',
       },
       borderWidth: {
         1: '1.5px',

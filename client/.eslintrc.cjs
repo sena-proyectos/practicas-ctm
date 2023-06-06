@@ -7,5 +7,6 @@ globalThis.module.exports = {
   rules: {
     'react-refresh/only-export-components': 'warn',
     'react/prop-types': 'off',
-  },
+    trailingComma: 'off'
+  }
 }

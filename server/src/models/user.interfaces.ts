@@ -1,8 +1,8 @@
-export interface idUser {
+export interface id {
   id: number
 }
 
-export interface userForm extends idUser {
+export interface userForm {
   nombre: string
   apellido: string
   tipo_documento: string
@@ -14,14 +14,14 @@ export interface userForm extends idUser {
 }
 
 export interface idNumber {
-  idNumber: number
+  num_documento: number
 }
 
 export interface LoginData extends idNumber {
-  password: string
+  contrasena: string
 }
 
 export interface passwordCompare {
-  password: string
+  contrasena: string
   dbPassword: string
 }
