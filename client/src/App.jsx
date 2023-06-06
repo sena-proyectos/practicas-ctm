@@ -1,26 +1,18 @@
-// import { Form } from "./components/Login";
-// import { useEffect } from "react";
-// import jwt_decode from 'jwt-decode';
-import "./App.css";
-import { Routing } from "./routes/routes";
+import { Route, Routes } from 'react-router-dom'
+import './App.css'
+import { Siderbar } from './components/Siderbar/Sidebar'
+import { User } from './components/User/User'
+import { RegisterStudent } from './components/Register-student/RegisterStudent'
+import { Home } from './components/Home/Home'
 
-
-function App() {
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   if (token) {
-  //      const decodedToken = jwt_decode(token);
-  //      const userRole = decodedToken.role;
-  //     // Realiza cualquier acción adicional en función del rol del usuario
-  //     // console.log('Rol del usuario:', userRole);
-  //   }
-  // }, []);
-
+const App = () => {
   return (
-    <>
-        <Routing/>
-    </>
-  );
+    <Routes>
+      <Route path='/' element={<User />} />
+      <Route path='/home' element={<Home />} />
+      <Route path='/inscribir-aprendiz' element={<RegisterStudent />} />
+    </Routes>
+  )
 }
 
-export default App;
+export default App
