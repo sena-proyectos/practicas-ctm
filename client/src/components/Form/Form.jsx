@@ -3,8 +3,9 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
 import { Button } from '../button/button'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
-export const Form = ({ inputs, isLoginForm }) => {
+const Form = ({ inputs, isLoginForm }) => {
   const passwordIcons = {
     openEye: <AiOutlineEye />,
     closeEye: <AiOutlineEyeInvisible />
@@ -37,6 +38,7 @@ export const Form = ({ inputs, isLoginForm }) => {
     const response = await axios.post(`http://localhost:3000/api/${postRoute}`, data)
     const { key } = isLoginForm && (await response.data)
     const token = isLoginForm && (await key.split(' ')[1])
+    console.log(token)
   }
 
   const handleInputChange = (e, index) => {
@@ -61,16 +63,20 @@ export const Form = ({ inputs, isLoginForm }) => {
                 <span onClick={handlePassword} className='absolute inset-y-0 right-0 flex items-center pr-3 text-slate-600 cursor-pointer hover:text-slate-800 transition'>
                   {showPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                 </span>
-                <input type={showPassword} name={item.nameInput} className='py-1.5 text-sm text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
+                <input type={showPassword} name={item.nameInput} className='py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
               </>
             ) : (
-              <input type={item.type} name={item.nameInput} className='py-1.5 text-sm text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
+              <input type={item.type} name={item.nameInput} className='py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
             )}
           </div>
         )
       })}
-      <hr className='w-4/5 mx-auto bg-slate-500 h-[1px] my-2' />
-      <Button value={'Iniciar Sesión'} bg={'bg-primary'} />
+      <hr className='w-4/5 mx-auto bg-slate-300 h-[1px] my-2' />
+      <Link to={'/home'}>
+        <Button value={'Iniciar Sesión'} bg={'bg-primary'} />
+      </Link>
     </form>
   )
 }
+
+export { Form }
