@@ -5,8 +5,13 @@ export default {
     extend: {
       colors: {
         primary: '#39A900',
-        gray: '#D9D9D9',
         secondary: '#00324D',
+        third: '#82DEF0',
+        fourth: '#FBFBE2',
+        fifth: '#385C57',
+        sixth: '#CB7766',
+        seventh: '#FFCE40',
+        gray: '#D9D9D9',
       },
       gridTemplateColumns: {
         '2-55-45': '55% 45%',

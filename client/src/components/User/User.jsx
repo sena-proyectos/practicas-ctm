@@ -8,17 +8,16 @@ import { Form } from '../Form/Form'
 const User = () => {
   const divRef = useRef(null)
   const loginForm = [
-    { icon: <AiOutlineIdcard />, placeholder: '1017924888', type: 'text' },
-    { icon: <BiLockAlt />, placeholder: '**********', type: 'password' },
+    { icon: <AiOutlineIdcard />, placeholder: '1017924888', type: 'text', nameInput: 'num_documento' },
+    { icon: <BiLockAlt />, placeholder: '**********', type: 'password', nameInput: 'contrasena' },
   ]
   const registerForm = [
-    { icon: <AiOutlineIdcard />, placeholder: '1017924888', type: 'text' },
-    { icon: <IoPersonOutline />, placeholder: 'Nombre', type: 'text' },
-    { icon: <IoPersonOutline />, placeholder: 'Apellidos', type: 'text' },
-    { icon: <AiOutlineIdcard />, placeholder: 'Tipo Documento', type: 'text' },
-    { icon: <AiOutlineMail />, placeholder: 'correo@correo.com', type: 'email' },
-    { icon: <AiOutlinePhone />, placeholder: '3183577499', type: 'text' },
-    { icon: <BiLockAlt />, placeholder: '********', type: 'password' },
+    { icon: <AiOutlineIdcard />, placeholder: '1017924888', type: 'text', nameInput: 'num_documento' },
+    { icon: <IoPersonOutline />, placeholder: 'Juan', type: 'text', nameInput: 'nombre' },
+    { icon: <IoPersonOutline />, placeholder: 'Gonzales', type: 'text', nameInput: 'apellido' },
+    { icon: <AiOutlineMail />, placeholder: 'correo@correo.com', type: 'email', nameInput: 'correo_electronico' },
+    { icon: <AiOutlinePhone />, placeholder: '3183577499', type: 'text', nameInput: 'num_celular' },
+    { icon: <BiLockAlt />, placeholder: '********', type: 'password', nameInput: 'contrasena' },
   ]
   const [selectedButton, setSelectedButton] = useState('login')
 
@@ -41,14 +40,14 @@ const User = () => {
 
   return (
     <main className={`grid grid-cols-1 md:grid-cols-2-55-45 ${selectedButton === 'register' ? 'h-[110vh]' : 'h-screen'}`}>
-      <section className="grid grid-rows-2-30-70">
+      <section className="grid grid-rows-2-30-70 h-full">
         <header className="grid place-items-center">
           <h1 className="font-bold text-4xl">SENA</h1>
         </header>
         <div className="flex flex-col justify-self-center">
           {selectedButton === 'login' ? <h2 className="font-bold text-lg text-center">{title.login}</h2> : <h2 className="font-bold text-lg text-center">{title.register}</h2>}
           <span className="font-light text-sm ">Es un placer para nosotros tenerte aquí</span>
-          <div className={`flex flex-row justify-items-center bg-gray rounded-lg w-72 ${selectedButton === 'register' ? 'h-[106.2px]' : 'h-10'} mx-auto my-2.5 relative`}>
+          <div className={`flex flex-row justify-items-center bg-gray rounded-lg w-72 h-10 mx-auto my-2.5 relative`}>
             <div className={`absolute bg-white w-32 h-7 mt-1.5 ml-2 rounded-md transition-all`} ref={divRef}></div>
             <button className="rounded-md w-32 h-8 m-auto text-black text-sm z-10" onClick={() => handleButtonClick('login')}>
               Iniciar sesión
@@ -57,7 +56,7 @@ const User = () => {
               Registrarse
             </button>
           </div>
-          {selectedButton === 'login' ? <Form inputs={loginForm} /> : <Form inputs={registerForm} />}
+          {selectedButton === 'login' ? <Form inputs={loginForm} isLoginForm={true} /> : <Form inputs={registerForm} isLoginForm={false} />}
         </div>
       </section>
 
