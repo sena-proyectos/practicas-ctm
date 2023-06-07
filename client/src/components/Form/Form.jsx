@@ -1,12 +1,17 @@
 import { useRef, useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
-
-import { Button } from '../Button/Button'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
-import { passwordIcons, passwordStatus } from '../../Import/staticData.js'
+
+import { Button } from '../Button/Button'
+import { passwordStatus } from '../../Import/staticData.js'
 
 const Form = ({ inputs, isLoginForm }) => {
+  const passwordIcons = {
+    openEye: <AiOutlineEye />,
+    closeEye: <AiOutlineEyeInvisible />,
+  }
+
   const [showPassword, setShowPassword] = useState(passwordStatus.hidden)
   const formValuesRef = useRef({})
 

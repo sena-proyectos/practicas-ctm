@@ -12,10 +12,12 @@ export default {
         salmon: '#CB7766',
         seventh: '#FFCE40',
         gray: '#D9D9D9',
+        aqua: '#B8F1D8',
       },
       gridTemplateColumns: {
         '2-55-45': '55% 45%',
         '2-20r-80': '20rem auto',
+        '2-16r-84': '16rem auto',
       },
       gridTemplateRows: {
         '2-30-70': '10rem 70%',

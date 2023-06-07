@@ -1,12 +1,27 @@
-import { AiOutlineUser } from 'react-icons/ai'
-import { Button } from '../Button/Button'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { AiOutlineUser } from 'react-icons/ai'
+
+import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 
-import { dataInscription, idTypes, modalities } from '../../Import/staticData'
+import { idTypes, modalities } from '../../Import/staticData'
 
 const RegisterStudent = () => {
+  const dataInscription = [
+    { icon: <AiOutlineUser />, type: 'text', name: 'name', placeholder: 'Alejandro', label: 'Nombres' },
+    { icon: <AiOutlineUser />, type: 'text', name: 'lastname', placeholder: 'Rodriguez', label: 'Apellidos' },
+    { icon: <AiOutlineUser />, type: 'select', name: 'typeid', placeholder: 'sin seleccionar', label: 'Tipo documento' },
+    { icon: <AiOutlineUser />, type: 'number', name: 'numberid', placeholder: '1023456789', label: 'Número documento' },
+    { icon: <AiOutlineUser />, type: 'email', name: 'email', placeholder: 'example@sena.edu.co', label: 'Correo electrónico' },
+    { icon: <AiOutlineUser />, type: 'number', name: 'phone', placeholder: '3012345467', label: 'Número de celular' },
+    { icon: <AiOutlineUser />, type: 'number', name: 'formationnumber', placeholder: '2134567', label: 'Número de ficha' },
+    { icon: <AiOutlineUser />, type: 'text', name: 'program', placeholder: 'ADSO', label: 'Programa de formación' },
+    { icon: <AiOutlineUser />, type: 'select', name: 'modality', placeholder: 'Sin seleccionar', label: 'Modalidad' },
+    { icon: <AiOutlineUser />, type: 'date', name: 'datestart', label: 'Fecha de inicio prácticas' },
+    { icon: <AiOutlineUser />, type: 'date', name: 'dateend', label: 'Fecha de fin prácticas' },
+  ]
+
   /* const [modalities, setModalities] = useState([{}])
   useEffect(() => {
     const getModalities = () => {
