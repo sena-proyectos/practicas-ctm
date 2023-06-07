@@ -12,7 +12,7 @@ export default {
         salmon: '#CB7766',
         seventh: '#FFCE40',
         gray: '#D9D9D9',
-        aqua: '#B8F1D8',
+        aqua: '#B8F1D8'
       },
       gridTemplateColumns: {
         '2-55-45': '55% 45%',
@@ -24,21 +24,21 @@ export default {
         '2-30-70': '10rem 70%',
         '3-10-78-12': '7rem 78% 12%',
         '3-10-75-15': '7rem 75% 15%',
-        '2-25-75': '10rem auto',
+        '2-25-75': '10rem auto'
       },
       borderWidth: {
-        1: '1.5px',
+        1: '1.5px'
       },
       animation: {
-        'slide-background': 'slideBackground 5s infinite',
+        'slide-background': 'slideBackground 5s infinite'
       },
       keyframes: {
         slideBackground: {
           '0%': { backgroundPosition: '0% 0%' },
-          '100%': { backgroundPosition: '100% 0%' },
-        },
-      },
-    },
+          '100%': { backgroundPosition: '100% 0%' }
+        }
+      }
+    }
   },
-  plugins: [],
+  plugins: []
 }

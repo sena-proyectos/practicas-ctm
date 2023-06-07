@@ -8,10 +8,6 @@
   font-family: 'Work Sans', sans-serif;
 }
 
-/* body {
-  overflow-y: scroll;
-} */
-
 ::-webkit-scrollbar {
   width: 5px;
 }
