@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { IoCalendarClearOutline, IoDocumentTextOutline, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline } from 'react-icons/io5'
 
+import { colorIcon } from '../../Import/staticData'
+
 const Siderbar = () => {
   const [selectPage, setSelectPage] = useState('home')
 
@@ -13,7 +15,8 @@ const Siderbar = () => {
   }
 
   const spanStyle = (page) => {
-    return selectPage === page ? `absolute inset-y-0 left-0 flex items-center pl-3 text-xs text-${selectPage}` : 'absolute inset-y-0 left-0 flex items-center pl-3 text-xs'
+    const color = colorIcon[page]
+    return selectPage === page ? `absolute inset-y-0 left-0 flex items-center pl-3 text-sm font-bold ${color}` : 'absolute inset-y-0 left-0 flex items-center pl-3 text-xs'
   }
 
   return (

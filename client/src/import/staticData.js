@@ -8,7 +8,7 @@ export const cards = [
     description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-primary',
-    link: '/',
+    link: '/aprendices',
   },
   {
     title: 'Bitácoras Incompletas',
@@ -16,7 +16,7 @@ export const cards = [
     description: 'Podrás ver el listado de bitácoras que actualmente se encuentran en incompletas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-salmon',
-    link: '/',
+    link: '/bitacoras',
   },
   {
     title: 'Bitácoras Completas',
@@ -24,7 +24,7 @@ export const cards = [
     description: 'Podrás ver el listado de bitácoras que actualmente se encuentran completas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-seventh',
-    link: '/',
+    link: '/bitacoras',
   },
   {
     title: 'Aprobaciones',
@@ -40,7 +40,7 @@ export const cards = [
     description: 'Podrás ver el listado de visitas que actualmente no se encuentran en realizadas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-third',
-    link: '/',
+    link: '/visitas',
   },
   {
     title: 'Inscribir un aprendiz',
@@ -48,7 +48,7 @@ export const cards = [
     description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-aqua',
-    link: '/',
+    link: '/inscribir-aprendiz',
   },
 ]
 
@@ -76,4 +76,15 @@ export const modalities = [
 export const passwordStatus = {
   shown: 'text',
   hidden: 'password',
+}
+
+/*
+ * src: src\components\Login\Login.jsx
+ */
+export const colorIcon = {
+  home: 'text-salmon',
+  aprendices: 'text-fourth',
+  bitacoras: 'text-seventh',
+  visitas: 'text-primary',
+  config: 'text-fifth',
 }
