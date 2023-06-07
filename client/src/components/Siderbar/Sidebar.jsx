@@ -25,13 +25,13 @@ const Siderbar = () => {
   }
 
   return (
-    <aside className="bg-secondary/10 w-[40%] md:w-56 h-[100%] md:h-screen rounded-r-2xl flex flex-col">
+    <aside className="bg-secondary/10 min-w-min h-[100%] md:h-screen rounded-r-2xl flex flex-col">
       <nav className="grid grid-rows-3-[10%]-78-12 md:grid-rows-3-10-78-12 mx-auto w-4/5 h-screen flex-grow">
         <section className="w-full grid grid-cols-2 my-auto">
           <img className="h-4/5 w-auto my-auto" src="public/user.png" alt="img_user" />
           <div className="m-auto">
-            <h3>Personirri</h3>
-            <span>Admin</span>
+            <h3>Juan Gonzalez</h3>
+            <span>Administrador</span>
           </div>
         </section>
         <ul className="flex flex-col justify-center items-start">

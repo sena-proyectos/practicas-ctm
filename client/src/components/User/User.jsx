@@ -4,21 +4,11 @@ import { BiLockAlt } from 'react-icons/bi'
 import { IoPersonOutline } from 'react-icons/io5'
 
 import { Form } from '../Form/Form'
+import { loginForm, registerForm } from '../../Import/staticData'
 
 const User = () => {
   const divRef = useRef(null)
-  const loginForm = [
-    { icon: <AiOutlineIdcard />, placeholder: '1017924888', type: 'text', nameInput: 'num_documento' },
-    { icon: <BiLockAlt />, placeholder: '**********', type: 'password', nameInput: 'contrasena' },
-  ]
-  const registerForm = [
-    { icon: <AiOutlineIdcard />, placeholder: '1017924888', type: 'text', nameInput: 'num_documento' },
-    { icon: <IoPersonOutline />, placeholder: 'Juan', type: 'text', nameInput: 'nombre' },
-    { icon: <IoPersonOutline />, placeholder: 'Gonzales', type: 'text', nameInput: 'apellido' },
-    { icon: <AiOutlineMail />, placeholder: 'correo@correo.com', type: 'email', nameInput: 'correo_electronico' },
-    { icon: <AiOutlinePhone />, placeholder: '3183577499', type: 'text', nameInput: 'num_celular' },
-    { icon: <BiLockAlt />, placeholder: '********', type: 'password', nameInput: 'contrasena' },
-  ]
+
   const [selectedButton, setSelectedButton] = useState('login')
 
   const handleButtonClick = (button) => {
