@@ -9,11 +9,11 @@ const Siderbar = () => {
   }
 
   const liStyle = (page) => {
-    return selectPage === page ? 'flex items-center relative pl-10 py-2 bg-white rounded-s-2xl w-[115%]' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] transition '
+    return selectPage === page ? 'flex items-center relative pl-10 py-2 font-semibold bg-white rounded-s-2xl w-[115%]' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] transition '
   }
 
   const spanStyle = (page) => {
-    return selectPage === page ? 'absolute inset-y-0 left-0 flex items-center pl-3 text-xs text-primary' : 'absolute inset-y-0 left-0 flex items-center pl-3 text-xs'
+    return selectPage === page ? `absolute inset-y-0 left-0 flex items-center pl-3 text-xs text-${selectPage}` : 'absolute inset-y-0 left-0 flex items-center pl-3 text-xs'
   }
 
   return (

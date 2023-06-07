@@ -7,6 +7,7 @@ import * as XLSX from 'xlsx'
 
 import { Button } from '../button/button'
 import { Siderbar } from '../Siderbar/Sidebar'
+import { idTypes, modalities } from '../../Import/staticData'
 
 const RegisterStudent = () => {
   const excelFileRef = useRef(null)
@@ -85,18 +86,7 @@ const RegisterStudent = () => {
     { icon: <AiOutlineUser />, type: 'text', name: 'program', placeholder: 'ADSO', label: 'Programa de formación' },
     { icon: <AiOutlineUser />, type: 'select', name: 'modality', placeholder: 'Sin seleccionar', label: 'Modalidad' },
     { icon: <AiOutlineUser />, type: 'date', name: 'datestart', label: 'Fecha de inicio prácticas' },
-    { icon: <AiOutlineUser />, type: 'date', name: 'dateend', label: 'Fecha de fin prácticas' }
-  ]
-  const idTypes = [
-    { value: 'cc', name: 'Cédula de ciudadanía' },
-    { value: 'ce', name: 'Cédula de extranjería' },
-    { value: 'ti', name: 'Tarjeta de identidad' }
-  ]
-
-  const modalities = [
-    { value: 'contrato', name: 'Contrato de aprendizaje' },
-    { value: 'pasantia', name: 'Pasantías' },
-    { value: 'proyecto', name: 'Proyecto formativo' }
+    { icon: <AiOutlineUser />, type: 'date', name: 'dateend', label: 'Fecha de fin prácticas' },
   ]
 
   /* const [modalities, setModalities] = useState([{}])
@@ -129,8 +119,8 @@ const RegisterStudent = () => {
               <section className='grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 w-4/5 mx-auto gap-y-4'>
                 {dataInscription.map((item, i) => {
                   return (
-                    <div className='text-gray-400 m-auto' key={i}>
-                      <label htmlFor='nombre' className='font-semibold '>
+                    <div className="text-gray-400 m-auto" key={i}>
+                      <label htmlFor="nombre" className="font-semibold ">
                         {item.label}
                       </label>
                       {item.type === 'number' ? (
@@ -163,9 +153,9 @@ const RegisterStudent = () => {
                           </select>
                         </div>
                       ) : (
-                        <div className='relative'>
-                          <span className='absolute inset-y-0 left-0 flex items-center pl-3'>{item.icon}</span>
-                          <input type={item.type} name={item.name} className='py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72' autoComplete='on' placeholder={item.placeholder} />
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3">{item.icon}</span>
+                          <input type={item.type} name={item.name} className="py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72" autoComplete="on" placeholder={item.placeholder} />
                         </div>
                       )}
                     </div>
