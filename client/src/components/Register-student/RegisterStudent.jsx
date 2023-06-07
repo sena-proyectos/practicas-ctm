@@ -1,153 +1,84 @@
-import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-import { Siderbar } from "../Siderbar/Sidebar";
 import { Button } from "../button/button";
-import { AiOutlineUser } from "react-icons/ai";
+import {
+  DataInscription,
+  IdTypes,
+  Modalities,
+} from "../arraysInsciption/Arrays";
 
 import {
-  ValidateIdentity,
   ValidateEmail,
-  ValidateInputs,
+  ValidateIdentity,
+  ValidateInputsTypeNumber,
 } from "../../validation/ExpresionesRegulares";
 
 const RegisterStudent = () => {
-  const dataInscription = [
-    {
-      icon: <AiOutlineUser />,
-      type: "text",
-      name: "nombres_aprendiz_inscripcion",
-      placeholder: "Alejandro",
-      label: "Nombres",
-    },
-    {
-      icon: <AiOutlineUser />,
-      type: "text",
-      name: "apellidos_aprendiz_inscripcion",
-      placeholder: "Rodriguez",
-      label: "Apellidos",
-    },
-    {
-      icon: <AiOutlineUser />,
-      type: "select",
-      name: "tipo_documento_aprendiz_inscripcion",
-      placeholder: "sin seleccionar",
-      label: "Tipo documento",
-    },
-    {
-      icon: <AiOutlineUser />,
-      type: "number",
-      name: "numero_documento_aprendiz_inscripcion",
-      placeholder: "1023456789",
-      label: "Número documento",
-    },
-    {
-      icon: <AiOutlineUser />,
-      type: "email",
-      name: "correo_electronico_aprendiz_inscripcion",
-      placeholder: "example@sena.edu.co",
-      label: "Correo electrónico",
-    },
-    {
-      icon: <AiOutlineUser />,
-      type: "number",
-      name: "numero_telefono_aprendiz_inscripcion",
-      placeholder: "3012345467",
-      label: "Número de celular",
-    },
-    {
-      icon: <AiOutlineUser />,
-      type: "number",
-      name: "numero_ficha_aprendiz_inscripcion",
-      placeholder: "2134567",
-      label: "Número de ficha",
-    },
-    {
-      icon: <AiOutlineUser />,
-      type: "text",
-      name: "programa_formacion_aprendiz_inscripcion",
-      placeholder: "ADSO",
-      label: "Programa de formación",
-    },
-    {
-      icon: <AiOutlineUser />,
-      type: "select",
-      name: "tipo_modalidad_aprendiz_inscripcion",
-      placeholder: "Sin seleccionar",
-      label: "Modalidad",
-    },
-    {
-      icon: <AiOutlineUser />,
-      type: "date",
-      name: "inicio_etapa_practica_aprendiz_inscripcion",
-      label: "Fecha de inicio prácticas",
-    },
-    {
-      icon: <AiOutlineUser />,
-      type: "date",
-      name: "fin_etapa_practica_aprendiz_inscripcion",
-      label: "Fecha de fin prácticas",
-    },
-  ];
-  const idTypes = [
-    { value: "C.C", name: "Cédula de ciudadanía" },
-    { value: "C.E", name: "Cédula de extranjería" },
-    { value: "T.I", name: "Tarjeta de identidad" },
-  ];
-
-  const modalities = [
-    { value: "Contrato de aprendizaje", name: "Contrato de aprendizaje" },
-    { value: "Pasantias", name: "Pasantías" },
-    { value: "Proyecto formativo", name: "Proyecto formativo" },
-  ];
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // capturar los valores de los inputs del formulario
     const formValues = Object.fromEntries(new FormData(e.target));
 
-    // Validaciones de los campos con los imports de las expresiones regulares
-
-    const isIdentityValid = ValidateIdentity(formValues.numero_documento_aprendiz_inscripcion);
-  
-  if (!isIdentityValid) {
-    // El número de identidad no es válido, muestra el mensaje de error con SweetAlert
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: '¡El número de identidad no es válido!',
-    });
-    return;
-  }
-
-    ValidateInputs(
-      formValues.nombres_aprendiz_inscripcion,
-      formValues.apellidos_aprendiz_inscripcion,
-      formValues.tipo_documento_aprendiz_inscripcion,
-      formValues.numero_documento_aprendiz_inscripcion,
-      formValues.correo_electronico_aprendiz_inscripcion,
-      formValues.numero_telefono_aprendiz_inscripcion,
-      formValues.numero_ficha_aprendiz_inscripcion,
-      formValues.programa_formacion_aprendiz_inscripcion,
-      formValues.tipo_modalidad_aprendiz_inscripcion,
-      formValues.inicio_etapa_practica_aprendiz_inscripcion,
-      formValues.fin_etapa_practica_aprendiz_inscripcion
+    // validar que los campos no esten vacios
+    const emptyFields = Object.keys(formValues).filter(
+      (key) => !formValues[key]
     );
-    // capturar valores de todos los inputs del formulario y guardarlos en una constante y mostarlos en consola
 
-    // enviar los datos al backend digitados
-    // sendDataInscription(formValues);
+    // si hay campos vacios, mostrar alerta
+    if (emptyFields.length > 0) {
+      return Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Por favor, completa todos los campos",
+      });
+    }
+
+    // validar que los campos de tipo number sean numeros
+    ValidateInputsTypeNumber(
+      formValues.numero_documento_aprendiz_inscripcion,
+      formValues.numero_telefono_aprendiz_inscripcion,
+      formValues.numero_ficha_aprendiz_inscripcion
+    );
+
+    // validar que el numero de documento sea valido
+    const {
+      numero_documento_aprendiz_inscripcion,
+      correo_electronico_aprendiz_inscripcion,
+    } = formValues;
+
+    const isIdentityValid = ValidateIdentity(
+      numero_documento_aprendiz_inscripcion
+    );
+
+    const isEmailValid = ValidateEmail(correo_electronico_aprendiz_inscripcion);
+
+    if (!isIdentityValid) {
+      return Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "El número de documento no es válido",
+      });
+    } else if (!isEmailValid) {
+      return Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "El correo electrónico no es válido",
+      });
+    }
+
+    // enviar los datos al backend
+    sendDataInscription(formValues);
   };
 
   // enviar los datos al backend por medio de axios
-  // const sendDataInscription = async (data) => {
-  //   const response = await axios.post(
-  //     "http://localhost:3000/api/create-inscription",
-  //     data
-  //   );
-
-  // };
+  const sendDataInscription = async (data) => {
+    const response = await axios.post(
+      "http://localhost:3000/api/create-inscription",
+      data
+    );
+  };
 
   // vaciar los inputs
   const deleteData = () => {};
@@ -168,7 +99,7 @@ const RegisterStudent = () => {
               onSubmit={handleSubmit}
             >
               <section className="grid xl:grid-cols-3 lg:grid-cols-2  w-4/5 mx-auto gap-y-4">
-                {dataInscription.map((item, i) => {
+                {DataInscription.map((item, i) => {
                   return (
                     <div className="text-gray-400 m-auto" key={i}>
                       <label htmlFor="nombre" className="font-semibold ">
@@ -200,16 +131,16 @@ const RegisterStudent = () => {
                             name={item.name}
                             className="py-2 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72"
                           >
-                            <option value={"none"}>Sin seleccionar</option>
-                            {item.name === "typeid"
-                              ? idTypes.map((item, i) => {
+                            <option value={""}>Sin seleccionar</option>
+                            {item.name === "tipo_documento_aprendiz_inscripcion"
+                              ? IdTypes.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
                                       {item.name}
                                     </option>
                                   );
                                 })
-                              : modalities.map((item, i) => {
+                              : Modalities.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
                                       {item.name}
