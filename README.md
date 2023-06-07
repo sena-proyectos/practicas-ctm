@@ -1,37 +1,33 @@
-# Welcome to ctm_practicas 👋
+# Bienvenido a ctm_practicas 👋
 ![Version](https://img.shields.io/badge/version-0.0.2--alpha-blue.svg?cacheSeconds=2592000)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
 
 > Proyecto dedicado al registro y seguimiento de los aprendices que se encuentren actualmente en la etapa practica de su programa de formacion
 
-## Install
+## Instalación
 
 ```sh
 npm i
 ```
 
-## Usage
+## Uso
 
 ```sh
 npm run dev
 ```
 
-## Author
+## Autores
 
 👤 **Stiven Blandon, Lorena Quiceno, Stiven Benjumea, Kevin Chica**
 
-* Github: [@ConanGH-S, lorenqg, STBenji, axelchica759](https://github.com/ConanGH-S, lorenqg, STBenji, axelchica759)
+* Github: [@ConanGH-S, lorenqg, STBenji, Axelchica759](https://github.com/ConanGH-S, https://github.com/lorenqg, https://github.com/STBenji, https://github.com/Axelchica759)
 
-## 🤝 Contributing
+## 🤝 Contribuciones
 
-Contributions, issues and feature requests are welcome!
+¡Contribuciones, problemas y nuevas características son bienvenidas!
 
-Feel free to check [issues page](https://github.com/ConanGH-S/practicas_sena/issues). 
+Siéntete libre de generar un problema [issues page](https://github.com/ConanGH-S/practicas_sena/issues). 
 
-## Show your support
+## Ayúdanos
 
-Give a ⭐️ if this project helped you!
-
-
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+¡Dame ⭐️ si te interesa este proyecto!
