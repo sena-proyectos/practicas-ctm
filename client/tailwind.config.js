@@ -9,7 +9,7 @@ export default {
         third: '#82DEF0',
         fourth: '#FBFBE2',
         fifth: '#385C57',
-        sixth: '#CB7766',
+        salmon: '#CB7766',
         seventh: '#FFCE40',
         gray: '#D9D9D9',
       },
@@ -20,6 +20,7 @@ export default {
       gridTemplateRows: {
         '2-30-70': '10rem 70%',
         '3-10-78-12': '7rem 78% 12%',
+        '3-10-75-15': '7rem 75% 15%',
         '2-25-75': '10rem auto',
       },
       borderWidth: {
