@@ -1,0 +1,3 @@
+const Student = () => {}
+
+export { Student }

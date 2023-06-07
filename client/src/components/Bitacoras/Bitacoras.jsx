@@ -1,0 +1,3 @@
+const Bitacoras = () => {}
+
+export { Bitacoras }
