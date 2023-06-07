@@ -1,7 +1,16 @@
 import { Card } from '../Card/Card'
 import { Siderbar } from '../Siderbar/Sidebar'
 
+import { useEffect } from 'react'
+
+import Cookies from 'js-cookie'
+
 const Home = () => {
+  useEffect(() => {
+    const token = Cookies.get('token')
+    if (!token) window.location.href = '/'
+  }, [])
+
   const datosCards = [
     {
       title: 'Listado de aprendices',

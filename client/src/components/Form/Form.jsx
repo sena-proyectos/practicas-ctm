@@ -1,11 +1,16 @@
 import { useRef, useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
-import { Button } from '../button/button'
+import { Button } from '../Button/Button'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+
+import Cookie from 'js-cookie'
+import jwtdecoded from 'jwt-decode'
 
 const Form = ({ inputs, isLoginForm }) => {
+  const navigate = useNavigate()
+
   const passwordIcons = {
     openEye: <AiOutlineEye />,
     closeEye: <AiOutlineEyeInvisible />
@@ -38,7 +43,20 @@ const Form = ({ inputs, isLoginForm }) => {
     const response = await axios.post(`http://localhost:3000/api/${postRoute}`, data)
     const { key } = isLoginForm && (await response.data)
     const token = isLoginForm && (await key.split(' ')[1])
-    console.log(token)
+
+    Cookie.set('token', token, {
+      expires: 1,
+      sameSite: 'none',
+      secure: true
+    })
+
+    const getCookies = Cookie.get('token')
+
+    const decoded = jwtdecoded(getCookies)
+
+    const id_rol = decoded.data[0].id_rol
+
+    if (id_rol === 1) navigate('/home')
   }
 
   const handleInputChange = (e, index) => {
@@ -72,9 +90,7 @@ const Form = ({ inputs, isLoginForm }) => {
         )
       })}
       <hr className='w-4/5 mx-auto bg-slate-300 h-[1px] my-2' />
-      <Link to={'/home'}>
-        <Button value={'Iniciar Sesión'} bg={'bg-primary'} />
-      </Link>
+      <Button value={'Iniciar Sesión'} bg={'bg-primary'} />
     </form>
   )
 }

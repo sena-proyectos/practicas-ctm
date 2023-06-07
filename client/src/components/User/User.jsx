@@ -19,6 +19,7 @@ const User = () => {
     { icon: <AiOutlinePhone />, placeholder: '3183577499', type: 'text', nameInput: 'num_celular' },
     { icon: <BiLockAlt />, placeholder: '********', type: 'password', nameInput: 'contrasena' }
   ]
+
   const [selectedButton, setSelectedButton] = useState('login')
 
   const handleButtonClick = (button) => {
