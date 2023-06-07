@@ -6,6 +6,6 @@ const roleRoutes: IRouter = Router()
 // * GET
 
 // * POST
-roleRoutes.post('/createRole', createRole)
+roleRoutes.post('/create-role', createRole)
 
 export { roleRoutes }
