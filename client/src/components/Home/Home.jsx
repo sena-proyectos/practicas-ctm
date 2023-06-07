@@ -1,6 +1,7 @@
 import { Card } from '../Card/Card'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { cards } from '../../Import/staticData'
+import { Footer } from '../Footer/Footer'
 
 const Home = () => {
   return (
@@ -15,10 +16,7 @@ const Home = () => {
             return <Card bgColor={bgColor} scale={'scale-90'} titleColor={titleColor} title={title} description={description} buttonText={buttonText} key={title} link={link} />
           })}
         </div>
-        <footer className="h-fit ">
-          <hr />
-          <span className="text-center ">DERECHOS RESERVADOS AL SENA</span>
-        </footer>
+        <Footer />
       </section>
     </main>
   )
