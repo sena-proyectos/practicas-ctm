@@ -18,6 +18,7 @@ export default {
         '2-55-45': '55% 45%',
         '2-20r-80': '20rem auto',
         '2-16r-84': '16rem auto',
+        '2-20r-80': '18rem auto'
       },
       gridTemplateRows: {
         '2-30-70': '10rem 70%',

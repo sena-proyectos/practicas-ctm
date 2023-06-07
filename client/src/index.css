@@ -7,3 +7,25 @@
 * {
   font-family: 'Work Sans', sans-serif;
 }
+
+/* body {
+  overflow-y: scroll;
+} */
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f2f2f2;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 4px;
+  padding-right: 0.3rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
