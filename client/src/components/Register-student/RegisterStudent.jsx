@@ -74,10 +74,7 @@ const RegisterStudent = () => {
 
   // enviar los datos al backend por medio de axios
   const sendDataInscription = async (data) => {
-    const response = await axios.post(
-      "http://localhost:3000/api/create-inscription",
-      data
-    );
+    await axios.post("http://localhost:3000/api/create-inscription", data);
   };
 
   // vaciar los inputs
