@@ -1,5 +1,5 @@
 import { type Request, type Response } from 'express'
-import { handleHTTP } from '../utils/errorsHandler.js'
+import { handleHTTP } from '../errors/errorsHandler.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { connection } from '../config/db.js'
 

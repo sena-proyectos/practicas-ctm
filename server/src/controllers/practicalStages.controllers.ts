@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express'
 import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
-import { handleHTTP } from '../utils/errorsHandler.js'
+import { handleHTTP } from '../errors/errorsHandler.js'
 import { type id } from '../models/user.interfaces.js'
 import { type PracticalStages } from '../models/PracticalStages.interfaces.js'
 
