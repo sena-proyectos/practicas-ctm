@@ -1,6 +1,6 @@
 import { Card } from '../Card/Card'
 import { Siderbar } from '../Siderbar/Sidebar'
-import { cards } from '../../Import/staticData'
+import { cards } from '../../import/staticData'
 import { Footer } from '../Footer/Footer'
 
 import { useEffect } from 'react'
@@ -8,25 +8,13 @@ import { useEffect } from 'react'
 import Cookies from 'js-cookie'
 
 const Home = () => {
-  useEffect(() => {
-    const token = Cookies.get('token')
-    if (!token) window.location.href = '/'
-  }, [])
+  // useEffect(() => {
+  //   const token = Cookies.get('token')
+  //   if (!token) window.location.href = '/'
+  // }, [])
 
-  const datosCards = [
-    {
-      title: 'Listado de aprendices',
-      description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
-      isButton: true,
-      buttonText: 'Llevame ahí',
-      bgColor: 'bg-red-200',
-      innerOnClick: () => {
-        console.log('Hola')
-      },
-    },
-  ]
   return (
-    <main>
+    <main className="grid grid-cols-2-20r-80">
       <Siderbar />
       <section className="grid grid-rows-3-10-75-15">
         <header className="grid place-items-center">

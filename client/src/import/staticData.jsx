@@ -10,7 +10,7 @@ export const cards = [
     description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-primary',
-    link: '/'
+    link: '/aprendices',
   },
   {
     title: 'Bitácoras Incompletas',
@@ -18,7 +18,7 @@ export const cards = [
     description: 'Podrás ver el listado de bitácoras que actualmente se encuentran en incompletas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-salmon',
-    link: '/'
+    link: '/bitacoras',
   },
   {
     title: 'Bitácoras Completas',
@@ -26,7 +26,7 @@ export const cards = [
     description: 'Podrás ver el listado de bitácoras que actualmente se encuentran completas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-seventh',
-    link: '/'
+    link: '/bitacoras',
   },
   {
     title: 'Aprobaciones',
@@ -34,7 +34,7 @@ export const cards = [
     description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-[#385C57]',
-    link: '/'
+    link: '/',
   },
   {
     title: 'Visitas no hechas',
@@ -42,7 +42,7 @@ export const cards = [
     description: 'Podrás ver el listado de visitas que actualmente no se encuentran en realizadas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-third',
-    link: '/'
+    link: '/visitas',
   },
   {
     title: 'Inscribir un aprendiz',
@@ -50,8 +50,8 @@ export const cards = [
     description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-aqua',
-    link: '/'
-  }
+    link: '/inscribir-aprendiz',
+  },
 ]
 
 /*
@@ -63,76 +63,76 @@ export const dataInscription = [
     type: 'text',
     name: 'nombres_aprendiz_inscripcion',
     placeholder: 'Alejandro',
-    label: 'Nombres'
+    label: 'Nombres',
   },
   {
     icon: <AiOutlineUser />,
     type: 'text',
     name: 'apellidos_aprendiz_inscripcion',
     placeholder: 'Rodriguez',
-    label: 'Apellidos'
+    label: 'Apellidos',
   },
   {
     icon: <AiOutlineUser />,
     type: 'select',
     name: 'tipo_documento_aprendiz_inscripcion',
     placeholder: 'sin seleccionar',
-    label: 'Tipo documento'
+    label: 'Tipo documento',
   },
   {
     icon: <AiOutlineUser />,
     type: 'number',
     name: 'numero_documento_aprendiz_inscripcion',
     placeholder: '1023456789',
-    label: 'Número documento'
+    label: 'Número documento',
   },
   {
     icon: <AiOutlineUser />,
     type: 'email',
     name: 'correo_electronico_aprendiz_inscripcion',
     placeholder: 'example@sena.edu.co',
-    label: 'Correo electrónico'
+    label: 'Correo electrónico',
   },
   {
     icon: <AiOutlineUser />,
     type: 'number',
     name: 'numero_telefono_aprendiz_inscripcion',
     placeholder: '3012345467',
-    label: 'Número de celular'
+    label: 'Número de celular',
   },
   {
     icon: <AiOutlineUser />,
     type: 'number',
     name: 'numero_ficha_aprendiz_inscripcion',
     placeholder: '2134567',
-    label: 'Número de ficha'
+    label: 'Número de ficha',
   },
   {
     icon: <AiOutlineUser />,
     type: 'text',
     name: 'programa_formacion_aprendiz_inscripcion',
     placeholder: 'ADSO',
-    label: 'Programa de formación'
+    label: 'Programa de formación',
   },
   {
     icon: <AiOutlineUser />,
     type: 'select',
     name: 'tipo_modalidad_aprendiz_inscripcion',
     placeholder: 'Sin seleccionar',
-    label: 'Modalidad'
+    label: 'Modalidad',
   },
   {
     icon: <AiOutlineUser />,
     type: 'date',
     name: 'inicio_etapa_practica_aprendiz_inscripcion',
-    label: 'Fecha de inicio prácticas'
+    label: 'Fecha de inicio prácticas',
   },
   {
     icon: <AiOutlineUser />,
     type: 'date',
     name: 'fin_etapa_practica_aprendiz_inscripcion',
-    label: 'Fecha de fin prácticas'
-  }
+    label: 'Fecha de fin prácticas',
+  },
 ]
 
 /*
@@ -141,7 +141,7 @@ export const dataInscription = [
 export const idTypes = [
   { value: 'cc', name: 'Cédula de ciudadanía' },
   { value: 'ce', name: 'Cédula de extranjería' },
-  { value: 'ti', name: 'Tarjeta de identidad' }
+  { value: 'ti', name: 'Tarjeta de identidad' },
 ]
 
 /*
@@ -150,7 +150,7 @@ export const idTypes = [
 export const modalities = [
   { value: 'contrato', name: 'Contrato de aprendizaje' },
   { value: 'pasantia', name: 'Pasantías' },
-  { value: 'proyecto', name: 'Proyecto formativo' }
+  { value: 'proyecto', name: 'Proyecto formativo' },
 ]
 
 /*
@@ -158,5 +158,16 @@ export const modalities = [
  */
 export const passwordStatus = {
   shown: 'text',
-  hidden: 'password'
+  hidden: 'password',
+}
+
+/*
+ * src: src\components\Siderbar\Sidebar.jsx
+ */
+export const colorIcon = {
+  '/home': 'text-salmon',
+  '/aprendices': 'text-third',
+  '/bitacoras': 'text-seventh',
+  '/visitas': 'text-primary',
+  '/config': 'text-fifth',
 }

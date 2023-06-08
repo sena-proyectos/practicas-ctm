@@ -1,6 +1,6 @@
 import { Siderbar } from '../Siderbar/Sidebar'
 
-const Bitacoras = () => {
+const Settings = () => {
   return (
     <main className="grid grid-cols-2-20r-80">
       <Siderbar />
@@ -9,4 +9,4 @@ const Bitacoras = () => {
   )
 }
 
-export { Bitacoras }
+export { Settings }
