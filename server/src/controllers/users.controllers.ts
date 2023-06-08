@@ -7,10 +7,12 @@ import { httpStatus } from '../models/httpStatus.enums.js'
 import { type LoginData, type id, type userForm } from '../models/user.interfaces.js'
 import { checkExistingUser, checkLoginData, comparePassword, generateToken } from '../middlewares/users.middlewares.js'
 import { type RowDataPacket } from 'mysql2/promise'
+import { dbNotExists } from '../errors/customErrors.js'
 
 export const getUsers = async (_req: Request, res: Response): Promise<Response> => {
   try {
     const [users] = await connection.query('SELECT * FROM usuarios')
+    throw new dbNotExists()
     return res.status(httpStatus.OK).json({ data: users })
   } catch (error) {
     return handleHTTP(res, 'ERROR_GET_USERS')

@@ -7,7 +7,7 @@ const app: Application = express()
 
 const options: CorsOptions = {
   origin: '*',
-  methods: ['GET', 'POST', 'PATCH'],
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   optionsSuccessStatus: 200,
   allowedHeaders: ['Content-Type', 'Authorization']
 }

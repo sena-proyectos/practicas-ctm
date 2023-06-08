@@ -8,7 +8,7 @@ import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { idTypes, modalities, dataInscription } from '../../Import/staticData'
 
-import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/ExpresionesRegulares'
+import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 
 const RegisterStudent = () => {
   const excelFileRef = useRef(null)

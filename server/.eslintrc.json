@@ -10,7 +10,7 @@
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
-    "project": "D:/practicas_sena/server/tsconfig.json"
+    "project": "./tsconfig.json"
   },
   "rules": {}
 }
