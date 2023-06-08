@@ -1,5 +1,5 @@
 import { type Request, type Response } from 'express'
-import { type inscription } from '../models/inscriptions.interfaces.js'
+import { type inscription } from '../interfaces/inscriptions.interfaces.js'
 import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'

@@ -1,3 +1,4 @@
+import { errorCodes } from '../models/errorCodes.enums.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 
 export class CustomError extends Error {
@@ -5,7 +6,7 @@ export class CustomError extends Error {
   errorCode: string
   header: string
 
-  constructor (message: string, statusCode = 500, errorCode = 'INTERNAL_SERVER_ERROR') {
+  constructor (message: string, statusCode = httpStatus.INTERNAL_SERVER_ERROR, errorCode = errorCodes.INTERNAL_SERVER_ERROR) {
     super(message)
     this.header = 'Custom_error'
     this.statusCode = statusCode
@@ -18,13 +19,34 @@ export class DbError extends CustomError {
     super(message)
     this.header = 'DB_ERROR'
     this.statusCode = httpStatus.INTERNAL_SERVER_ERROR
-    this.errorCode = 'INTERNAL_SERVER_ERROR'
+    this.errorCode = errorCodes.INTERNAL_SERVER_ERROR
+  }
+}
+
+export class DbErrorNotFound extends CustomError {
+  errorCode: string
+  constructor (message: string, errorCode = errorCodes.INTERNAL_SERVER_ERROR) {
+    super(message)
+    this.header = 'DB_ERROR'
+    this.statusCode = httpStatus.NOT_FOUND
+    this.errorCode = errorCode
   }
 }
 
 export class DataNotValid extends CustomError {
-  constructor () {
-    super('El dato que has ingresado no es valido.')
-    this.name = 'DataNotValid'
+  constructor (message: string) {
+    super(message)
+    this.header = 'DATA_ERROR'
+    this.statusCode = httpStatus.INTERNAL_SERVER_ERROR
+    this.errorCode = errorCodes.INTERNAL_SERVER_ERROR
+  }
+}
+
+export class IdIsNaN extends CustomError {
+  constructor (message: string) {
+    super(message)
+    this.header = 'ID_ERROR'
+    this.statusCode = httpStatus.BAD_REQUEST
+    this.errorCode = errorCodes.ERROR_ID_NAN
   }
 }

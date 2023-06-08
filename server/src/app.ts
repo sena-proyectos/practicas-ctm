@@ -2,6 +2,7 @@ import express, { type IRouter, type Application, type Response } from 'express'
 import cors, { type CorsOptions } from 'cors'
 
 import { indexRoutes, roleRoutes, userRoutes, inscriptionRoutes, practicalStageRoutes } from './routes/routes.js'
+import { httpStatus } from './models/httpStatus.enums.js'
 
 const app: Application = express()
 
@@ -28,7 +29,7 @@ for (const route of routes) {
 // No found route
 app.use((_req, res: Response<object>): void => {
   const errorMessage = '¡Oops! Parece que este endpoint fue destruido por fuerzas fuera de nuestro conocimiento.'
-  res.status(404).json({ error: errorMessage })
+  res.status(httpStatus.NOT_FOUND).json({ error: errorMessage })
 })
 
 export { app }
