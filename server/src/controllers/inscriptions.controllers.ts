@@ -3,14 +3,15 @@ import { type inscription } from '../interfaces/inscriptions.interfaces.js'
 import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
-import { type id } from '../models/user.interfaces.js'
+import { type id } from '../interfaces/user.interfaces.js'
+import { type CustomError } from '../errors/customErrors.js'
 
 export const getInscriptions = async (_req: Request<inscription>, res: Response): Promise<Response> => {
   try {
     const [inscriptions] = await connection.query('SELECT * FROM inscripciones')
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (error) {
-    return handleHTTP(res, 'ERROR_GET_PRACTICAL_STAGES')
+    return handleHTTP(res, error as CustomError)
   }
 }
 
@@ -20,7 +21,7 @@ export const getInscriptionById = async ({ params }: Request<id>, res: Response)
     const [inscription] = await connection.query('SELECT * FROM inscripciones WHERE id_inscripcion = ?', [id])
     return res.status(httpStatus.OK).json({ data: inscription })
   } catch (error) {
-    return handleHTTP(res, 'ERROR_GET_PRACTICAL_STAGE')
+    return handleHTTP(res, error as CustomError)
   }
 }
 
@@ -57,6 +58,6 @@ export const createInscription = async ({ body }: Request<inscription>, res: Res
     )
     return res.status(httpStatus.OK).json({ data: 'Done' })
   } catch (error) {
-    return handleHTTP(res, 'ERROR_CREATE_PRACTICAL_STAGE')
+    return handleHTTP(res, error as CustomError)
   }
 }

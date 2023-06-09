@@ -2,6 +2,7 @@ import { type Request, type Response } from 'express'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { connection } from '../config/db.js'
+import { type CustomError } from '../errors/customErrors.js'
 
 export const createRole = async ({ body }: Request<{ nombre_rol: string }>, res: Response): Promise<Response> => {
   const { nombre_rol } = body
@@ -9,6 +10,6 @@ export const createRole = async ({ body }: Request<{ nombre_rol: string }>, res:
     await connection.query('INSERT INTO roles (nombre_rol) VALUE (?)', [nombre_rol])
     return res.status(httpStatus.OK).json(true)
   } catch (error) {
-    return handleHTTP(res, 'ERROR_CREATE_ROLE')
+    return handleHTTP(res, error as CustomError)
   }
 }
