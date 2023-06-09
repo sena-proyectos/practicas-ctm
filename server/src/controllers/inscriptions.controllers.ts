@@ -25,35 +25,11 @@ export const getInscriptionById = async ({ params }: Request<id>, res: Response)
 }
 
 export const createInscription = async ({ body }: Request<inscription>, res: Response): Promise<Response> => {
-  const {
-    nombres_aprendiz_inscripcion,
-    apellidos_aprendiz_inscripcion,
-    tipo_documento_aprendiz_inscripcion,
-    numero_documento_aprendiz_inscripcion,
-    correo_electronico_aprendiz_inscripcion,
-    numero_telefono_aprendiz_inscripcion,
-    numero_ficha_aprendiz_inscripcion,
-    programa_formacion_aprendiz_inscripcion,
-    tipo_modalidad_aprendiz_inscripcion,
-    inicio_etapa_practica_aprendiz_inscripcion,
-    fin_etapa_practica_aprendiz_inscripcion
-  } = body
+  const { nombres_aprendiz_inscripcion, apellidos_aprendiz_inscripcion, tipo_documento_aprendiz_inscripcion, numero_documento_aprendiz_inscripcion, correo_electronico_aprendiz_inscripcion, numero_telefono_aprendiz_inscripcion, numero_ficha_aprendiz_inscripcion, programa_formacion_aprendiz_inscripcion, tipo_modalidad_aprendiz_inscripcion,inicio_etapa_practica_aprendiz_inscripcion, fin_etapa_practica_aprendiz_inscripcion } = body
   try {
     await connection.query(
       'INSERT INTO inscripciones (nombres_aprendiz_inscripcion, apellidos_aprendiz_inscripcion, tipo_documento_aprendiz_inscripcion, numero_documento_aprendiz_inscripcion, correo_electronico_aprendiz_inscripcion, numero_telefono_aprendiz_inscripcion, numero_ficha_aprendiz_inscripcion, programa_formacion_aprendiz_inscripcion, tipo_modalidad_aprendiz_inscripcion, inicio_etapa_practica_aprendiz_inscripcion, fin_etapa_practica_aprendiz_inscripcion, fecha_creacion_aprendiz_inscripcion) VALUE (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE())',
-      [
-        nombres_aprendiz_inscripcion,
-        apellidos_aprendiz_inscripcion,
-        tipo_documento_aprendiz_inscripcion,
-        numero_documento_aprendiz_inscripcion,
-        correo_electronico_aprendiz_inscripcion,
-        numero_telefono_aprendiz_inscripcion,
-        numero_ficha_aprendiz_inscripcion,
-        programa_formacion_aprendiz_inscripcion,
-        tipo_modalidad_aprendiz_inscripcion,
-        inicio_etapa_practica_aprendiz_inscripcion,
-        fin_etapa_practica_aprendiz_inscripcion
-      ]
+      [nombres_aprendiz_inscripcion, apellidos_aprendiz_inscripcion, tipo_documento_aprendiz_inscripcion, numero_documento_aprendiz_inscripcion, correo_electronico_aprendiz_inscripcion, numero_telefono_aprendiz_inscripcion, numero_ficha_aprendiz_inscripcion, programa_formacion_aprendiz_inscripcion, tipo_modalidad_aprendiz_inscripcion,inicio_etapa_practica_aprendiz_inscripcion, fin_etapa_practica_aprendiz_inscripcion]
     )
     return res.status(httpStatus.OK).json({ data: 'Done' })
   } catch (error) {
