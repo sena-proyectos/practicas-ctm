@@ -24,7 +24,8 @@ export const checkLoginData: RequestHandler<{ num_documento: string, contrasena:
   const { num_documento, contrasena } = req.body as LoginData
   try {
     const { error } = loginDataSchema.validate({ num_documento, contrasena })
-    if (error !== null) {
+    console.log(error)
+    if (error !== undefined) {
       throw new DataNotValid('Los datos ingresados no son válidos, verifícalos.')
     }
     next()
