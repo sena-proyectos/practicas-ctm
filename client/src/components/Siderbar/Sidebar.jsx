@@ -22,7 +22,6 @@ const Siderbar = () => {
     const decoded = jwtdecoded(token)
 
     setNameRol(decoded.data[0].id_rol === 1 ? 'Administrador' : 'Instrutor')
-    console.log('render')
 
     setNameUser(decoded.data[0].nombre + ' ' + decoded.data[0].apellido)
   }, [])
@@ -42,8 +41,9 @@ const Siderbar = () => {
   const logout = () => {
     Cookies.remove('token')
     navigate('/')
+
     // const color = colorIcon[page]
-    return selectPage === page ? `absolute inset-y-0 left-0 flex items-center pl-3 text-sm font-bold ${color}` : 'absolute inset-y-0 left-0 flex items-center pl-3 text-xs'
+    // return selectPage === page ? `absolute inset-y-0 left-0 flex items-center pl-3 text-sm font-bold ${color}` : 'absolute inset-y-0 left-0 flex items-center pl-3 text-xs'
   }
 
   return (
