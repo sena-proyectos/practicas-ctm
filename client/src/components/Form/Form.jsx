@@ -13,13 +13,13 @@ const Form = ({ inputs, isLoginForm }) => {
 
   const passwordIcons = {
     openEye: <AiOutlineEye />,
-    closeEye: <AiOutlineEyeInvisible />
-  };
+    closeEye: <AiOutlineEyeInvisible />,
+  }
 
   const passwordStatus = {
-    shown: "text",
-    hidden: "password"
-  };
+    shown: 'text',
+    hidden: 'password',
+  }
 
   const [showPassword, setShowPassword] = useState(passwordStatus.hidden);
   const formValuesRef = useRef({});

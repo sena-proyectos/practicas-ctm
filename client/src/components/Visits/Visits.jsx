@@ -1,7 +1,12 @@
-export const Visits = () => {
+import { Siderbar } from '../Siderbar/Sidebar'
+
+const Visits = () => {
   return (
-    <>
-      <h1>Hola</h1>
-    </>
+    <main className="grid grid-cols-2-20r-80">
+      <Siderbar />
+      <section>hola</section>
+    </main>
   )
 }
+
+export { Visits }

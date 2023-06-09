@@ -4,21 +4,21 @@ import Cookies from 'js-cookie'
 import Swal from "sweetalert2"
 
 
-import { Siderbar } from "../Siderbar/Sidebar";
+import { Siderbar } from '../Siderbar/Sidebar'
 
 export const Student = () => {
-  const [apprentices, setApprentices] = useState([]);
+  const [apprentices, setApprentices] = useState([])
 
   useEffect(() => {
 
     const token = Cookies.get('token')
-    // if (!token) window.location.href = '/'
+    if (!token) window.location.href = '/'
     
     const getApprentices = async () => {
-      const response = await GetUsersHttp();
-      const { data } = response.data;
-      setApprentices(data);
-    };
+      const response = await GetUsersHttp()
+      const { data } = response.data
+      setApprentices(data)
+    }
 
     getApprentices();
   }, []);
@@ -33,7 +33,7 @@ export const Student = () => {
   }
  
   return (
-    <main>
+    <main className="grid grid-cols-2-20r-80">
       <Siderbar />
       <h1 className="text-lg text-black font-semibold">Aprendices</h1>
 
@@ -52,8 +52,8 @@ export const Student = () => {
               <button onClick={showInfo}>Más información</button>
             </div>
           </div>
-        );
+        )
       })}
     </main>
-  );
-};
+  )
+}
