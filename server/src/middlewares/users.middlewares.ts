@@ -21,9 +21,22 @@ export const checkExistingUser: RequestHandler<{}, Response, userForm > = async 
 }
 
 export const checkLoginData: RequestHandler<{ num_documento: string, contrasena: string }, Response, LoginData> = (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction) => {
-  const { num_documento, contrasena } = req.body
+  const { num_documento, contrasena } = req.body as LoginData
   try {
     const { error } = loginDataSchema.validate({ num_documento, contrasena })
+    if (error !== null) {
+      throw new DataNotValid('Los datos ingresados no son válidos, verifícalos.')
+    }
+    next()
+  } catch (error) {
+    handleHTTP(res, error as CustomError)
+  }
+}
+
+export const checkRegisterData: RequestHandler<{}, Response, LoginData> = (req: Request, res: Response, next: NextFunction) => {
+  const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
+  try {
+    const { error } = loginDataSchema.validate({ nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena })
     if (error !== null) {
       throw new DataNotValid('Los datos ingresados no son válidos, verifícalos.')
     }
