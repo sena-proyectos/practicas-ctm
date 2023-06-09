@@ -5,27 +5,29 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import jwtdecoded from 'jwt-decode'
 
 import { IoCalendarClearOutline, IoDocumentTextOutline, IoHandLeft, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline } from 'react-icons/io5'
+import { CiCircleChevLeft } from 'react-icons/ci'
 
 import { colorIcon } from '../../import/staticData'
 
 const Siderbar = () => {
   const location = useLocation()
   const navigate = useNavigate()
+  const [open, setOpen] = useState(true)
 
   const [nameRol, setNameRol] = useState('')
   const [nameUser, setNameUser] = useState('')
 
-  // useEffect(() => {
-  //   const token = Cookies.get('token')
-  //   if (!token) window.location.href = '/'
+  useEffect(() => {
+    const token = Cookies.get('token')
+    if (!token) window.location.href = '/'
 
-  //   const decoded = jwtdecoded(token)
+    const decoded = jwtdecoded(token)
 
-  //   setNameRol(decoded.data[0].id_rol === 1 ? 'Administrador' : 'Instrutor')
-  //   console.log('render')
+    setNameRol(decoded.data[0].id_rol === 1 ? 'Administrador' : 'Instrutor')
+    // console.log('render')
 
-  //   setNameUser(decoded.data[0].nombre + ' ' + decoded.data[0].apellido)
-  // }, [])
+    setNameUser(decoded.data[0].nombre + ' ' + decoded.data[0].apellido)
+  }, [])
 
   const styles = (path) => {
     return location.pathname === path ? 'flex items-center relative pl-10 py-2 font-semibold bg-white rounded-s-2xl w-[115%]' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] transition '
@@ -42,7 +44,15 @@ const Siderbar = () => {
   }
 
   return (
-    <aside className="bg-secondary/10 w-full md:h-screen rounded-r-2xl">
+    <aside className={`bg-secondary/10 ${open ? 'w-full' : 'w-[5rem]'}  md:h-screen rounded-r-2xl`}>
+      <span
+        className={`absolute top-3/4 pl-3 text-2xl ${open && 'rotate-180'}`}
+        onClick={() => {
+          setOpen(!open)
+        }}
+      >
+        <CiCircleChevLeft />
+      </span>
       <nav className="grid grid-rows-3-10-78-12 md:grid-rows-3-10-78-12 mx-auto w-4/5 h-screen">
         <section className="w-full grid grid-cols-2 my-auto">
           <img className="h-4/5 w-auto my-auto" src="public/user.png" alt="img_user" />
@@ -59,7 +69,7 @@ const Siderbar = () => {
                 <span className={spanStyle('/home')}>
                   <IoHomeOutline />
                 </span>
-                Inicio
+                {open ? 'Inicio' : ''}
               </Link>
             </li>
             <li>
