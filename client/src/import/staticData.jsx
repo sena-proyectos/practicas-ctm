@@ -139,18 +139,18 @@ export const dataInscription = [
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const idTypes = [
-  { value: 'cc', name: 'Cédula de ciudadanía' },
-  { value: 'ce', name: 'Cédula de extranjería' },
-  { value: 'ti', name: 'Tarjeta de identidad' },
+  { value: 'C.C', name: 'Cédula de ciudadanía' },
+  { value: 'C.E', name: 'Cédula de extranjería' },
+  { value: 'T.I', name: 'Tarjeta de identidad' },
 ]
 
 /*
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const modalities = [
-  { value: 'contrato', name: 'Contrato de aprendizaje' },
-  { value: 'pasantia', name: 'Pasantías' },
-  { value: 'proyecto', name: 'Proyecto formativo' },
+  { value: 'Contrato de aprendizaje', name: 'Contrato de aprendizaje' },
+  { value: 'Pasantía', name: 'Pasantías' },
+  { value: 'Proyecto formativoñ', name: 'Proyecto formativo' },
 ]
 
 /*
