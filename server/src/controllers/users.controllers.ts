@@ -13,7 +13,7 @@ export const getUsers = async (_req: Request, res: Response): Promise<Response> 
     const [users] = await connection.query('SELECT * FROM usuarios')
     return res.status(httpStatus.OK).json({ data: users })
   } catch (error) {
-    return handleHTTP(res, error)
+    return handleHTTP(res, 'ERROR_GET_USERS')
   }
 }
 

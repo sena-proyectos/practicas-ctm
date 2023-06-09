@@ -33,6 +33,6 @@ export const createInscription = async ({ body }: Request<inscription>, res: Res
     )
     return res.status(httpStatus.OK).json({ data: 'Done' })
   } catch (error) {
-    return handleHTTP(res, error)
+    return handleHTTP(res, 'ERROR_CREATE_PRACTICAL_STAGE')
   }
 }

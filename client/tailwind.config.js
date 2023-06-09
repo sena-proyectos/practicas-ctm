@@ -5,16 +5,25 @@ export default {
     extend: {
       colors: {
         primary: '#39A900',
+        secondary: '#00324D',
+        third: '#82DEF0',
+        fourth: '#FBFBE2',
+        fifth: '#385C57',
+        salmon: '#CB7766',
+        seventh: '#FFCE40',
         gray: '#D9D9D9',
-        secondary: '#00324D'
+        aqua: '#B8F1D8'
       },
       gridTemplateColumns: {
         '2-55-45': '55% 45%',
-        '2-20r-80': '20rem auto'
+        '2-20r-80': '20rem auto',
+        '2-16r-84': '16rem auto',
+        '2-20r-80': '18rem auto'
       },
       gridTemplateRows: {
         '2-30-70': '10rem 70%',
         '3-10-78-12': '7rem 78% 12%',
+        '3-10-75-15': '7rem 75% 15%',
         '2-25-75': '10rem auto'
       },
       borderWidth: {
