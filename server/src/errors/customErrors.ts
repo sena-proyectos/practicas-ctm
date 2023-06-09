@@ -34,11 +34,20 @@ export class DbErrorNotFound extends CustomError {
 }
 
 export class DataNotValid extends CustomError {
-  constructor (message: string) {
+  constructor (message: string, errorCode = errorCodes.INTERNAL_SERVER_ERROR) {
     super(message)
     this.header = 'DATA_ERROR'
     this.statusCode = httpStatus.INTERNAL_SERVER_ERROR
-    this.errorCode = errorCodes.INTERNAL_SERVER_ERROR
+    this.errorCode = errorCode
+  }
+}
+
+export class UserExists extends CustomError {
+  constructor (message: string) {
+    super(message)
+    this.header = 'DATA_EXIST'
+    this.statusCode = httpStatus.INTERNAL_SERVER_ERROR
+    this.errorCode = errorCodes.ERROR_CREATE_USER
   }
 }
 

@@ -2,26 +2,41 @@ import bycrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
 import { connection } from '../config/db.js'
-import { type passwordCompare, type LoginData, type idNumber } from '../models/user.interfaces.js'
+import { type passwordCompare, type LoginData, type userForm, type idNumber } from '../interfaces/user.interfaces.js'
+import { loginDataSchema } from '../schemas/user.schemas.js'
+import { type RequestHandler, type NextFunction, type Response, type Request } from 'express'
+import { type CustomError, DataNotValid, UserExists } from '../errors/customErrors.js'
+import { httpStatus } from '../models/httpStatus.enums.js'
+import { handleHTTP } from '../errors/errorsHandler.js'
 
-export const checkExistingUser = async ({ num_documento }: idNumber): Promise<boolean> => {
-  const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [num_documento])
-  const check: boolean = Array.isArray(user) && user.length > 0
-  return check
+export const checkExistingUser: RequestHandler<{}, Response, userForm > = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { num_documento } = req.body as idNumber
+  try {
+    const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [num_documento])
+    if (Array.isArray(user) && user.length > 0) throw new UserExists('Este documento ya está registrado')
+    next()
+  } catch (error) {
+    handleHTTP(res, error as CustomError)
+  }
 }
 
-export const checkLoginData = ({ num_documento, contrasena }: LoginData): boolean => {
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
-
-  if (Number.isNaN(num_documento) && contrasena.length === 0) return false
-  if (num_documento === 0) return false
-  if (contrasena === undefined || num_documento === undefined) return false
-  if (String(num_documento).toString().length < 6) return false
-  if (contrasena.match(passwordRegex) == null) return false
-
-  return true
+export const checkLoginData: RequestHandler<{ num_documento: string, contrasena: string }, Response, LoginData> = (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction) => {
+  const { num_documento, contrasena } = req.body
+  try {
+    const { error } = loginDataSchema.validate({ num_documento, contrasena })
+    if (error !== null) {
+      throw new DataNotValid('Los datos ingresados no son válidos, verifícalos.')
+    }
+    next()
+  } catch (error) {
+    handleHTTP(res, error as CustomError)
+  }
 }
 
 export const comparePassword = async ({ contrasena, dbPassword }: passwordCompare): Promise<boolean> => await bycrypt.compare(contrasena, dbPassword)
 
-export const generateToken = (payload: object): string => jwt.sign({ data: payload }, 'secret', { expiresIn: '3h', algorithm: 'HS256' })
+export const generateToken: RequestHandler<{}, unknown, LoginData> = (req: Request, res: Response): Response => {
+  const payload = req.body
+  const token = jwt.sign({ data: payload }, 'secret', { expiresIn: '3h', algorithm: 'HS256' })
+  return res.status(httpStatus.OK).json({ token })
+}

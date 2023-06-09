@@ -146,7 +146,8 @@ const RegisterStudent = () => {
                       <label htmlFor='nombre' className='font-semibold '>
                         {item.label}
                       </label>
-                      {item.type === 'number' ? (
+                      {item.type === 'number'
+                        ? (
                         <div className='relative'>
                           <span className='absolute inset-y-0 left-0 flex items-center pl-3'>{item.icon}</span>
                           <input
@@ -161,34 +162,37 @@ const RegisterStudent = () => {
                             placeholder={item.placeholder}
                           />
                         </div>
-                      ) : item.type === 'select' ? (
+                          )
+                        : item.type === 'select'
+                          ? (
                         <div className='relative'>
                           <span className='absolute inset-y-0 left-0 flex items-center pl-3'>{item.icon}</span>
                           <select name={item.name} className='py-2 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72'>
                             <option value={''}>Sin seleccionar</option>
                             {item.name === 'tipo_documento_aprendiz_inscripcion'
                               ? idTypes.map((item, i) => {
-                                  return (
+                                return (
                                     <option value={item.value} key={i}>
                                       {item.name}
                                     </option>
-                                  )
-                                })
+                                )
+                              })
                               : modalities.map((item, i) => {
-                                  return (
+                                return (
                                     <option value={item.value} key={i}>
                                       {item.name}
                                     </option>
-                                  )
-                                })}
+                                )
+                              })}
                           </select>
                         </div>
-                      ) : (
+                            )
+                          : (
                         <div className='relative'>
                           <span className='absolute inset-y-0 left-0 flex items-center pl-3'>{item.icon}</span>
                           <input type={item.type} name={item.name} className='py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72' autoComplete='on' placeholder={item.placeholder} />
                         </div>
-                      )}
+                            )}
                     </div>
                   )
                 })}

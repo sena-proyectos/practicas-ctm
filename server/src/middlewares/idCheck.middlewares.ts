@@ -1,11 +1,13 @@
-import { type NextFunction, type Request, type Response } from 'express'
+import { type RequestHandler, type NextFunction, type Request, type Response } from 'express'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { IdIsNaN, type CustomError } from '../errors/customErrors.js'
+import { type LoginData } from '../interfaces/user.interfaces.js'
 
-export const checkIdReq = ({ params }: Request, res: Response, next: NextFunction): void => {
-  const id = parseInt(params.id, 10)
+export const checkIdReq: RequestHandler<{ id: string }, Response, LoginData> = (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  const { id } = req.params
+  const idParse = parseInt(id, 10)
   try {
-    if (isNaN(id)) throw new IdIsNaN('El código no es un número.')
+    if (isNaN(idParse)) throw new IdIsNaN('El id no es un número.')
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)

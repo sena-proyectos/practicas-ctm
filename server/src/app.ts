@@ -1,4 +1,4 @@
-import express, { type IRouter, type Application, type Response } from 'express'
+import express, { type IRouter, type Application, type Response, type Request } from 'express'
 import cors, { type CorsOptions } from 'cors'
 
 import { indexRoutes, roleRoutes, userRoutes, inscriptionRoutes, practicalStageRoutes } from './routes/routes.js'
@@ -27,7 +27,7 @@ for (const route of routes) {
 }
 
 // No found route
-app.use((_req, res: Response<object>): void => {
+app.use((_req: Request, res: Response<object>): void => {
   const errorMessage = '¡Oops! Parece que este endpoint fue destruido por fuerzas fuera de nuestro conocimiento.'
   res.status(httpStatus.NOT_FOUND).json({ error: errorMessage })
 })
