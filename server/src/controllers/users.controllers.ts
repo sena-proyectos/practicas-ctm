@@ -61,7 +61,7 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
 
     await connection.query('INSERT INTO usuarios (nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena) VALUE (?, ?, IFNULL(?, "cc"), ?, ?, ?, IFNULL(?, 1), ?)', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword])
 
-    return res.status(httpStatus.OK).json(true)
+    return res.status(httpStatus.OK).json({ message: 'Usuario creado exitosamente.' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
