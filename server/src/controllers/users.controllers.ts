@@ -54,6 +54,28 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
   }
 }
 
+export const getStudents = async (_req: Request, res: Response): Promise<Response> => {
+  try {
+    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3')
+    if (!Array.isArray(teachers) || teachers.length === 0) throw new DbErrorNotFound('No hay profesores registrados.', errorCodes.ERROR_GET_TEACHERS)
+    return res.status(httpStatus.OK).json({ data: teachers })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const getStudentsById: RequestHandler<{ id: string }, Response, LoginData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id } = req.params
+  const idNumber = Number(id)
+  try {
+    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND id_usuario = ?', [idNumber])
+    if (!Array.isArray(teacher) || teacher.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_TEACHER)
+    return res.status(httpStatus.OK).json({ data: teacher })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 export const createUser: RequestHandler<{}, Response, userForm> = async (req: Request, res: Response): Promise<Response> => {
   const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
   try {

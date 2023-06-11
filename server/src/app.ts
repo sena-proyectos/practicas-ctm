@@ -27,9 +27,9 @@ for (const route of routes) {
 }
 
 // No found route
-app.use((_req: Request, res: Response<object>): void => {
+app.use((_req: Request, res: Response<object>): Response<object> => {
   const errorMessage = '¡Oops! Parece que este endpoint fue destruido por fuerzas fuera de nuestro conocimiento.'
-  res.status(httpStatus.NOT_FOUND).json({ error: errorMessage })
+  return res.status(httpStatus.NOT_FOUND).json({ error: errorMessage })
 })
 
 export { app }

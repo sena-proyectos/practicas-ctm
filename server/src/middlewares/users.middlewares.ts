@@ -10,10 +10,10 @@ import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 
 export const checkExistingUser: RequestHandler<{}, Response, userForm > = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { num_documento } = req.body as idNumber
+  const { num_documento, correo_electronico } = req.body as userForm
   try {
-    const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [num_documento])
-    if (Array.isArray(user) && user.length > 0) throw new UserExists('Este documento ya está registrado')
+    const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ? OR correo_electronico = ?', [num_documento, correo_electronico])
+    if (Array.isArray(user) && user.length > 0) throw new UserExists('Este documento y/o correo ya está/n registrado/s en el sistema.')
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)
