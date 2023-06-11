@@ -32,11 +32,19 @@ export const getUserById: RequestHandler<{ id: string }, Response, LoginData> = 
   }
 }
 
-export const getTeachers = async (_req: Request, res: Response): Promise<Response> => {
+export const getTeachers = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2')
-    if (!Array.isArray(teachers) || teachers.length === 0) throw new DbErrorNotFound('No hay profesores registrados.', errorCodes.ERROR_GET_TEACHERS)
-    return res.status(httpStatus.OK).json({ data: teachers })
+    const page = (!Number.isNaN(parseInt(req.query.page as string))) || 1
+    const limit = (!Number.isNaN(parseInt(req.query.limit as string))) || 10
+    const offset = (Number(page) - 1) * Number(limit)
+
+    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2 LIMIT ? OFFSET ?', [limit, offset])
+    if (!Array.isArray(teachers) || teachers.length === 0) throw new DbErrorNotFound('No hay estudiantes registrados.', errorCodes.ERROR_GET_STUDENTS)
+
+    const [total] = await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3') as unknown as Array<{ count: number }>
+    const totalPages = Math.ceil(Number((Array.isArray(total) && total[0].count)) / Number(limit))
+
+    return res.status(httpStatus.OK).json({ data: teachers, page, totalPages })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
@@ -54,11 +62,19 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
   }
 }
 
-export const getStudents = async (_req: Request, res: Response): Promise<Response> => {
+export const getStudents = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3')
-    if (!Array.isArray(teachers) || teachers.length === 0) throw new DbErrorNotFound('No hay profesores registrados.', errorCodes.ERROR_GET_TEACHERS)
-    return res.status(httpStatus.OK).json({ data: teachers })
+    const page = (!Number.isNaN(parseInt(req.query.page as string))) || 1
+    const limit = (!Number.isNaN(parseInt(req.query.limit as string))) || 10
+    const offset = (Number(page) - 1) * Number(limit)
+
+    const [students] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 LIMIT ? OFFSET ?', [limit, offset])
+    if (!Array.isArray(students) || students.length === 0) throw new DbErrorNotFound('No hay estudiantes registrados.', errorCodes.ERROR_GET_STUDENTS)
+
+    const [total] = await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3') as unknown as Array<{ count: number }>
+    const totalPages = Math.ceil(Number((Array.isArray(total) && total[0].count)) / Number(limit))
+
+    return res.status(httpStatus.OK).json({ data: students, page, totalPages })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
