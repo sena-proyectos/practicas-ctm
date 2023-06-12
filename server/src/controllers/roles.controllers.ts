@@ -1,10 +1,11 @@
-import { type Request, type Response } from 'express'
+import { type RequestHandler, type Request, type Response } from 'express'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { connection } from '../config/db.js'
-import { type CustomError, DbError } from '../errors/customErrors.js'
+import { type CustomError, DbError, NumberIsNaN } from '../errors/customErrors.js'
+import { type roleName } from '../interfaces/roles.interfaces.js'
 
-export const createRole = async (req: Request<{ nombre_rol: string }>, res: Response): Promise<Response> => {
+export const createRole: RequestHandler<{ nombre_rol: string }, Response, roleName> = async (req: Request<{ nombre_rol: string }>, res: Response): Promise<Response> => {
   const { nombre_rol } = req.body
   try {
     await connection.query('INSERT INTO roles (nombre_rol) VALUE (?)', [nombre_rol])
@@ -23,7 +24,7 @@ export const getRoles = async (_req: Request, res: Response): Promise<Response> 
   }
 }
 
-export const editRole = async (req: Request<{ nombre_rol: string, id: number }>, res: Response): Promise<Response> => {
+export const editRole: RequestHandler<{ id: string, nombre_rol: string }, Response, roleName> = async (req: Request<{ id: string, nombre_rol: string }>, res: Response): Promise<Response> => {
   const { id } = req.params
   const { nombre_rol } = req.body
   try {

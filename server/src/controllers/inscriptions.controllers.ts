@@ -3,7 +3,7 @@ import { type inscription } from '../interfaces/inscriptions.interfaces.js'
 import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
-import { type id } from '../interfaces/user.interfaces.js'
+import { type id } from '../interfaces/users.interfaces.js'
 import { type CustomError } from '../errors/customErrors.js'
 
 export const getInscriptions = async (_req: Request<inscription>, res: Response): Promise<Response> => {

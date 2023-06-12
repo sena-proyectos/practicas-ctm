@@ -2,7 +2,7 @@ import bycrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
 import { connection } from '../config/db.js'
-import { type passwordCompare, type LoginData, type userForm } from '../interfaces/user.interfaces.js'
+import { type passwordCompare, type LoginData, type userForm } from '../interfaces/users.interfaces.js'
 import { editDataSchema, loginDataSchema, registerDataSchema } from '../schemas/user.schemas.js'
 import { type RequestHandler, type NextFunction, type Response, type Request } from 'express'
 import { type CustomError, DataNotValid, UserExists, NumberIsNaN } from '../errors/customErrors.js'
