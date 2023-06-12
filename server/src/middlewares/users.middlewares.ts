@@ -28,7 +28,6 @@ export const checkLoginData: RequestHandler<{ num_documento: string, contrasena:
   try {
     if (isNaN(numberParsed)) throw new NumberIsNaN('El número de documento no es un número válido.')
     const { error } = loginDataSchema.validate({ num_documento, contrasena })
-    console.log(error)
     if (error !== undefined) throw new DataNotValid('Los datos ingresados no son válidos, verifícalos.')
     next()
   } catch (error) {

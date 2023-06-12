@@ -2,8 +2,6 @@ import Joi from 'joi'
 
 const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
 
-/* TODO: el numero de documento debería ser number */
-
 export const loginDataSchema = Joi.object({
   num_documento: Joi
     .string()
