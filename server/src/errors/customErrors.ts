@@ -59,3 +59,12 @@ export class IdIsNaN extends CustomError {
     this.errorCode = errorCodes.ERROR_ID_NAN
   }
 }
+
+export class NumberIsNaN extends CustomError {
+  constructor (message: string) {
+    super(message)
+    this.header = 'NUMBER_ERROR'
+    this.statusCode = httpStatus.BAD_REQUEST
+    this.errorCode = errorCodes.ERROR_NUMBER_NAN
+  }
+}

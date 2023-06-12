@@ -94,4 +94,5 @@ export const editDataSchema = Joi.object({
     .min(8)
     .max(300)
     .pattern(PASSWORD_REGEX)
+
 })
