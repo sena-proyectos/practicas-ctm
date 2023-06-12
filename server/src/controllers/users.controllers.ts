@@ -32,6 +32,18 @@ export const getUserById: RequestHandler<{ id: string }, Response, LoginData> = 
   }
 }
 
+export const editUser: RequestHandler<{}, Response, userForm> = async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.params
+  const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
+  const idNumber = Number(id)
+  try {
+    await connection.query('UPDATE usuarios SET nombre = ?, apellido = ?, tipo_documento = ?, num_documento = ?, correo_electronico = ?, num_celular = ?, id_rol = ?, contrasena = ? WHERE id_usuario = ?', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena, idNumber])
+    return res.status(httpStatus.OK).json({ message: 'Usuario actualizado exitosamente.' })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 export const getTeachers = async (req: Request, res: Response): Promise<Response> => {
   try {
     const page = (!Number.isNaN(parseInt(req.query.page as string))) || 1
