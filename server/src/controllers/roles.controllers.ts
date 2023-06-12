@@ -2,7 +2,7 @@ import { type Request, type Response } from 'express'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { connection } from '../config/db.js'
-import { type CustomError } from '../errors/customErrors.js'
+import { type CustomError, DbError } from '../errors/customErrors.js'
 
 export const createRole = async (req: Request<{ nombre_rol: string }>, res: Response): Promise<Response> => {
   const { nombre_rol } = req.body
@@ -23,10 +23,12 @@ export const getRoles = async (_req: Request, res: Response): Promise<Response> 
   }
 }
 
-export const editRole = async (req: Request<{ nombre_rol: string, id_rol: number }>, res: Response): Promise<Response> => {
-  const { nombre_rol, id_rol } = req.body
+export const editRole = async (req: Request<{ nombre_rol: string, id: number }>, res: Response): Promise<Response> => {
+  const { id } = req.params
+  const { nombre_rol } = req.body
   try {
-    await connection.query('UPDATE roles SET nombre_rol = ? WHERE id_rol = ?', [nombre_rol, id_rol])
+    const [role] = await connection.query('UPDATE roles SET nombre_rol = ? WHERE id_rol = ?', [nombre_rol, id])
+    if (Array.isArray(role) && role.length === 0) throw new DbError('No se pudo actualizar el rol.')
     return res.status(httpStatus.OK).json({ message: 'Rol actualizado' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
