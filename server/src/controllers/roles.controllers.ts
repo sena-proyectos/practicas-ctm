@@ -2,7 +2,7 @@ import { type RequestHandler, type Request, type Response } from 'express'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { connection } from '../config/db.js'
-import { type CustomError, DbError, NumberIsNaN } from '../errors/customErrors.js'
+import { type CustomError, DbError } from '../errors/customErrors.js'
 import { type roleName } from '../interfaces/roles.interfaces.js'
 
 export const createRole: RequestHandler<{ nombre_rol: string }, Response, roleName> = async (req: Request<{ nombre_rol: string }>, res: Response): Promise<Response> => {
