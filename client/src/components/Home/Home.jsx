@@ -14,17 +14,18 @@ const Home = () => {
   // }, [])
 
   return (
-    <main className="grid grid-cols-2-20r-80">
+    <main className="flex flex-row">
       <Siderbar />
-      <section className="grid grid-rows-3-10-75-15">
+      <section className="grid grid-rows-3-10-75-15 flex-auto w-min">
         <header className="grid place-items-center">
           <h1 className="text-center font-bold text-2xl">Bienvenido a practicas ctm. ¿Qué desea realizar hoy?</h1>
         </header>
-        <div className="grid grid-cols-3 p-4 gap-1">
+        <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3 ">
           {cards.map(({ title, titleColor, description, buttonText, bgColor, link }) => {
-            return <Card bgColor={bgColor} scale={'scale-90'} titleColor={titleColor} title={title} description={description} buttonText={buttonText} key={title} link={link} />
+            return <Card cardHome bgColor={bgColor} scale={'scale-90'} titleColor={titleColor} title={title} description={description} buttonText={buttonText} key={title} link={link} />
           })}
         </div>
+
         <Footer />
       </section>
     </main>
