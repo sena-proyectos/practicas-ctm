@@ -22,7 +22,7 @@ const Home = () => {
         </header>
         <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3 ">
           {cards.map(({ title, titleColor, description, buttonText, bgColor, link }) => {
-            return <Card cardHome bgColor={bgColor} scale={'scale-90'} titleColor={titleColor} title={title} description={description} buttonText={buttonText} key={title} link={link} />
+            return <Card cardHome bgColor={bgColor} scale={'scale-90'} marginLink={'ml-auto'} titleColor={titleColor} title={title} description={description} roundedLink={'rounded-md'} buttonText={buttonText} key={title} link={link} />
           })}
         </div>
 
