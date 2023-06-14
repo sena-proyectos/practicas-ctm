@@ -14,6 +14,20 @@ const Siderbar = () => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(true)
 
+  useEffect(() => {
+    const handleResize = () => {
+      const isSmallScreen = window.innerWidth < 640 // Tamaño de la media query "sm"
+      setOpen(!isSmallScreen)
+    }
+
+    window.addEventListener('resize', handleResize)
+    handleResize() // Llamada inicial para establecer el estado según el tamaño actual
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
   const [nameRol, setNameRol] = useState('')
   const [nameUser, setNameUser] = useState('')
 
