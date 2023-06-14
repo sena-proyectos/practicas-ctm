@@ -23,7 +23,7 @@ const Siderbar = () => {
 
     const decoded = jwtdecoded(token)
 
-    setNameRol(decoded.data[0].id_rol === 1 ? 'Administrador' : 'Instrutor')
+    setNameRol(decoded.data[0].id_rol === 1 ? 'Administrador' : 'Instructor')
     // console.log('render')
 
     setNameUser(decoded.data[0].nombre + ' ' + decoded.data[0].apellido)
@@ -49,7 +49,7 @@ const Siderbar = () => {
         <section className={`w-fit ${open === true ? 'flex flex-row pr-3' : 'flex flex-col mx-auto'} my-auto`}>
           <img className="h-[2.5rem] w-auto my-auto" src="public/user.png" alt="img_user" />
           <div className={`pl-3 pr-10 w-full ${!open && 'hidden'}`}>
-            <h5 className="text-xs text-center">{nameUser}</h5>
+            <h5 className="text-xs ">{nameUser}</h5>
             <span className="font-semibold text-sm text-center">{nameRol}</span>
           </div>
         </section>

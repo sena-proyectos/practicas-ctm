@@ -56,7 +56,7 @@ const Form = ({ inputs, isLoginForm }) => {
 
     const id_rol = decoded.data[0].id_rol
 
-    if (id_rol === 1) navigate('/home')
+    if (id_rol === 1 || id_rol === 2) navigate('/home')
   }
 
   const handleInputChange = (e, index) => {
