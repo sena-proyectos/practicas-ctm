@@ -23,9 +23,9 @@ const Siderbar = () => {
 
     const decoded = jwtdecoded(token)
 
-    setNameRol(decoded.data[0].id_rol === 1 ? 'Administrador' : 'Instructor')
+    setNameRol(decoded.data.user.id_rol === 1 ? 'Administrador' : 'Instructor')
 
-    setNameUser(decoded.data[0].nombre + ' ' + decoded.data[0].apellido)
+    setNameUser(decoded.data.user.nombre + ' ' + decoded.data.user.apellido)
   }, [])
 
   const styles = (path) => {
