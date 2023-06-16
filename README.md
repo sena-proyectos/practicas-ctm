@@ -18,7 +18,7 @@ npm run dev
 
 ## Autores
 
-👤 **Stiven Blandon, Lorena Quiceno, Stiven Benjumea, Kevin Chica**
+👤 **Stiven Blandon, Lorena Quiceno, Stiven Benjumea, Kevin Chica, Juan Guillermo Gomez, Tatiana Mosquera, Juan Carlos Prasca, Jairo Bellaco Elías**
 
 * Github: [@ConanGH-S, lorenqg, STBenji, Axelchica759](https://github.com/ConanGH-S, https://github.com/lorenqg, https://github.com/STBenji, https://github.com/Axelchica759)
 
