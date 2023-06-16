@@ -37,7 +37,8 @@ export const editUser: RequestHandler<{}, Response, userForm> = async (req: Requ
   const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
   const idNumber = Number(id)
   try {
-    await connection.query('UPDATE usuarios SET nombre = IFNULL(?, nombre), apellido = IFNULL(?, apellido), tipo_documento = IFNULL(?, tipo_documento), num_documento = IFNULL(?, num_documento), correo_electronico = IFNULL(?, correo_electronico), num_celular = IFNULL(?, num_celular), id_rol = IFNULL(?, id_rol), contrasena = IFNULL(?, contrasena) WHERE id_usuario = ?', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena, idNumber])
+    const [user] = await connection.query('UPDATE usuarios SET nombre = IFNULL(?, nombre), apellido = IFNULL(?, apellido), tipo_documento = IFNULL(?, tipo_documento), num_documento = IFNULL(?, num_documento), correo_electronico = IFNULL(?, correo_electronico), num_celular = IFNULL(?, num_celular), id_rol = IFNULL(?, id_rol), contrasena = IFNULL(?, contrasena) WHERE id_usuario = ?', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena, idNumber])
+    if (!Array.isArray(user) && user?.affectedRows === 0) throw new DbErrorNotFound('No se pudo actualizar el usuario.')
     return res.status(httpStatus.OK).json({ message: 'Usuario actualizado exitosamente.' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)

@@ -29,7 +29,7 @@ export const editRole: RequestHandler<{ id: string, nombre_rol: string }, Respon
   const { nombre_rol } = req.body
   try {
     const [role] = await connection.query('UPDATE roles SET nombre_rol = ? WHERE id_rol = ?', [nombre_rol, id])
-    if (Array.isArray(role) && role.length === 0) throw new DbError('No se pudo actualizar el rol.')
+    if (!Array.isArray(role) && role?.affectedRows === 0) throw new DbError('No se pudo actualizar el rol.')
     return res.status(httpStatus.OK).json({ message: 'Rol actualizado' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
