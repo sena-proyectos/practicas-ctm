@@ -30,7 +30,7 @@ export const createPracticalStage: RequestHandler<{}, Response, PracticalStages>
   const { tipo_modalidad_practica, num_horas_minimas_modalidad_practica, num_horas_maximas_modalidad_practica } = body
   try {
     await connection.query('INSERT INTO modalidades_etapa_practica (tipo_modalidad_practica,num_horas_minimas_modalidad_practica,num_horas_maximas_modalidad_practica) VALUE (?, IFNULL(?, 0), IFNULL(?, 0))', [tipo_modalidad_practica, num_horas_minimas_modalidad_practica, num_horas_maximas_modalidad_practica])
-    return res.status(httpStatus.OK).json({ message: 'Modalidad de etapa práctica creada con éxito' })
+    return res.status(httpStatus.CREATED).json({ message: 'Modalidad de etapa práctica creada con éxito' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }

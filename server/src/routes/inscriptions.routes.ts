@@ -1,6 +1,7 @@
 import { type IRouter, Router } from 'express'
 import { createInscription, getInscriptionById, getInscriptions } from '../controllers/inscriptions.controllers.js'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
+import { checkInscriptionData } from '../middlewares/inscriptions.middlewares.js'
 
 const inscriptionRoutes: IRouter = Router()
 
@@ -9,6 +10,6 @@ inscriptionRoutes.get('/inscriptions', getInscriptions)
 inscriptionRoutes.get('/inscription/:id', checkIdReq, getInscriptionById)
 
 // * POST
-inscriptionRoutes.post('/create-inscription', createInscription)
+inscriptionRoutes.post('/create-inscription', checkInscriptionData, createInscription)
 
 export { inscriptionRoutes }

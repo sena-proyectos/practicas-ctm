@@ -9,7 +9,7 @@ export const createRole: RequestHandler<{ nombre_rol: string }, Response, roleNa
   const { nombre_rol } = req.body
   try {
     await connection.query('INSERT INTO roles (nombre_rol) VALUE (?)', [nombre_rol])
-    return res.status(httpStatus.OK).json({ message: 'Rol creado' })
+    return res.status(httpStatus.CREATED).json({ message: 'Rol creado' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }

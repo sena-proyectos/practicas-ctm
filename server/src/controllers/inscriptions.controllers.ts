@@ -25,38 +25,34 @@ export const getInscriptionById: RequestHandler<{ id: string }, Response, inscri
   }
 }
 
-export const createInscription = async (req: Request<inscriptionData>, res: Response): Promise<Response> => {
+export const createInscription: RequestHandler<{}, Response, inscriptionData> = async (req: Request, res: Response): Promise<Response> => {
   const {
-    nombres_aprendiz_inscripcion,
-    apellidos_aprendiz_inscripcion,
-    tipo_documento_aprendiz_inscripcion,
-    numero_documento_aprendiz_inscripcion,
-    correo_electronico_aprendiz_inscripcion,
-    numero_telefono_aprendiz_inscripcion,
-    numero_ficha_aprendiz_inscripcion,
-    programa_formacion_aprendiz_inscripcion,
-    tipo_modalidad_aprendiz_inscripcion,
-    inicio_etapa_practica_aprendiz_inscripcion,
-    fin_etapa_practica_aprendiz_inscripcion
+    id_modalidad_inscripcion,
+    nombres_inscripcion,
+    apellidos_inscripcion,
+    tipo_documento_inscripcion,
+    numero_documento_inscripcion,
+    correo_electronico_inscripcion,
+    numero_celular_inscripcion,
+    etapa_formacion_actual_inscripcion,
+    nivel_formacion_actual_inscripcion,
+    id_ficha_inscripcion,
+    id_instructor_lider_inscripcion,
+    apoyo_sostenimiento_inscripcion,
+    id_empresa_inscripcion,
+    nombre_completo_jefe_inmediato_inscripcion,
+    cargo_jefe_inmediato_inscripcion,
+    telefono_jefe_inmediato_inscripcion,
+    correo_jefe_inmediato_inscripcion,
+    asume_pago_arl_inscripcion,
+    link_documentos_pdf_inscripcion,
+    observaciones_inscripcion,
+    fecha_creacion_inscripcion,
+    id_usuario_responsable_inscripcion
   } = req.body
   try {
-    await connection.query(
-      'INSERT INTO inscripciones (nombres_aprendiz_inscripcion, apellidos_aprendiz_inscripcion, tipo_documento_aprendiz_inscripcion, numero_documento_aprendiz_inscripcion, correo_electronico_aprendiz_inscripcion, numero_telefono_aprendiz_inscripcion, numero_ficha_aprendiz_inscripcion, programa_formacion_aprendiz_inscripcion, tipo_modalidad_aprendiz_inscripcion, inicio_etapa_practica_aprendiz_inscripcion, fin_etapa_practica_aprendiz_inscripcion, fecha_creacion_aprendiz_inscripcion) VALUE (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE())',
-      [
-        nombres_aprendiz_inscripcion,
-        apellidos_aprendiz_inscripcion,
-        tipo_documento_aprendiz_inscripcion,
-        numero_documento_aprendiz_inscripcion,
-        correo_electronico_aprendiz_inscripcion,
-        numero_telefono_aprendiz_inscripcion,
-        numero_ficha_aprendiz_inscripcion,
-        programa_formacion_aprendiz_inscripcion,
-        tipo_modalidad_aprendiz_inscripcion,
-        inicio_etapa_practica_aprendiz_inscripcion,
-        fin_etapa_practica_aprendiz_inscripcion
-      ]
-    )
-    return res.status(httpStatus.OK).json({ data: 'Inscripción creada con éxito.' })
+    await connection.query('INSERT INTO inscripciones (id_modalidad_inscripcion, nombres_inscripcion, apellidos_inscripcion, tipo_documento_inscripcion, numero_documento_inscripcion, correo_electronico_inscripcion, numero_celular_inscripcion, etapa_formacion_actual_inscripcion, nivel_formacion_actual_inscripcion, id_ficha_inscripcion, id_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, id_empresa_inscripcion, nombre_completo_jefe_inmediato_inscripcion, cargo_jefe_inmediato_inscripcion, telefono_jefe_inmediato_inscripcion, correo_jefe_inmediato_inscripcion, asume_pago_arl_inscripcion, link_documentos_pdf_inscripcion, observaciones_inscripcion, fecha_creacion_inscripcion, id_usuario_responsable_inscripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [id_modalidad_inscripcion, nombres_inscripcion, apellidos_inscripcion, tipo_documento_inscripcion, numero_documento_inscripcion, correo_electronico_inscripcion, numero_celular_inscripcion, etapa_formacion_actual_inscripcion, nivel_formacion_actual_inscripcion, id_ficha_inscripcion, id_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, id_empresa_inscripcion, nombre_completo_jefe_inmediato_inscripcion, cargo_jefe_inmediato_inscripcion, telefono_jefe_inmediato_inscripcion, correo_jefe_inmediato_inscripcion, asume_pago_arl_inscripcion, link_documentos_pdf_inscripcion, observaciones_inscripcion, fecha_creacion_inscripcion, id_usuario_responsable_inscripcion])
+    return res.status(httpStatus.CREATED).json({ message: 'Inscripción creada.' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }

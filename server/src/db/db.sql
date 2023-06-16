@@ -18,6 +18,62 @@ USE `practicas_sena`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `detalles_empresas`
+--
+
+DROP TABLE IF EXISTS `detalles_empresas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `detalles_empresas` (
+  `id_detalle_empresa` int NOT NULL AUTO_INCREMENT,
+  `sede_detalle_empresa` varchar(50) NOT NULL,
+  `telefono_detalle_empresa` varchar(20) NOT NULL,
+  `direccion_detalle_empresa` varchar(60) NOT NULL,
+  `id_localidad` int NOT NULL,
+  PRIMARY KEY (`id_detalle_empresa`),
+  KEY `detalles_empresas_ibfk_1` (`id_localidad`),
+  CONSTRAINT `detalles_empresas_ibfk_1` FOREIGN KEY (`id_localidad`) REFERENCES `localidades` (`id_localidad`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `detalles_empresas`
+--
+
+LOCK TABLES `detalles_empresas` WRITE;
+/*!40000 ALTER TABLE `detalles_empresas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `detalles_empresas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `empresas`
+--
+
+DROP TABLE IF EXISTS `empresas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `empresas` (
+  `id_empresa` int NOT NULL AUTO_INCREMENT,
+  `nombre_empresa` varchar(50) NOT NULL,
+  `nit_empresa` varchar(11) NOT NULL,
+  `correo_empresa` varchar(60) NOT NULL,
+  `id_detalle_empresa` int NOT NULL,
+  PRIMARY KEY (`id_empresa`),
+  KEY `empresas_ibfk_1` (`id_detalle_empresa`),
+  CONSTRAINT `empresas_ibfk_1` FOREIGN KEY (`id_detalle_empresa`) REFERENCES `detalles_empresas` (`id_detalle_empresa`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `empresas`
+--
+
+LOCK TABLES `empresas` WRITE;
+/*!40000 ALTER TABLE `empresas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `empresas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `fichas`
 --
 
@@ -38,8 +94,8 @@ CREATE TABLE `fichas` (
   PRIMARY KEY (`id_ficha`),
   KEY `fichas_ibfk_1` (`id_instructor_lider_formacion`),
   KEY `fichas_ibfk_2` (`id_instructor_practicas_formacion`),
-  CONSTRAINT `fichas_ibfk_1` FOREIGN KEY (`id_instructor_lider_formacion`) REFERENCES `instructores` (`id_instructor`),
-  CONSTRAINT `fichas_ibfk_2` FOREIGN KEY (`id_instructor_practicas_formacion`) REFERENCES `instructores` (`id_instructor`)
+  CONSTRAINT `fichas_ibfk_1` FOREIGN KEY (`id_instructor_lider_formacion`) REFERENCES `usuarios` (`id_usuario`),
+  CONSTRAINT `fichas_ibfk_2` FOREIGN KEY (`id_instructor_practicas_formacion`) REFERENCES `usuarios` (`id_usuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -53,29 +109,82 @@ LOCK TABLES `fichas` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `instructores`
+-- Table structure for table `inscripciones`
 --
 
-DROP TABLE IF EXISTS `instructores`;
+DROP TABLE IF EXISTS `inscripciones`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `instructores` (
-  `id_instructor` int NOT NULL AUTO_INCREMENT,
-  `correo_institucional_instructor` varchar(60) DEFAULT NULL,
-  `id_usuario` int NOT NULL,
-  PRIMARY KEY (`id_instructor`),
-  KEY `id_usuario` (`id_usuario`),
-  CONSTRAINT `instructores_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`)
+CREATE TABLE `inscripciones` (
+  `id_inscripcion` int NOT NULL AUTO_INCREMENT,
+  `id_modalidad_inscripcion` int NOT NULL,
+  `nombres_inscripcion` varchar(50) NOT NULL,
+  `apellidos_inscripcion` varchar(45) NOT NULL,
+  `tipo_documento_inscripcion` varchar(10) NOT NULL,
+  `numero_documento_inscripcion` varchar(20) NOT NULL,
+  `correo_electronico_inscripcion` varchar(60) NOT NULL,
+  `numero_celular_inscripcion` varchar(15) NOT NULL,
+  `etapa_formacion_actual_inscripcion` varchar(20) NOT NULL,
+  `nivel_formacion_actual_inscripcion` varchar(20) NOT NULL,
+  `id_ficha_inscripcion` int NOT NULL,
+  `id_instructor_lider_inscripcion` int NOT NULL,
+  `apoyo_sostenimiento_inscripcion` varchar(50) NOT NULL,
+  `id_empresa_inscripcion` int DEFAULT NULL,
+  `nombre_completo_jefe_inmediato_inscripcion` varchar(100) DEFAULT NULL,
+  `cargo_jefe_inmediato_inscripcion` varchar(100) DEFAULT NULL,
+  `telefono_jefe_inmediato_inscripcion` varchar(100) DEFAULT NULL,
+  `correo_jefe_inmediato_inscripcion` varchar(100) DEFAULT NULL,
+  `asume_pago_arl_inscripcion` varchar(20) DEFAULT NULL,
+  `link_documentos_pdf_inscripcion` varchar(20) NOT NULL,
+  `observaciones_inscripcion` varchar(200) NOT NULL,
+  `fecha_creacion_inscripcion` date NOT NULL,
+  `id_usuario_responsable_inscripcion` int NOT NULL,
+  PRIMARY KEY (`id_inscripcion`),
+  KEY `inscripciones_ibfk_1` (`id_modalidad_inscripcion`),
+  KEY `inscripciones_ibfk_2` (`id_ficha_inscripcion`),
+  KEY `inscripciones_ibfk_3` (`id_instructor_lider_inscripcion`),
+  KEY `inscripciones_ibfk_4` (`id_empresa_inscripcion`),
+  KEY `inscripciones_ibfk_5` (`id_usuario_responsable_inscripcion`),
+  CONSTRAINT `inscripciones_ibfk_1` FOREIGN KEY (`id_modalidad_inscripcion`) REFERENCES `modalidades_etapa_practica` (`id_modalidad_practica`),
+  CONSTRAINT `inscripciones_ibfk_2` FOREIGN KEY (`id_ficha_inscripcion`) REFERENCES `fichas` (`id_ficha`),
+  CONSTRAINT `inscripciones_ibfk_3` FOREIGN KEY (`id_instructor_lider_inscripcion`) REFERENCES `usuarios` (`id_usuario`),
+  CONSTRAINT `inscripciones_ibfk_4` FOREIGN KEY (`id_empresa_inscripcion`) REFERENCES `empresas` (`id_empresa`),
+  CONSTRAINT `inscripciones_ibfk_5` FOREIGN KEY (`id_usuario_responsable_inscripcion`) REFERENCES `usuarios` (`id_usuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `instructores`
+-- Dumping data for table `inscripciones`
 --
 
-LOCK TABLES `instructores` WRITE;
-/*!40000 ALTER TABLE `instructores` DISABLE KEYS */;
-/*!40000 ALTER TABLE `instructores` ENABLE KEYS */;
+LOCK TABLES `inscripciones` WRITE;
+/*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `localidades`
+--
+
+DROP TABLE IF EXISTS `localidades`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `localidades` (
+  `id_localidad` int NOT NULL AUTO_INCREMENT,
+  `nombre_localidad` varchar(60) NOT NULL,
+  `region_localidad` varchar(60) NOT NULL,
+  PRIMARY KEY (`id_localidad`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `localidades`
+--
+
+LOCK TABLES `localidades` WRITE;
+/*!40000 ALTER TABLE `localidades` DISABLE KEYS */;
+INSERT INTO `localidades` VALUES (1,'Medellín','Antioquía');
+/*!40000 ALTER TABLE `localidades` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -172,4 +281,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-15 14:51:13
+-- Dump completed on 2023-06-16 14:29:33
