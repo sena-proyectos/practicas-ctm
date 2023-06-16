@@ -4,6 +4,7 @@ import { GetUsersHttp } from '../../api/httpRequest'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Card } from '../Card/Card'
+import { Search } from '../Search/Search'
 
 export const Student = () => {
   const [apprentices, setApprentices] = useState([])
@@ -22,7 +23,7 @@ export const Student = () => {
       <Siderbar />
       <section className="grid grid-rows-3-10-75-15 flex-auto w-min">
         <header className="grid place-items-center">
-          <h1 className="text-center font-bold text-2xl">Aprendices</h1>
+          <Search />
         </header>
         <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
           {apprentices.map((apprentice) => {
