@@ -52,9 +52,7 @@ const Form = ({ inputs, isLoginForm }) => {
         const getCookies = Cookie.get('token');
 
         const decoded = jwtdecoded(getCookies);
-
-        // console.log(decoded.data.user.id_rol);
-
+        
         const id_rol = decoded.data.user.id_rol;
 
         if (id_rol === 1 || id_rol === 2) navigate('/home');
