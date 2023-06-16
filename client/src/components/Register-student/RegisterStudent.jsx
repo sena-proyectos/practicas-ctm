@@ -8,7 +8,7 @@ import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { idTypes, modalities, dataInscription } from '../../import/staticData'
 
-import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/ExpresionesRegulares'
+import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 
 const RegisterStudent = () => {
   const excelFileRef = useRef(null)
@@ -175,19 +175,19 @@ const RegisterStudent = () => {
                             <option value={''}>Sin seleccionar</option>
                             {item.name === 'tipo_documento_aprendiz_inscripcion'
                               ? idTypes.map((item, i) => {
-                                  return (
+                                return (
                                     <option value={item.value} key={i}>
                                       {item.name}
                                     </option>
-                                  )
-                                })
+                                )
+                              })
                               : modalities.map((item, i) => {
-                                  return (
+                                return (
                                     <option value={item.value} key={i}>
                                       {item.name}
                                     </option>
-                                  )
-                                })}
+                                )
+                              })}
                           </select>
                         </div>
                       ) : (
@@ -195,7 +195,7 @@ const RegisterStudent = () => {
                           <span className="absolute inset-y-0 left-0 flex items-center pl-3">{item.icon}</span>
                           <input type={item.type} name={item.name} className="py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72" autoComplete="on" placeholder={item.placeholder} />
                         </div>
-                      )}
+                            )}
                     </div>
                   )
                 })}

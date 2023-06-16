@@ -1,4 +1,4 @@
-export interface inscription {
+export interface inscriptionData {
   nombres_aprendiz_inscripcion: string
   apellidos_aprendiz_inscripcion: string
   tipo_documento_aprendiz_inscripcion: string

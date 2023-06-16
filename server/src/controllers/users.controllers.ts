@@ -1,84 +1,135 @@
-import { type Response, type Request } from 'express'
+import { type Response, type Request, type NextFunction, type RequestHandler } from 'express'
 import bycrypt from 'bcrypt'
 
 import { connection } from '../config/db.js'
-import { handleHTTP } from '../utils/errorsHandler.js'
+import { handleHTTP } from '../errors/errorsHandler.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
-import { type LoginData, type id, type userForm } from '../models/user.interfaces.js'
-import { checkExistingUser, checkLoginData, comparePassword, generateToken } from '../middlewares/users.middlewares.js'
+import { type LoginData, type userForm } from '../interfaces/users.interfaces.js'
+import { comparePassword } from '../middlewares/users.middlewares.js'
 import { type RowDataPacket } from 'mysql2/promise'
+import { type CustomError, DbErrorNotFound, DataNotValid } from '../errors/customErrors.js'
+import { errorCodes } from '../models/errorCodes.enums.js'
 
 export const getUsers = async (_req: Request, res: Response): Promise<Response> => {
   try {
     const [users] = await connection.query('SELECT * FROM usuarios')
+    if (!Array.isArray(users) || users.length === 0) throw new DbErrorNotFound('No hay usuarios registrados.', errorCodes.ERROR_GET_USERS)
     return res.status(httpStatus.OK).json({ data: users })
   } catch (error) {
-    return handleHTTP(res, 'ERROR_GET_USERS')
+    return handleHTTP(res, error as CustomError)
   }
 }
 
-export const getUserById = async ({ params }: Request<id>, res: Response): Promise<Response> => {
-  const { id } = params
+export const getUserById: RequestHandler<{ id: string }, Response, LoginData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id } = req.params
+  const idNumber = Number(id)
   try {
-    const [user] = await connection.query('SELECT * FROM usuarios WHERE id_usuario = ?', [id])
+    const [user] = await connection.query('SELECT * FROM usuarios WHERE id_usuario = ?', [idNumber])
+    if (!Array.isArray(user) || user.length === 0) throw new DbErrorNotFound('No se encontró el usuario.', errorCodes.ERROR_GET_USER)
     return res.status(httpStatus.OK).json({ data: user })
   } catch (error) {
-    return handleHTTP(res, 'ERROR_GET_USER')
+    return handleHTTP(res, error as CustomError)
   }
 }
 
-export const getTeachers = async (_req: Request, res: Response): Promise<Response> => {
+export const editUser: RequestHandler<{}, Response, userForm> = async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.params
+  const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
+  const idNumber = Number(id)
   try {
-    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2')
-    return res.status(httpStatus.OK).json({ data: teachers })
+    await connection.query('UPDATE usuarios SET nombre = IFNULL(?, nombre), apellido = IFNULL(?, apellido), tipo_documento = IFNULL(?, tipo_documento), num_documento = IFNULL(?, num_documento), correo_electronico = IFNULL(?, correo_electronico), num_celular = IFNULL(?, num_celular), id_rol = IFNULL(?, id_rol), contrasena = IFNULL(?, contrasena) WHERE id_usuario = ?', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena, idNumber])
+    return res.status(httpStatus.OK).json({ message: 'Usuario actualizado exitosamente.' })
   } catch (error) {
-    return handleHTTP(res, 'ERROR_GET_TEACHERS')
+    return handleHTTP(res, error as CustomError)
   }
 }
 
-export const getTeachersById = async ({ params }: Request<id>, res: Response): Promise<Response> => {
-  const { id } = params
+export const getTeachers = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2 AND id_usuario = ?', [id])
+    const page = (!Number.isNaN(parseInt(req.query.page as string))) || 1
+    const limit = (!Number.isNaN(parseInt(req.query.limit as string))) || 10
+    const offset = (Number(page) - 1) * Number(limit)
+
+    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2 LIMIT ? OFFSET ?', [limit, offset])
+    if (!Array.isArray(teachers) || teachers.length === 0) throw new DbErrorNotFound('No hay estudiantes registrados.', errorCodes.ERROR_GET_STUDENTS)
+
+    const [total] = await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3') as unknown as Array<{ count: number }>
+    const totalPages = Math.ceil(Number((Array.isArray(total) && total[0].count)) / Number(limit))
+
+    return res.status(httpStatus.OK).json({ data: teachers, page, totalPages })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id } = req.params
+  const idNumber = Number(id)
+  try {
+    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2 AND id_usuario = ?', [idNumber])
+    if (!Array.isArray(teacher) || teacher.length === 0) throw new DbErrorNotFound('No se encontró el profesor.', errorCodes.ERROR_GET_TEACHER)
     return res.status(httpStatus.OK).json({ data: teacher })
   } catch (error) {
-    return handleHTTP(res, 'ERROR_GET_TEACHER')
+    return handleHTTP(res, error as CustomError)
   }
 }
 
-export const createUser = async ({ body }: Request<userForm>, res: Response): Promise<Response> => {
-  const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = body
+export const getStudents = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const existingUser: boolean = await checkExistingUser({ num_documento })
-    if (existingUser) throw Error('EXISTING_USER')
+    const page = (!Number.isNaN(parseInt(req.query.page as string))) || 1
+    const limit = (!Number.isNaN(parseInt(req.query.limit as string))) || 10
+    const offset = (Number(page) - 1) * Number(limit)
 
+    const [students] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 LIMIT ? OFFSET ?', [limit, offset])
+    if (!Array.isArray(students) || students.length === 0) throw new DbErrorNotFound('No hay estudiantes registrados.', errorCodes.ERROR_GET_STUDENTS)
+
+    const [total] = await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3') as unknown as Array<{ count: number }>
+    const totalPages = Math.ceil(Number((Array.isArray(total) && total[0].count)) / Number(limit))
+
+    return res.status(httpStatus.OK).json({ data: students, page, totalPages })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const getStudentsById: RequestHandler<{ id: string }, Response, LoginData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id } = req.params
+  const idNumber = Number(id)
+  try {
+    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND id_usuario = ?', [idNumber])
+    if (!Array.isArray(teacher) || teacher.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_TEACHER)
+    return res.status(httpStatus.OK).json({ data: teacher })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const createUser: RequestHandler<{}, Response, userForm> = async (req: Request, res: Response): Promise<Response> => {
+  const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
+  try {
     const hashPassword: string = await bycrypt.hash(contrasena, 10)
 
-    await connection.query('INSERT INTO usuarios (nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena) VALUE (?, ?, IFNULL(?, "cc"), ?, ?, ?, IFNULL(?, 2), ?)', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword])
+    await connection.query('INSERT INTO usuarios (nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena) VALUE (?, ?, IFNULL(?, "cc"), ?, ?, ?, IFNULL(?, 1), ?)', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword])
 
-    return res.status(httpStatus.OK).json(true)
+    return res.status(httpStatus.OK).json({ message: 'Usuario creado exitosamente.' })
   } catch (error) {
-    return handleHTTP(res, 'ERROR_CREATE_USER')
+    return handleHTTP(res, error as CustomError)
   }
 }
 
-export const login = async ({ body }: Request<LoginData>, res: Response): Promise<Response> => {
-  const { num_documento, contrasena } = body
+export const login: RequestHandler<{ num_documento: string, contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
+  const { num_documento, contrasena } = req.body
   try {
-    const checkData: boolean = checkLoginData({ num_documento, contrasena })
-    if (!checkData) throw Error
-
     const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [num_documento])
-    if (!user) throw Error
+    if (!Array.isArray(user)) throw new DbErrorNotFound('No se encontró el usuario.', errorCodes.ERROR_LOGIN_USER)
 
     const dbPassword = (user as RowDataPacket)[0].contrasena
 
     const isMatch: boolean = await comparePassword({ contrasena, dbPassword })
-    if (!isMatch) throw Error
-
-    const token: string = generateToken(user)
-    return res.status(httpStatus.OK).json({ key: `Bearer ${token}` })
+    if (!isMatch) throw new DataNotValid('Contraseña incorrecta.', errorCodes.ERROR_LOGIN_USER)
+    req.body = { user: user[0] }
+    next()
   } catch (error) {
-    return handleHTTP(res, 'ERROR_LOGIN_USER')
+    handleHTTP(res, error as CustomError)
   }
 }
