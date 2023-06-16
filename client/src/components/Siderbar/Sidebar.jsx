@@ -23,7 +23,7 @@ const Siderbar = () => {
 
     const decoded = jwtdecoded(token)
 
-    setNameRol(decoded.data[0].id_rol === 1 ? 'Administrador' : 'Instrutor')
+    setNameRol(decoded.data[0].id_rol === 1 ? 'Administrador' : 'Instructor')
 
     setNameUser(decoded.data[0].nombre + ' ' + decoded.data[0].apellido)
   }, [])
