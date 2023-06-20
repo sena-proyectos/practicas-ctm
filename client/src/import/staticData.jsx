@@ -171,13 +171,3 @@ export const colorIcon = {
   '/visitas': 'text-primary',
   '/config': 'text-fifth',
 }
-
-/*
-src: src\components\Siderbar\Sidebar.jsx*/
-export const colorIcon = {
-  '/home': 'text-salmon',
-  '/aprendices': 'text-third',
-  '/bitacoras': 'text-seventh',
-  '/visitas': 'text-primary',
-  '/config': 'text-fifth',
-}
