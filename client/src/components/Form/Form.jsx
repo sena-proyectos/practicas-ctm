@@ -1,14 +1,14 @@
 import { useRef, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from '../Button/Button';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Login } from '../../api/httpRequest';
 
 import Cookie from 'js-cookie';
 import jwtdecoded from 'jwt-decode';
 
-const Form = ({ inputs, isLoginForm }) => {
+const Form = ({ inputs }) => {
     const navigate = useNavigate();
 
     const passwordIcons = {
@@ -39,9 +39,8 @@ const Form = ({ inputs, isLoginForm }) => {
     };
 
     const sendData = async (data) => {
-        const response = await axios.post(`http://localhost:3000/api/login`, data);
-        const { token } = isLoginForm && (await response.data);
-        const Token = isLoginForm && (await token.split(' ')[0]);
+        const response = await Login(data);
+        const Token = response.data.token;
 
         Cookie.set('token', Token, {
             expires: 1,

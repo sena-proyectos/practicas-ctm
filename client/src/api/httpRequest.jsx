@@ -1,12 +1,25 @@
-import axios from "axios";
+import axios from 'axios';
 
+/* LOGIN */
+export const Login = async (data) => {
+  const URL = 'http://localhost:3000/api/login'
 
-// Obtenemos todos los aprendices
+  const response = await axios.post(URL, data)
+  return response
+}
+
+/* OBTENER APRENDICES */
 export const GetUsersHttp = async () => {
-  // pasamos la url que será la ruta de la api
-  URL = "http://localhost:3000/api/inscriptions";
+    const URL = 'http://localhost:3000/api/inscriptions';
 
-  // hacemos la petición get
-  const response = await axios.get(URL);
-  return response;
+    const response = await axios.get(URL);
+    return response;
 };
+
+/* INSCRIBIR APRENDICES */
+export const InscriptionApprentice = async (data) => {
+  const URL = 'http://localhost:3000/api/create-inscription'
+
+  const response = await axios.post(URL, data)
+  return response
+}
