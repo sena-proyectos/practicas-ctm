@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
+import Swal from 'sweetalert2'
 import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'

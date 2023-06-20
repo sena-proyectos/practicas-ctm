@@ -1,6 +1,7 @@
 import { AiOutlineIdcard, AiOutlineMail, AiOutlinePhone, AiOutlineUser } from 'react-icons/ai'
 import { FaRegAddressBook } from 'react-icons/fa'
 import { BsCalendar4 } from 'react-icons/bs'
+import { LuCalendarCheck2, LuCalendarX2 } from 'react-icons/lu'
 
 /*
  * src: src\components\Home\Home.jsx
@@ -304,4 +305,12 @@ export const colorIcon = {
   '/bitacoras': 'text-seventh',
   '/visitas': 'text-primary',
   '/config': 'text-fifth',
+}
+
+/*
+ * src: src\components\Visits\Visits.jsx
+ */
+export const estadoIcons = {
+  visitado: <LuCalendarCheck2 />,
+  visitadont: <LuCalendarX2 />,
 }

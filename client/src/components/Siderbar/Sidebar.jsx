@@ -48,7 +48,7 @@ const Siderbar = () => {
 
   const spanStyle = (path) => {
     const color = colorIcon[path]
-    return location.pathname === path ? `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3' : 'pl-5'}  text-sm font-bold ${color}` : `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3' : 'pl-5'} text-xs`
+    return location.pathname === path ? `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-sm' : 'pl-5 text-md'}   font-bold ${color}` : `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-xs' : 'pl-5 text-sm'} `
   }
 
   const logout = () => {
@@ -121,7 +121,7 @@ const Siderbar = () => {
           </span>
           <section className="w-full mb-0">
             <li className="flex items-center relative pl-10 py-2 h-10 hover:bg-white rounded-s-2xl w-[115%] transition text-red-700" onClick={logout}>
-              <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3' : 'pl-5'} text-xs text-red-700`}>
+              <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-xs' : 'pl-5 text-md'} text-red-700`}>
                 <IoLogOutOutline />
               </span>
               {open && 'Cerrar Sesión'}

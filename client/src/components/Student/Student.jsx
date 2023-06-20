@@ -33,15 +33,15 @@ export const Student = () => {
     })
   }
   return (
-    <main className="flex flex-row">
+    <main className="flex flex-row min-h-screen">
       <Siderbar />
-      <section className="grid grid-rows-3-10-75-15 flex-auto w-min">
+      <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">
         <header className="grid place-items-center">
           <Search />
         </header>
         <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
           {apprentices.map((apprentice, i) => {
-            return <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombres_aprendiz_inscripcion} ${apprentice.apellidos_aprendiz_inscripcion}`} subtitle={apprentice.correo_electronico_aprendiz_inscripcion} lione={apprentice.programa_formacion_aprendiz_inscripcion} litwo={apprentice.numero_ficha_aprendiz_inscripcion} key={i} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} />
+            return <Card cardUser shadow={'shadow-2xl'} scale={'scale-90'} title={`${apprentice.nombres_inscripcion} ${apprentice.apellidos_inscripcion}`} subtitle={apprentice.correo_electronico_inscripcion} lione={apprentice.programa_formacion_aprendiz_inscripcion} litwo={apprentice.numero_ficha_aprendiz_inscripcion} key={i} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} />
           })}
         </div>
         <Footer />
