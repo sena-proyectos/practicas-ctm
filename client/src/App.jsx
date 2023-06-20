@@ -1,5 +1,7 @@
-import { Route, Routes } from 'react-router-dom'
+import React from 'react'
 import './App.css'
+
+import { Route, Routes } from 'react-router-dom'
 import { User } from './components/User/User'
 import { RegisterStudent } from './components/Register-student/RegisterStudent'
 import { Home } from './components/Home/Home'
