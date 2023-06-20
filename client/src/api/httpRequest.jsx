@@ -12,9 +12,9 @@ export const Login = async (data) => {
 export const GetUsersHttp = async () => {
     const URL = 'http://localhost:3000/api/inscriptions';
 
-    const response = await axios.get(URL);
-    return response;
-};
+  const response = await axios.get(URL)
+  return response
+}
 
 /* INSCRIBIR APRENDICES */
 export const InscriptionApprentice = async (data) => {

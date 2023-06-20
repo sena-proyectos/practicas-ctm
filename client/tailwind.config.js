@@ -26,7 +26,7 @@ export default {
       gridTemplateRows: {
         '2-30-70': '10rem 70%',
         '3-10-78-12': '7rem 78% 12%',
-        '3-10-75-15': '7rem 75% 15%',
+        '3-10-75-15': '4.9rem 79% 10%',
         '2-25-75': '10rem auto',
       },
       borderWidth: {
