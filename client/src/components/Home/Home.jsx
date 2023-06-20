@@ -1,35 +1,33 @@
 import { Card } from '../Card/Card'
 import { Siderbar } from '../Siderbar/Sidebar'
+import { cards } from '../../import/staticData'
+import { Footer } from '../Footer/Footer'
 
 import { useEffect } from 'react'
 
 import Cookies from 'js-cookie'
 
 const Home = () => {
-  useEffect(() => {
-    const token = Cookies.get('token')
-    if (!token) window.location.href = '/'
-  }, [])
+  // useEffect(() => {
+  //   const token = Cookies.get('token')
+  //   if (!token) window.location.href = '/'
+  // }, [])
 
-  const datosCards = [
-    {
-      title: 'Listado de aprendices',
-      description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
-      isButton: true,
-      buttonText: 'Llevame ahí',
-      bgColor: 'bg-red-200',
-      innerOnClick: () => {
-        console.log('Hola')
-      }
-    }
-  ]
   return (
-    <main>
+    <main className="flex flex-row">
       <Siderbar />
-      <h1>Bienvenido a proyecto sena. ¿Qué desea realizar hoy?</h1>
-      <div>
-        <Card className={datosCards.bgColor} title={datosCards.title} description={datosCards.description} isButton buttonText={datosCards.buttonText} />
-      </div>
+      <section className="grid grid-rows-3-10-75-15 flex-auto w-min">
+        <header className="grid place-items-center">
+          <h1 className="text-center font-bold text-2xl">Bienvenido a practicas ctm. ¿Qué desea realizar hoy?</h1>
+        </header>
+        <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3 ">
+          {cards.map(({ title, titleColor, description, buttonText, bgColor, link }) => {
+            return <Card cardHome bgColor={bgColor} scale={'scale-90'} marginLink={'ml-auto'} titleColor={titleColor} title={title} description={description} roundedLink={'rounded-md'} buttonText={buttonText} key={title} link={link} />
+          })}
+        </div>
+
+        <Footer />
+      </section>
     </main>
   )
 }
