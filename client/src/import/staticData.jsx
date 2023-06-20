@@ -1,4 +1,6 @@
-import { AiOutlineUser } from 'react-icons/ai'
+import { AiOutlineIdcard, AiOutlineMail, AiOutlinePhone, AiOutlineUser } from 'react-icons/ai'
+import { FaRegAddressBook } from 'react-icons/fa'
+import { BsCalendar4 } from 'react-icons/bs'
 
 /*
  * src: src\components\Home\Home.jsx
@@ -73,28 +75,28 @@ export const dataInscription = [
     label: 'Apellidos',
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineIdcard />,
     type: 'select',
     name: 'tipo_documento_aprendiz_inscripcion',
     placeholder: 'sin seleccionar',
     label: 'Tipo documento',
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineIdcard />,
     type: 'number',
     name: 'numero_documento_aprendiz_inscripcion',
     placeholder: '1023456789',
     label: 'Número documento',
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineMail />,
     type: 'email',
     name: 'correo_electronico_aprendiz_inscripcion',
     placeholder: 'example@sena.edu.co',
     label: 'Correo electrónico',
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlinePhone />,
     type: 'number',
     name: 'numero_telefono_aprendiz_inscripcion',
     placeholder: '3012345467',
@@ -122,13 +124,13 @@ export const dataInscription = [
     label: 'Modalidad',
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <BsCalendar4 />,
     type: 'date',
     name: 'inicio_etapa_practica_aprendiz_inscripcion',
     label: 'Fecha de inicio prácticas',
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <BsCalendar4 />,
     type: 'date',
     name: 'fin_etapa_practica_aprendiz_inscripcion',
     label: 'Fecha de fin prácticas',
@@ -155,14 +157,14 @@ export const dataInscription = [
     label: 'Nombre Instructor Lider',
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineMail />,
     type: 'email',
     name: 'correo_electronico_instructor_lider_aprendiz_inscripcion',
     placeholder: 'example@sena.edu.co',
     label: 'Correo electrónico Instructor Lider',
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <BsCalendar4 />,
     type: 'date',
     name: 'fin_etapa_lectiva_aprendiz_inscripcion',
     label: 'Terminación de la etapa lectiva',
@@ -189,7 +191,7 @@ export const dataInscription = [
     label: 'Razón social (Nombre Empresa)',
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <FaRegAddressBook />,
     type: 'text',
     name: 'direccion_empresa_aprendiz_inscripcion',
     placeholder: 'Calle 123',
@@ -210,14 +212,14 @@ export const dataInscription = [
     label: 'Cargo del contacto en la empresa',
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlinePhone />,
     type: 'number',
     name: 'telefono_empresa_aprendiz_inscripcion',
     placeholder: '3012345678',
     label: 'Teléfono de la empresa',
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineMail />,
     type: 'email',
     name: 'correo_empresa_aprendiz_inscripcion',
     placeholder: 'example@sena.edu.co',
