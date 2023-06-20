@@ -1,14 +1,12 @@
 import { useRef, useState } from 'react'
-
+import { ToastContainer } from 'react-toastify'
 import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
 
 import { InscriptionApprentice } from '../../api/httpRequest'
-import { Siderbar } from '../Siderbar/Sidebar'
-import { Button } from '../Button/Button'
+
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
-import { idTypes, modalities, dataInscription } from '../../import/staticData'
 import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
 
 const RegisterStudent = () => {
