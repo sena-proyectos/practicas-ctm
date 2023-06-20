@@ -1,6 +1,6 @@
 import { Siderbar } from '../Siderbar/Sidebar'
 
-const Bitacoras = () => {
+const Settings = () => {
   return (
     <main className="flex flex-row">
       <Siderbar />
@@ -9,4 +9,4 @@ const Bitacoras = () => {
   )
 }
 
-export { Bitacoras }
+export { Settings }
