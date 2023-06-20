@@ -89,6 +89,7 @@ export const editInscription: RequestHandler<{ id: string }, Response, inscripti
     if (!Array.isArray(inscription) && inscription?.affectedRows === 0) throw new DbError('No se pudo modificar la inscripción.')
     return res.status(httpStatus.OK).json({ message: 'Inscripción modificada con éxito.' })
   } catch (error) {
+    console.log(error);
     return handleHTTP(res, error as CustomError)
   }
 }

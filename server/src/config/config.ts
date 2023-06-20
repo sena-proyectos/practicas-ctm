@@ -1,6 +1,6 @@
-import { config } from 'dotenv'
+import { config } from 'dotenv';
 
-config()
+config();
 
 const PORT = process.env.PORT ?? 3000
 const DB_USER = process.env.DB_USER ?? 'root'
