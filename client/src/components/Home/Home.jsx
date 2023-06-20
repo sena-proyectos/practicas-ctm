@@ -1,17 +1,19 @@
-import { Card } from '../Card/Card'
-import { Siderbar } from '../Siderbar/Sidebar'
+import { Card } from "../Card/Card";
+import { Siderbar } from "../Siderbar/Sidebar";
 import { cards } from '../../import/staticData'
 import { Footer } from '../Footer/Footer'
 
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
 
 const Home = () => {
-  // useEffect(() => {
-  //   const token = Cookies.get('token')
-  //   if (!token) window.location.href = '/'
-  // }, [])
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (!token) {
+      window.location.href = "/";
+    }
+  }, []);
 
   return (
     <main className="flex flex-row">
@@ -29,7 +31,7 @@ const Home = () => {
         <Footer />
       </section>
     </main>
-  )
-}
+  );
+};
 
-export { Home }
+export { Home };

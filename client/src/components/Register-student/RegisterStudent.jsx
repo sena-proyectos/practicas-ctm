@@ -1,18 +1,20 @@
-import { useRef } from 'react'
-import axios from 'axios'
-import Swal from 'sweetalert2'
+import { useRef, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
-import * as XLSX from 'xlsx'
-
 import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
-import { idTypes, modalities, dataInscription } from '../../import/staticData'
+import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
+
+import { InscriptionApprentice } from '../../api/httpRequest'
 
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
+import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
 
 const RegisterStudent = () => {
   const excelFileRef = useRef(null)
+  const [msg, setMessage] = useState({})
 
+  // Validación de campos
+  // Capturación de valores
   const handleSubmit = (e) => {
     e.preventDefault()
 
@@ -36,9 +38,7 @@ const RegisterStudent = () => {
 
     // validar que el numero de documento sea valido
     const { numero_documento_aprendiz_inscripcion, correo_electronico_aprendiz_inscripcion } = formValues
-
     const isIdentityValid = ValidateIdentity(numero_documento_aprendiz_inscripcion)
-
     const isEmailValid = ValidateEmail(correo_electronico_aprendiz_inscripcion)
 
     if (!isIdentityValid) {
@@ -62,18 +62,22 @@ const RegisterStudent = () => {
     Swal.fire({
       icon: 'success',
       title: '¡Éxito!',
-      text: 'Se ha inscrito al aprendiz exitosamente',
+      text: msg,
     })
   }
 
-  // enviar los datos al backend por medio de axios
+  // enviar los datos al backend
   const sendDataInscription = async (data) => {
-    await axios.post('http://localhost:3000/api/create-inscription', data)
+    const response = await InscriptionApprentice(data)
+    const { message } = response.data
+    setMessage(message)
   }
 
   // vaciar los inputs
   const deleteData = () => {}
 
+  // Leer archivo excel
+  // TODO: Cambiar el lector de excel porque este NO FUNCIONA
   const handleExcelFile = () => {
     const currentFile = excelFileRef.current.files[0]
 
@@ -89,52 +93,6 @@ const RegisterStudent = () => {
       return
     }
     readExcelFile(currentFile)
-  }
-
-  const readExcelFile = async (file) => {
-    if (!file) return
-    const reader = new FileReader()
-
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result)
-      const workbook = XLSX.read(data, { type: 'array' })
-
-      console.log(workbook)
-
-      workbook.SheetNames.forEach((sheetName) => {
-        const worksheet = workbook.Sheets[sheetName]
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
-
-        console.log(`Sheet: ${sheetName}`)
-        console.log(jsonData)
-
-        if (jsonData.length > 2) {
-          const showModal = async () => {
-            const responseModal = await Swal.fire({
-              icon: 'question',
-              title: '¡Aviso!',
-              text: 'Se ha detectado más de 2 registros en el archivo excel. ¿Desea directamente guardar todos los registros?',
-              confirmButtonText: 'Guardar registros',
-              confirmButtonColor: '#39A900',
-              denyButtonText: 'No guardar registros',
-              showDenyButton: true,
-            })
-            if (responseModal.isConfirmed) {
-              Swal.fire({
-                icon: 'success',
-                title: '¡Éxito!',
-                text: 'Se han guardado todos los registros exitosamente',
-              })
-            } else if (responseModal.isDenied) {
-              //* terminar
-            }
-          }
-          showModal()
-        }
-      })
-    }
-
-    reader.readAsArrayBuffer(file)
   }
 
   return (
@@ -175,19 +133,53 @@ const RegisterStudent = () => {
                             <option value={''}>Sin seleccionar</option>
                             {item.name === 'tipo_documento_aprendiz_inscripcion'
                               ? idTypes.map((item, i) => {
-                                return (
+                                  return (
                                     <option value={item.value} key={i}>
                                       {item.name}
                                     </option>
-                                )
-                              })
-                              : modalities.map((item, i) => {
-                                return (
+                                  )
+                                })
+                              : item.name === 'tipo_modalidad_aprendiz_inscripcion'
+                              ? modalities.map((item, i) => {
+                                  return (
                                     <option value={item.value} key={i}>
                                       {item.name}
                                     </option>
-                                )
-                              })}
+                                  )
+                                })
+                              : item.name === 'etapa_formacion_aprendiz_inscripcion'
+                              ? etapasFormacion.map((item, i) => {
+                                  return (
+                                    <option value={item.value} key={i}>
+                                      {item.name}
+                                    </option>
+                                  )
+                                })
+                              : item.name === 'nivel_formacion_aprendiz_inscripcion'
+                              ? nivelFormacion.map((item, i) => {
+                                  return (
+                                    <option value={item.value} key={i}>
+                                      {item.name}
+                                    </option>
+                                  )
+                                })
+                              : item.name === 'apoyo_sostenimiento_aprendiz_inscripcion'
+                              ? apoyoSostenimiento.map((item, i) => {
+                                  return (
+                                    <option value={item.value} key={i}>
+                                      {item.name}
+                                    </option>
+                                  )
+                                })
+                              : item.name === 'arl_aprendiz_inscripcion'
+                              ? pagoArl.map((item, i) => {
+                                  return (
+                                    <option value={item.value} key={i}>
+                                      {item.name}
+                                    </option>
+                                  )
+                                })
+                              : null}
                           </select>
                         </div>
                       ) : (
@@ -195,7 +187,7 @@ const RegisterStudent = () => {
                           <span className="absolute inset-y-0 left-0 flex items-center pl-3">{item.icon}</span>
                           <input type={item.type} name={item.name} className="py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72" autoComplete="on" placeholder={item.placeholder} />
                         </div>
-                            )}
+                      )}
                     </div>
                   )
                 })}
