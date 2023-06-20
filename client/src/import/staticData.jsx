@@ -160,3 +160,13 @@ export const passwordStatus = {
   shown: 'text',
   hidden: 'password'
 }
+
+/*
+src: src\components\Siderbar\Sidebar.jsx*/
+export const colorIcon = {
+  '/home': 'text-salmon',
+  '/aprendices': 'text-third',
+  '/bitacoras': 'text-seventh',
+  '/visitas': 'text-primary',
+  '/config': 'text-fifth',
+}

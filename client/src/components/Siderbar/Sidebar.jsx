@@ -6,7 +6,8 @@ import jwtdecoded from 'jwt-decode'
 
 import { IoCalendarClearOutline, IoDocumentTextOutline, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline } from 'react-icons/io5'
 
-import { colorIcon } from '../../Import/staticData'
+// import { colorIcon } from '../../import/staticData'
+import { colorIcon } from '../../import/staticData'
 
 const Siderbar = () => {
   const [selectPage, setSelectPage] = useState('home')
