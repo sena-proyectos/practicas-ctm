@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx'
 
 import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
-import { idTypes, modalities, dataInscription } from '../../import/staticData'
+import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
 
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/ExpresionesRegulares'
 
@@ -181,13 +181,47 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : modalities.map((item, i) => {
+                              : item.name === 'tipo_modalidad_aprendiz_inscripcion'
+                              ? modalities.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
                                       {item.name}
                                     </option>
                                   )
-                                })}
+                                })
+                              : item.name === 'etapa_formacion_aprendiz_inscripcion'
+                              ? etapasFormacion.map((item, i) => {
+                                  return (
+                                    <option value={item.value} key={i}>
+                                      {item.name}
+                                    </option>
+                                  )
+                                })
+                              : item.name === 'nivel_formacion_aprendiz_inscripcion'
+                              ? nivelFormacion.map((item, i) => {
+                                  return (
+                                    <option value={item.value} key={i}>
+                                      {item.name}
+                                    </option>
+                                  )
+                                })
+                              : item.name === 'apoyo_sostenimiento_aprendiz_inscripcion'
+                              ? apoyoSostenimiento.map((item, i) => {
+                                  return (
+                                    <option value={item.value} key={i}>
+                                      {item.name}
+                                    </option>
+                                  )
+                                })
+                              : item.name === 'arl_aprendiz_inscripcion'
+                              ? pagoArl.map((item, i) => {
+                                  return (
+                                    <option value={item.value} key={i}>
+                                      {item.name}
+                                    </option>
+                                  )
+                                })
+                              : null}
                           </select>
                         </div>
                       ) : (
