@@ -36,7 +36,7 @@ export const cards = [
     description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-[#385C57]',
-    link: '/',
+    link: '/home',
   },
   {
     title: 'Visitas no hechas',

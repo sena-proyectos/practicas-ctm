@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { GetUsersHttp } from '../../api/httpRequest'
+import Cookies from 'js-cookie'
+import Swal from 'sweetalert2'
 
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
@@ -10,14 +12,26 @@ export const Student = () => {
   const [apprentices, setApprentices] = useState([])
 
   useEffect(() => {
+    const token = Cookies.get('token')
+    if (!token) window.location.href = '/'
+
     const getApprentices = async () => {
       const response = await GetUsersHttp()
       const { data } = response.data
+
       setApprentices(data)
     }
 
     getApprentices()
   }, [])
+
+  const showInfo = () => {
+    Swal.fire({
+      icon: 'info',
+      title: '¡Información!',
+      text: 'Esta funcionalidad aún no está disponible',
+    })
+  }
   return (
     <main className="flex flex-row">
       <Siderbar />
@@ -26,8 +40,8 @@ export const Student = () => {
           <Search />
         </header>
         <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
-          {apprentices.map((apprentice) => {
-            return <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombres_aprendiz_inscripcion} ${apprentice.apellidos_aprendiz_inscripcion}`} subtitle={apprentice.correo_electronico_aprendiz_inscripcion} lione={apprentice.programa_formacion_aprendiz_inscripcion} litwo={apprentice.numero_ficha_aprendiz_inscripcion} key={apprentice.id_aprendiz_inscripcion} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} />
+          {apprentices.map((apprentice, i) => {
+            return <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombres_aprendiz_inscripcion} ${apprentice.apellidos_aprendiz_inscripcion}`} subtitle={apprentice.correo_electronico_aprendiz_inscripcion} lione={apprentice.programa_formacion_aprendiz_inscripcion} litwo={apprentice.numero_ficha_aprendiz_inscripcion} key={i} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} />
           })}
         </div>
         <Footer />
