@@ -40,3 +40,17 @@ export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Res
     return handleHTTP(res, error as CustomError)
   }
 }
+
+export const createClass: RequestHandler<{}, Response, classes> = async (req: Request<{}>, res: Response): Promise<Response> => {
+  const { numero_ficha, nombre_programa_formación, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formación, jornada_ficha, id_instructor_lider_formacion, id_instructor_practicas_formacion } = req.body
+  const classNumber = Number(numero_ficha)
+  const leaderTeacherNumber = Number(id_instructor_lider_formacion)
+  const practicalTeacherNumber = Number(id_instructor_practicas_formacion)
+  try {
+    const [classQuery] = await connection.query('INSERT INTO fichas (id_ficha, numero_ficha, nombre_programa_formación, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formación, jornada_ficha, id_instructor_lider_formacion, id_instructor_practicas_formacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [classNumber, nombre_programa_formación, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formación, jornada_ficha, leaderTeacherNumber, practicalTeacherNumber])
+    if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se pudo crear la ficha.', errorCodes.ERROR_CREATE_CLASS)
+    return res.status(httpStatus.OK).json({ data: classQuery })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}

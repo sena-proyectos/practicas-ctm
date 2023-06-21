@@ -1,7 +1,7 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { getClasses, getClassById, getClassByClassNumber } from '../controllers/classes.controllers.js'
-import { checkClassNumber } from '../middlewares/classes.middlewares.js'
+import { getClasses, getClassById, getClassByClassNumber, createClass } from '../controllers/classes.controllers.js'
+import { checkClassData, checkClassNumber } from '../middlewares/classes.middlewares.js'
 
 const classRoutes: IRouter = Router()
 
@@ -11,6 +11,7 @@ classRoutes.get('/class/:id', checkIdReq, getClassById)
 classRoutes.get('/classNumber', checkClassNumber, getClassByClassNumber)
 
 // * POST
+classRoutes.post('/class', checkClassData, createClass)
 
 // * PATCH
 
