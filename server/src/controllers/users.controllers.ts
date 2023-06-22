@@ -16,7 +16,7 @@ export const getUsers = async (_req: Request, res: Response): Promise<Response> 
     if (!Array.isArray(users) || users.length === 0) throw new DbErrorNotFound('No hay usuarios registrados.', errorCodes.ERROR_GET_USERS)
     return res.status(httpStatus.OK).json({ data: users })
   } catch (error) {
-    console.log(error);
+    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
@@ -48,15 +48,15 @@ export const editUser: RequestHandler<{}, Response, userForm> = async (req: Requ
 
 export const getTeachers = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const page = (!Number.isNaN(parseInt(req.query.page as string))) || 1
-    const limit = (!Number.isNaN(parseInt(req.query.limit as string))) || 10
+    const page = !Number.isNaN(parseInt(req.query.page as string)) || 1
+    const limit = !Number.isNaN(parseInt(req.query.limit as string)) || 10
     const offset = (Number(page) - 1) * Number(limit)
 
     const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2 LIMIT ? OFFSET ?', [limit, offset])
     if (!Array.isArray(teachers) || teachers.length === 0) throw new DbErrorNotFound('No hay estudiantes registrados.', errorCodes.ERROR_GET_STUDENTS)
 
-    const [total] = await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3') as unknown as Array<{ count: number }>
-    const totalPages = Math.ceil(Number((Array.isArray(total) && total[0].count)) / Number(limit))
+    const [total] = (await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3')) as unknown as Array<{ count: number }>
+    const totalPages = Math.ceil(Number(Array.isArray(total) && total[0].count) / Number(limit))
 
     return res.status(httpStatus.OK).json({ data: teachers, page, totalPages })
   } catch (error) {
@@ -78,15 +78,15 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
 
 export const getStudents = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const page = (!Number.isNaN(parseInt(req.query.page as string))) || 1
-    const limit = (!Number.isNaN(parseInt(req.query.limit as string))) || 10
+    const page = !Number.isNaN(parseInt(req.query.page as string)) || 1
+    const limit = !Number.isNaN(parseInt(req.query.limit as string)) || 10
     const offset = (Number(page) - 1) * Number(limit)
 
     const [students] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 LIMIT ? OFFSET ?', [limit, offset])
     if (!Array.isArray(students) || students.length === 0) throw new DbErrorNotFound('No hay estudiantes registrados.', errorCodes.ERROR_GET_STUDENTS)
 
-    const [total] = await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3') as unknown as Array<{ count: number }>
-    const totalPages = Math.ceil(Number((Array.isArray(total) && total[0].count)) / Number(limit))
+    const [total] = (await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3')) as unknown as Array<{ count: number }>
+    const totalPages = Math.ceil(Number(Array.isArray(total) && total[0].count) / Number(limit))
 
     return res.status(httpStatus.OK).json({ data: students, page, totalPages })
   } catch (error) {
@@ -119,11 +119,12 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
   }
 }
 
-export const login: RequestHandler<{ num_documento: string, contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
+export const login: RequestHandler<{ num_documento: string; contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string; contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
   const { num_documento, contrasena } = req.body
+  console.log(num_documento, contrasena)
   try {
     const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [num_documento])
-    if (!Array.isArray(user)) throw new DbErrorNotFound('No se encontró el usuario.', errorCodes.ERROR_LOGIN_USER)
+    if (!Array.isArray(user) || user?.length === 0) throw new DbErrorNotFound('No se encontró el usuario.', errorCodes.ERROR_LOGIN_USER)
 
     const dbPassword = (user as RowDataPacket)[0].contrasena
 
@@ -132,6 +133,7 @@ export const login: RequestHandler<{ num_documento: string, contrasena: string }
     req.body = { user: user[0] }
     next()
   } catch (error) {
+    console.log(error)
     handleHTTP(res, error as CustomError)
   }
 }
