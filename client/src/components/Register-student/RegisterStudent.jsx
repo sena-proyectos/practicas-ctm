@@ -9,6 +9,7 @@ import { InscriptionApprentice } from '../../api/httpRequest'
 
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
+import { Footer } from '../Footer/Footer'
 
 const RegisterStudent = () => {
   const excelFileRef = useRef(null)
@@ -99,13 +100,15 @@ const RegisterStudent = () => {
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" />
-      <section className="grid grid-cols-2-20r-80">
+      <section className="flex flex-row min-h-screen">
         <Siderbar />
-        <section className="grid grid-rows-2-25-75">
-          <h1 className="text-center uppercase font-bold text-3xl place-self-center">Inscribe a un aprendiz</h1>
-          <section className="h-4/5 overflow-hidden">
-            <form action="" className="grid grid-rows-2 gap-y-20" onSubmit={handleSubmit}>
-              <section className="grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 w-4/5 mx-auto gap-y-4">
+        <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">
+          <header className="grid place-items-center">
+            <h1 className="text-center font-bold text-3xl place-self-center">Inscribe a un Aprendiz</h1>
+          </header>
+          <section>
+            <form action="" className="grid grid-col-2 gap-y-10" onSubmit={handleSubmit}>
+              <section className="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 w-4/5 mx-auto gap-y-4">
                 {dataInscription.map((item, i) => {
                   return (
                     <div className="text-gray-400 m-auto" key={i}>
@@ -208,6 +211,7 @@ const RegisterStudent = () => {
               </section>
             </form>
           </section>
+          <Footer />
         </section>
       </section>
     </>
