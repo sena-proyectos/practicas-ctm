@@ -67,7 +67,7 @@ const Form = ({ inputs }) => {
             },
         };
     };
-  }
+  
 
   return (
     <form action="" className="flex flex-col justify-center my-4 gap-3" onSubmit={handleSubmit}>
@@ -92,6 +92,6 @@ const Form = ({ inputs }) => {
       <Button value={'Iniciar Sesión'} bg={'bg-primary'} />
     </form>
   )
-
+}
 
 export { Form }
