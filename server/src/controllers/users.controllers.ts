@@ -105,6 +105,18 @@ export const getStudentsById: RequestHandler<{ id: string }, Response, LoginData
   }
 }
 
+export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
+  const { nombreCompleto } = req.body
+  try {
+    const [student] = await connection.query('SELECT * FROM usuarios WHERE id_usuario = 3 AND CONCAT(nombre, " ", apellido) LIKE ?', [`%${nombreCompleto as string}%`])
+    if (!Array.isArray(student) || student?.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)
+    return res.status(httpStatus.OK).json({ data: student })
+  } catch (error) {
+    console.log(error)
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 export const createUser: RequestHandler<{}, Response, userForm> = async (req: Request, res: Response): Promise<Response> => {
   const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
   try {

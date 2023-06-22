@@ -8,6 +8,7 @@ import { type RequestHandler, type NextFunction, type Response, type Request } f
 import { type CustomError, DataNotValid, UserExists, NumberIsNaN } from '../errors/customErrors.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
+import Joi from 'joi'
 
 export const checkExistingUser: RequestHandler<{}, Response, userForm > = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { num_documento, correo_electronico } = req.body as userForm
@@ -75,4 +76,16 @@ export const generateToken: RequestHandler<{}, unknown, LoginData> = (req: Reque
   const payload = req.body
   const token = jwt.sign({ data: payload }, 'secret', { expiresIn: '3h', algorithm: 'HS256' })
   return res.status(httpStatus.OK).json({ token })
+}
+
+export const checkStudentName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = (req: Request<{ nombreCompleto: string }>, res: Response, next: NextFunction): void => {
+  const { nombreCompleto } = req.body
+  const nameSchema = Joi.object({ nombreCompleto: Joi.string().required().min(3).max(100) })
+  try {
+    const { error } = nameSchema.validate({ nombreCompleto })
+    if (error !== undefined) throw new DataNotValid('El nombre completo ingresado no es válido.')
+    next()
+  } catch (error) {
+    handleHTTP(res, error as CustomError)
+  }
 }
