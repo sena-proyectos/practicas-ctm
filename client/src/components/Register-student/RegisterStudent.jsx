@@ -1,10 +1,13 @@
 import { useRef, useState } from 'react'
+import Swal from 'sweetalert2'
+import Cookies from 'js-cookie'
+import jwtdecoded from 'jwt-decode'
 import { ToastContainer } from 'react-toastify'
-import { Button } from '../Button/Button'
-import { Siderbar } from '../Siderbar/Sidebar'
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
 
 import { InscriptionApprentice } from '../../api/httpRequest'
+import { Siderbar } from '../Siderbar/Sidebar'
+import { Button } from '../Button/Button'
 
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
@@ -12,6 +15,11 @@ import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
 const RegisterStudent = () => {
   const excelFileRef = useRef(null)
   const [msg, setMessage] = useState({})
+
+  const token = Cookies.get('token')
+  const decoded = jwtdecoded(token)
+
+  const id = decoded.data.user.id_usuario
 
   // Validación de campos
   // Capturación de valores
@@ -21,6 +29,7 @@ const RegisterStudent = () => {
     // capturar los valores de los inputs del formulario
     const formValues = Object.fromEntries(new FormData(e.target))
 
+    formValues.id_usuario_responsable_inscripcion = `${id}`
     // validar que los campos no esten vacios
     const emptyFields = Object.keys(formValues).filter((key) => !formValues[key])
 
@@ -34,12 +43,13 @@ const RegisterStudent = () => {
     }
 
     // validar que los campos de tipo number sean numeros
-    ValidateInputsTypeNumber(formValues.numero_documento_aprendiz_inscripcion, formValues.numero_telefono_aprendiz_inscripcion, formValues.numero_ficha_aprendiz_inscripcion)
+    ValidateInputsTypeNumber(formValues.numero_documento_inscripcion, formValues.numero_telefono_inscripcion, formValues.numero_ficha_inscripcion)
 
     // validar que el numero de documento sea valido
-    const { numero_documento_aprendiz_inscripcion, correo_electronico_aprendiz_inscripcion } = formValues
-    const isIdentityValid = ValidateIdentity(numero_documento_aprendiz_inscripcion)
-    const isEmailValid = ValidateEmail(correo_electronico_aprendiz_inscripcion)
+    const { numero_documento_inscripcion, correo_electronico_inscripcion } = formValues
+    const isIdentityValid = ValidateIdentity(numero_documento_inscripcion)
+    const isEmailValid = ValidateEmail(correo_electronico_inscripcion)
+
 
     if (!isIdentityValid) {
       return Swal.fire({
@@ -131,7 +141,7 @@ const RegisterStudent = () => {
                           <span className="absolute inset-y-0 left-0 flex items-center pl-3">{item.icon}</span>
                           <select name={item.name} className="py-2 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72">
                             <option value={''}>Sin seleccionar</option>
-                            {item.name === 'tipo_documento_aprendiz_inscripcion'
+                            {item.name === 'tipo_documento_inscripcion'
                               ? idTypes.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -139,7 +149,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'tipo_modalidad_aprendiz_inscripcion'
+                              : item.name === 'id_modalidad_inscripcion'
                               ? modalities.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -147,7 +157,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'etapa_formacion_aprendiz_inscripcion'
+                              : item.name === 'etapa_formacion_actual_inscripcion'
                               ? etapasFormacion.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -155,7 +165,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'nivel_formacion_aprendiz_inscripcion'
+                              : item.name === 'nivel_formacion_actual_inscripcion'
                               ? nivelFormacion.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -163,7 +173,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'apoyo_sostenimiento_aprendiz_inscripcion'
+                              : item.name === 'apoyo_sostenimiento_inscripcion'
                               ? apoyoSostenimiento.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -171,7 +181,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'arl_aprendiz_inscripcion'
+                              : item.name === 'asume_pago_arl_inscripcion'
                               ? pagoArl.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
