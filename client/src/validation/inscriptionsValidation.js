@@ -4,7 +4,7 @@ export const inscriptionValidation = Joi.object({
   id_modalidad_inscripcion: Joi.number().required().min(1),
   nombres_inscripcion: Joi.string().required().min(3).max(50),
   apellidos_inscripcion: Joi.string().required().min(3).max(45),
-  tipo_documento_inscripcion: Joi.string().required().min(2).max(10),
+  tipo_documento_inscripcion: Joi.string().required().min(2).max(50),
   numero_documento_inscripcion: Joi.string().required().min(5).max(20),
   correo_electronico_inscripcion: Joi.string().required().min(5).max(60),
   numero_celular_inscripcion: Joi.string().required().min(5).max(15),

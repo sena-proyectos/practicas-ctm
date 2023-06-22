@@ -17,7 +17,6 @@ import { inscriptionValidation } from '../../validation/inscriptionsValidation'
 const RegisterStudent = () => {
   const excelFileRef = useRef(null)
   const [msg, setMessage] = useState({})
-  const formInscriptionRef = useRef({})
 
   const token = Cookies.get('token')
   const decoded = jwtdecoded(token)
@@ -42,6 +41,15 @@ const RegisterStudent = () => {
         icon: 'error',
         title: 'Oops...',
         text: 'Por favor, completa todos los campos',
+      })
+    }
+    const { error } = inscriptionValidation.validate(formValues)
+    console.log(error)
+    if (error !== null) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error,
       })
     }
 
@@ -106,19 +114,6 @@ const RegisterStudent = () => {
     }
     readExcelFile(currentFile)
   }
-
-  const handleInputValues = (e, index) => {
-    const { name, value } = e.target
-    formInscriptionRef.current = {
-      ...formInscriptionRef.current,
-      [index]: {
-        ...formInscriptionRef.current[index],
-        [name]: value,
-      },
-    }
-    console.log(name, value)
-  }
-
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" />
