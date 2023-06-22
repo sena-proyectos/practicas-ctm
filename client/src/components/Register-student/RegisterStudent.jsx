@@ -1,105 +1,106 @@
-import { useRef, useState } from 'react';
-
-import { Button } from '../Button/Button'
-import { Siderbar } from '../Siderbar/Sidebar'
+import { useRef, useState } from 'react'
+import Swal from 'sweetalert2'
+import Cookies from 'js-cookie'
+import jwtdecoded from 'jwt-decode'
+import { ToastContainer } from 'react-toastify'
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
-import { ToastContainer } from 'react-toastify';
-import Swal from 'sweetalert2';
 
-import { InscriptionApprentice } from '../../api/httpRequest';
-import { Siderbar } from '../Siderbar/Sidebar';
-import { Button } from '../Button/Button';
-import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions';
-import { idTypes, modalities, dataInscription } from '../../import/staticData';
+import { InscriptionApprentice } from '../../api/httpRequest'
+import { Siderbar } from '../Siderbar/Sidebar'
+import { Button } from '../Button/Button'
+import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
 
 const RegisterStudent = () => {
-    const excelFileRef = useRef(null);
-    const [msg, setMessage] = useState({});
+  const excelFileRef = useRef(null)
+  const [msg, setMessage] = useState({})
 
-    // Validación de campos
-    // Capturación de valores 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  const token = Cookies.get('token')
+  const decoded = jwtdecoded(token)
 
-        // capturar los valores de los inputs del formulario
-        const formValues = Object.fromEntries(new FormData(e.target));
+  const id = decoded.data.user.id_usuario
 
-        // validar que los campos no esten vacios
-        const emptyFields = Object.keys(formValues).filter((key) => !formValues[key]);
+  // Validación de campos
+  // Capturación de valores
+  const handleSubmit = (e) => {
+    e.preventDefault()
 
-        // si hay campos vacios, mostrar alerta
-        if (emptyFields.length > 0) {
-            return Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Por favor, completa todos los campos',
-            });
-        }
+    // capturar los valores de los inputs del formulario
+    const formValues = Object.fromEntries(new FormData(e.target))
+    formValues.id_usuario_responsable_inscripcion = `${id}`
+    console.log(formValues)
+    // validar que los campos no esten vacios
+    const emptyFields = Object.keys(formValues).filter((key) => !formValues[key])
 
-        // validar que los campos de tipo number sean numeros
-        ValidateInputsTypeNumber(formValues.numero_documento_aprendiz_inscripcion, formValues.numero_telefono_aprendiz_inscripcion, formValues.numero_ficha_aprendiz_inscripcion);
+    // si hay campos vacios, mostrar alerta
+    if (emptyFields.length > 0) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Por favor, completa todos los campos'
+      })
+    }
 
-        // validar que el numero de documento sea valido
-        const { numero_documento_aprendiz_inscripcion, correo_electronico_aprendiz_inscripcion } = formValues;
-        const isIdentityValid = ValidateIdentity(numero_documento_aprendiz_inscripcion);
-        const isEmailValid = ValidateEmail(correo_electronico_aprendiz_inscripcion);
+    // validar que los campos de tipo number sean numeros
+    ValidateInputsTypeNumber(formValues.numero_documento_inscripcion, formValues.numero_telefono_inscripcion, formValues.numero_ficha_inscripcion)
 
-        if (!isIdentityValid) {
-            return Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'El número de documento no es válido',
-            });
-        } else if (!isEmailValid) {
-            return Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'El correo electrónico no es válido',
-            });
-        }
+    // validar que el numero de documento sea valido
+    const { numero_documento_inscripcion, correo_electronico_inscripcion } = formValues
+    const isIdentityValid = ValidateIdentity(numero_documento_inscripcion)
+    const isEmailValid = ValidateEmail(correo_electronico_inscripcion)
 
-        // enviar los datos al backend
-        sendDataInscription(formValues);
-
-        // mostramos una alerta de exito
-        Swal.fire({
-            icon: 'success',
-            title: '¡Éxito!',
-            text: msg,
-        });
-    };
+    if (!isIdentityValid) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'El número de documento no es válido'
+      })
+    } else if (!isEmailValid) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'El correo electrónico no es válido'
+      })
+    }
 
     // enviar los datos al backend
-    const sendDataInscription = async (data) => {
-        const response = await InscriptionApprentice(data);
-        const { message } = response.data;
-        setMessage(message);
-    };
+    sendDataInscription(formValues)
 
-    // vaciar los inputs
-    const deleteData = () => {};
+    // mostramos una alerta de exito
+    Swal.fire({
+      icon: 'success',
+      title: '¡Éxito!',
+      text: msg
+    })
+  }
 
-    // Leer archivo excel
-    // TODO: Cambiar el lector de excel porque este NO FUNCIONA
-    const handleExcelFile = () => {
-        const currentFile = excelFileRef.current.files[0];
+  // enviar los datos al backend
+  const sendDataInscription = async (data) => {
+    const response = await InscriptionApprentice(data)
+    const { message } = response.data
+    setMessage(message)
+  }
 
-        const checkFile = excelFileRef.current.files[0].name.split('.');
-        if (checkFile[1] !== 'xlsx' && checkFile[1] !== 'xls') {
-            Swal.fire({
-                icon: 'error',
-                title: '¡Error!',
-                text: 'Has ingresado un formato inválido. ¡Por favor escoga un formato válido de excel!',
-                footer: '.xlsx, .xls',
-            });
-            excelFileRef.current.value = '';
-            return;
-        }
-        readExcelFile(currentFile);
-    };
+  // vaciar los inputs
+  const deleteData = () => {}
 
-    reader.readAsArrayBuffer(file)
+  // Leer archivo excel
+  // TODO: Cambiar el lector de excel porque este NO FUNCIONA
+  const handleExcelFile = () => {
+    const currentFile = excelFileRef.current.files[0]
+
+    const checkFile = excelFileRef.current.files[0].name.split('.')
+    if (checkFile[1] !== 'xlsx' && checkFile[1] !== 'xls') {
+      Swal.fire({
+        icon: 'error',
+        title: '¡Error!',
+        text: 'Has ingresado un formato inválido. ¡Por favor escoga un formato válido de excel!',
+        footer: '.xlsx, .xls'
+      })
+      excelFileRef.current.value = ''
+      return
+    }
+    readExcelFile(currentFile)
   }
 
   return (
@@ -127,7 +128,7 @@ const RegisterStudent = () => {
                             className="py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72"
                             style={{
                               WebkitAppearance: 'none',
-                              MozAppearance: 'textfield',
+                              MozAppearance: 'textfield'
                             }}
                             autoComplete="on"
                             placeholder={item.placeholder}
@@ -138,7 +139,7 @@ const RegisterStudent = () => {
                           <span className="absolute inset-y-0 left-0 flex items-center pl-3">{item.icon}</span>
                           <select name={item.name} className="py-2 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72">
                             <option value={''}>Sin seleccionar</option>
-                            {item.name === 'tipo_documento_aprendiz_inscripcion'
+                            {item.name === 'tipo_documento_inscripcion'
                               ? idTypes.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -146,7 +147,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'tipo_modalidad_aprendiz_inscripcion'
+                              : item.name === 'id_modalidad_inscripcion'
                               ? modalities.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -154,7 +155,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'etapa_formacion_aprendiz_inscripcion'
+                              : item.name === 'etapa_formacion_actual_inscripcion'
                               ? etapasFormacion.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -162,7 +163,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'nivel_formacion_aprendiz_inscripcion'
+                              : item.name === 'nivel_formacion_actual_inscripcion'
                               ? nivelFormacion.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -170,7 +171,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'apoyo_sostenimiento_aprendiz_inscripcion'
+                              : item.name === 'apoyo_sostenimiento_inscripcion'
                               ? apoyoSostenimiento.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -178,7 +179,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'arl_aprendiz_inscripcion'
+                              : item.name === 'asume_pago_arl_inscripcion'
                               ? pagoArl.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -218,6 +219,6 @@ const RegisterStudent = () => {
       </section>
     </>
   )
+}
 
-
-export { RegisterStudent };
+export { RegisterStudent }

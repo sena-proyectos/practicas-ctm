@@ -10,7 +10,7 @@ export const cards = [
     description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-primary',
-    link: '/aprendices',
+    link: '/aprendices'
   },
   {
     title: 'Bitácoras Incompletas',
@@ -18,7 +18,7 @@ export const cards = [
     description: 'Podrás ver el listado de bitácoras que actualmente se encuentran en incompletas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-salmon',
-    link: '/bitacoras',
+    link: '/bitacoras'
   },
   {
     title: 'Bitácoras Completas',
@@ -26,7 +26,7 @@ export const cards = [
     description: 'Podrás ver el listado de bitácoras que actualmente se encuentran completas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-seventh',
-    link: '/bitacoras',
+    link: '/bitacoras'
   },
   {
     title: 'Aprobaciones',
@@ -34,7 +34,7 @@ export const cards = [
     description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-[#385C57]',
-    link: '/home',
+    link: '/home'
   },
   {
     title: 'Visitas no hechas',
@@ -42,7 +42,7 @@ export const cards = [
     description: 'Podrás ver el listado de visitas que actualmente no se encuentran en realizadas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-third',
-    link: '/visitas',
+    link: '/visitas'
   },
   {
     title: 'Inscribir un aprendiz',
@@ -50,8 +50,8 @@ export const cards = [
     description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-aqua',
-    link: '/inscribir-aprendiz',
-  },
+    link: '/inscribir-aprendiz'
+  }
 ]
 
 /*
@@ -59,177 +59,166 @@ export const cards = [
  */
 export const dataInscription = [
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineUser/>,
     type: 'text',
-    name: 'nombres_aprendiz_inscripcion',
+    name: 'nombres_inscripcion',
     placeholder: 'Alejandro',
-    label: 'Nombres',
+    label: 'Nombres'
   },
   {
     icon: <AiOutlineUser />,
     type: 'text',
-    name: 'apellidos_aprendiz_inscripcion',
+    name: 'apellidos_inscripcion',
     placeholder: 'Rodriguez',
-    label: 'Apellidos',
+    label: 'Apellidos'
   },
   {
     icon: <AiOutlineUser />,
     type: 'select',
-    name: 'tipo_documento_aprendiz_inscripcion',
+    name: 'tipo_documento_inscripcion',
     placeholder: 'sin seleccionar',
-    label: 'Tipo documento',
+    label: 'Tipo documento'
   },
   {
     icon: <AiOutlineUser />,
     type: 'number',
-    name: 'numero_documento_aprendiz_inscripcion',
+    name: 'numero_documento_inscripcion',
     placeholder: '1023456789',
-    label: 'Número documento',
+    label: 'Número documento'
   },
   {
     icon: <AiOutlineUser />,
     type: 'email',
-    name: 'correo_electronico_aprendiz_inscripcion',
+    name: 'correo_electronico_inscripcion',
     placeholder: 'example@sena.edu.co',
-    label: 'Correo electrónico',
+    label: 'Correo electrónico'
   },
   {
     icon: <AiOutlineUser />,
     type: 'number',
-    name: 'numero_telefono_aprendiz_inscripcion',
+    name: 'numero_celular_inscripcion',
     placeholder: '3012345467',
-    label: 'Número de celular',
+    label: 'Número de celular'
   },
   {
     icon: <AiOutlineUser />,
     type: 'number',
-    name: 'numero_ficha_aprendiz_inscripcion',
+    name: 'id_ficha_inscripcion',
     placeholder: '2134567',
-    label: 'Número de ficha',
+    label: 'Número de ficha'
+  },
+
+  {
+    icon: <AiOutlineUser />,
+    type: 'select',
+    name: 'id_modalidad_inscripcion',
+    placeholder: 'Sin seleccionar',
+    label: 'Modalidad'
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'select',
+    name: 'etapa_formacion_actual_inscripcion',
+    placeholder: 'Sin seleccionar',
+    label: 'Etapa de formación'
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'select',
+    name: 'nivel_formacion_actual_inscripcion',
+    placeholder: 'Sin seleccionar',
+    label: 'Nivel de formación'
   },
   {
     icon: <AiOutlineUser />,
     type: 'text',
-    name: 'programa_formacion_aprendiz_inscripcion',
-    placeholder: 'ADSO',
-    label: 'Programa de formación',
-  },
-  {
-    icon: <AiOutlineUser />,
-    type: 'select',
-    name: 'tipo_modalidad_aprendiz_inscripcion',
-    placeholder: 'Sin seleccionar',
-    label: 'Modalidad',
-  },
-  {
-    icon: <AiOutlineUser />,
-    type: 'date',
-    name: 'inicio_etapa_practica_aprendiz_inscripcion',
-    label: 'Fecha de inicio prácticas',
-  },
-  {
-    icon: <AiOutlineUser />,
-    type: 'date',
-    name: 'fin_etapa_practica_aprendiz_inscripcion',
-    label: 'Fecha de fin prácticas',
-  },
-  {
-    icon: <AiOutlineUser />,
-    type: 'select',
-    name: 'etapa_formacion_aprendiz_inscripcion',
-    placeholder: 'Sin seleccionar',
-    label: 'Etapa de formación',
-  },
-  {
-    icon: <AiOutlineUser />,
-    type: 'select',
-    name: 'nivel_formacion_aprendiz_inscripcion',
-    placeholder: 'Sin seleccionar',
-    label: 'Nivel de formación',
-  },
-  {
-    icon: <AiOutlineUser />,
-    type: 'text',
-    name: 'nombre_instructor_lider_aprendiz_inscripcion',
+    name: 'nombre_instructor_lider_inscripcion',
     placeholder: 'Juan Perez',
-    label: 'Nombre Instructor Lider',
+    label: 'Nombre Instructor Lider'
   },
   {
     icon: <AiOutlineUser />,
     type: 'email',
-    name: 'correo_electronico_instructor_lider_aprendiz_inscripcion',
+    name: 'correo_electronico_instructor_lider_inscripcion',
     placeholder: 'example@sena.edu.co',
-    label: 'Correo electrónico Instructor Lider',
+    label: 'Correo electrónico Instructor Lider'
   },
   {
     icon: <AiOutlineUser />,
     type: 'date',
-    name: 'fin_etapa_lectiva_aprendiz_inscripcion',
-    label: 'Terminación de la etapa lectiva',
+    name: 'fin_etapa_lectiva_inscripcion',
+    label: 'Terminación de la etapa lectiva'
   },
   {
     icon: <AiOutlineUser />,
     type: 'select',
-    name: 'apoyo_sostenimiento_aprendiz_inscripcion',
+    name: 'apoyo_sostenimiento_inscripcion',
     placeholder: 'Sin seleccionar',
-    label: '¿Recibe apoyo de sostenimiento?',
+    label: '¿Recibe apoyo de sostenimiento?'
   },
   {
     icon: <AiOutlineUser />,
     type: 'number',
-    name: 'nit_empresa_aprendiz_inscripcion',
+    name: 'nit_empresa_inscripcion',
     placeholder: '123456789',
-    label: 'Nit de la empresa',
+    label: 'Nit de la empresa'
   },
   {
     icon: <AiOutlineUser />,
     type: 'text',
-    name: 'nombre_empresa_aprendiz_inscripcion',
+    name: 'nombre_empresa_inscripcion',
     placeholder: 'Sena',
-    label: 'Razón social (Nombre Empresa)',
+    label: 'Razón social (Nombre Empresa)'
   },
   {
     icon: <AiOutlineUser />,
     type: 'text',
-    name: 'direccion_empresa_aprendiz_inscripcion',
+    name: 'direccion_empresa_inscripcion',
     placeholder: 'Calle 123',
-    label: 'Dirección de la empresa',
+    label: 'Dirección de la empresa'
   },
   {
     icon: <AiOutlineUser />,
     type: 'text',
-    name: 'nombre_jefe_inmediato_aprendiz_inscripcion',
+    name: 'nombre_completo_jefe_inmediato_inscripcion',
     placeholder: 'Juan Perez',
-    label: 'Nombre del Jefe inmediato',
+    label: 'Nombre del Jefe inmediato'
   },
   {
     icon: <AiOutlineUser />,
     type: 'text',
-    name: 'cargo_jefe_inmediato_aprendiz_inscripcion',
+    name: 'cargo_jefe_inmediato_inscripcion',
     placeholder: 'Gerente',
-    label: 'Cargo del contacto en la empresa',
+    label: 'Cargo del contacto en la empresa'
   },
   {
     icon: <AiOutlineUser />,
     type: 'number',
-    name: 'telefono_empresa_aprendiz_inscripcion',
+    name: 'telefono_jefe_inmediato_inscripcion',
     placeholder: '3012345678',
-    label: 'Teléfono de la empresa',
+    label: 'Teléfono de la empresa'
   },
   {
     icon: <AiOutlineUser />,
     type: 'email',
-    name: 'correo_empresa_aprendiz_inscripcion',
+    name: 'correo_jefe_inmediato_inscripcion',
     placeholder: 'example@sena.edu.co',
-    label: 'Correo electrónico de la empresa',
+    label: 'Correo electrónico de la empresa'
   },
   {
     icon: <AiOutlineUser />,
     type: 'select',
-    name: 'arl_aprendiz_inscripcion',
+    name: 'asume_pago_arl_inscripcion',
     placeholder: 'Sin seleccionar',
-    label: '¿Quien asume el pago del arl?',
+    label: '¿Quien asume el pago del arl?'
   },
+  {
+    icon: <AiOutlineUser />,
+    type: 'text',
+    name: 'observaciones_inscripcion',
+    placeholder: 'Digite una observación',
+    label: '¿Tiene alguna observación?'
+  }
 ]
 
 /*
@@ -239,16 +228,18 @@ export const idTypes = [
   { value: 'C.C', name: 'Cédula de ciudadanía' },
   { value: 'C.E', name: 'Cédula de extranjería' },
   { value: 'T.I', name: 'Tarjeta de identidad' },
+  { value: 'PEP', name: 'Persona expuesta políticamente' }
 ]
 
 /*
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const modalities = [
-  { value: 'Contrato de aprendizaje', name: 'Contrato de aprendizaje' },
-  { value: 'Pasantía', name: 'Pasantías' },
-  { value: 'Proyecto formativoñ', name: 'Proyecto formativo' },
-  { value: 'Vinculación laboral', name: 'Vinculación laboral' },
+  { value: 1, name: 'Pasantías' },
+  { value: 2, name: 'Contrato de aprendizaje' },
+  { value: 3, name: 'Proyecto productivo' },
+  { value: 4, name: 'Monitoria' },
+  { value: 5, name: 'Vinculación laboral' }
 ]
 
 /*
@@ -256,7 +247,7 @@ export const modalities = [
  */
 export const etapasFormacion = [
   { value: 'Lectiva', name: 'Lectiva' },
-  { value: 'Práctica', name: 'Práctica' },
+  { value: 'Práctica', name: 'Práctica' }
 ]
 
 /*
@@ -264,7 +255,7 @@ export const etapasFormacion = [
  */
 export const nivelFormacion = [
   { value: 'Técnico', name: 'Técnico' },
-  { value: 'Tecnología', name: 'Tecnología' },
+  { value: 'Tecnología', name: 'Tecnología' }
 ]
 
 /*
@@ -274,7 +265,7 @@ export const apoyoSostenimiento = [
   { value: 'FIC', name: 'FIC' },
   { value: 'Jóvenes en Acción', name: 'Jóvenes en Acción' },
   { value: 'Apoyo de sostenimiento Sena', name: 'Apoyo de sostenimiento Sena' },
-  { value: 'Ninguno', name: 'Ninguno' },
+  { value: 'Ninguno', name: 'Ninguno' }
 ]
 
 /*
@@ -282,7 +273,7 @@ export const apoyoSostenimiento = [
  */
 export const pagoArl = [
   { value: 'Empresa', name: 'Empresa' },
-  { value: 'SENA', name: 'SENA' },
+  { value: 'SENA', name: 'SENA' }
 ]
 
 /*
@@ -290,7 +281,7 @@ export const pagoArl = [
  */
 export const passwordStatus = {
   shown: 'text',
-  hidden: 'password',
+  hidden: 'password'
 }
 
 /*
@@ -301,5 +292,5 @@ export const colorIcon = {
   '/aprendices': 'text-third',
   '/bitacoras': 'text-seventh',
   '/visitas': 'text-primary',
-  '/config': 'text-fifth',
+  '/config': 'text-fifth'
 }
