@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import jwtdecoded from 'jwt-decode'
 
 import { IoCalendarClearOutline, IoDocumentTextOutline, IoHandLeft, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline } from 'react-icons/io5'
-import { CiCircleChevLeft } from 'react-icons/ci'
+import { CiCircleChevRight } from 'react-icons/ci'
 
 import { colorIcon } from '../../import/staticData'
 
@@ -13,6 +13,20 @@ const Siderbar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [open, setOpen] = useState(true)
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isSmallScreen = window.innerWidth < 640 // Tamaño de la media query "sm"
+      setOpen(!isSmallScreen)
+    }
+
+    window.addEventListener('resize', handleResize)
+    handleResize() // Llamada inicial para establecer el estado según el tamaño actual
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   const [nameRol, setNameRol] = useState('')
   const [nameUser, setNameUser] = useState('')
@@ -29,12 +43,12 @@ const Siderbar = () => {
   }, [])
 
   const styles = (path) => {
-    return location.pathname === path ? 'flex items-center relative pl-10 py-2 font-semibold bg-white rounded-s-2xl w-[115%]' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] transition '
+    return location.pathname === path ? 'flex items-center relative pl-10 py-2 font-semibold bg-white rounded-s-2xl w-[115%] h-10' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] h-10 transition '
   }
 
   const spanStyle = (path) => {
     const color = colorIcon[path]
-    return location.pathname === path ? `absolute inset-y-0 left-0 flex items-center pl-3 text-sm font-bold ${color}` : 'absolute inset-y-0 left-0 flex items-center pl-3 text-xs'
+    return location.pathname === path ? `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3' : 'pl-5'}  text-sm font-bold ${color}` : `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3' : 'pl-5'} text-xs`
   }
 
   const logout = () => {
@@ -43,21 +57,13 @@ const Siderbar = () => {
   }
 
   return (
-    <aside className={`bg-secondary/10 ${open ? 'w-full' : 'w-[5rem]'}  md:h-screen rounded-r-2xl`}>
-      <span
-        className={`absolute top-3/4 pl-3 text-2xl ${open && 'rotate-180'}`}
-        onClick={() => {
-          setOpen(!open)
-        }}
-      >
-        <CiCircleChevLeft />
-      </span>
+    <aside className={`bg-secondary/10 ${open ? 'w-max' : 'w-[4.5rem]'}  md:h-screen rounded-r-2xl`}>
       <nav className="grid grid-rows-3-10-78-12 md:grid-rows-3-10-78-12 mx-auto w-4/5 h-screen">
-        <section className="w-full grid grid-cols-2 my-auto">
-          <img className="h-4/5 w-auto my-auto" src="public/user.png" alt="img_user" />
-          <div className="m-auto">
-            <h5>{nameUser}</h5>
-            <span>{nameRol}</span>
+        <section className={`w-fit ${open === true ? 'flex flex-row pr-3' : 'flex flex-col mx-auto'} my-auto`}>
+          <img className="h-[2.5rem] w-auto my-auto" src="public/user.png" alt="img_user" />
+          <div className={`pl-3 pr-10 w-full ${!open && 'hidden'}`}>
+            <h5 className="text-xs ">{nameUser}</h5>
+            <span className="font-semibold text-sm text-center">{nameRol}</span>
           </div>
         </section>
         <ul className="flex flex-col justify-center items-start cursor-pointer">
@@ -68,7 +74,7 @@ const Siderbar = () => {
                 <span className={spanStyle('/home')}>
                   <IoHomeOutline />
                 </span>
-                {open ? 'Inicio' : ''}
+                {open && 'Inicio'}
               </Link>
             </li>
             <li>
@@ -76,7 +82,7 @@ const Siderbar = () => {
                 <span className={spanStyle('/aprendices')}>
                   <IoPersonOutline />
                 </span>
-                Aprendices
+                {open && 'Aprendices'}
               </Link>
             </li>
             <li>
@@ -84,7 +90,7 @@ const Siderbar = () => {
                 <span className={spanStyle('/bitacoras')}>
                   <IoDocumentTextOutline />
                 </span>
-                Bitácoras
+                {open && 'Bitácoras'}
               </Link>
             </li>
             <li>
@@ -92,7 +98,7 @@ const Siderbar = () => {
                 <span className={spanStyle('/visitas')}>
                   <IoCalendarClearOutline />
                 </span>
-                Visitas
+                {open && 'Visitas'}
               </Link>
             </li>
             <hr className="text-white w-full mx-auto h-[1px] my-2" />
@@ -101,16 +107,24 @@ const Siderbar = () => {
                 <span className={spanStyle('/config')}>
                   <IoSettingsOutline />
                 </span>
-                Configuración
+                {open && 'Configuración'}
               </Link>
             </li>
           </section>
+          <span
+            className={`absolute top-3/4 pl-1 text-2xl ${open && 'rotate-180'}`}
+            onClick={() => {
+              setOpen(!open)
+            }}
+          >
+            <CiCircleChevRight />
+          </span>
           <section className="w-full mb-0">
-            <li className="flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] transition text-red-700">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-xs text-red-700">
+            <li className="flex items-center relative pl-10 py-2 h-10 hover:bg-white rounded-s-2xl w-[115%] transition text-red-700" onClick={logout}>
+              <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3' : 'pl-5'} text-xs text-red-700`}>
                 <IoLogOutOutline />
               </span>
-              <span onClick={logout}>Cerrar Sesión</span>
+              {open && 'Cerrar Sesión'}
             </li>
           </section>
         </ul>

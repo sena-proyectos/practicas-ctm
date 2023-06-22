@@ -3,7 +3,14 @@ import { GetUsersHttp } from '../../api/httpRequest';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
 
+<<<<<<< HEAD
 import { Siderbar } from '../Siderbar/Sidebar';
+=======
+import { Siderbar } from '../Siderbar/Sidebar'
+import { Footer } from '../Footer/Footer'
+import { Card } from '../Card/Card'
+import { Search } from '../Search/Search'
+>>>>>>> 7dac33dc27333ad2c93106478e6b38c62c6bf85c
 
 export const Student = () => {
     const [apprentices, setApprentices] = useState([]);
@@ -12,6 +19,7 @@ export const Student = () => {
         const token = Cookies.get('token');
         if (!token) window.location.href = '/';
 
+<<<<<<< HEAD
         const getApprentices = async () => {
             const response = await GetUsersHttp();
             const { data } = response.data;
@@ -55,3 +63,24 @@ export const Student = () => {
         </main>
     );
 };
+=======
+    getApprentices()
+  }, [])
+  return (
+    <main className="flex flex-row">
+      <Siderbar />
+      <section className="grid grid-rows-3-10-75-15 flex-auto w-min">
+        <header className="grid place-items-center">
+          <Search />
+        </header>
+        <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
+          {apprentices.map((apprentice) => {
+            return <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombres_aprendiz_inscripcion} ${apprentice.apellidos_aprendiz_inscripcion}`} subtitle={apprentice.correo_electronico_aprendiz_inscripcion} lione={apprentice.programa_formacion_aprendiz_inscripcion} litwo={apprentice.numero_ficha_aprendiz_inscripcion} key={apprentice.id_aprendiz_inscripcion} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} />
+          })}
+        </div>
+        <Footer />
+      </section>
+    </main>
+  )
+}
+>>>>>>> 7dac33dc27333ad2c93106478e6b38c62c6bf85c
