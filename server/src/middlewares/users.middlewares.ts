@@ -78,7 +78,7 @@ export const generateToken: RequestHandler<{}, unknown, LoginData> = (req: Reque
   return res.status(httpStatus.OK).json({ token })
 }
 
-export const checkStudentName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = (req: Request<{ nombreCompleto: string }>, res: Response, next: NextFunction): void => {
+export const checkName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = (req: Request<{ nombreCompleto: string }>, res: Response, next: NextFunction): void => {
   const { nombreCompleto } = req.body
   const nameSchema = Joi.object({ nombreCompleto: Joi.string().required().min(3).max(100) })
   try {
