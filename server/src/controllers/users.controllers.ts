@@ -16,7 +16,6 @@ export const getUsers = async (_req: Request, res: Response): Promise<Response> 
     if (!Array.isArray(users) || users.length === 0) throw new DbErrorNotFound('No hay usuarios registrados.', errorCodes.ERROR_GET_USERS)
     return res.status(httpStatus.OK).json({ data: users })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
@@ -133,7 +132,6 @@ export const login: RequestHandler<{ num_documento: string; contrasena: string }
     req.body = { user: user[0] }
     next()
   } catch (error) {
-    console.log(error)
     handleHTTP(res, error as CustomError)
   }
 }

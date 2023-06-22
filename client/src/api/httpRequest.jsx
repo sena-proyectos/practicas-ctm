@@ -5,7 +5,6 @@ export const Login = async (data) => {
   const URL = 'http://localhost:3000/api/login'
 
   const response = await axios.post(URL, data)
-  console.log(response)
   return response
 }
 
