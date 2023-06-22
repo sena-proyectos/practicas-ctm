@@ -1,19 +1,21 @@
 import { useRef, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import Swal from 'sweetalert2'
+
 import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
+import { Footer } from '../Footer/Footer'
+
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
-
 import { InscriptionApprentice } from '../../api/httpRequest'
-
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
-import { Footer } from '../Footer/Footer'
+import { inscriptionValidation } from '../../validation/inscriptionsValidation'
 
 const RegisterStudent = () => {
   const excelFileRef = useRef(null)
   const [msg, setMessage] = useState({})
+  const formInscriptionRef = useRef({})
 
   // Validación de campos
   // Capturación de valores
@@ -97,6 +99,18 @@ const RegisterStudent = () => {
     readExcelFile(currentFile)
   }
 
+  const handleInputValues = (e, index) => {
+    const { name, value } = e.target
+    formInscriptionRef.current = {
+      ...formInscriptionRef.current,
+      [index]: {
+        ...formInscriptionRef.current[index],
+        [name]: value,
+      },
+    }
+    console.log(name, value)
+  }
+
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" />
@@ -113,7 +127,7 @@ const RegisterStudent = () => {
                   return (
                     <div className="text-gray-400 m-auto" key={i}>
                       <label htmlFor="nombre" className="font-semibold ">
-                        {item.label}
+                        {item.label} {item.required && <span className="text-red-500">*</span>}
                       </label>
                       {item.type === 'number' ? (
                         <div className="relative">

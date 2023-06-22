@@ -67,6 +67,7 @@ export const dataInscription = [
     name: 'nombres_aprendiz_inscripcion',
     placeholder: 'Alejandro',
     label: 'Nombres',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -74,6 +75,7 @@ export const dataInscription = [
     name: 'apellidos_aprendiz_inscripcion',
     placeholder: 'Rodriguez',
     label: 'Apellidos',
+    required: true,
   },
   {
     icon: <AiOutlineIdcard />,
@@ -81,6 +83,7 @@ export const dataInscription = [
     name: 'tipo_documento_aprendiz_inscripcion',
     placeholder: 'sin seleccionar',
     label: 'Tipo documento',
+    required: true,
   },
   {
     icon: <AiOutlineIdcard />,
@@ -88,6 +91,7 @@ export const dataInscription = [
     name: 'numero_documento_aprendiz_inscripcion',
     placeholder: '1023456789',
     label: 'Número documento',
+    required: true,
   },
   {
     icon: <AiOutlineMail />,
@@ -95,6 +99,7 @@ export const dataInscription = [
     name: 'correo_electronico_aprendiz_inscripcion',
     placeholder: 'example@sena.edu.co',
     label: 'Correo electrónico',
+    required: true,
   },
   {
     icon: <AiOutlinePhone />,
@@ -102,6 +107,7 @@ export const dataInscription = [
     name: 'numero_telefono_aprendiz_inscripcion',
     placeholder: '3012345467',
     label: 'Número de celular',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -109,6 +115,7 @@ export const dataInscription = [
     name: 'numero_ficha_aprendiz_inscripcion',
     placeholder: '2134567',
     label: 'Número de ficha',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -116,6 +123,7 @@ export const dataInscription = [
     name: 'programa_formacion_aprendiz_inscripcion',
     placeholder: 'ADSO',
     label: 'Programa de formación',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -123,18 +131,21 @@ export const dataInscription = [
     name: 'tipo_modalidad_aprendiz_inscripcion',
     placeholder: 'Sin seleccionar',
     label: 'Modalidad',
+    required: true,
   },
   {
     icon: <BsCalendar4 />,
     type: 'date',
     name: 'inicio_etapa_practica_aprendiz_inscripcion',
-    label: 'Fecha de inicio prácticas',
+    label: 'Fecha de inicio práctica  ',
+    required: true,
   },
   {
     icon: <BsCalendar4 />,
     type: 'date',
     name: 'fin_etapa_practica_aprendiz_inscripcion',
     label: 'Fecha de fin prácticas',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -142,6 +153,7 @@ export const dataInscription = [
     name: 'etapa_formacion_aprendiz_inscripcion',
     placeholder: 'Sin seleccionar',
     label: 'Etapa de formación',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -149,6 +161,7 @@ export const dataInscription = [
     name: 'nivel_formacion_aprendiz_inscripcion',
     placeholder: 'Sin seleccionar',
     label: 'Nivel de formación',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -156,6 +169,7 @@ export const dataInscription = [
     name: 'nombre_instructor_lider_aprendiz_inscripcion',
     placeholder: 'Juan Perez',
     label: 'Nombre Instructor Lider',
+    required: true,
   },
   {
     icon: <AiOutlineMail />,
@@ -163,12 +177,14 @@ export const dataInscription = [
     name: 'correo_electronico_instructor_lider_aprendiz_inscripcion',
     placeholder: 'example@sena.edu.co',
     label: 'Correo electrónico Instructor Lider',
+    required: true,
   },
   {
     icon: <BsCalendar4 />,
     type: 'date',
     name: 'fin_etapa_lectiva_aprendiz_inscripcion',
     label: 'Terminación de la etapa lectiva',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -183,6 +199,7 @@ export const dataInscription = [
     name: 'nit_empresa_aprendiz_inscripcion',
     placeholder: '123456789',
     label: 'Nit de la empresa',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -190,6 +207,7 @@ export const dataInscription = [
     name: 'nombre_empresa_aprendiz_inscripcion',
     placeholder: 'Sena',
     label: 'Razón social (Nombre Empresa)',
+    required: true,
   },
   {
     icon: <FaRegAddressBook />,
@@ -197,6 +215,7 @@ export const dataInscription = [
     name: 'direccion_empresa_aprendiz_inscripcion',
     placeholder: 'Calle 123',
     label: 'Dirección de la empresa',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -250,7 +269,7 @@ export const idTypes = [
 export const modalities = [
   { value: 'Contrato de aprendizaje', name: 'Contrato de aprendizaje' },
   { value: 'Pasantía', name: 'Pasantías' },
-  { value: 'Proyecto formativoñ', name: 'Proyecto formativo' },
+  { value: 'Proyecto formativo', name: 'Proyecto formativo' },
   { value: 'Vinculación laboral', name: 'Vinculación laboral' },
 ]
 
