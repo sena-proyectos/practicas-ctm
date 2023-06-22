@@ -8,6 +8,7 @@ import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimient
 import { InscriptionApprentice } from '../../api/httpRequest'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Button } from '../Button/Button'
+
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
 
@@ -27,8 +28,8 @@ const RegisterStudent = () => {
 
     // capturar los valores de los inputs del formulario
     const formValues = Object.fromEntries(new FormData(e.target))
+
     formValues.id_usuario_responsable_inscripcion = `${id}`
-    console.log(formValues)
     // validar que los campos no esten vacios
     const emptyFields = Object.keys(formValues).filter((key) => !formValues[key])
 
@@ -37,7 +38,7 @@ const RegisterStudent = () => {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Por favor, completa todos los campos'
+        text: 'Por favor, completa todos los campos',
       })
     }
 
@@ -49,17 +50,18 @@ const RegisterStudent = () => {
     const isIdentityValid = ValidateIdentity(numero_documento_inscripcion)
     const isEmailValid = ValidateEmail(correo_electronico_inscripcion)
 
+
     if (!isIdentityValid) {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'El número de documento no es válido'
+        text: 'El número de documento no es válido',
       })
     } else if (!isEmailValid) {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'El correo electrónico no es válido'
+        text: 'El correo electrónico no es válido',
       })
     }
 
@@ -70,7 +72,7 @@ const RegisterStudent = () => {
     Swal.fire({
       icon: 'success',
       title: '¡Éxito!',
-      text: msg
+      text: msg,
     })
   }
 
@@ -95,7 +97,7 @@ const RegisterStudent = () => {
         icon: 'error',
         title: '¡Error!',
         text: 'Has ingresado un formato inválido. ¡Por favor escoga un formato válido de excel!',
-        footer: '.xlsx, .xls'
+        footer: '.xlsx, .xls',
       })
       excelFileRef.current.value = ''
       return
@@ -128,7 +130,7 @@ const RegisterStudent = () => {
                             className="py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72"
                             style={{
                               WebkitAppearance: 'none',
-                              MozAppearance: 'textfield'
+                              MozAppearance: 'textfield',
                             }}
                             autoComplete="on"
                             placeholder={item.placeholder}

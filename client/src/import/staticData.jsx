@@ -1,4 +1,6 @@
-import { AiOutlineUser } from 'react-icons/ai'
+import { AiOutlineIdcard, AiOutlineMail, AiOutlinePhone, AiOutlineUser } from 'react-icons/ai'
+import { FaRegAddressBook } from 'react-icons/fa'
+import { BsCalendar4 } from 'react-icons/bs'
 
 /*
  * src: src\components\Home\Home.jsx
@@ -73,28 +75,28 @@ export const dataInscription = [
     label: 'Apellidos'
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineIdcard />,
     type: 'select',
     name: 'tipo_documento_inscripcion',
     placeholder: 'sin seleccionar',
     label: 'Tipo documento'
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineIdcard />,
     type: 'number',
     name: 'numero_documento_inscripcion',
     placeholder: '1023456789',
     label: 'Número documento'
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineMail />,
     type: 'email',
     name: 'correo_electronico_inscripcion',
     placeholder: 'example@sena.edu.co',
     label: 'Correo electrónico'
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlinePhone />,
     type: 'number',
     name: 'numero_celular_inscripcion',
     placeholder: '3012345467',
@@ -144,7 +146,7 @@ export const dataInscription = [
     label: 'Correo electrónico Instructor Lider'
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <BsCalendar4 />,
     type: 'date',
     name: 'fin_etapa_lectiva_inscripcion',
     label: 'Terminación de la etapa lectiva'
@@ -247,7 +249,7 @@ export const modalities = [
  */
 export const etapasFormacion = [
   { value: 'Lectiva', name: 'Lectiva' },
-  { value: 'Práctica', name: 'Práctica' }
+  { value: 'Práctica', name: 'Práctica' },
 ]
 
 /*
@@ -255,7 +257,7 @@ export const etapasFormacion = [
  */
 export const nivelFormacion = [
   { value: 'Técnico', name: 'Técnico' },
-  { value: 'Tecnología', name: 'Tecnología' }
+  { value: 'Tecnología', name: 'Tecnología' },
 ]
 
 /*
@@ -265,7 +267,7 @@ export const apoyoSostenimiento = [
   { value: 'FIC', name: 'FIC' },
   { value: 'Jóvenes en Acción', name: 'Jóvenes en Acción' },
   { value: 'Apoyo de sostenimiento Sena', name: 'Apoyo de sostenimiento Sena' },
-  { value: 'Ninguno', name: 'Ninguno' }
+  { value: 'Ninguno', name: 'Ninguno' },
 ]
 
 /*
@@ -273,7 +275,7 @@ export const apoyoSostenimiento = [
  */
 export const pagoArl = [
   { value: 'Empresa', name: 'Empresa' },
-  { value: 'SENA', name: 'SENA' }
+  { value: 'SENA', name: 'SENA' },
 ]
 
 /*

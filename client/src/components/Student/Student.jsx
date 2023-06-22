@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { GetUsersHttp } from '../../api/httpRequest'
-// import Cookies from 'js-cookie'
+import Cookies from 'js-cookie'
 import Swal from 'sweetalert2'
 
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -12,6 +12,9 @@ export const Student = () => {
   const [apprentices, setApprentices] = useState([])
 
   useEffect(() => {
+    const token = Cookies.get('token')
+    if (!token) window.location.href = '/'
+    
     const getApprentices = async () => {
       const response = await GetUsersHttp()
       const { data } = response.data
@@ -26,7 +29,7 @@ export const Student = () => {
     Swal.fire({
       icon: 'info',
       title: '¡Información!',
-      text: 'Esta funcionalidad aún no está disponible'
+      text: 'Esta funcionalidad aún no está disponible',
     })
   }
   return (
