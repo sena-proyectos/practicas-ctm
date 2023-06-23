@@ -135,7 +135,6 @@ export const getTeacherByName: RequestHandler<{ nombreCompleto: string }, Respon
     if (!Array.isArray(teacher) || teacher?.length === 0) throw new DbErrorNotFound('No se encontró el instructor.', errorCodes.ERROR_GET_TEACHER)
     return res.status(httpStatus.OK).json({ data: teacher })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
@@ -153,7 +152,7 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
   }
 }
 
-export const login: RequestHandler<{ num_documento: string; contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string; contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
+export const login: RequestHandler<{ num_documento: string, contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
   const { num_documento, contrasena } = req.body
   try {
     const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [num_documento])
