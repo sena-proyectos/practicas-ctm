@@ -1,6 +1,7 @@
 # Bienvenido a ctm_practicas 👋
-![Version](https://img.shields.io/badge/version-0.0.2--alpha-blue.svg?cacheSeconds=2592000)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
+
+![Version](https://img.shields.io/badge/version-0.0.3--alpha-blue.svg?cacheSeconds=2592000)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 > Proyecto dedicado al registro y seguimiento de los aprendices que se encuentren actualmente en la etapa practica de su programa de formacion
 
@@ -18,16 +19,29 @@ npm run dev
 
 ## Autores
 
-👤 **Stiven Blandon, Lorena Quiceno, Stiven Benjumea, Kevin Chica, Juan Guillermo Gomez, Tatiana Mosquera, Juan Carlos Prasca, Jairo Bellaco Elías**
+- 👤 **Stiven Blandon**
+- 👤 **Lorena Quiceno**
+- 👤 **Stiven Benjumea**
+- 👤 **Kevin Chica**
+- 👤 **Juan Guillermo Gomez**
+- 👤 **Tatiana Mosquera**
+- 👤 **Juan Carlos Prasca**
+- 👤 **Jairo Elías Bellaco**
 
-* Github: [@ConanGH-S, lorenqg, STBenji, Axelchica759](https://github.com/ConanGH-S, https://github.com/lorenqg, https://github.com/STBenji, https://github.com/Axelchica759)
+## Perfiles Github
+
+- [@ConanGH-S](https://github.com/ConanGH-S)
+- [@lorenqg](https://github.com/lorenqg)
+- [@STBenji](https://github.com/STBenji)
+- [@Axelchica759](https://github.com/Axelchica759)
+- [@iLestar](https://github.com/iLestar)
 
 ## 🤝 Contribuciones
 
 ¡Contribuciones, problemas y nuevas características son bienvenidas!
 
-Siéntete libre de generar un problema [issues page](https://github.com/ConanGH-S/practicas_sena/issues). 
+Siéntete libre de generar un problema en nuestra [issues page](https://github.com/ConanGH-S/practicas_sena/issues).
 
 ## Ayúdanos
 
-¡Dame ⭐️ si te interesa este proyecto!
+¡Danos una ⭐️ si te interesa este proyecto!

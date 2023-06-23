@@ -1,15 +1,18 @@
 import { useRef, useState } from 'react'
-import Swal from 'sweetalert2'
 import Cookies from 'js-cookie'
 import jwtdecoded from 'jwt-decode'
 import { ToastContainer } from 'react-toastify'
-import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
+import Swal from 'sweetalert2'
 
-import { InscriptionApprentice } from '../../api/httpRequest'
-import { Siderbar } from '../Siderbar/Sidebar'
 import { Button } from '../Button/Button'
+import { Siderbar } from '../Siderbar/Sidebar'
+import { Footer } from '../Footer/Footer'
+
+import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
+import { InscriptionApprentice } from '../../api/httpRequest'
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
+import { inscriptionValidation } from '../../validation/inscriptionsValidation'
 
 const RegisterStudent = () => {
   const excelFileRef = useRef(null)
@@ -27,6 +30,7 @@ const RegisterStudent = () => {
 
     // capturar los valores de los inputs del formulario
     const formValues = Object.fromEntries(new FormData(e.target))
+
     formValues.id_usuario_responsable_inscripcion = `${id}`
     // validar que los campos no esten vacios
     const emptyFields = Object.keys(formValues).filter((key) => !formValues[key])
@@ -36,7 +40,16 @@ const RegisterStudent = () => {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Por favor, completa todos los campos'
+        text: 'Por favor, completa todos los campos',
+      })
+    }
+    const { error } = inscriptionValidation.validate(formValues)
+    console.log(error)
+    if (error !== null) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error,
       })
     }
 
@@ -52,13 +65,13 @@ const RegisterStudent = () => {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'El número de documento no es válido'
+        text: 'El número de documento no es válido',
       })
     } else if (!isEmailValid) {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'El correo electrónico no es válido'
+        text: 'El correo electrónico no es válido',
       })
     }
 
@@ -69,7 +82,7 @@ const RegisterStudent = () => {
     Swal.fire({
       icon: 'success',
       title: '¡Éxito!',
-      text: msg
+      text: msg,
     })
   }
 
@@ -94,29 +107,30 @@ const RegisterStudent = () => {
         icon: 'error',
         title: '¡Error!',
         text: 'Has ingresado un formato inválido. ¡Por favor escoga un formato válido de excel!',
-        footer: '.xlsx, .xls'
+        footer: '.xlsx, .xls',
       })
       excelFileRef.current.value = ''
       return
     }
     readExcelFile(currentFile)
   }
-
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" />
-      <section className="grid grid-cols-2-20r-80">
+      <section className="flex flex-row min-h-screen">
         <Siderbar />
-        <section className="grid grid-rows-2-25-75">
-          <h1 className="text-center uppercase font-bold text-3xl place-self-center">Inscribe a un aprendiz</h1>
-          <section className="h-4/5 overflow-hidden">
-            <form action="" className="grid grid-rows-2 gap-y-20" onSubmit={handleSubmit}>
-              <section className="grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 w-4/5 mx-auto gap-y-4">
+        <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">
+          <header className="grid place-items-center">
+            <h1 className="text-center font-bold text-3xl place-self-center">Inscribe a un Aprendiz</h1>
+          </header>
+          <section>
+            <form action="" className="grid grid-col-2 gap-y-10" onSubmit={handleSubmit}>
+              <section className="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 w-4/5 mx-auto gap-y-4">
                 {dataInscription.map((item, i) => {
                   return (
                     <div className="text-gray-400 m-auto" key={i}>
                       <label htmlFor="nombre" className="font-semibold ">
-                        {item.label}
+                        {item.label} {item.required && <span className="text-red-500">*</span>}
                       </label>
                       {item.type === 'number' ? (
                         <div className="relative">
@@ -127,7 +141,7 @@ const RegisterStudent = () => {
                             className="py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72"
                             style={{
                               WebkitAppearance: 'none',
-                              MozAppearance: 'textfield'
+                              MozAppearance: 'textfield',
                             }}
                             autoComplete="on"
                             placeholder={item.placeholder}
@@ -214,6 +228,7 @@ const RegisterStudent = () => {
               </section>
             </form>
           </section>
+          <Footer />
         </section>
       </section>
     </>

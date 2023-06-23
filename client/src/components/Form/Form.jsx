@@ -14,12 +14,12 @@ const Form = ({ inputs }) => {
 
   const passwordIcons = {
     openEye: <AiOutlineEye />,
-    closeEye: <AiOutlineEyeInvisible />
+    closeEye: <AiOutlineEyeInvisible />,
   }
 
   const passwordStatus = {
     shown: 'text',
-    hidden: 'password'
+    hidden: 'password',
   }
 
   const [showPassword, setShowPassword] = useState(passwordStatus.hidden)
@@ -73,8 +73,8 @@ const Form = ({ inputs }) => {
       ...formValuesRef.current,
       [index]: {
         ...formValuesRef.current[index],
-        [name]: value
-      }
+        [name]: value,
+      },
     }
   }
 

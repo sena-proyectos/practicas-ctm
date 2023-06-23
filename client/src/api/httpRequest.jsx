@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 
 /* LOGIN */
 export const Login = async (data) => {
@@ -10,11 +10,11 @@ export const Login = async (data) => {
 
 /* OBTENER APRENDICES */
 export const GetUsersHttp = async () => {
-    const URL = 'http://localhost:3000/api/inscriptions';
+  const URL = 'http://localhost:3000/api/inscriptions'
 
-    const response = await axios.get(URL);
-    return response;
-};
+  const response = await axios.get(URL)
+  return response
+}
 
 /* INSCRIBIR APRENDICES */
 export const InscriptionApprentice = async (data) => {
