@@ -50,24 +50,23 @@ const Form = ({ inputs }) => {
 
     const getCookies = Cookie.get('token')
 
-        const decoded = jwtdecoded(getCookies);
-        
-        const id_rol = decoded.data.user.id_rol;
+    const decoded = jwtdecoded(getCookies)
+
+    const id_rol = decoded.data.user.id_rol
 
     if (id_rol === 1 || id_rol === 2) navigate('/home')
   }
 
-    const handleInputChange = (e, index) => {
-        const { name, value } = e.target;
-        formValuesRef.current = {
-            ...formValuesRef.current,
-            [index]: {
-                ...formValuesRef.current[index],
-                [name]: value,
-            },
-        };
-    };
-  
+  const handleInputChange = (e, index) => {
+    const { name, value } = e.target
+    formValuesRef.current = {
+      ...formValuesRef.current,
+      [index]: {
+        ...formValuesRef.current[index],
+        [name]: value,
+      },
+    }
+  }
 
   return (
     <form action="" className="flex flex-col justify-center my-4 gap-3" onSubmit={handleSubmit}>
