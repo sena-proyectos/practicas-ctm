@@ -27,6 +27,7 @@ npm run dev
 - 👤 **Tatiana Mosquera**
 - 👤 **Juan Carlos Prasca**
 - 👤 **Jairo Elías Bellaco**
+- 👤 **Cristian David Bedoya Torres**
 
 ## Perfiles Github
 
@@ -35,6 +36,8 @@ npm run dev
 - [@STBenji](https://github.com/STBenji)
 - [@Axelchica759](https://github.com/Axelchica759)
 - [@iLestar](https://github.com/iLestar)
+- [@Tattoarco](https://github.com/Tattoarco)
+- [@Cristian10-24](https://github.com/Cristian10-24)
 
 ## 🤝 Contribuciones
 
