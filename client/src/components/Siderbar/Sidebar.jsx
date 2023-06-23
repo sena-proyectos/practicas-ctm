@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 
 import Cookies from 'js-cookie'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
 import jwtdecoded from 'jwt-decode'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { IoCalendarClearOutline, IoDocumentTextOutline, IoHandLeft, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline } from 'react-icons/io5'
 import { CiCircleChevRight } from 'react-icons/ci'
@@ -37,10 +37,9 @@ const Siderbar = () => {
 
     const decoded = jwtdecoded(token)
 
-    setNameRol(decoded.data[0].id_rol === 1 ? 'Administrador' : 'Instructor')
-    // console.log('render')
+    setNameRol(decoded.data.user.id_rol === 1 ? 'Administrador' : 'Instructor')
 
-    setNameUser(decoded.data[0].nombre + ' ' + decoded.data[0].apellido)
+    setNameUser(decoded.data.user.nombre + ' ' + decoded.data.user.apellido)
   }, [])
 
   const styles = (path) => {
@@ -49,7 +48,7 @@ const Siderbar = () => {
 
   const spanStyle = (path) => {
     const color = colorIcon[path]
-    return location.pathname === path ? `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3' : 'pl-5'}  text-sm font-bold ${color}` : `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3' : 'pl-5'} text-xs`
+    return location.pathname === path ? `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-sm' : 'pl-5 text-md'}   font-bold ${color}` : `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-xs' : 'pl-5 text-sm'} `
   }
 
   const logout = () => {
@@ -58,10 +57,12 @@ const Siderbar = () => {
   }
 
   return (
-    <aside className={`bg-secondary/10 ${open ? 'w-max' : 'w-[4.5rem]'}  md:h-screen rounded-r-2xl`}>
+    <aside className={`bg-secondary/10 ${open ? 'w-[12rem]' : 'w-[4.5rem]'} sticky top-0 left-0 md:h-screen rounded-r-2xl`}>
       <nav className="grid grid-rows-3-10-78-12 md:grid-rows-3-10-78-12 mx-auto w-4/5 h-screen">
         <section className={`w-fit ${open === true ? 'flex flex-row pr-3' : 'flex flex-col mx-auto'} my-auto`}>
-          <img className="h-[2.5rem] w-auto my-auto" src="public/user.png" alt="img_user" />
+          <div className="w-[3rem] my-auto rounded-full">
+            <img className="object-cover" src="public/user.png" alt="img_user" />
+          </div>
           <div className={`pl-3 pr-10 w-full ${!open && 'hidden'}`}>
             <h5 className="text-xs ">{nameUser}</h5>
             <span className="font-semibold text-sm text-center">{nameRol}</span>
@@ -122,7 +123,7 @@ const Siderbar = () => {
           </span>
           <section className="w-full mb-0">
             <li className="flex items-center relative pl-10 py-2 h-10 hover:bg-white rounded-s-2xl w-[115%] transition text-red-700" onClick={logout}>
-              <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3' : 'pl-5'} text-xs text-red-700`}>
+              <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-xs' : 'pl-5 text-md'} text-red-700`}>
                 <IoLogOutOutline />
               </span>
               {open && 'Cerrar Sesión'}

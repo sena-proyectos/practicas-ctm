@@ -1,6 +1,6 @@
 # Bienvenido a ctm_practicas 👋
 
-![Version](https://img.shields.io/badge/version-0.0.2--alpha-blue.svg?cacheSeconds=2592000)
+![Version](https://img.shields.io/badge/version-0.0.3--alpha-blue.svg?cacheSeconds=2592000)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 > Proyecto dedicado al registro y seguimiento de los aprendices que se encuentren actualmente en la etapa practica de su programa de formacion

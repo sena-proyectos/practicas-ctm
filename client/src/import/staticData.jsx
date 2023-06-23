@@ -1,4 +1,7 @@
-import { AiOutlineUser } from 'react-icons/ai'
+import { AiOutlineIdcard, AiOutlineMail, AiOutlinePhone, AiOutlineUser } from 'react-icons/ai'
+import { FaRegAddressBook } from 'react-icons/fa'
+import { BsCalendar4 } from 'react-icons/bs'
+import { LuCalendarCheck2, LuCalendarX2 } from 'react-icons/lu'
 
 /*
  * src: src\components\Home\Home.jsx
@@ -34,7 +37,7 @@ export const cards = [
     description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-[#385C57]',
-    link: '/',
+    link: '/home',
   },
   {
     title: 'Visitas no hechas',
@@ -61,77 +64,174 @@ export const dataInscription = [
   {
     icon: <AiOutlineUser />,
     type: 'text',
-    name: 'nombres_aprendiz_inscripcion',
+    name: 'nombres_inscripcion',
     placeholder: 'Alejandro',
     label: 'Nombres',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
     type: 'text',
-    name: 'apellidos_aprendiz_inscripcion',
+    name: 'apellidos_inscripcion',
     placeholder: 'Rodriguez',
     label: 'Apellidos',
+    required: true,
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineIdcard />,
     type: 'select',
-    name: 'tipo_documento_aprendiz_inscripcion',
+    name: 'tipo_documento_inscripcion',
     placeholder: 'sin seleccionar',
     label: 'Tipo documento',
+    required: true,
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineIdcard />,
     type: 'number',
-    name: 'numero_documento_aprendiz_inscripcion',
+    name: 'numero_documento_inscripcion',
     placeholder: '1023456789',
     label: 'Número documento',
+    required: true,
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlineMail />,
     type: 'email',
-    name: 'correo_electronico_aprendiz_inscripcion',
+    name: 'correo_electronico_inscripcion',
     placeholder: 'example@sena.edu.co',
     label: 'Correo electrónico',
+    required: true,
   },
   {
-    icon: <AiOutlineUser />,
+    icon: <AiOutlinePhone />,
     type: 'number',
-    name: 'numero_telefono_aprendiz_inscripcion',
+    name: 'numero_celular_inscripcion',
     placeholder: '3012345467',
     label: 'Número de celular',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
     type: 'number',
-    name: 'numero_ficha_aprendiz_inscripcion',
+    name: 'id_ficha_inscripcion',
     placeholder: '2134567',
     label: 'Número de ficha',
   },
-  {
-    icon: <AiOutlineUser />,
-    type: 'text',
-    name: 'programa_formacion_aprendiz_inscripcion',
-    placeholder: 'ADSO',
-    label: 'Programa de formación',
-  },
+
   {
     icon: <AiOutlineUser />,
     type: 'select',
-    name: 'tipo_modalidad_aprendiz_inscripcion',
+    name: 'id_modalidad_inscripcion',
     placeholder: 'Sin seleccionar',
     label: 'Modalidad',
   },
   {
     icon: <AiOutlineUser />,
-    type: 'date',
-    name: 'inicio_etapa_practica_aprendiz_inscripcion',
-    label: 'Fecha de inicio prácticas',
+    type: 'select',
+    name: 'etapa_formacion_actual_inscripcion',
+    placeholder: 'Sin seleccionar',
+    label: 'Etapa de formación',
   },
   {
     icon: <AiOutlineUser />,
+    type: 'select',
+    name: 'nivel_formacion_actual_inscripcion',
+    placeholder: 'Sin seleccionar',
+    label: 'Nivel de formación',
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'text',
+    name: 'nombre_instructor_lider_inscripcion',
+    placeholder: 'Juan Perez',
+    label: 'Nombre Instructor Lider',
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'email',
+    name: 'correo_electronico_instructor_lider_inscripcion',
+    placeholder: 'example@sena.edu.co',
+    label: 'Correo electrónico Instructor Lider',
+    required: true,
+  },
+  {
+    icon: <BsCalendar4 />,
     type: 'date',
-    name: 'fin_etapa_practica_aprendiz_inscripcion',
-    label: 'Fecha de fin prácticas',
+    name: 'fin_etapa_lectiva_inscripcion',
+    label: 'Terminación de la etapa lectiva',
+    required: true,
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'select',
+    name: 'apoyo_sostenimiento_inscripcion',
+    placeholder: 'Sin seleccionar',
+    label: '¿Recibe apoyo de sostenimiento?',
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'number',
+    name: 'nit_empresa_inscripcion',
+    placeholder: '123456789',
+    label: 'Nit de la empresa',
+    required: true,
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'text',
+    name: 'nombre_empresa_inscripcion',
+    placeholder: 'Sena',
+    label: 'Razón social (Nombre Empresa)',
+    required: true,
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'text',
+    name: 'direccion_empresa_inscripcion',
+    placeholder: 'Calle 123',
+    label: 'Dirección de la empresa',
+    required: true,
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'text',
+    name: 'nombre_completo_jefe_inmediato_inscripcion',
+    placeholder: 'Juan Perez',
+    label: 'Nombre del Jefe inmediato',
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'text',
+    name: 'cargo_jefe_inmediato_inscripcion',
+    placeholder: 'Gerente',
+    label: 'Cargo del contacto en la empresa',
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'number',
+    name: 'telefono_jefe_inmediato_inscripcion',
+    placeholder: '3012345678',
+    label: 'Teléfono de la empresa',
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'email',
+    name: 'correo_jefe_inmediato_inscripcion',
+    placeholder: 'example@sena.edu.co',
+    label: 'Correo electrónico de la empresa',
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'select',
+    name: 'asume_pago_arl_inscripcion',
+    placeholder: 'Sin seleccionar',
+    label: '¿Quien asume el pago del arl?',
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'text',
+    name: 'observaciones_inscripcion',
+    placeholder: 'Digite una observación',
+    label: '¿Tiene alguna observación?',
   },
 ]
 
@@ -142,15 +242,52 @@ export const idTypes = [
   { value: 'C.C', name: 'Cédula de ciudadanía' },
   { value: 'C.E', name: 'Cédula de extranjería' },
   { value: 'T.I', name: 'Tarjeta de identidad' },
+  { value: 'PEP', name: 'Persona expuesta políticamente' },
 ]
 
 /*
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const modalities = [
-  { value: 'Contrato de aprendizaje', name: 'Contrato de aprendizaje' },
-  { value: 'Pasantía', name: 'Pasantías' },
-  { value: 'Proyecto formativoñ', name: 'Proyecto formativo' },
+  { value: 1, name: 'Pasantías' },
+  { value: 2, name: 'Contrato de aprendizaje' },
+  { value: 3, name: 'Proyecto productivo' },
+  { value: 4, name: 'Monitoria' },
+  { value: 5, name: 'Vinculación laboral' },
+]
+
+/*
+ * src: src\components\Register-student\RegisterStudent.jsx
+ */
+export const etapasFormacion = [
+  { value: 'Lectiva', name: 'Lectiva' },
+  { value: 'Práctica', name: 'Práctica' },
+]
+
+/*
+ * src: src\components\Register-student\RegisterStudent.jsx
+ */
+export const nivelFormacion = [
+  { value: 'Técnico', name: 'Técnico' },
+  { value: 'Tecnología', name: 'Tecnología' },
+]
+
+/*
+ * src: src\components\Register-student\RegisterStudent.jsx
+ */
+export const apoyoSostenimiento = [
+  { value: 'FIC', name: 'FIC' },
+  { value: 'Jóvenes en Acción', name: 'Jóvenes en Acción' },
+  { value: 'Apoyo de sostenimiento Sena', name: 'Apoyo de sostenimiento Sena' },
+  { value: 'Ninguno', name: 'Ninguno' },
+]
+
+/*
+ * src: src\components\Register-student\RegisterStudent.jsx
+ */
+export const pagoArl = [
+  { value: 'Empresa', name: 'Empresa' },
+  { value: 'SENA', name: 'SENA' },
 ]
 
 /*
@@ -170,4 +307,12 @@ export const colorIcon = {
   '/bitacoras': 'text-seventh',
   '/visitas': 'text-primary',
   '/config': 'text-fifth',
+}
+
+/*
+ * src: src\components\Visits\Visits.jsx
+ */
+export const estadoIcons = {
+  visitado: <LuCalendarCheck2 />,
+  visitadont: <LuCalendarX2 />,
 }
