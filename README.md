@@ -7,15 +7,48 @@
 
 ## Instalación
 
+### Server y Client
+
 ```sh
-npm i
+> npm i
 ```
 
 ## Uso
 
+### Server
+
 ```sh
-npm run dev
+> npm run dev
+> npm run tsc
 ```
+
+### Cliente
+
+```sh
+> npm run dev
+> npm run tailwind
+```
+
+## Notas en el API
+En api crear un archivo llamado: .env que tenga la siguiente forma:
+
+```sh
+PORT=3000 // Ruta del servidor de express
+DB_USER=root // Usuario del usuario MySQL
+DB_PASSWORD=1017924888 // Contraseña del usuario MySQL
+DB_HOST=localhost // Host del usuario MySQL
+DB_DATABASE=practicas_sena // nombre de la base de datos MySQL
+DB_PORT=3306 // Puerto de conexión de SQL
+```
+
+Reemplazar credenciales para conectarte a MySQL. Este archivo va ser ignorado en la subida a github, ya que contiene información sensible.
+
+El contenido de client fue creado usando: Vite.
+El contenido de server fue creado usando: npm init y tsc --init.
+
+## Tecnologías
+![TypeScript](https://img.shields.io/badge/TypeScript-ts-blue.svg?logo=typescript&logoColor=blue)
+![React](https://img.shields.io/badge/React-react-blue.svg?logo=react&logoColor=blue)
 
 ## Autores
 
