@@ -112,7 +112,6 @@ export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Respon
     if (!Array.isArray(student) || student?.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)
     return res.status(httpStatus.OK).json({ data: student })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
