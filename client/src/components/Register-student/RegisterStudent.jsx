@@ -1,17 +1,27 @@
 import { useRef, useState } from 'react'
+import Cookies from 'js-cookie'
+import jwtdecoded from 'jwt-decode'
 import { ToastContainer } from 'react-toastify'
+import Swal from 'sweetalert2'
+
 import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
+import { Footer } from '../Footer/Footer'
+
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
-
 import { InscriptionApprentice } from '../../api/httpRequest'
-
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
+import { inscriptionValidation } from '../../validation/inscriptionsValidation'
 
 const RegisterStudent = () => {
   const excelFileRef = useRef(null)
   const [msg, setMessage] = useState({})
+
+  const token = Cookies.get('token')
+  const decoded = jwtdecoded(token)
+
+  const id = decoded.data.user.id_usuario
 
   // Validación de campos
   // Capturación de valores
@@ -21,6 +31,7 @@ const RegisterStudent = () => {
     // capturar los valores de los inputs del formulario
     const formValues = Object.fromEntries(new FormData(e.target))
 
+    formValues.id_usuario_responsable_inscripcion = `${id}`
     // validar que los campos no esten vacios
     const emptyFields = Object.keys(formValues).filter((key) => !formValues[key])
 
@@ -32,14 +43,23 @@ const RegisterStudent = () => {
         text: 'Por favor, completa todos los campos',
       })
     }
+    const { error } = inscriptionValidation.validate(formValues)
+    console.log(error)
+    if (error !== null) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error,
+      })
+    }
 
     // validar que los campos de tipo number sean numeros
-    ValidateInputsTypeNumber(formValues.numero_documento_aprendiz_inscripcion, formValues.numero_telefono_aprendiz_inscripcion, formValues.numero_ficha_aprendiz_inscripcion)
+    ValidateInputsTypeNumber(formValues.numero_documento_inscripcion, formValues.numero_telefono_inscripcion, formValues.numero_ficha_inscripcion)
 
     // validar que el numero de documento sea valido
-    const { numero_documento_aprendiz_inscripcion, correo_electronico_aprendiz_inscripcion } = formValues
-    const isIdentityValid = ValidateIdentity(numero_documento_aprendiz_inscripcion)
-    const isEmailValid = ValidateEmail(correo_electronico_aprendiz_inscripcion)
+    const { numero_documento_inscripcion, correo_electronico_inscripcion } = formValues
+    const isIdentityValid = ValidateIdentity(numero_documento_inscripcion)
+    const isEmailValid = ValidateEmail(correo_electronico_inscripcion)
 
     if (!isIdentityValid) {
       return Swal.fire({
@@ -94,22 +114,23 @@ const RegisterStudent = () => {
     }
     readExcelFile(currentFile)
   }
-
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" />
-      <section className="grid grid-cols-2-20r-80">
+      <section className="flex flex-row min-h-screen">
         <Siderbar />
-        <section className="grid grid-rows-2-25-75">
-          <h1 className="text-center uppercase font-bold text-3xl place-self-center">Inscribe a un aprendiz</h1>
-          <section className="h-4/5 overflow-hidden">
-            <form action="" className="grid grid-rows-2 gap-y-20" onSubmit={handleSubmit}>
-              <section className="grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 w-4/5 mx-auto gap-y-4">
+        <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">
+          <header className="grid place-items-center">
+            <h1 className="text-center font-bold text-3xl place-self-center">Inscribe a un Aprendiz</h1>
+          </header>
+          <section>
+            <form action="" className="grid grid-col-2 gap-y-10" onSubmit={handleSubmit}>
+              <section className="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 w-4/5 mx-auto gap-y-4">
                 {dataInscription.map((item, i) => {
                   return (
                     <div className="text-gray-400 m-auto" key={i}>
                       <label htmlFor="nombre" className="font-semibold ">
-                        {item.label}
+                        {item.label} {item.required && <span className="text-red-500">*</span>}
                       </label>
                       {item.type === 'number' ? (
                         <div className="relative">
@@ -131,7 +152,7 @@ const RegisterStudent = () => {
                           <span className="absolute inset-y-0 left-0 flex items-center pl-3">{item.icon}</span>
                           <select name={item.name} className="py-2 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72">
                             <option value={''}>Sin seleccionar</option>
-                            {item.name === 'tipo_documento_aprendiz_inscripcion'
+                            {item.name === 'tipo_documento_inscripcion'
                               ? idTypes.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -139,7 +160,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'tipo_modalidad_aprendiz_inscripcion'
+                              : item.name === 'id_modalidad_inscripcion'
                               ? modalities.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -147,7 +168,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'etapa_formacion_aprendiz_inscripcion'
+                              : item.name === 'etapa_formacion_actual_inscripcion'
                               ? etapasFormacion.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -155,7 +176,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'nivel_formacion_aprendiz_inscripcion'
+                              : item.name === 'nivel_formacion_actual_inscripcion'
                               ? nivelFormacion.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -163,7 +184,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'apoyo_sostenimiento_aprendiz_inscripcion'
+                              : item.name === 'apoyo_sostenimiento_inscripcion'
                               ? apoyoSostenimiento.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -171,7 +192,7 @@ const RegisterStudent = () => {
                                     </option>
                                   )
                                 })
-                              : item.name === 'arl_aprendiz_inscripcion'
+                              : item.name === 'asume_pago_arl_inscripcion'
                               ? pagoArl.map((item, i) => {
                                   return (
                                     <option value={item.value} key={i}>
@@ -207,6 +228,7 @@ const RegisterStudent = () => {
               </section>
             </form>
           </section>
+          <Footer />
         </section>
       </section>
     </>

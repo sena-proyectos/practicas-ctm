@@ -1,10 +1,8 @@
 import { Link } from 'react-router-dom'
-import { LuCalendarCheck2, LuCalendarX2 } from 'react-icons/lu'
-// LuCalendarX2
 
-const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/iLestar', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', marginLink, borderColor, roundedLink, info1, info2 }) => {
+const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/iLestar', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', borderColor, roundedLink, info1, info2, icon }) => {
   return (
-    <div className={`${bgColor} bg-opacity-50 ${shadow} rounded-lg p-3 flex flex-col justify-center h-auto ${scale && 'scale-90'}`}>
+    <div className={`${bgColor} bg-opacity-50 ${shadow} rounded-lg py-2 px-3 flex flex-col justify-center h-auto ${scale && 'scale-90'}`}>
       <header className={`${cardUser && 'flex flex-row'}`}>
         {cardUser && <img className="w-[4.5rem] h-[4.5rem] rounded-full" src={img} alt={alt} />}
         <div className={`${cardUser && 'flex flex-col flex-auto w-min py-3'}`}>
@@ -20,7 +18,7 @@ const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale
             </span>
             <section className="font-medium flex items-center justify-center gap-2">
               <span>Estado</span>
-              <LuCalendarCheck2 />
+              {icon}
             </section>
           </section>
         )}
@@ -39,7 +37,7 @@ const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale
         )}
       </div>
       {link && (
-        <Link to={link} className={`${roundedLink} border-1 ${borderColor} p-1.5 w-fit justify-self-end ${marginLink} mt-4 font-semibold text-xs`}>
+        <Link to={link} className={`${roundedLink} border-1 ${borderColor} p-1.5 w-fit justify-self-end mx-auto mt-4 font-semibold text-xs`}>
           {buttonText}
         </Link>
       )}
