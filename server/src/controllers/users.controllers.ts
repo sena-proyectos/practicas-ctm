@@ -122,7 +122,7 @@ export const login: RequestHandler<{ num_documento: string, contrasena: string }
   const { num_documento, contrasena } = req.body
   try {
     const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [num_documento])
-    if (!Array.isArray(user)) throw new DbErrorNotFound('No se encontró el usuario.', errorCodes.ERROR_LOGIN_USER)
+    if (!Array.isArray(user) || user.length === 0) throw new DbErrorNotFound('No se encontró el usuario.', errorCodes.ERROR_LOGIN_USER)
 
     const dbPassword = (user as RowDataPacket)[0].contrasena
 

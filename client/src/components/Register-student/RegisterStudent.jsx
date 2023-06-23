@@ -28,7 +28,6 @@ const RegisterStudent = () => {
     // capturar los valores de los inputs del formulario
     const formValues = Object.fromEntries(new FormData(e.target))
     formValues.id_usuario_responsable_inscripcion = `${id}`
-    console.log(formValues)
     // validar que los campos no esten vacios
     const emptyFields = Object.keys(formValues).filter((key) => !formValues[key])
 

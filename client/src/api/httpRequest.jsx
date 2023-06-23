@@ -23,3 +23,5 @@ export const InscriptionApprentice = async (data) => {
   const response = await axios.post(URL, data)
   return response
 }
+
+/* BUSCAR APRENDICES POR NOMBRE */
