@@ -263,7 +263,7 @@ CREATE TABLE `usuarios` (
   UNIQUE KEY `Correo_electronico_UNIQUE` (`correo_electronico`),
   KEY `id_rol` (`id_rol`),
   CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -272,7 +272,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Stiven','Blandón Urrego','cc','1017924888','blandon0207s@gmail.com','3183577499','$2b$12$HnwbFzxlrw6kI0GHB/2mU.JjNmmmdTI3FmltAX5l67aToC9ZxfO5u',1),(2,'Stiven','Blandón','ti','1017924777','eyconan19@gmail.com','3163026614','$2b$10$KH33PJSnlKiUeCz4vHJfXO8gofC0A11OKhITHWnIJwxBcV/B2qni6',1),(4,'Stiven','Blandón','ti','1017924666','eyconan18@gmail.com','3163026613','$2b$10$zqBCPi./LoqpgCgNZVxSkuKsz3uYP6r75yGfOQL9fsUF1zew.bkDK',1);
+INSERT INTO `usuarios` VALUES (1,'Stiven','Blandón Urrego','cc','1017924888','blandon0207s@gmail.com','3183577499','$2b$12$HnwbFzxlrw6kI0GHB/2mU.JjNmmmdTI3FmltAX5l67aToC9ZxfO5u',1),(2,'Stiven','Blandón','ti','1017924777','eyconan19@gmail.com','3163026614','$2b$10$KH33PJSnlKiUeCz4vHJfXO8gofC0A11OKhITHWnIJwxBcV/B2qni6',1),(4,'Stiven','Blandón','ti','1017924666','eyconan18@gmail.com','3163026613','$2b$10$zqBCPi./LoqpgCgNZVxSkuKsz3uYP6r75yGfOQL9fsUF1zew.bkDK',1),(6,'Juan','Gomez','CC','1027800913','juanlestar0408@gmail.com','3006953395','$2b$10$nhOaLbTIEVE7TYcsW3NtouwcpHxtSuAjnmdl.9LXaISRfYoo2uP36',2),(7,'Roberto','Gui','TI','1027827666','juanlestar12@gmail.com','3195813232','$2b$10$wcmZBKO13VCPaxSZssWyduSRUMIYdq0E0HQcezbH04C/s5MC0d9C.',2),(8,'Felipe','Benjumea','CC','1027827777','juanlestar13@gmail.com','3195810996','$2b$10$JNhXrq43Av3bzNSptQ85J.5NxKLwPu7CezFzx8n4fTaDXrZdMOZCu',3),(9,'Guillermo','Morales','CC','1027826666','juanlestar14@gmail.com','3195810997','$2b$10$xQ8AhXQIBHURm5b3TdxgEOmVWtUfHTE2Huf5tIoELgGup4L0fHIBu',3);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -285,4 +285,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-20 10:21:59
+-- Dump completed on 2023-06-22 18:52:31
