@@ -44,7 +44,6 @@ const RegisterStudent = () => {
       })
     }
     const { error } = inscriptionValidation.validate(formValues)
-    console.log(error)
     if (error !== null) {
       return Swal.fire({
         icon: 'error',
@@ -228,7 +227,6 @@ const RegisterStudent = () => {
               </section>
             </form>
           </section>
-          <Footer />
         </section>
       </section>
     </>

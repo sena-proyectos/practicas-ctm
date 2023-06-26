@@ -78,7 +78,6 @@ export const createInscription: RequestHandler<{}, Response, inscriptionData> = 
     )
     return res.status(httpStatus.CREATED).json({ message: 'Inscripción creada.' })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
