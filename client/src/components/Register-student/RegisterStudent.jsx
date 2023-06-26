@@ -11,7 +11,7 @@ import { Footer } from '../Footer/Footer'
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
 import { InscriptionApprentice } from '../../api/httpRequest'
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
-import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
+import { readExcelFile } from '../../readExcelFile/reactExcelFile'
 import { inscriptionValidation } from '../../validation/inscriptionsValidation'
 
 const RegisterStudent = () => {
