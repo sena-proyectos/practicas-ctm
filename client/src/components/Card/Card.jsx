@@ -7,12 +7,12 @@ const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale
   const [mostrarModal, setMostrarModal] = useState(false)
 
   const handleModal = () => {
-    setMostrarModal(mostrarModal === false ? true : false)
+    setMostrarModal(!mostrarModal)
   }
 
   return (
     <>
-      <Modals />
+      {mostrarModal && <Modals closeModal={handleModal} />}
       <div className={`${bgColor} bg-opacity-50 ${shadow} rounded-lg py-2 px-3 flex flex-col justify-center h-auto ${scale && 'scale-90'}`}>
         <header className={`${cardUser && 'flex flex-row'}`}>
           {cardUser && <img className="w-[4.5rem] h-[4.5rem] rounded-full" src={img} alt={alt} />}
