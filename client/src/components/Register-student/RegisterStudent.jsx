@@ -11,7 +11,7 @@ import { Footer } from '../Footer/Footer'
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
 import { InscriptionApprentice } from '../../api/httpRequest'
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
-import { readExcelFile } from '../../readEcxelFile/reactExcelFile'
+import { readExcelFile } from '../../readExcelFile/reactExcelFile'
 import { inscriptionValidation } from '../../validation/inscriptionsValidation'
 
 const RegisterStudent = () => {
@@ -44,7 +44,6 @@ const RegisterStudent = () => {
       })
     }
     const { error } = inscriptionValidation.validate(formValues)
-    console.log(error)
     if (error !== null) {
       return Swal.fire({
         icon: 'error',
@@ -228,7 +227,6 @@ const RegisterStudent = () => {
               </section>
             </form>
           </section>
-          <Footer />
         </section>
       </section>
     </>

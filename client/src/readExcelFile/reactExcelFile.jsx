@@ -5,6 +5,7 @@ import jwtdecoded from 'jwt-decode'
 import { mapValues } from '../mapeo/Map'
 import { InscriptionApprentice } from '../api/httpRequest'
 import { modalities } from '../import/staticData'
+import { DbError, type CustomError } from '../errors/customErrors.js'
 
 export const readExcelFile = async (file) => {
   if (!file) return
@@ -46,7 +47,6 @@ export const readExcelFile = async (file) => {
         if (result[i].id_modalidad_inscripcion === 'Monitoria') result[i].id_modalidad_inscripcion = '4'
         if (result[i].id_modalidad_inscripcion === 'Vinculación laboral') result[i].id_modalidad_inscripcion = '5'
       }
-      console.log(result)
 
       if (result.length > 2) {
         const showModal = async () => {

@@ -8,6 +8,7 @@ import { IoCalendarClearOutline, IoDocumentTextOutline, IoHandLeft, IoHomeOutlin
 import { CiCircleChevRight } from 'react-icons/ci'
 
 import { colorIcon } from '../../import/staticData'
+import Swal from 'sweetalert2'
 
 const Siderbar = () => {
   const location = useLocation()
@@ -33,6 +34,7 @@ const Siderbar = () => {
 
   useEffect(() => {
     const token = Cookies.get('token')
+    // mostrar alerta para el usuario
     if (!token) window.location.href = '/'
 
     const decoded = jwtdecoded(token)
