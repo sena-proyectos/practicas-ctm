@@ -10,7 +10,7 @@ export const Login = async (data) => {
 
 /* OBTENER APRENDICES */
 export const GetUsersHttp = async () => {
-  const URL = 'http://localhost:3000/api/inscriptions'
+  const URL = 'http://localhost:3000/api/students'
 
   const response = await axios.get(URL)
   return response
@@ -25,3 +25,10 @@ export const InscriptionApprentice = async (data) => {
 }
 
 /* BUSCAR APRENDICES POR NOMBRE */
+
+export const GetUserByName = async (data) => {
+  const URL = ' http://localhost:3000/api/studentName'
+  const response = await axios.post(URL, { nombreCompleto: data })
+
+  return response
+}

@@ -3,7 +3,7 @@ import { type inscriptionData } from '../interfaces/inscriptions.interfaces.js'
 import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
-import { DbError, type CustomError } from '../errors/customErrors.js'
+import { type CustomError } from '../errors/customErrors.js'
 
 export const getInscriptions = async (_req: Request, res: Response): Promise<Response> => {
   try {
@@ -78,6 +78,7 @@ export const createInscription: RequestHandler<{}, Response, inscriptionData> = 
     )
     return res.status(httpStatus.CREATED).json({ message: 'Inscripción creada.' })
   } catch (error) {
+    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
