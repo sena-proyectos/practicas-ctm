@@ -8,7 +8,6 @@ import { Card } from '../Card/Card'
 import { Footer } from '../Footer/Footer'
 import Cookies from 'js-cookie'
 
-
 export const Student = () => {
   const [apprentices, setApprentices] = useState([])
   const [searchedApprentices, setSearchedApprentices] = useState([])
@@ -19,15 +18,16 @@ export const Student = () => {
       const response = await GetUserByName(searchTerm)
       const { data } = response.data
       if (searchTerm.trim() === '') {
-        setError(null) // Reinicia el estado del error cuando se borra el contenido de la barra de búsqueda
-        setSearchedApprentices([]) // Limpia los resultados de búsqueda al borrar el contenido de la barra de búsqueda
-        return
+        setError(null)
+        setSearchedApprentices([])
+      } else {
+        setError(null)
+        setSearchedApprentices(data)
       }
-      setSearchedApprentices(data)
     } catch (error) {
       const message = error.response.data.error.info.message
       setError(message)
-      setSearchedApprentices([]) // Limpia los resultados de búsqueda en caso de error
+      setSearchedApprentices([])
     }
   }
 
