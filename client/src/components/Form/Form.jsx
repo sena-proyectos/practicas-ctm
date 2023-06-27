@@ -7,6 +7,7 @@ import { Login } from '../../api/httpRequest'
 
 import Cookie from 'js-cookie'
 import jwtdecoded from 'jwt-decode'
+import Swal from 'sweetalert2'
 
 const Form = ({ inputs }) => {
   const navigate = useNavigate()
@@ -39,22 +40,31 @@ const Form = ({ inputs }) => {
   }
 
   const sendData = async (data) => {
-    const response = await Login(data)
-    const Token = response.data.token
+    try {
+      const response = await Login(data)
+      const Token = response.data.token
 
-    Cookie.set('token', Token, {
-      expires: 1,
-      sameSite: 'none',
-      secure: true,
-    })
+      Cookie.set('token', Token, {
+        expires: 1,
+        sameSite: 'none',
+        secure: true
+      })
 
-    const getCookies = Cookie.get('token')
+      const getCookies = Cookie.get('token')
 
-    const decoded = jwtdecoded(getCookies)
+      const decoded = jwtdecoded(getCookies)
 
-    const id_rol = decoded.data.user.id_rol
+      const id_rol = decoded.data.user.id_rol
 
-    if (id_rol === 1 || id_rol === 2) navigate('/home')
+      if (id_rol === 1 || id_rol === 2) navigate('/home')
+    } catch (error) {
+      const message = error.response.data.error.info.message
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: message
+      })
+    }
   }
 
   const handleInputChange = (e, index) => {

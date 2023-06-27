@@ -87,8 +87,8 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
 
 export const getStudents = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const page = !Number.isNaN(parseInt(req.query.page as string)) || 1
-    const limit = !Number.isNaN(parseInt(req.query.limit as string)) || 10
+    const page = parseInt(req.query.page as string) || 1
+    const limit = parseInt(req.query.limit as string) || 10
     const offset = (Number(page) - 1) * Number(limit)
 
     const [students] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 LIMIT ? OFFSET ?', [limit, offset])
@@ -114,7 +114,6 @@ export const getStudentsById: RequestHandler<{ id: string }, Response, LoginData
     return handleHTTP(res, error as CustomError)
   }
 }
-
 
 export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
   const { nombreCompleto } = req.body
@@ -152,7 +151,7 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
   }
 }
 
-export const login: RequestHandler<{ num_documento: string, contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
+export const login: RequestHandler<{ num_documento: string; contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string; contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
   const { num_documento, contrasena } = req.body
   try {
     const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [num_documento])
