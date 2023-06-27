@@ -10,7 +10,6 @@ userRoutes.get('/users', getUsers)
 userRoutes.get('/user/:id', checkIdReq, getUserById)
 userRoutes.get('/teachers', getTeachers)
 userRoutes.get('/teacher/:id', checkIdReq, getTeachersById)
-userRoutes.get('/teacherName', checkName, getTeacherByName)
 userRoutes.get('/students', getStudents)
 userRoutes.get('/student/:id', checkIdReq, getStudentsById)
 
@@ -18,6 +17,7 @@ userRoutes.get('/student/:id', checkIdReq, getStudentsById)
 userRoutes.post('/register', checkRegisterData, checkExistingUser, createUser)
 userRoutes.post('/login', checkLoginData, login, generateToken)
 userRoutes.post('/studentName', checkName, getStudentByName)
+userRoutes.post('/teacherName', checkName, getTeacherByName)
 
 // * PATCH
 userRoutes.patch('/edit-user/:id', checkIdReq, checkEditData, editUser)

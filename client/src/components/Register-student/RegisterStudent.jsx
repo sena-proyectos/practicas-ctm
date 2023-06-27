@@ -6,7 +6,6 @@ import Swal from 'sweetalert2'
 
 import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
-import { Footer } from '../Footer/Footer'
 
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
 import { InscriptionApprentice } from '../../api/httpRequest'

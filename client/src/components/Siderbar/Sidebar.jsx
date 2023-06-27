@@ -8,7 +8,8 @@ import { IoCalendarClearOutline, IoDocumentTextOutline, IoHandLeft, IoHomeOutlin
 import { CiCircleChevRight } from 'react-icons/ci'
 
 import { colorIcon } from '../../import/staticData'
-import Swal from 'sweetalert2'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const Siderbar = () => {
   const location = useLocation()
@@ -37,11 +38,11 @@ const Siderbar = () => {
     // mostrar alerta para el usuario
     if (!token) window.location.href = '/'
 
-    const decoded = jwtdecoded(token)
-
-    setNameRol(decoded.data.user.id_rol === 1 ? 'Administrador' : 'Instructor')
-
-    setNameUser(decoded.data.user.nombre + ' ' + decoded.data.user.apellido)
+    setTimeout(() => {
+      const decoded = jwtdecoded(token)
+      setNameRol(decoded.data.user.id_rol === 1 ? 'Administrador' : 'Instructor')
+      setNameUser(decoded.data.user.nombre + ' ' + decoded.data.user.apellido)
+    }, 2000)
   }, [])
 
   const styles = (path) => {
@@ -66,8 +67,8 @@ const Siderbar = () => {
             <img className="object-cover" src="public/user.png" alt="img_user" />
           </div>
           <div className={`pl-3 pr-10 w-full ${!open && 'hidden'}`}>
-            <h5 className="text-xs ">{nameUser}</h5>
-            <span className="font-semibold text-sm text-center">{nameRol}</span>
+            <h5 className="text-xs ">{nameUser || <Skeleton width={100}/>}</h5>
+            <span className="font-semibold text-sm text-center">{nameRol || <Skeleton />}</span>
           </div>
         </section>
         <ul className="flex flex-col justify-center items-start cursor-pointer">
