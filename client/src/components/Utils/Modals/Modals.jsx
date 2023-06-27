@@ -1,7 +1,7 @@
 import { IoMdClose } from 'react-icons/io'
 import { Button } from '../../Button/Button'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false }) => {
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false }) => {
   const handleModal = () => {
     closeModal()
   }
@@ -89,6 +89,8 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
               </section>
             </>
           )}
+          {bodyFilter && <>Aun no da juas juas</>}
+          {bodyVisits && <>Tampoco da xd</>}
         </section>
       </section>
     </section>

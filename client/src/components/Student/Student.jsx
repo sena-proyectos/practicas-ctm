@@ -37,7 +37,7 @@ export const Student = () => {
       <Siderbar />
       <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">
         <header className="grid place-items-center">
-          <Search />
+          <Search searchFilter />
         </header>
         <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
           {apprentices.map((apprentice, i) => {
