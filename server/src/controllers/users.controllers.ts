@@ -37,7 +37,17 @@ export const editUser: RequestHandler<{}, Response, userForm> = async (req: Requ
   const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
   const idNumber = Number(id)
   try {
-    const [user] = await connection.query('UPDATE usuarios SET nombre = IFNULL(?, nombre), apellido = IFNULL(?, apellido), tipo_documento = IFNULL(?, tipo_documento), num_documento = IFNULL(?, num_documento), correo_electronico = IFNULL(?, correo_electronico), num_celular = IFNULL(?, num_celular), id_rol = IFNULL(?, id_rol), contrasena = IFNULL(?, contrasena) WHERE id_usuario = ?', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena, idNumber])
+    const [user] = await connection.query('UPDATE usuarios SET nombre = IFNULL(?, nombre), apellido = IFNULL(?, apellido), tipo_documento = IFNULL(?, tipo_documento), num_documento = IFNULL(?, num_documento), correo_electronico = IFNULL(?, correo_electronico), num_celular = IFNULL(?, num_celular), id_rol = IFNULL(?, id_rol), contrasena = IFNULL(?, contrasena) WHERE id_usuario = ?', [
+      nombre,
+      apellido,
+      tipo_documento,
+      num_documento,
+      correo_electronico,
+      num_celular,
+      id_rol,
+      contrasena,
+      idNumber
+    ])
     if (!Array.isArray(user) && user?.affectedRows === 0) throw new DbErrorNotFound('No se pudo actualizar el usuario.')
     return res.status(httpStatus.OK).json({ message: 'Usuario actualizado exitosamente.' })
   } catch (error) {
@@ -77,8 +87,8 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
 
 export const getStudents = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const page = !Number.isNaN(parseInt(req.query.page as string)) || 1
-    const limit = !Number.isNaN(parseInt(req.query.limit as string)) || 10
+    const page = parseInt(req.query.page as string) || 1
+    const limit = parseInt(req.query.limit as string) || 10
     const offset = (Number(page) - 1) * Number(limit)
 
     const [students] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 LIMIT ? OFFSET ?', [limit, offset])
@@ -107,6 +117,7 @@ export const getStudentsById: RequestHandler<{ id: string }, Response, LoginData
 
 export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
   const { nombreCompleto } = req.body
+  console.log(nombreCompleto);
   try {
     const [student] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND CONCAT(nombre, " ", apellido) LIKE ?', [`%${nombreCompleto as string}%`])
     if (!Array.isArray(student) || student?.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)

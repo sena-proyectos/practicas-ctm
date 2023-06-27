@@ -3,7 +3,7 @@ import { type inscriptionData } from '../interfaces/inscriptions.interfaces.js'
 import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
-import { type CustomError } from '../errors/customErrors.js'
+import { DbError, type CustomError } from '../errors/customErrors.js'
 
 export const getInscriptions = async (_req: Request, res: Response): Promise<Response> => {
   try {
@@ -45,6 +45,7 @@ export const createInscription: RequestHandler<{}, Response, inscriptionData> = 
     telefono_jefe_inmediato_inscripcion,
     correo_jefe_inmediato_inscripcion,
     asume_pago_arl_inscripcion,
+    // link_documentos_pdf_inscripcion,
     // link_documentos_pdf_inscripcion,
     observaciones_inscripcion,
     // fecha_creacion_inscripcion,
