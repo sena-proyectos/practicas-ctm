@@ -12,7 +12,7 @@ const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale
 
   return (
     <>
-      {mostrarModal && <Modals closeModal={handleModal} />}
+      {mostrarModal && <Modals closeModal={handleModal} bodyStudent title={'Stiven Blandón Urrego'} emailStudent={'blandon0207s@gmail.com'} documentStudent={'1017924888'} celStudent={'3183577499'} trainingProgram={'Análisis y Desarrollo de Software'} ficha={'2473196'} academicLevel={'Tecnología'} trainingStage={'Lectiva'} modalitie={'Contrato de Aprendizaje'} finLectiva={'05 Abril 2023'} inicioProductiva={'02 Mayo 2023'} company={'Servicio Nacional del Aprendizaje'} innmediateSuperior={'Richard Alexander Betancur Sierra'} workstation={'Instructor'} emailSuperior={'rbetancur@misena.edu.co'} celSuperior={'123456789'} arl={'Sura'} />}
       <div className={`${bgColor} bg-opacity-50 ${shadow} rounded-lg py-2 px-3 flex flex-col justify-center h-auto ${scale && 'scale-90'}`}>
         <header className={`${cardUser && 'flex flex-row'}`}>
           {cardUser && <img className="w-[4.5rem] h-[4.5rem] rounded-full" src={img} alt={alt} />}
