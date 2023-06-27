@@ -4,8 +4,6 @@ import Cookies from 'js-cookie'
 import jwtdecoded from 'jwt-decode'
 import { mapValues } from '../mapeo/Map'
 import { InscriptionApprentice } from '../api/httpRequest'
-import { modalities } from '../import/staticData'
-import { DbError, type CustomError } from '../errors/customErrors.js'
 
 export const readExcelFile = async (file) => {
   if (!file) return
@@ -36,9 +34,6 @@ export const readExcelFile = async (file) => {
         return obj
       })
 
-      // console.log(result);
-      // const fieldValues = result.map((item) => Object.values(item).join(', '))
-      // result.id_usuario_responsable_inscripcion = `${id}`
       for (let i = 0; i < result.length; i++) {
         result[i].id_usuario_responsable_inscripcion = `${id}`
         if (result[i].id_modalidad_inscripcion === 'Pasantía') result[i].id_modalidad_inscripcion = '1'
