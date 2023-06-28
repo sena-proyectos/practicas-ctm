@@ -8,7 +8,11 @@ import { Card } from '../Card/Card'
 import { Footer } from '../Footer/Footer'
 import Cookies from 'js-cookie'
 
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
 export const Student = () => {
+
   const [apprentices, setApprentices] = useState([])
   const [searchedApprentices, setSearchedApprentices] = useState([])
   const [error, setError] = useState(null)
@@ -44,7 +48,8 @@ export const Student = () => {
         setError('Error al obtener los aprendices')
       }
     }
-    getApprentices()
+    setTimeout(getApprentices, 1000)
+    // getApprentices()
   }, [])
 
   return (
@@ -68,6 +73,13 @@ export const Student = () => {
               apprentices.map((apprentice, i) => (
                 <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre} ${apprentice.apellido}`} subtitle={apprentice.correo_electronico} lione={apprentice.programa_formacion_inscripcion} litwo={apprentice.numero_ficha_inscripcion} key={i} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} />
               ))
+            )}
+            {apprentices.length === 0 && !error && searchedApprentices.length === 0 &&(
+              <>
+                <Skeleton width={350} height={250} style={{ marginBottom: '1rem', margin: '1.2em' }} />
+                <Skeleton width={350} height={250} style={{ marginBottom: '1rem', margin: '1.2em' }} />
+                <Skeleton width={350} height={250} style={{ marginBottom: '1rem', margin: '1.2em' }} />
+              </>
             )}
           </div>
         )}
