@@ -1,7 +1,7 @@
 import express, { type IRouter, type Application, type Response, type Request } from 'express'
 import cors, { type CorsOptions } from 'cors'
 
-import { indexRoutes, roleRoutes, userRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes } from './routes/routes.js'
+import { indexRoutes, roleRoutes, userRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes, unableRoutes } from './routes/routes.js'
 import { httpStatus } from './models/httpStatus.enums.js'
 
 const app: Application = express()
@@ -20,7 +20,7 @@ const APILINK = '/api'
 
 app.use(indexRoutes)
 
-const routes: IRouter[] = [userRoutes, roleRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes]
+const routes: IRouter[] = [userRoutes, roleRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes, unableRoutes]
 
 for (const route of routes) {
   app.use(APILINK, route)
