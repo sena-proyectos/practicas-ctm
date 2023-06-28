@@ -5,9 +5,10 @@ import { roleRoutes } from './roles.routes.js'
 import { inscriptionRoutes } from './inscriptions.routes.js'
 import { practicalStageRoutes } from './practicalStages.routes.js'
 import { classRoutes } from './classes.routes.js'
+import { unableRoutes } from './changeStatusId.routes.js'
 
 const indexRoutes = Router()
 
 indexRoutes.get('/ping', (_req: Request, res: Response<string>): Response<string> => res.json('pong'))
 
-export { indexRoutes, userRoutes, roleRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes }
+export { indexRoutes, userRoutes, roleRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes, unableRoutes }
