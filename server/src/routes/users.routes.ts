@@ -10,10 +10,10 @@ userRoutes.get('/users', getUsers)
 userRoutes.get('/user/:id', checkIdReq, getUserById)
 userRoutes.get('/teachers', getTeachers)
 userRoutes.get('/teacher/:id', checkIdReq, getTeachersById)
-userRoutes.get('/teacherName', checkName, getTeacherByName)
 userRoutes.get('/students', getStudents)
 userRoutes.get('/student/:id', checkIdReq, getStudentsById)
 userRoutes.get('/studentName', checkName, getStudentByName)
+userRoutes.get('/teacherName', checkName, getTeacherByName)
 
 // * POST
 userRoutes.post('/register', checkRegisterData, checkExistingUser, createUser)
