@@ -116,7 +116,7 @@ export const getStudentsById: RequestHandler<{ id: string }, Response, LoginData
 }
 
 export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
-  const { nombreCompleto } = req.body
+  const { nombreCompleto } = req.query
   try {
     const [student] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND CONCAT(nombre, " ", apellido) LIKE ?', [`%${nombreCompleto as string}%`])
     if (!Array.isArray(student) || student?.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)
@@ -127,7 +127,7 @@ export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Respon
 }
 
 export const getTeacherByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
-  const { nombreCompleto } = req.body
+  const { nombreCompleto } = req.query
   try {
     const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2 AND CONCAT(nombre, " ", apellido) LIKE ?', [`%${nombreCompleto as string}%`])
     if (!Array.isArray(teacher) || teacher?.length === 0) throw new DbErrorNotFound('No se encontró el instructor.', errorCodes.ERROR_GET_TEACHER)
