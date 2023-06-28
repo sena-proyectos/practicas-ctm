@@ -79,8 +79,9 @@ export const generateToken: RequestHandler<{}, unknown, LoginData> = (req: Reque
 }
 
 export const checkName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = (req: Request<{ nombreCompleto: string }>, res: Response, next: NextFunction): void => {
-  const { nombreCompleto } = req.body
-  const nameSchema = Joi.object({ nombreCompleto: Joi.string().required().min(0).max(100) })
+  const { nombreCompleto } = req.query
+  const nameSchema = Joi.object({ nombreCompleto: Joi.string().required().max(100) })
+
   try {
     const { error } = nameSchema.validate({ nombreCompleto })
     if (error !== undefined) throw new DataNotValid('El nombre completo ingresado no es válido.')
