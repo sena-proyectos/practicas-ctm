@@ -87,7 +87,9 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
 
 export const getStudents = async (req: Request, res: Response): Promise<Response> => {
   try {
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     const page = parseInt(req.query.page as string) || 1
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     const limit = parseInt(req.query.limit as string) || 10
     const offset = (Number(page) - 1) * Number(limit)
 
