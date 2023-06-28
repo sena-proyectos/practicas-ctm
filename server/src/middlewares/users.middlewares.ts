@@ -10,7 +10,7 @@ import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import Joi from 'joi'
 
-export const checkExistingUser: RequestHandler<{}, Response, userForm > = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const checkExistingUser: RequestHandler<{}, Response, userForm> = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { num_documento, correo_electronico } = req.body as userForm
   const numberParsed = Number(num_documento)
   try {
@@ -23,7 +23,7 @@ export const checkExistingUser: RequestHandler<{}, Response, userForm > = async 
   }
 }
 
-export const checkLoginData: RequestHandler<{ num_documento: string, contrasena: string }, Response, LoginData> = (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction) => {
+export const checkLoginData: RequestHandler<{ num_documento: string; contrasena: string }, Response, LoginData> = (req: Request<{ num_documento: string; contrasena: string }>, res: Response, next: NextFunction) => {
   const { num_documento, contrasena } = req.body as LoginData
   const numberParsed = Number(num_documento)
   try {
@@ -81,6 +81,7 @@ export const generateToken: RequestHandler<{}, unknown, LoginData> = (req: Reque
 export const checkName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = (req: Request<{ nombreCompleto: string }>, res: Response, next: NextFunction): void => {
   const { nombreCompleto } = req.query
   const nameSchema = Joi.object({ nombreCompleto: Joi.string().required().max(100) })
+
   try {
     const { error } = nameSchema.validate({ nombreCompleto })
     if (error !== undefined) throw new DataNotValid('El nombre completo ingresado no es válido.')
