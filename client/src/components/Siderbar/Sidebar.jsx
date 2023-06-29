@@ -8,7 +8,7 @@ import { IoCalendarClearOutline, IoDocumentTextOutline, IoHandLeft, IoHomeOutlin
 import { CiCircleChevRight } from 'react-icons/ci'
 
 import { colorIcon } from '../../import/staticData'
-import Skeleton from 'react-loading-skeleton'
+import {Skeleton} from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 const Siderbar = () => {
