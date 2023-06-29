@@ -11,6 +11,7 @@ import Cookies from 'js-cookie'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { Modals } from '../Utils/Modals/Modals'
+import { filter } from '../../import/staticData'
 
 export const Student = () => {
   const [apprentices, setApprentices] = useState([])
@@ -62,9 +63,11 @@ export const Student = () => {
     // getApprentices()
   }, [])
 
+  const filterStudents = filter.filterStudents
+
   return (
     <>
-      {mostrarModal && <Modals bodyFilter title={'Filtrar'} closeModal={handleModal} />}
+      {mostrarModal && <Modals bodyFilter title={'Filtrar'} view={filterStudents} closeModal={handleModal} />}
       <main className="flex flex-row min-h-screen">
         <Siderbar />
         <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">

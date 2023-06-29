@@ -3,6 +3,7 @@ import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Modals } from '../Utils/Modals/Modals'
+import { filter } from '../../import/staticData'
 
 const Bitacoras = () => {
   const [mostrarModal, setMostrarModal] = useState(false)
@@ -14,9 +15,10 @@ const Bitacoras = () => {
   const handleModal = () => {
     setMostrarModal(!mostrarModal)
   }
+  const filterBitacoras = filter.filterBitacoras
   return (
     <>
-      {mostrarModal && <Modals bodyFilter title={'Bitacoras'} closeModal={handleModal} />}
+      {mostrarModal && <Modals bodyFilter view={filterBitacoras} title={'Bitacoras'} closeModal={handleModal} />}
       <main className="flex flex-row min-h-screen">
         <Siderbar />
         <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">
