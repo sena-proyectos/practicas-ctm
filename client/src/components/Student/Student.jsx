@@ -12,8 +12,8 @@ export const Student = () => {
   const [apprentices, setApprentices] = useState([])
 
   useEffect(() => {
-    const token = Cookies.get('token')
-    if (!token) window.location.href = '/'
+    //const token = Cookies.get('token')
+    //if (!token) window.location.href = '/'
 
     const getApprentices = async () => {
       const response = await GetUsersHttp()

@@ -37,10 +37,10 @@ const Siderbar = () => {
 
     const decoded = jwtdecoded(token)
 
-    setNameRol(decoded.data.user.id_rol === 1 ? 'Administrador' : 'Instructor')
+   setNameRol(decoded.data.user.id_rol === 1 ? 'Administrador' : 'Instructor')
 
-    setNameUser(decoded.data.user.nombre + ' ' + decoded.data.user.apellido)
-  }, [])
+   setNameUser(decoded.data.user.nombre + ' ' + decoded.data.user.apellido)
+ }, [])
 
   const styles = (path) => {
     return location.pathname === path ? 'flex items-center relative pl-10 py-2 font-semibold bg-white rounded-s-2xl w-[115%] h-10' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] h-10 transition '

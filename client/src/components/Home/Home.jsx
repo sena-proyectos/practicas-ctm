@@ -8,12 +8,12 @@ import { useEffect } from 'react'
 import Cookies from 'js-cookie'
 
 const Home = () => {
-  useEffect(() => {
-    const token = Cookies.get('token')
-    if (!token) {
-      window.location.href = '/'
-    }
-  }, [])
+  //useEffect(() => {
+   // const token = Cookies.get('token')
+   // if (!token) {
+   //   window.location.href = '/'
+   // }
+ // }, [])
 
   return (
     <main className="flex flex-row min-h-screen">
