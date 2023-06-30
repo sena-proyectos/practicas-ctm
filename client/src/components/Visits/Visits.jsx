@@ -79,7 +79,7 @@ const Visits = () => {
 
   return (
     <>
-      {mostrarModal && <Modals bodyFilter view={filterVisits} title={'Visitas'} closeModal={handleModal} />}
+      {mostrarModal && <Modals bodyFilter view={filterVisits} title={'Visitas'} closeModal={handleModal} stylesFilterVisits />}
       <main className="flex flex-row min-h-screen">
         <Siderbar />
         <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">

@@ -3,7 +3,32 @@ import { IoMdClose } from 'react-icons/io'
 import { modalities } from '../../../import/staticData'
 import { Button } from '../../Button/Button'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view }) => {
+const Modals = ({
+  closeModal,
+  title,
+  bodyStudent = false,
+  emailStudent,
+  documentStudent,
+  celStudent,
+  trainingProgram,
+  ficha,
+  academicLevel,
+  trainingStage,
+  modalitie,
+  finLectiva,
+  inicioProductiva,
+  company,
+  innmediateSuperior,
+  emailSuperior,
+  workstation,
+  celSuperior,
+  arl,
+  bodyFilter = false,
+  bodyVisits = false,
+  view,
+  //Styles Visitas
+  stylesFilterVisits = false,
+}) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleDropdown = () => {
@@ -24,7 +49,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
         <header className="grid place-items-center pt-5">
           <h2 className="text-xl w-fit text-center font-medium border-b-1 border-primary">{title}</h2>
         </header>
-        <section className="flex-auto w-5/6 mx-auto">
+        <section className={`${stylesFilterVisits === false ? 'flex-auto w-5/6 mx-auto' : 'w-fit mx-auto'}`}>
           {bodyStudent && (
             <>
               <section className="pt-3 pb-2">
@@ -103,38 +128,41 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
           )}
           {bodyFilter && (
             <>
-              <form action="" className="flex flex-col justify-center my-4 gap-3 pt-2">
-                {view.map((filtro, i) => {
-                  return (
-                    <section key={i}>
-                      <div className="grid grid-cols-1 md:grid-cols-2-45-55">
-                        <label className="font-semibold" htmlFor="">
-                          {filtro.label}
-                        </label>
-                        {filtro.type === 'number' ? (
-                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-lg pl-3 focus:outline-none focus:bg-white focus:text-gray-900 w-72" />
-                        ) : filtro.type === 'date' ? (
-                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-lg pl-3 focus:outline-none focus:bg-white focus:text-gray-900 w-72" />
-                        ) : filtro.type === 'text' ? (
-                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-lg pl-3 focus:outline-none focus:bg-white focus:text-gray-900 w-72" />
-                        ) : filtro.type === 'select' ? (
-                          <select name={filtro.name} className="py-[2.5px] text-base text-black bg-white border-1 border-gray-400 rounded-lg pl-3 focus:outline-none focus:bg-white focus:text-gray-900 w-72" onFocus={toggleDropdown} onChange={handleOptionSelect}>
-                            <option value={''}>Sin seleccionar</option>
-                            {modalities.map((filtro, i) => {
-                              return (
-                                <option value={filtro.value} key={i}>
-                                  {filtro.name}
-                                </option>
-                              )
-                            })}
-                          </select>
-                        ) : null}
-                      </div>
-                    </section>
-                  )
-                })}
-
-                <div className={`w-fit grid grid-cols-2 ${isOpen === true ? 'my-10 mx-4 gap-2' : 'mx-auto my-5 gap-5'} `}>
+              <form action="">
+                <section className={`${stylesFilterVisits === false ? 'flex flex-col justify-center my-4 gap-3 pt-2' : 'grid grid-cols-2 grid-rows-2-50-50 gap-x-9 gap-y-3 pt-4 pb-6'}`}>
+                  {view.map((filtro, i) => {
+                    return (
+                      <section key={i}>
+                        <div className={`${stylesFilterVisits === false ? 'grid grid-cols-1 md:grid-cols-2-45-55' : 'flex flex-col'}`}>
+                          <label className="font-semibold" htmlFor="">
+                            {filtro.label}
+                          </label>
+                          <div>
+                            {filtro.type === 'number' ? (
+                              <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-xl pl-3 focus:outline-none focus:bg-white focus:text-gray-900 ${stylesFilterVisits === false ? 'w-72' : 'w-56'}`} />
+                            ) : filtro.type === 'date' ? (
+                              <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-xl pl-3 focus:outline-none focus:bg-white focus:text-gray-900 ${stylesFilterVisits === false ? 'w-72' : 'w-56'}`} />
+                            ) : filtro.type === 'text' ? (
+                              <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-xl pl-3 focus:outline-none focus:bg-white focus:text-gray-900 ${stylesFilterVisits === false ? 'w-72' : 'w-56'}`} />
+                            ) : filtro.type === 'select' ? (
+                              <select name={filtro.name} className={`py-[2.5px] text-base text-black bg-white border-1 border-gray-400 rounded-xl pl-3 focus:outline-none focus:bg-white focus:text-gray-900 ${stylesFilterVisits === false ? 'w-72' : 'w-56'}`} onFocus={toggleDropdown} onChange={handleOptionSelect}>
+                                <option value={''}>Sin seleccionar</option>
+                                {modalities.map((filtro, i) => {
+                                  return (
+                                    <option value={filtro.value} key={i}>
+                                      {filtro.name}
+                                    </option>
+                                  )
+                                })}
+                              </select>
+                            ) : null}
+                          </div>
+                        </div>
+                      </section>
+                    )
+                  })}
+                </section>
+                <div className={`w-fit grid grid-cols-2 ${isOpen === true ? 'my-12 mx-4 gap-2' : 'mx-auto my-5 gap-5'} `}>
                   <Button value={'Limpiar'} bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
                   <Button value={'Buscar'} bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
                 </div>
