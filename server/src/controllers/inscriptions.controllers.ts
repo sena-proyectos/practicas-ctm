@@ -46,6 +46,7 @@ export const createInscription: RequestHandler<{}, Response, inscriptionData> = 
     correo_jefe_inmediato_inscripcion,
     asume_pago_arl_inscripcion,
     // link_documentos_pdf_inscripcion,
+    // link_documentos_pdf_inscripcion,
     observaciones_inscripcion,
     // fecha_creacion_inscripcion,
     id_usuario_responsable_inscripcion,
