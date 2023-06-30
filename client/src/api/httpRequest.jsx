@@ -28,11 +28,11 @@ export const InscriptionApprentice = async (data) => {
 }
 
 /* BUSCAR APRENDICES POR NOMBRE */
-export const GetUserByName = async (data) => {
-  const URL = `${baseUrl}${api}/studentName`
-  const response = await axios.post(URL, { nombreCompleto: data })
+export const GetUserByName = async (searchQuery) => {
+  const URL = `${baseUrl}${api}/studentName?nombreCompleto=${searchQuery}`;
+  const response = await axios.get(URL);
 
-  return response
+  return response;
 }
 
 /* BUSCAR INSTRUCTOR POR NOMBRE */
