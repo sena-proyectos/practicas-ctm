@@ -12,13 +12,13 @@ const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale
 
   return (
     <>
-      {mostrarModal && <Modals closeModal={handleModal} bodyStudent title={'Stiven Blandón Urrego'} emailStudent={'blandon0207s@gmail.com'} documentStudent={'1017924888'} celStudent={'3183577499'} trainingProgram={'Análisis y Desarrollo de Software'} ficha={'2473196'} academicLevel={'Tecnología'} trainingStage={'Lectiva'} modalitie={'Contrato de Aprendizaje'} finLectiva={'05 Abril 2023'} inicioProductiva={'02 Mayo 2023'} company={'Servicio Nacional del Aprendizaje'} innmediateSuperior={'Richard Alexander Betancur Sierra'} workstation={'Instructor'} emailSuperior={'rbetancur@misena.edu.co'} celSuperior={'123456789'} arl={'Sura'} />}
+      {mostrarModal && cardUser === true ? <Modals closeModal={handleModal} bodyStudent title={'Stiven Blandón Urrego'} emailStudent={'blandon0207s@gmail.com'} documentStudent={'1017924888'} celStudent={'3183577499'} trainingProgram={'Análisis y Desarrollo de Software'} ficha={'2473196'} academicLevel={'Tecnología'} trainingStage={'Lectiva'} modalitie={'Contrato de Aprendizaje'} finLectiva={'05 Abril 2023'} inicioProductiva={'02 Mayo 2023'} company={'Servicio Nacional del Aprendizaje'} innmediateSuperior={'Richard Alexander Betancur Sierra'} workstation={'Instructor'} emailSuperior={'rbetancur@misena.edu.co'} celSuperior={'123456789'} arl={'Sura'} /> : mostrarModal && cardVisits === true ? <Modals closeModal={handleModal} bodyVisits title={'Visitas'} /> : null}
       <div className={`${bgColor} bg-opacity-50 ${shadow} rounded-lg py-2 px-3 flex flex-col justify-center h-auto ${scale && 'scale-90'}`}>
         <header className={`${cardUser && 'flex flex-row'}`}>
           {cardUser && <img className="w-[4.5rem] h-[4.5rem] rounded-full" src={img} alt={alt} />}
           <div className={`${cardUser && 'flex flex-col flex-auto w-min py-3'}`}>
             <h2 className={`text-${titleColor} text-center font-semibold text-lg mb-1 break-words `}>{title}</h2>
-            <h3 className="text-center font-medium text-xs">{subtitle}</h3>
+            <h3 className="text-center font-medium text-xs break-all">{subtitle}</h3>
           </div>
         </header>
         <div className="w-4/5 mx-auto pt-2">
