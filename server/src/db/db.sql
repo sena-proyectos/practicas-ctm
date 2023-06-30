@@ -30,6 +30,7 @@ CREATE TABLE `detalles_empresas` (
   `telefono_detalle_empresa` varchar(20) NOT NULL,
   `direccion_detalle_empresa` varchar(60) NOT NULL,
   `id_localidad` int NOT NULL,
+  `estado` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`id_detalle_empresa`),
   KEY `detalles_empresas_ibfk_1` (`id_localidad`),
   CONSTRAINT `detalles_empresas_ibfk_1` FOREIGN KEY (`id_localidad`) REFERENCES `localidades` (`id_localidad`)
@@ -42,7 +43,7 @@ CREATE TABLE `detalles_empresas` (
 
 LOCK TABLES `detalles_empresas` WRITE;
 /*!40000 ALTER TABLE `detalles_empresas` DISABLE KEYS */;
-INSERT INTO `detalles_empresas` VALUES (1,'Chapinero','2896541','Calle 42 #74-25 Piso 4',1);
+INSERT INTO `detalles_empresas` VALUES (1,'Chapinero','2896541','Calle 42 #74-25 Piso 4',1,NULL);
 /*!40000 ALTER TABLE `detalles_empresas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,6 +60,7 @@ CREATE TABLE `empresas` (
   `nit_empresa` varchar(11) NOT NULL,
   `correo_empresa` varchar(60) NOT NULL,
   `id_detalle_empresa` int NOT NULL,
+  `estado` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`id_empresa`),
   KEY `empresas_ibfk_1` (`id_detalle_empresa`),
   CONSTRAINT `empresas_ibfk_1` FOREIGN KEY (`id_detalle_empresa`) REFERENCES `detalles_empresas` (`id_detalle_empresa`)
@@ -71,7 +73,7 @@ CREATE TABLE `empresas` (
 
 LOCK TABLES `empresas` WRITE;
 /*!40000 ALTER TABLE `empresas` DISABLE KEYS */;
-INSERT INTO `empresas` VALUES (1,'Mi Empresa CO','5-31084956','miempresa@colombia.com',1);
+INSERT INTO `empresas` VALUES (1,'Mi Empresa CO','5-31084956','miempresa@colombia.com',1,NULL);
 /*!40000 ALTER TABLE `empresas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,6 +95,7 @@ CREATE TABLE `fichas` (
   `nivel_programa_formación` varchar(50) NOT NULL,
   `id_instructor_lider_formacion` int NOT NULL,
   `id_instructor_practicas_formacion` int DEFAULT NULL,
+  `estado` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`id_ficha`),
   KEY `fichas_ibfk_1` (`id_instructor_lider_formacion`),
   KEY `fichas_ibfk_2` (`id_instructor_practicas_formacion`),
@@ -107,7 +110,7 @@ CREATE TABLE `fichas` (
 
 LOCK TABLES `fichas` WRITE;
 /*!40000 ALTER TABLE `fichas` DISABLE KEYS */;
-INSERT INTO `fichas` VALUES (2,'2473196','ADSO','2022-02-01','2023-04-05','2023-04-06','2023-11-02','Tecnologo',1,1);
+INSERT INTO `fichas` VALUES (2,'2473196','ADSO','2022-02-01','2023-04-05','2023-04-06','2023-11-02','Tecnologo',1,1,NULL);
 /*!40000 ALTER TABLE `fichas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,6 +145,7 @@ CREATE TABLE `inscripciones` (
   `observaciones_inscripcion` varchar(200) NOT NULL,
   `fecha_creacion_inscripcion` date NOT NULL,
   `id_usuario_responsable_inscripcion` int NOT NULL,
+  `estado` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`id_inscripcion`),
   KEY `inscripciones_ibfk_1` (`id_modalidad_inscripcion`),
   KEY `inscripciones_ibfk_2` (`id_ficha_inscripcion`),
@@ -153,7 +157,7 @@ CREATE TABLE `inscripciones` (
   CONSTRAINT `inscripciones_ibfk_3` FOREIGN KEY (`id_instructor_lider_inscripcion`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `inscripciones_ibfk_4` FOREIGN KEY (`id_empresa_inscripcion`) REFERENCES `empresas` (`id_empresa`),
   CONSTRAINT `inscripciones_ibfk_5` FOREIGN KEY (`id_usuario_responsable_inscripcion`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,7 +166,7 @@ CREATE TABLE `inscripciones` (
 
 LOCK TABLES `inscripciones` WRITE;
 /*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
-INSERT INTO `inscripciones` VALUES (5,2,'Juangui','Gomez','C.C','1027800913','jggomez016@gmail.com','3195810996','Tecnologo','Tecnologo',2,1,'Ninguno',1,'Richard','Presidente','3006953395','rabs@gmail.com','La Empresa','www.youtube.com','N/A','2023-06-20',1);
+INSERT INTO `inscripciones` VALUES (5,2,'Juangui','Gomez','C.C','1027800913','jggomez016@gmail.com','3195810996','Tecnologo','Tecnologo',2,1,'Ninguno',1,'Richard','Presidente','3006953395','rabs@gmail.com','La Empresa','www.youtube.com','N/A','2023-06-20',1,'Aprobado'),(6,2,'Cristian','Bedoya','C.C','1027883343','cristianbedoya@gmail.com','3007030424','Tecnologo','Tecnologo',2,1,'Ninguno',1,'Richard','Representante','3006953395','rabs@gmail.com','La Empresa','Doc.pdf','N/A','2023-06-28',1,'Pendiente'),(7,2,'Angie Tatiana','Mosquera Arco','C.C','1027893442','atatianamosquera@gmail.com','3001930752','Tecnologo','Tecnologo',2,1,'Ninguno',1,'Richard','Representante','3006953395','rabs@gmail.com','La Empresa','Doc.pdf','N/A','2023-06-28',1,'Rechazado');
 /*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -258,6 +262,7 @@ CREATE TABLE `usuarios` (
   `num_celular` varchar(15) DEFAULT NULL,
   `contrasena` varchar(300) DEFAULT NULL,
   `id_rol` int NOT NULL,
+  `estado` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `Num_Documento_UNIQUE` (`num_documento`),
   UNIQUE KEY `Correo_electronico_UNIQUE` (`correo_electronico`),
@@ -272,7 +277,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Admin','Admin','cc','1234567890','admin@admin.com','3121234567','$2b$10$/ECjsca5O4CjQGxfdIjYJ.KcmhTiNXTarv0HZxKrHFcFeu7kP1Xh6',1),(2,'Stiven','Blandón','ti','1017924777','eyconan19@gmail.com','3163026614','$2b$10$KH33PJSnlKiUeCz4vHJfXO8gofC0A11OKhITHWnIJwxBcV/B2qni6',1),(3,'Stiven','Blandón','ti','1017924666','eyconan18@gmail.com','3163026613','$2b$10$zqBCPi./LoqpgCgNZVxSkuKsz3uYP6r75yGfOQL9fsUF1zew.bkDK',1),(4,'Juan','Gomez','CC','1027800913','juanlestar0408@gmail.com','3006953395','$2b$10$nhOaLbTIEVE7TYcsW3NtouwcpHxtSuAjnmdl.9LXaISRfYoo2uP36',2),(5,'Roberto','Gui','TI','1027827666','juanlestar12@gmail.com','3195813232','$2b$10$wcmZBKO13VCPaxSZssWyduSRUMIYdq0E0HQcezbH04C/s5MC0d9C.',2),(6,'Felipe','Benjumea','CC','1027827777','juanlestar13@gmail.com','3195810996','$2b$10$JNhXrq43Av3bzNSptQ85J.5NxKLwPu7CezFzx8n4fTaDXrZdMOZCu',3),(7,'Guillermo','Morales','CC','1027826666','juanlestar14@gmail.com','3195810997','$2b$10$xQ8AhXQIBHURm5b3TdxgEOmVWtUfHTE2Huf5tIoELgGup4L0fHIBu',3);
+INSERT INTO `usuarios` VALUES (1,'Admin','Admin','cc','1234567890','admin@admin.com','3121234567','$2b$10$/ECjsca5O4CjQGxfdIjYJ.KcmhTiNXTarv0HZxKrHFcFeu7kP1Xh6',1,'Activo'),(2,'Stiven','Blandón','ti','1017924777','eyconan19@gmail.com','3163026614','$2b$10$KH33PJSnlKiUeCz4vHJfXO8gofC0A11OKhITHWnIJwxBcV/B2qni6',1,'Activo'),(3,'Stiven','Blandón','ti','1017924666','eyconan18@gmail.com','3163026613','$2b$10$zqBCPi./LoqpgCgNZVxSkuKsz3uYP6r75yGfOQL9fsUF1zew.bkDK',1,'Activo'),(4,'Juan','Gomez','CC','1027800913','juanlestar0408@gmail.com','3006953395','$2b$10$nhOaLbTIEVE7TYcsW3NtouwcpHxtSuAjnmdl.9LXaISRfYoo2uP36',2,'Activo'),(5,'Roberto','Gui','TI','1027827666','juanlestar12@gmail.com','3195813232','$2b$10$wcmZBKO13VCPaxSZssWyduSRUMIYdq0E0HQcezbH04C/s5MC0d9C.',2,'Activo'),(6,'Felipe','Benjumea','CC','1027827777','juanlestar13@gmail.com','3195810996','$2b$10$JNhXrq43Av3bzNSptQ85J.5NxKLwPu7CezFzx8n4fTaDXrZdMOZCu',3,'Activo'),(7,'Guillermo','Morales','CC','1027826666','juanlestar14@gmail.com','3195810997','$2b$10$xQ8AhXQIBHURm5b3TdxgEOmVWtUfHTE2Huf5tIoELgGup4L0fHIBu',3,'Activo');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -285,4 +290,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-22 18:52:31
+-- Dump completed on 2023-06-30  8:55:46
