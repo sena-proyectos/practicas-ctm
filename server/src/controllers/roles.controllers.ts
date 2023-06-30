@@ -24,7 +24,7 @@ export const getRoles = async (_req: Request, res: Response): Promise<Response> 
   }
 }
 
-export const editRole: RequestHandler<{ id: string, nombre_rol: string }, Response, roleName> = async (req: Request<{ id: string, nombre_rol: string }>, res: Response): Promise<Response> => {
+export const editRole: RequestHandler<{ id: string; nombre_rol: string }, Response, roleName> = async (req: Request<{ id: string; nombre_rol: string }>, res: Response): Promise<Response> => {
   const { id } = req.params
   const { nombre_rol } = req.body
   try {

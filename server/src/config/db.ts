@@ -9,5 +9,5 @@ export const connection: Pool = createPool({
   password: DB_PASSWORD,
   database: DB_DATABASE,
   port: Number(DB_PORT),
-  waitForConnections: true
+  waitForConnections: true,
 })

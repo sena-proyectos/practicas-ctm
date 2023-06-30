@@ -31,20 +31,14 @@ const RegisterStudent = () => {
     const formValues = Object.fromEntries(new FormData(e.target))
     try {
       const teacher = {
-        nombreCompleto: formValues.nombre_instructor_lider_inscripcion
+        nombreCompleto: formValues.nombre_instructor_lider_inscripcion,
       }
 
-      // console.log(instructor)
       const res = await GetTeacherByName(teacher)
       const response = res.data.data[0].id_usuario
-      // console.log(response)
       const newValue = (teacher.nombreCompleto = response)
-
-      // console.log(instructor)
-      // console.log(newValue)
     } catch (error) {
       const message = error.response.data.error.info.message
-      // console.log(error)
     }
     formValues.id_usuario_responsable_inscripcion = `${id}`
     // validar que los campos no esten vacios
@@ -63,7 +57,7 @@ const RegisterStudent = () => {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: error
+        text: error,
       })
     }
 
@@ -79,13 +73,13 @@ const RegisterStudent = () => {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'El número de documento no es válido'
+        text: 'El número de documento no es válido',
       })
     } else if (!isEmailValid) {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'El correo electrónico no es válido'
+        text: 'El correo electrónico no es válido',
       })
     }
 
@@ -96,7 +90,7 @@ const RegisterStudent = () => {
     Swal.fire({
       icon: 'success',
       title: '¡Éxito!',
-      text: msg
+      text: msg,
     })
   }
 
@@ -121,7 +115,7 @@ const RegisterStudent = () => {
         icon: 'error',
         title: '¡Error!',
         text: 'Has ingresado un formato inválido. ¡Por favor escoga un formato válido de excel!',
-        footer: '.xlsx, .xls'
+        footer: '.xlsx, .xls',
       })
       excelFileRef.current.value = ''
       return
@@ -155,7 +149,7 @@ const RegisterStudent = () => {
                             className="py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72"
                             style={{
                               WebkitAppearance: 'none',
-                              MozAppearance: 'textfield'
+                              MozAppearance: 'textfield',
                             }}
                             autoComplete="on"
                             placeholder={item.placeholder}
