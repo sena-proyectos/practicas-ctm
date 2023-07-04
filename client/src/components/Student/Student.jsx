@@ -83,6 +83,9 @@ export const Student = () => {
                 <Skeleton width={350} height={250} style={{ marginBottom: '1rem', margin: '1.2em' }} />
                 <Skeleton width={350} height={250} style={{ marginBottom: '1rem', margin: '1.2em' }} />
                 <Skeleton width={350} height={250} style={{ marginBottom: '1rem', margin: '1.2em' }} />
+                <Skeleton width={350} height={250} style={{ marginBottom: '1rem', margin: '1.2em' }} />
+                <Skeleton width={350} height={250} style={{ marginBottom: '1rem', margin: '1.2em' }} />
+                <Skeleton width={350} height={250} style={{ marginBottom: '1rem', margin: '1.2em' }} />
               </>
             )}
           </div>

@@ -29,16 +29,16 @@ export const InscriptionApprentice = async (data) => {
 
 /* BUSCAR APRENDICES POR NOMBRE */
 export const GetUserByName = async (searchQuery) => {
-  const URL = `${baseUrl}${api}/studentName?nombreCompleto=${searchQuery}`;
-  const response = await axios.get(URL);
+  const URL = `${baseUrl}${api}/studentName?nombreCompleto=${searchQuery}`
+  const response = await axios.get(URL)
 
-  return response;
+  return response
 }
 
 /* BUSCAR INSTRUCTOR POR NOMBRE */
 export const GetTeacherByName = async (data) => {
-  const URL = `${baseUrl}${api}/teacherName`
-  const response = await axios.post(URL, data)
+  const URL = `${baseUrl}${api}/teacherName?nombreCompleto=${data}`
+  const response = await axios.get(URL)
 
   return response
 }

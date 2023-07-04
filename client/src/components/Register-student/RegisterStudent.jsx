@@ -30,28 +30,26 @@ const RegisterStudent = () => {
     // capturar los valores de los inputs del formulario
     const formValues = Object.fromEntries(new FormData(e.target))
     try {
-      const teacher = {
-        nombreCompleto: formValues.nombre_instructor_lider_inscripcion,
-      }
+      const teacher =  formValues.nombre_instructor_lider_inscripcion
 
       const res = await GetTeacherByName(teacher)
       const response = res.data.data[0].id_usuario
-      const newValue = (teacher.nombreCompleto = response)
+
     } catch (error) {
-      const message = error.response.data.error.info.message
+      // const message = error.response.data.error.info.message
     }
     formValues.id_usuario_responsable_inscripcion = `${id}`
     // validar que los campos no esten vacios
-    // const emptyFields = Object.keys(formValues).filter((key) => !formValues[key])
+    const emptyFields = Object.keys(formValues).filter((key) => !formValues[key])
 
-    // // si hay campos vacios, mostrar alerta
-    // if (emptyFields.length > 0) {
-    //   return Swal.fire({
-    //     icon: 'error',
-    //     title: 'Oops...',
-    //     text: 'Por favor, completa todos los campos',
-    //   })
-    // }
+    // si hay campos vacios, mostrar alerta
+    if (emptyFields.length > 0) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Por favor, completa todos los campos',
+      })
+    }
     const { error } = inscriptionValidation.validate(formValues)
     if (error !== null) {
       return Swal.fire({
