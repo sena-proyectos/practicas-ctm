@@ -55,7 +55,7 @@ const RegisterStudent = () => {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: error
+        text: error,
       })
     }
 
@@ -71,13 +71,13 @@ const RegisterStudent = () => {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'El número de documento no es válido'
+        text: 'El número de documento no es válido',
       })
     } else if (!isEmailValid) {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'El correo electrónico no es válido'
+        text: 'El correo electrónico no es válido',
       })
     }
 
@@ -88,7 +88,7 @@ const RegisterStudent = () => {
     Swal.fire({
       icon: 'success',
       title: '¡Éxito!',
-      text: msg
+      text: msg,
     })
   }
 
@@ -113,7 +113,7 @@ const RegisterStudent = () => {
         icon: 'error',
         title: '¡Error!',
         text: 'Has ingresado un formato inválido. ¡Por favor escoga un formato válido de excel!',
-        footer: '.xlsx, .xls'
+        footer: '.xlsx, .xls',
       })
       excelFileRef.current.value = ''
       return
@@ -147,7 +147,7 @@ const RegisterStudent = () => {
                             className="py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72"
                             style={{
                               WebkitAppearance: 'none',
-                              MozAppearance: 'textfield'
+                              MozAppearance: 'textfield',
                             }}
                             autoComplete="on"
                             placeholder={item.placeholder}

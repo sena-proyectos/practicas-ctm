@@ -57,7 +57,7 @@ export const createClass: RequestHandler<{}, Response, classes> = async (req: Re
       nivel_programa_formacion,
       jornada_ficha,
       leaderTeacherNumber,
-      practicalTeacherNumber
+      practicalTeacherNumber,
     ])
     if (!Array.isArray(classQuery) && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo crear la ficha.', errorCodes.ERROR_CREATE_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
