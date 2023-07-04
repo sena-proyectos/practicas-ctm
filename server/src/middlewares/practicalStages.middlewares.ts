@@ -2,10 +2,7 @@ import { type Response, type RequestHandler, type NextFunction, type Request } f
 import { practicalStageSchema } from '../schemas/practicalStages.schema.js'
 import { type CustomError, DataNotValid, NumberIsNaN } from '../errors/customErrors.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
-<<<<<<< HEAD
 // Este import da errores con el case
-=======
->>>>>>> 3a1cae3bfb2a50bd80315cffec29c7b694cb230e
 import { type PracticalStages } from '../interfaces/PracticalStages.interfaces.js'
 
 export const checkPracticalStageData: RequestHandler<{}, Response, PracticalStages> = (req: Request<{}>, res: Response, next: NextFunction): void => {
