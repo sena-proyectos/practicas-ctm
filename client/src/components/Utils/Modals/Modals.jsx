@@ -1,34 +1,10 @@
 import { useState } from 'react'
+import { IoSearchOutline } from 'react-icons/io5'
 import { IoMdClose } from 'react-icons/io'
 import { modalities } from '../../../import/staticData'
 import { Button } from '../../Button/Button'
 
-const Modals = ({
-  closeModal,
-  title,
-  bodyStudent = false,
-  emailStudent,
-  documentStudent,
-  celStudent,
-  trainingProgram,
-  ficha,
-  academicLevel,
-  trainingStage,
-  modalitie,
-  finLectiva,
-  inicioProductiva,
-  company,
-  innmediateSuperior,
-  emailSuperior,
-  workstation,
-  celSuperior,
-  arl,
-  bodyFilter = false,
-  bodyVisits = false,
-  view,
-  //Styles Visitas
-  stylesFilterVisits = false,
-}) => {
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleDropdown = () => {
@@ -138,14 +114,12 @@ const Modals = ({
                             {filtro.label}
                           </label>
                           <div>
-                            {filtro.type === 'number' ? (
-                              <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-xl pl-3 focus:outline-none focus:bg-white focus:text-gray-900 ${stylesFilterVisits === false ? 'w-72' : 'w-56'}`} />
-                            ) : filtro.type === 'date' ? (
-                              <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-xl pl-3 focus:outline-none focus:bg-white focus:text-gray-900 ${stylesFilterVisits === false ? 'w-72' : 'w-56'}`} />
+                            {filtro.type === 'date' ? (
+                              <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`py-[0.9px] text-base text-black bg-white border-[1.2px] border-gray-400 rounded-md pl-3 focus:outline-none focus:bg-white focus:text-gray-900 ${stylesFilterVisits === false ? 'w-full' : 'w-full'}`} />
                             ) : filtro.type === 'text' ? (
-                              <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-xl pl-3 focus:outline-none focus:bg-white focus:text-gray-900 ${stylesFilterVisits === false ? 'w-72' : 'w-56'}`} />
+                              <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`py-[0.9px] text-base text-black bg-white border-[1.2px] border-gray-400 rounded-md pl-3 focus:outline-none focus:bg-white focus:text-gray-900 ${stylesFilterVisits === false ? 'w-full' : 'w-full'}`} />
                             ) : filtro.type === 'select' ? (
-                              <select name={filtro.name} className={`py-[2.5px] text-base text-black bg-white border-1 border-gray-400 rounded-xl pl-3 focus:outline-none focus:bg-white focus:text-gray-900 ${stylesFilterVisits === false ? 'w-72' : 'w-56'}`} onFocus={toggleDropdown} onChange={handleOptionSelect}>
+                              <select name={filtro.name} className={`py-[2.5px] text-base text-black bg-white border-[1.2px] border-gray-400 rounded-md pl-3 focus:outline-none focus:bg-white focus:text-gray-900 ${stylesFilterVisits === false ? 'w-full' : 'w-full'}`} onFocus={toggleDropdown} onChange={handleOptionSelect}>
                                 <option value={''}>Sin seleccionar</option>
                                 {modalities.map((filtro, i) => {
                                   return (
@@ -164,7 +138,12 @@ const Modals = ({
                 </section>
                 <div className={`w-fit grid grid-cols-2 ${isOpen === true ? 'my-12 mx-4 gap-2' : 'mx-auto my-5 gap-5'} `}>
                   <Button value={'Limpiar'} bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                  <Button value={'Buscar'} bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  <div className="relative mx-auto">
+                    <span className="absolute inset-y-0 left-2 flex items-center text-white">
+                      <IoSearchOutline />
+                    </span>
+                    <Button value={'Buscar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  </div>
                 </div>
               </form>
             </>
