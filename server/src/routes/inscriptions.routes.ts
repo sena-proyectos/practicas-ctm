@@ -11,4 +11,8 @@ inscriptionRoutes.get('/inscription/:id', checkIdReq, getInscriptionById)
 
 // * POST
 inscriptionRoutes.post('/create-inscription', checkInscriptionData, createInscription)
+
+// * PATCH
+// inscriptionRoutes.patch('/update-inscription/:id', checkIdReq, checkInscriptionData, editInscription)
+
 export { inscriptionRoutes }

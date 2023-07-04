@@ -8,7 +8,7 @@ import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
-import { InscriptionApprentice, GetTeacherByName } from '../../api/httpRequest'
+import { InscriptionApprentice, GetTeacherByName, GetClassByNumber } from '../../api/httpRequest'
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 import { readExcelFile } from '../../readExcelFile/reactExcelFile'
 import { inscriptionValidation } from '../../validation/inscriptionsValidation'
@@ -26,15 +26,19 @@ const RegisterStudent = () => {
   // Capturación de valores
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     // capturar los valores de los inputs del formulario
     const formValues = Object.fromEntries(new FormData(e.target))
+
+
+
     try {
-      const teacher =  formValues.nombre_instructor_lider_inscripcion
+      const teacher = formValues.nombre_instructor_lider_inscripcion
 
-      const res = await GetTeacherByName(teacher)
-      const response = res.data.data[0].id_usuario
-
+      if (teacher) {
+        const res = await GetTeacherByName(teacher)
+        const response = res.data.data[0].id_usuario
+        formValues.nombre_instructor_lider_inscripcion = `${response}`
+      }
     } catch (error) {
       // const message = error.response.data.error.info.message
     }
@@ -47,7 +51,7 @@ const RegisterStudent = () => {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Por favor, completa todos los campos',
+        text: 'Por favor, completa todos los campos'
       })
     }
     const { error } = inscriptionValidation.validate(formValues)

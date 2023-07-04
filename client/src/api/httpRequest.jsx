@@ -17,6 +17,14 @@ export const GetUsersHttp = async () => {
 
   const response = await axios.get(URL)
   return response
+
+}
+/* OBTENER APRENDICES POR ID */
+export const GetUsersById = async (userID) => {
+  const URL = `${baseUrl}${api}/student/${userID}`
+  
+  const response = await axios.get(URL)
+  return response
 }
 
 /* INSCRIBIR APRENDICES */
@@ -39,6 +47,14 @@ export const GetUserByName = async (searchQuery) => {
 export const GetTeacherByName = async (data) => {
   const URL = `${baseUrl}${api}/teacherName?nombreCompleto=${data}`
   const response = await axios.get(URL)
+
+  return response
+}
+
+// OBTENER FICHA POR NUMERO DE FICHA
+export const GetClassByNumber = async (data) => {
+  const URL = `${baseUrl}${api}/classNumber`
+  const response = await axios.get(URL, data)
 
   return response
 }
