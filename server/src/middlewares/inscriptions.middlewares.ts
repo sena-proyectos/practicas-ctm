@@ -27,7 +27,7 @@ export const checkInscriptionData: RequestHandler<{}, Response, inscriptionData>
     link_documentos_pdf_inscripcion,
     observaciones_inscripcion,
     fecha_creacion_inscripcion,
-    id_usuario_responsable_inscripcion
+    id_usuario_responsable_inscripcion,
   } = req.body
   // * Parseo de datos en forma int de los id para ver si son números
   const idModalidadNumber = parseInt(id_modalidad_inscripcion, 10)
@@ -74,7 +74,7 @@ export const checkInscriptionData: RequestHandler<{}, Response, inscriptionData>
       link_documentos_pdf_inscripcion,
       observaciones_inscripcion,
       fecha_creacion_inscripcion,
-      id_usuario_responsable_inscripcion
+      id_usuario_responsable_inscripcion,
     })
     if (error !== undefined) throw new DataNotValid('Datos de inscripción no válidos.')
     next()
