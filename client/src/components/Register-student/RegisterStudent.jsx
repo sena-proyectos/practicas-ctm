@@ -29,8 +29,6 @@ const RegisterStudent = () => {
     // capturar los valores de los inputs del formulario
     const formValues = Object.fromEntries(new FormData(e.target))
 
-
-
     try {
       const teacher = formValues.nombre_instructor_lider_inscripcion
 

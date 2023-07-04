@@ -27,7 +27,7 @@ const Modals = ({
   bodyVisits = false,
   view,
   //Styles Visitas
-  stylesFilterVisits = false,
+  stylesFilterVisits = false
 }) => {
   const [isOpen, setIsOpen] = useState(false)
 

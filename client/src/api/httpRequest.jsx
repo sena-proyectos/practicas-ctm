@@ -17,12 +17,11 @@ export const GetUsersHttp = async () => {
 
   const response = await axios.get(URL)
   return response
-
 }
 /* OBTENER APRENDICES POR ID */
 export const GetUsersById = async (userID) => {
   const URL = `${baseUrl}${api}/student/${userID}`
-  
+
   const response = await axios.get(URL)
   return response
 }

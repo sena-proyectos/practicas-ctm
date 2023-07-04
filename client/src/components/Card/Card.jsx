@@ -23,7 +23,6 @@ const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale
 
       setNombreCompleto(`${nombre} ${apellido}`)
       setUserInfo(res)
-
     } catch (error) {
       Swal.fire({
         icon: 'info',
@@ -35,7 +34,31 @@ const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale
 
   return (
     <>
-      {mostrarModal && cardUser === true ? <Modals closeModal={handleModal} bodyStudent title={nombreCompleto} emailStudent={userInfo.correo_electronico} documentStudent={userInfo.num_documento} celStudent={userInfo.num_celular} trainingProgram={'Análisis y Desarrollo de Software'} ficha={'2473196'} academicLevel={'Tecnología'} trainingStage={'Lectiva'} modalitie={'Contrato de Aprendizaje'} finLectiva={'05 Abril 2023'} inicioProductiva={'02 Mayo 2023'} company={'Servicio Nacional del Aprendizaje'} innmediateSuperior={'Richard Alexander Betancur Sierra'} workstation={'Instructor'} emailSuperior={'rbetancur@misena.edu.co'} celSuperior={'123456789'} arl={'Sura'} /> : mostrarModal && cardVisits === true ? <Modals closeModal={handleModal} bodyVisits title={'Visitas'} /> : null}
+      {mostrarModal && cardUser === true ? (
+        <Modals
+          closeModal={handleModal}
+          bodyStudent
+          title={nombreCompleto}
+          emailStudent={userInfo.correo_electronico}
+          documentStudent={userInfo.num_documento}
+          celStudent={userInfo.num_celular}
+          trainingProgram={'Análisis y Desarrollo de Software'}
+          ficha={'2473196'}
+          academicLevel={'Tecnología'}
+          trainingStage={'Lectiva'}
+          modalitie={'Contrato de Aprendizaje'}
+          finLectiva={'05 Abril 2023'}
+          inicioProductiva={'02 Mayo 2023'}
+          company={'Servicio Nacional del Aprendizaje'}
+          innmediateSuperior={'Richard Alexander Betancur Sierra'}
+          workstation={'Instructor'}
+          emailSuperior={'rbetancur@misena.edu.co'}
+          celSuperior={'123456789'}
+          arl={'Sura'}
+        />
+      ) : mostrarModal && cardVisits === true ? (
+        <Modals closeModal={handleModal} bodyVisits title={'Visitas'} />
+      ) : null}
       <div className={`${bgColor} bg-opacity-50 ${shadow} rounded-lg py-2 px-3 flex flex-col justify-center h-auto ${scale && 'scale-90'}`}>
         <header className={`${cardUser && 'flex flex-row'}`}>
           {cardUser && <img className="w-[4.5rem] h-[4.5rem] rounded-full" src={img} alt={alt} />}
