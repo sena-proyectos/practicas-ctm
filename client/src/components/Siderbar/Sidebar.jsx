@@ -8,14 +8,14 @@ import { IoCalendarClearOutline, IoDocumentTextOutline, IoHandLeft, IoHomeOutlin
 import { CiCircleChevRight } from 'react-icons/ci'
 
 import { colorIcon } from '../../import/staticData'
-import {Skeleton} from 'react-loading-skeleton'
+import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 const Siderbar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [open, setOpen] = useState(true)
-
+  
   useEffect(() => {
     const handleResize = () => {
       const isSmallScreen = window.innerWidth < 640 // Tamaño de la media query "sm"
