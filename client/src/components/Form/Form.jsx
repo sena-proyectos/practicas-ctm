@@ -47,7 +47,7 @@ const Form = ({ inputs }) => {
       Cookie.set('token', Token, {
         expires: 1,
         sameSite: 'none',
-        secure: true
+        secure: true,
       })
 
       const getCookies = Cookie.get('token')
@@ -62,7 +62,7 @@ const Form = ({ inputs }) => {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: message
+        text: message,
       })
     }
   }

@@ -47,8 +47,19 @@ export const createClass: RequestHandler<{}, Response, classes> = async (req: Re
   const leaderTeacherNumber = Number(id_instructor_lider_formacion)
   const practicalTeacherNumber = Number(id_instructor_practicas_formacion)
   try {
-    const [classQuery] = await connection.query('INSERT INTO fichas (id_ficha, numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formacion, jornada_ficha, id_instructor_lider_formacion, id_instructor_practicas_formacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [classNumber, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formacion, jornada_ficha, leaderTeacherNumber, practicalTeacherNumber])
-    if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se pudo crear la ficha.', errorCodes.ERROR_CREATE_CLASS)
+    const [classQuery] = await connection.query('INSERT INTO fichas (numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formacion, jornada_ficha, id_instructor_lider_formacion, id_instructor_practicas_formacion) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+      classNumber,
+      nombre_programa_formacion,
+      fecha_inicio_lectiva,
+      fecha_fin_lectiva,
+      fecha_inicio_practica,
+      fecha_fin_practica,
+      nivel_programa_formacion,
+      jornada_ficha,
+      leaderTeacherNumber,
+      practicalTeacherNumber
+    ])
+    if (!Array.isArray(classQuery) && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo crear la ficha.', errorCodes.ERROR_CREATE_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -63,7 +74,10 @@ export const editClass: RequestHandler<{ id: string }, Response, classes> = asyn
   const leaderTeacherNumber = Number(id_instructor_lider_formacion)
   const practicalTeacherNumber = Number(id_instructor_practicas_formacion)
   try {
-    const [classQuery] = await connection.query('UPDATE fichas SET numero_ficha = IFNULL(?, numero_ficha), nombre_programa_formacion = IFNULL(?, nombre_programa_formacion), fecha_inicio_lectiva = IFNULL(?, fecha_inicio_lectiva), fecha_fin_lectiva = IFNULL(?, fecha_fin_lectiva), fecha_inicio_practica = IFNULL(?, fecha_inicio_practica), fecha_fin_practica = IFNULL(?, fecha_fin_practica), nivel_programa_formacion = IFNULL(?, nivel_programa_formacion), jornada_ficha = IFNULL(?, jornada_ficha), id_instructor_lider_formacion = IFNULL(?, id_instructor_lider_formacion), id_instructor_practicas_formacion = IFNULL(?, id_instructor_practicas_formacion) WHERE id_ficha = ?', [classNumber, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formacion, jornada_ficha, leaderTeacherNumber, practicalTeacherNumber, idNumber])
+    const [classQuery] = await connection.query(
+      'UPDATE fichas SET numero_ficha = IFNULL(?, numero_ficha), nombre_programa_formacion = IFNULL(?, nombre_programa_formacion), fecha_inicio_lectiva = IFNULL(?, fecha_inicio_lectiva), fecha_fin_lectiva = IFNULL(?, fecha_fin_lectiva), fecha_inicio_practica = IFNULL(?, fecha_inicio_practica), fecha_fin_practica = IFNULL(?, fecha_fin_practica), nivel_programa_formacion = IFNULL(?, nivel_programa_formacion), jornada_ficha = IFNULL(?, jornada_ficha), id_instructor_lider_formacion = IFNULL(?, id_instructor_lider_formacion), id_instructor_practicas_formacion = IFNULL(?, id_instructor_practicas_formacion) WHERE id_ficha = ?',
+      [classNumber, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formacion, jornada_ficha, leaderTeacherNumber, practicalTeacherNumber, idNumber]
+    )
     if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se pudo editar la ficha.', errorCodes.ERROR_EDIT_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {

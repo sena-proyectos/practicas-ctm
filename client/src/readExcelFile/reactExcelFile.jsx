@@ -52,7 +52,7 @@ export const readExcelFile = async (file) => {
             confirmButtonText: 'Guardar registros',
             confirmButtonColor: '#39A900',
             denyButtonText: 'No guardar registros',
-            showDenyButton: true
+            showDenyButton: true,
           })
           if (responseModal.isConfirmed) {
             try {
@@ -62,13 +62,13 @@ export const readExcelFile = async (file) => {
               Swal.fire({
                 icon: 'success',
                 title: '¡Éxito!',
-                text: 'Se han guardado todos los registros exitosamente'
+                text: 'Se han guardado todos los registros exitosamente',
               })
             } catch (error) {
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Ha ocurrido un error al guardar los registros'
+                text: 'Ha ocurrido un error al guardar los registros',
               })
             }
           } else if (responseModal.isDenied) {
@@ -84,13 +84,13 @@ export const readExcelFile = async (file) => {
           Swal.fire({
             icon: 'success',
             title: '¡Éxito!',
-            text: 'Se han guardado todos los registros exitosamente'
+            text: 'Se han guardado todos los registros exitosamente',
           })
         } catch (error) {
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'Ha ocurrido un error al guardar los registros'
+            text: 'Ha ocurrido un error al guardar los registros',
           })
         }
       }
