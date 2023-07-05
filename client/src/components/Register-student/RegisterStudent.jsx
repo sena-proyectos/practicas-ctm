@@ -125,15 +125,15 @@ const RegisterStudent = () => {
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" />
-      <section className="flex flex-row min-h-screen">
+      <section className="flex min-h-screen flex-row">
         <Siderbar />
-        <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">
+        <section className="relative grid w-min flex-auto grid-rows-3-10-75-15">
           <header className="grid place-items-center">
-            <h1 className="text-center font-bold text-3xl place-self-center">Inscribe a un Aprendiz</h1>
+            <h1 className="place-self-center text-center text-3xl font-bold">Inscribe a un Aprendiz</h1>
           </header>
           <section>
-            <form action="" className="grid grid-col-2 gap-y-10" onSubmit={handleSubmit}>
-              <section className="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 w-4/5 mx-auto gap-y-4">
+            <form action="" className="grid-col-2 grid gap-y-10" onSubmit={handleSubmit}>
+              <section className="mx-auto grid w-4/5 gap-y-4 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
                 {dataInscription.map((item, i) => {
                   return (
                     <div className="text-gray-400 m-auto" key={i}>
@@ -146,7 +146,7 @@ const RegisterStudent = () => {
                           <input
                             type={item.type}
                             name={item.name}
-                            className="py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72"
+                            className="border-gray-400 focus:text-gray-900 w-72 rounded-md border-1 bg-white py-1.5 pl-10 text-base text-black focus:bg-white focus:outline-none"
                             style={{
                               WebkitAppearance: 'none',
                               MozAppearance: 'textfield',
@@ -158,7 +158,7 @@ const RegisterStudent = () => {
                       ) : item.type === 'select' ? (
                         <div className="relative">
                           <span className="absolute inset-y-0 left-0 flex items-center pl-3">{item.icon}</span>
-                          <select name={item.name} className="py-2 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72">
+                          <select name={item.name} className="border-gray-400 focus:text-gray-900 w-72 rounded-md border-1 bg-white py-2 pl-10 text-base text-black focus:bg-white focus:outline-none">
                             <option value={''}>Sin seleccionar</option>
                             {item.name === 'tipo_documento_inscripcion'
                               ? idTypes.map((item, i) => {
@@ -214,17 +214,17 @@ const RegisterStudent = () => {
                       ) : (
                         <div className="relative">
                           <span className="absolute inset-y-0 left-0 flex items-center pl-3">{item.icon}</span>
-                          <input type={item.type} name={item.name} className="py-1.5 text-base text-black bg-white border-1 border-gray-400 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-72" autoComplete="on" placeholder={item.placeholder} />
+                          <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-72 rounded-md border-1 bg-white py-1.5 pl-10 text-base text-black focus:bg-white focus:outline-none" autoComplete="on" placeholder={item.placeholder} />
                         </div>
                       )}
                     </div>
                   )
                 })}
               </section>
-              <section className="flex justify-between h-10 lg:flex-row flex-col gap-y-4">
+              <section className="flex h-10 flex-col justify-between gap-y-4 lg:flex-row">
                 <Button value={'Eliminar datos'} bg="bg-red-500" px="px-[3rem]" onclick={deleteData} />
-                <div className="rounded-md flex py-1 w-fit mx-auto border border-gray bg-white px-3 shadow-md">
-                  <label htmlFor="upload" className="flex items-center gap-2 cursor-pointer ">
+                <div className="mx-auto flex w-fit rounded-md border border-gray bg-white px-3 py-1 shadow-md">
+                  <label htmlFor="upload" className="flex cursor-pointer items-center gap-2 ">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 fill-white stroke-indigo-500" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>

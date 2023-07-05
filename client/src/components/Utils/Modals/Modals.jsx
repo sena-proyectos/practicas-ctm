@@ -18,16 +18,16 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
     closeModal()
   }
   return (
-    <section className=" w-screen h-screen fixed top-0 left-0 bg-black/70 items-center justify-center flex z-50">
-      <section className="w-1/2 bg-white relative rounded-2xl shadow-md h-auto flex flex-col">
-        <IoMdClose className="w-7 h-7 absolute top-[20px] right-5 cursor-pointer" onClick={handleModal} />
+    <section className=" fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center bg-black/70">
+      <section className="relative flex h-auto w-1/2 flex-col rounded-2xl bg-white shadow-md">
+        <IoMdClose className="absolute right-5 top-[20px] h-7 w-7 cursor-pointer" onClick={handleModal} />
         <header className="grid place-items-center pt-5">
-          <h2 className="text-xl w-fit text-center font-medium border-b-1 border-primary">{title}</h2>
+          <h2 className="w-fit border-b-1 border-primary text-center text-xl font-medium">{title}</h2>
         </header>
-        <section className="flex-auto w-5/6 mx-auto">
+        <section className="mx-auto w-5/6 flex-auto">
           {bodyStudent && (
             <>
-              <section className="pt-3 pb-2">
+              <section className="pb-2 pt-3">
                 <section className="grid grid-cols-2-45-55">
                   <span className="font-medium">Email:</span>
                   <span>{emailStudent}</span>
@@ -73,7 +73,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                 </section>
               </section>
               <hr className="w-full text-primary" />
-              <section className="pt-2 py-3">
+              <section className="py-3 pt-2">
                 <section className="grid grid-cols-2-45-55">
                   <span className="font-medium">Empresa:</span>
                   <span>{company}</span>
@@ -103,7 +103,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
           )}
           {bodyFilter && (
             <>
-              <form action="" className="flex flex-col justify-center my-4 gap-3 pt-2">
+              <form action="" className="my-4 flex flex-col justify-center gap-3 pt-2">
                 {view.map((filtro, i) => {
                   return (
                     <section key={i}>
@@ -112,13 +112,13 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                           {filtro.label}
                         </label>
                         {filtro.type === 'number' ? (
-                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-lg pl-3 focus:outline-none focus:bg-white focus:text-gray-900 w-72" />
+                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="border-gray-400 focus:text-gray-900 w-72 rounded-lg border-1 bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
                         ) : filtro.type === 'date' ? (
-                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-lg pl-3 focus:outline-none focus:bg-white focus:text-gray-900 w-72" />
+                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="border-gray-400 focus:text-gray-900 w-72 rounded-lg border-1 bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
                         ) : filtro.type === 'text' ? (
-                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="py-[0.9px] text-base text-black bg-white border-1 border-gray-400 rounded-lg pl-3 focus:outline-none focus:bg-white focus:text-gray-900 w-72" />
+                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="border-gray-400 focus:text-gray-900 w-72 rounded-lg border-1 bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
                         ) : filtro.type === 'select' ? (
-                          <select name={filtro.name} className="py-[2.5px] text-base text-black bg-white border-1 border-gray-400 rounded-lg pl-3 focus:outline-none focus:bg-white focus:text-gray-900 w-72" onFocus={toggleDropdown} onChange={handleOptionSelect}>
+                          <select name={filtro.name} className="border-gray-400 focus:text-gray-900 w-72 rounded-lg border-1 bg-white py-[2.5px] pl-3 text-base text-black focus:bg-white focus:outline-none" onFocus={toggleDropdown} onChange={handleOptionSelect}>
                             <option value={''}>Sin seleccionar</option>
                             {modalities.map((filtro, i) => {
                               return (
@@ -134,7 +134,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                   )
                 })}
 
-                <div className={`w-fit grid grid-cols-2 ${isOpen === true ? 'my-10 mx-4 gap-2' : 'mx-auto my-5 gap-5'} `}>
+                <div className={`grid w-fit grid-cols-2 ${isOpen === true ? 'mx-4 my-10 gap-2' : 'mx-auto my-5 gap-5'} `}>
                   <Button value={'Limpiar'} bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
                   <Button value={'Buscar'} bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
                 </div>

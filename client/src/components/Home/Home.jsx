@@ -16,11 +16,11 @@ const Home = () => {
   }, [])
 
   return (
-    <main className="flex flex-row min-h-screen">
+    <main className="flex min-h-screen flex-row">
       <Siderbar />
-      <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">
+      <section className="relative grid w-min flex-auto grid-rows-3-10-75-15">
         <header className="grid place-items-center">
-          <h1 className="text-center font-bold text-2xl">Bienvenido a practicas ctm. ¿Qué desea realizar hoy?</h1>
+          <h1 className="text-center text-2xl font-bold">Bienvenido a practicas ctm. ¿Qué desea realizar hoy?</h1>
         </header>
         <div className="grid grid-cols-1 gap-1 p-5 sm:grid-cols-2 md:grid-cols-3 ">
           {cards.map(({ title, titleColor, description, buttonText, bgColor, link }) => {

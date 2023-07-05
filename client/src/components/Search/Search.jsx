@@ -32,12 +32,12 @@ const Search = ({ searchApprentices, searchFilter = false, filter = false, iconC
     //   </form>
     // </article>
 
-    <section className={` ${searchFilter === true ? 'w-2/4' : 'w-1/5'}  h-9 flex items-center justify-center`}>
+    <section className={` ${searchFilter === true ? 'w-2/4' : 'w-1/5'}  flex h-9 items-center justify-center`}>
       {searchFilter && (
         <>
-          <form action="" method="get" className="w-full saturate-[100%] flex items-center bg-secondary/10 shadow-md rounded-3xl backdrop-blur-sm ">
+          <form action="" method="get" className="flex w-full items-center rounded-3xl bg-secondary/10 shadow-md saturate-[100%] backdrop-blur-sm ">
             <Button bg={'bg-transparent'} px="px-3" textColor="text-black" className="absolute right-[6px]" value={<IoSearchOutline />} />
-            <input type="text" placeholder="Busca a un aprendiz" className="w-full px-5 py-1 flex-1 rounded-3xl outline-none bg-transparent" ref={search} name="nombreCompleto" autoComplete="off" onChange={handleSearch} />
+            <input type="text" placeholder="Busca a un aprendiz" className="w-full flex-1 rounded-3xl bg-transparent px-5 py-1 outline-none" ref={search} name="nombreCompleto" autoComplete="off" onChange={handleSearch} />
           </form>
           <article className="relative right-[40px]">
             <Button bg={'bg-transparent'} px={'px-3'} textColor="text-black" clickeame={iconClick} value={<LuSettings2 />} />
@@ -56,7 +56,7 @@ const Search = ({ searchApprentices, searchFilter = false, filter = false, iconC
             value={
               <span className="flex items-center gap-5">
                 <LuSettings2 />
-                <span className="font-normal text-sm">Filtrar</span>
+                <span className="text-sm font-normal">Filtrar</span>
               </span>
             }
           />
