@@ -19,7 +19,7 @@ const Settings = () => {
   }
   return (
     <>
-      {mostrarModal && <Modals bodyPassword title={'Contra'} closeModal={handleModal} />}
+      {mostrarModal && <Modals bodyPassword title={'Cambiar Contraseña'} closeModal={handleModal} />}
       <main className="flex min-h-screen flex-row">
         <Siderbar />
         <section className="relative grid w-min flex-auto grid-rows-2-90-10">
