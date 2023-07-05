@@ -71,7 +71,24 @@ const Visits = () => {
         </header>
         <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
           {visits.map((visit) => {
-            return <Card cardVisits shadow={'shadow-2xl'} scale={'scale-90'} title={visit.nameAprendiz} subtitle={visit.correoAprendiz} key={visit.id} icon={visit.estadoAprendiz === 1 ? estadoIcons.visitado : estadoIcons.visitadont} info1={visit.fichaAprendiz} info2={visit.programaAprendiz} description={visit.estadoAprendiz === 1 ? 'Este aprendiz ya ha sido visitado' : 'Este aprendiz no ha sido visitado'} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} />
+            return (
+              <Card
+                cardVisits
+                shadow={'shadow-2xl'}
+                scale={'scale-90'}
+                title={visit.nameAprendiz}
+                subtitle={visit.correoAprendiz}
+                key={visit.id}
+                icon={visit.estadoAprendiz === 1 ? estadoIcons.visitado : estadoIcons.visitadont}
+                info1={visit.fichaAprendiz}
+                info2={visit.programaAprendiz}
+                description={visit.estadoAprendiz === 1 ? 'Este aprendiz ya ha sido visitado' : 'Este aprendiz no ha sido visitado'}
+                roundedLink={'rounded-xl'}
+                borderColor={'border-primary'}
+                buttonText={'Más información'}
+                link={'/home'}
+              />
+            )
           })}
         </div>
         <Footer />

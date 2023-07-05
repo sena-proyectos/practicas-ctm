@@ -6,10 +6,9 @@ import Swal from 'sweetalert2'
 
 import { Button } from '../Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
-import { Footer } from '../Footer/Footer'
 
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
-import { InscriptionApprentice } from '../../api/httpRequest'
+import { InscriptionApprentice, GetTeacherByName } from '../../api/httpRequest'
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 import { readExcelFile } from '../../readExcelFile/reactExcelFile'
 import { inscriptionValidation } from '../../validation/inscriptionsValidation'
@@ -25,12 +24,20 @@ const RegisterStudent = () => {
 
   // Validación de campos
   // Capturación de valores
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     // capturar los valores de los inputs del formulario
     const formValues = Object.fromEntries(new FormData(e.target))
+    try {
+      const teacher =  formValues.nombre_instructor_lider_inscripcion
 
+      const res = await GetTeacherByName(teacher)
+      const response = res.data.data[0].id_usuario
+
+    } catch (error) {
+      // const message = error.response.data.error.info.message
+    }
     formValues.id_usuario_responsable_inscripcion = `${id}`
     // validar que los campos no esten vacios
     const emptyFields = Object.keys(formValues).filter((key) => !formValues[key])

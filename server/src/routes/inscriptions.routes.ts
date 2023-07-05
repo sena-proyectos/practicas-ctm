@@ -11,4 +11,5 @@ inscriptionRoutes.get('/inscription/:id', checkIdReq, getInscriptionById)
 
 // * POST
 inscriptionRoutes.post('/create-inscription', checkInscriptionData, createInscription)
+
 export { inscriptionRoutes }
