@@ -6,7 +6,7 @@ import { Modals } from '../Utils/Modals/Modals'
 import { filter } from '../../import/staticData'
 import { AiOutlineEye } from 'react-icons/ai'
 import { HiOutlinePencil } from 'react-icons/hi'
-import { Button } from '../Button/Button'
+import { Button } from '../Utils/Button/Button'
 
 const Bitacoras = () => {
   const [mostrarModal, setMostrarModal] = useState(false)
