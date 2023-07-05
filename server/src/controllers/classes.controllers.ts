@@ -30,7 +30,7 @@ export const getClassById: RequestHandler<{ id: string }, Response, id> = async 
 }
 
 export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Response, classes> = async (req: Request<{ numero_ficha: string }>, res: Response): Promise<Response> => {
-  const { numero_ficha } = req.body
+  const { numero_ficha } = req.query
   const classNumber = Number(numero_ficha)
   try {
     const [classQuery] = await connection.query('SELECT * FROM fichas WHERE numero_ficha = ?', [classNumber])

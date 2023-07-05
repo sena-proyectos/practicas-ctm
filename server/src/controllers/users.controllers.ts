@@ -85,6 +85,17 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
   }
 }
 
+export const getTeacherByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
+  const { nombreCompleto } = req.query
+  try {
+    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2 AND CONCAT(nombre, " ", apellido) LIKE ?', [`%${nombreCompleto as string}%`])
+    if (!Array.isArray(teacher) || teacher?.length === 0) throw new DbErrorNotFound('No se encontró el instructor.', errorCodes.ERROR_GET_TEACHER)
+    return res.status(httpStatus.OK).json({ data: teacher })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 export const getStudents = async (req: Request, res: Response): Promise<Response> => {
   try {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
@@ -128,12 +139,13 @@ export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Respon
   }
 }
 
-export const getTeacherByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
-  const { nombreCompleto } = req.query
+export const getStudentsByClasses: RequestHandler<{ classNumber: string }, Response, unknown> = async (req: Request<{ classNumber: string }>, res: Response): Promise<Response> => {
+  const { classNumber } = req.query
+  const parsedClassNumber = Number(classNumber)
   try {
-    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2 AND CONCAT(nombre, " ", apellido) LIKE ?', [`%${nombreCompleto as string}%`])
-    if (!Array.isArray(teacher) || teacher?.length === 0) throw new DbErrorNotFound('No se encontró el instructor.', errorCodes.ERROR_GET_TEACHER)
-    return res.status(httpStatus.OK).json({ data: teacher })
+    // ! Falta terminar la base de datos para poder hacer esta consulta
+    // const [students] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND ', [parsedClassNumber])
+    return res.status(httpStatus.OK).json({ data: parsedClassNumber })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }

@@ -4,9 +4,9 @@ import { classSchema } from '../schemas/classes.schemas.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 
 export const checkClassData = (req: Request, res: Response, next: NextFunction): void => {
-  const { numero_ficha, nombre_programa_formación, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formación, jornada_ficha, id_instructor_lider_formacion, id_instructor_practicas_formacion } = req.body
-  const idTeacherLeader = parseInt(id_instructor_lider_formacion, 10)
-  const idTeacherPractical = parseInt(id_instructor_practicas_formacion, 10)
+  const { numero_ficha, nombre_programa_formación, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formación, jornada_ficha, id_instructor_lider_formacion, id_instructor_practicas_formacion } = req.query
+  const idTeacherLeader = parseInt(id_instructor_lider_formacion as string, 10)
+  const idTeacherPractical = parseInt(id_instructor_practicas_formacion as string, 10)
 
   const classNumber = Number(numero_ficha)
   try {
