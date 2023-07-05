@@ -1,10 +1,32 @@
 import { useState } from 'react'
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
+import { IoSearchOutline } from 'react-icons/io5'
+import { BsCheck2Circle } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
 import { modalities } from '../../../import/staticData'
-import { Button } from '../../Button/Button'
+import { Button } from '../Button/Button'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view }) => {
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false }) => {
   const [isOpen, setIsOpen] = useState(false)
+
+  const passwordIcons = {
+    openEye: <AiOutlineEye />,
+    closeEye: <AiOutlineEyeInvisible />,
+  }
+
+  const passwordStatus = {
+    shown: 'text',
+    hidden: 'password',
+  }
+
+  const [showPassword, setShowPassword] = useState(passwordStatus.hidden)
+
+  const handlePassword = (id) => {
+    setShowPassword((prevState) => ({
+      ...prevState,
+      [id]: prevState[id] === passwordStatus.shown ? passwordStatus.hidden : passwordStatus.shown,
+    }))
+  }
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen)
@@ -19,12 +41,12 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
   }
   return (
     <section className=" fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center bg-black/70">
-      <section className="relative flex h-auto w-1/2 flex-col rounded-2xl bg-white shadow-md">
+      <section className={`relative flex h-auto ${bodyStudent === true ? 'w-1/2' : 'w-2/5'}  flex-col rounded-2xl bg-white shadow-md`}>
         <IoMdClose className="absolute right-5 top-[20px] h-7 w-7 cursor-pointer" onClick={handleModal} />
         <header className="grid place-items-center pt-5">
           <h2 className="w-fit border-b-1 border-primary text-center text-xl font-medium">{title}</h2>
         </header>
-        <section className="mx-auto w-5/6 flex-auto">
+        <section className={`${stylesFilterVisits === false ? 'mx-auto w-5/6 flex-auto' : 'mx-auto w-fit'}`}>
           {bodyStudent && (
             <>
               <section className="pb-2 pt-3">
@@ -103,45 +125,96 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
           )}
           {bodyFilter && (
             <>
-              <form action="" className="my-4 flex flex-col justify-center gap-3 pt-2">
-                {view.map((filtro, i) => {
-                  return (
-                    <section key={i}>
-                      <div className="grid grid-cols-1 md:grid-cols-2-45-55">
-                        <label className="font-semibold" htmlFor="">
-                          {filtro.label}
-                        </label>
-                        {filtro.type === 'number' ? (
-                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="border-gray-400 focus:text-gray-900 w-72 rounded-lg border-1 bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
-                        ) : filtro.type === 'date' ? (
-                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="border-gray-400 focus:text-gray-900 w-72 rounded-lg border-1 bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
-                        ) : filtro.type === 'text' ? (
-                          <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className="border-gray-400 focus:text-gray-900 w-72 rounded-lg border-1 bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
-                        ) : filtro.type === 'select' ? (
-                          <select name={filtro.name} className="border-gray-400 focus:text-gray-900 w-72 rounded-lg border-1 bg-white py-[2.5px] pl-3 text-base text-black focus:bg-white focus:outline-none" onFocus={toggleDropdown} onChange={handleOptionSelect}>
-                            <option value={''}>Sin seleccionar</option>
-                            {modalities.map((filtro, i) => {
-                              return (
-                                <option value={filtro.value} key={i}>
-                                  {filtro.name}
-                                </option>
-                              )
-                            })}
-                          </select>
-                        ) : null}
-                      </div>
-                    </section>
-                  )
-                })}
-
-                <div className={`grid w-fit grid-cols-2 ${isOpen === true ? 'mx-4 my-10 gap-2' : 'mx-auto my-5 gap-5'} `}>
+              <form action="">
+                <section className={`${stylesFilterVisits === false ? 'my-4 flex flex-col justify-center gap-3 pt-2' : 'grid grid-cols-2 grid-rows-2-50-50 gap-x-9 gap-y-3 pb-6 pt-4'}`}>
+                  {view.map((filtro, i) => {
+                    return (
+                      <section key={i}>
+                        <div className={`${stylesFilterVisits === false ? 'grid grid-cols-1 md:grid-cols-2-45-55' : 'flex flex-col'}`}>
+                          <label className="font-semibold " htmlFor="">
+                            {filtro.label}
+                          </label>
+                          <div>
+                            {filtro.type === 'date' ? (
+                              <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none ${stylesFilterVisits === false ? 'w-full' : 'w-full'}`} />
+                            ) : filtro.type === 'text' ? (
+                              <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none ${stylesFilterVisits === false ? 'w-full' : 'w-full'}`} />
+                            ) : filtro.type === 'select' ? (
+                              <select name={filtro.name} className={`border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[2.5px] pl-3 text-base text-black focus:bg-white focus:outline-none ${stylesFilterVisits === false ? 'w-full' : 'w-full'}`} onFocus={toggleDropdown} onChange={handleOptionSelect}>
+                                <option value={''}>Sin seleccionar</option>
+                                {modalities.map((filtro, i) => {
+                                  return (
+                                    <option value={filtro.value} key={i}>
+                                      {filtro.name}
+                                    </option>
+                                  )
+                                })}
+                              </select>
+                            ) : null}
+                          </div>
+                        </div>
+                      </section>
+                    )
+                  })}
+                </section>
+                <div className={`grid w-fit grid-cols-2 ${isOpen === true ? 'mx-4 my-12 gap-2' : 'mx-auto my-5 gap-5'} `}>
                   <Button value={'Limpiar'} bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                  <Button value={'Buscar'} bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  <div className="relative mx-auto">
+                    <span className="absolute inset-y-0 left-2 flex items-center text-white">
+                      <IoSearchOutline />
+                    </span>
+                    <Button value={'Buscar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  </div>
                 </div>
               </form>
             </>
           )}
           {bodyVisits && <>Tampoco da xd</>}
+          {bodyPassword && (
+            <>
+              <form action="" className="flex flex-col gap-3 pt-6">
+                <section className="grid grid-cols-2">
+                  <label className="w-fit whitespace-nowrap font-semibold" htmlFor="">
+                    Contraseña Anterior
+                  </label>
+                  <div className="text-gray-400 relative mx-auto w-full">
+                    <span className="absolute inset-y-0 right-[1%] flex transform cursor-pointer select-none items-center pr-3" onClick={() => handlePassword('oldPassword')}>
+                      {showPassword['oldPassword'] === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
+                    </span>
+                    <input id="oldPassword" type={showPassword['oldPassword']} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
+                  </div>
+                </section>
+                <section className="grid grid-cols-2-50-50">
+                  <label className="w-fit whitespace-nowrap font-semibold" htmlFor="">
+                    Nueva Contraseña
+                  </label>
+                  <div className="text-gray-400 relative mx-auto w-full">
+                    <span className="absolute inset-y-0 right-[1%] flex transform cursor-pointer select-none items-center pr-3" onClick={() => handlePassword('newPassword')}>
+                      {showPassword['newPassword'] === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
+                    </span>
+                    <input id="newPassword" type={showPassword['newPassword']} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
+                  </div>
+                </section>
+                <section className="grid grid-cols-2">
+                  <label className="w-fit whitespace-nowrap font-semibold" htmlFor="">
+                    Confirmar Contraseña
+                  </label>
+                  <div className="text-gray-400 relative mx-auto w-full">
+                    <span className="absolute inset-y-0 right-[1%] flex transform cursor-pointer select-none items-center pr-3" onClick={() => handlePassword('confirmPassword')}>
+                      {showPassword['confirmPassword'] === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
+                    </span>
+                    <input id="confirmPassword" type={showPassword['confirmPassword']} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
+                  </div>
+                </section>
+                <div className="relative mx-auto my-5">
+                  <span className="absolute inset-y-0 left-2 flex items-center text-white">
+                    <BsCheck2Circle />
+                  </span>
+                  <Button value={'Guardar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                </div>
+              </form>
+            </>
+          )}
         </section>
       </section>
     </section>

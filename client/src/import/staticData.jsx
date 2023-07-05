@@ -334,7 +334,7 @@ export const estadoIcons = {
 export const filter = {
   filterStudents: [
     {
-      type: 'number',
+      type: 'text',
       name: 'ficha',
       placeholder: '2473196',
       label: 'Fichas:',
@@ -366,7 +366,7 @@ export const filter = {
       label: 'Fecha fin',
     },
     {
-      type: 'number',
+      type: 'text',
       name: 'ficha',
       placeholder: '2473196',
       label: 'Ficha',
@@ -380,7 +380,7 @@ export const filter = {
   ],
   filterBitacoras: [
     {
-      type: 'number',
+      type: 'text',
       name: 'ficha',
       placeholder: '2473196',
       label: 'Fichas',

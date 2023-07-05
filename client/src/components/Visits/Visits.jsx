@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Card } from '../Card/Card'
+import { Card } from '../Utils/Card/Card'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -79,7 +79,7 @@ const Visits = () => {
 
   return (
     <>
-      {mostrarModal && <Modals bodyFilter view={filterVisits} title={'Visitas'} closeModal={handleModal} />}
+      {mostrarModal && <Modals bodyFilter view={filterVisits} title={'Visitas'} closeModal={handleModal} stylesFilterVisits />}
       <main className="flex min-h-screen flex-row">
         <Siderbar />
         <section className="relative grid w-min flex-auto grid-rows-3-10-75-15">

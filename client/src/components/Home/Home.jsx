@@ -1,4 +1,4 @@
-import { Card } from '../Card/Card'
+import { Card } from '../Utils/Card/Card'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { cards } from '../../import/staticData'
 import { Footer } from '../Footer/Footer'

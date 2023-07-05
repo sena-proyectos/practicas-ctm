@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom'
 
-import { Button } from '../Button/Button'
+import { Button } from '../Utils/Button/Button'
 import { Login } from '../../api/httpRequest'
 
 import Cookie from 'js-cookie'

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { GetUsersHttp, GetUserByName } from '../../api/httpRequest'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
-import { Card } from '../Card/Card'
+import { Card } from '../Utils/Card/Card'
 import { Footer } from '../Footer/Footer'
 import Cookies from 'js-cookie'
 
@@ -28,6 +28,11 @@ export const Student = () => {
   }
 
   const searchApprentices = async (searchTerm) => {
+    if (searchTerm.trim() === '') {
+      setError(null)
+      setSearchedApprentices([])
+      return
+    }
     try {
       const response = await GetUserByName(searchTerm)
       const { data } = response.data
@@ -72,12 +77,27 @@ export const Student = () => {
         <Siderbar />
         <section className="relative grid w-min flex-auto grid-rows-3-10-75-15">
           <header className="grid place-items-center">
-            <Search searchFilter iconClick={handleIconClick} searchApprentices={searchApprentices} />
+            <Search searchFilter iconClick={handleIconClick} searchStudent={searchApprentices} />
           </header>
           {searchedApprentices.length > 0 && !error ? (
             <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
               {searchedApprentices.map((apprentice, i) => (
-                <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre} ${apprentice.apellido}`} subtitle={apprentice.correo_electronico} lione={apprentice.programa_formacion_inscripcion} litwo={apprentice.numero_ficha_inscripcion} key={i} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} />
+                <Card
+                  cardUser
+                  shadow={'shadow-2xl'}
+                  marginLink={'mx-auto'}
+                  scale={'scale-90'}
+                  title={`${apprentice.nombre} ${apprentice.apellido}`}
+                  subtitle={apprentice.correo_electronico}
+                  lione={apprentice.programa_formacion_inscripcion}
+                  litwo={apprentice.numero_ficha_inscripcion}
+                  key={i}
+                  userID={apprentice.id_usuario}
+                  roundedLink={'rounded-xl'}
+                  borderColor={'border-primary'}
+                  buttonText={'Más información'}
+                  link={'/home'}
+                />
               ))}
             </div>
           ) : (
@@ -96,6 +116,7 @@ export const Student = () => {
                     lione={apprentice.programa_formacion_inscripcion}
                     litwo={apprentice.numero_ficha_inscripcion}
                     key={i}
+                    userID={apprentice.id_usuario}
                     roundedLink={'rounded-xl'}
                     borderColor={'border-primary'}
                     buttonText={'Más información'}
