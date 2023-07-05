@@ -4,7 +4,7 @@ import { BsCheck2Circle } from 'react-icons/bs'
 
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
-import { Button } from '../Button/Button'
+import { Button } from '../Utils/Button/Button'
 import { Modals } from '../Utils/Modals/Modals'
 
 const Settings = () => {

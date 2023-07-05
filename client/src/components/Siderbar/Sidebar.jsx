@@ -60,20 +60,20 @@ const Siderbar = () => {
   }
 
   return (
-    <aside className={`bg-secondary/10 ${open ? 'w-[12rem]' : 'w-[4.5rem]'} sticky top-0 left-0 md:h-screen rounded-r-2xl`}>
-      <nav className="grid grid-rows-3-10-78-12 md:grid-rows-3-10-78-12 mx-auto w-4/5 h-screen">
-        <section className={`w-fit ${open === true ? 'flex flex-row pr-3' : 'flex flex-col mx-auto'} my-auto`}>
-          <div className="w-[3rem] my-auto rounded-full">
+    <aside className={`bg-secondary/10 ${open ? 'w-[12rem]' : 'w-[4.5rem]'} sticky left-0 top-0 rounded-r-2xl md:h-screen`}>
+      <nav className="mx-auto grid h-screen w-4/5 grid-rows-3-10-78-12 md:grid-rows-3-10-78-12">
+        <section className={`w-fit ${open === true ? 'flex flex-row pr-3' : 'mx-auto flex flex-col'} my-auto`}>
+          <div className="my-auto w-[3rem] rounded-full">
             <img className="object-cover" src="public/user.png" alt="img_user" />
           </div>
-          <div className={`pl-3 pr-10 w-full ${!open && 'hidden'}`}>
+          <div className={`w-full pl-3 pr-10 ${!open && 'hidden'}`}>
             <h5 className="text-xs ">{nameUser || <Skeleton width={100} />}</h5>
-            <span className="font-semibold text-sm text-center">{nameRol || <Skeleton />}</span>
+            <span className="text-center text-sm font-semibold">{nameRol || <Skeleton />}</span>
           </div>
         </section>
-        <ul className="flex flex-col justify-center items-start cursor-pointer">
-          <section className="w-full flex flex-col mb-auto gap-[3px]">
-            <hr className="text-white w-full mx-auto h-[1px] my-2" />
+        <ul className="flex cursor-pointer flex-col items-start justify-center">
+          <section className="mb-auto flex w-full flex-col gap-[3px]">
+            <hr className="mx-auto my-2 h-[1px] w-full text-white" />
             <li>
               <Link to="/home" className={styles('/home')}>
                 <span className={spanStyle('/home')}>
@@ -106,7 +106,7 @@ const Siderbar = () => {
                 {open && 'Visitas'}
               </Link>
             </li>
-            <hr className="text-white w-full mx-auto h-[1px] my-2" />
+            <hr className="mx-auto my-2 h-[1px] w-full text-white" />
             <li>
               <Link to="/config" className={styles('/config')}>
                 <span className={spanStyle('/config')}>
@@ -124,9 +124,9 @@ const Siderbar = () => {
           >
             <CiCircleChevRight />
           </span>
-          <section className="w-full mb-0">
-            <li className="flex items-center relative pl-10 py-2 h-10 hover:bg-white rounded-s-2xl w-[115%] transition text-red-700" onClick={logout}>
-              <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-xs' : 'pl-5 text-md'} text-red-700`}>
+          <section className="mb-0 w-full">
+            <li className="relative flex h-10 w-[115%] items-center rounded-s-2xl py-2 pl-10 text-red-700 transition hover:bg-white" onClick={logout}>
+              <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-xs' : 'text-md pl-5'} text-red-700`}>
                 <IoLogOutOutline />
               </span>
               {open && 'Cerrar Sesión'}
