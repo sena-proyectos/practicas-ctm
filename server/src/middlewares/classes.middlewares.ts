@@ -4,7 +4,7 @@ import { classSchema } from '../schemas/classes.schemas.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 
 export const checkClassData = (req: Request, res: Response, next: NextFunction): void => {
-  const { numero_ficha, nombre_programa_formación, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formación, jornada_ficha, id_instructor_lider_formacion, id_instructor_practicas_formacion } = req.query
+  const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formacion, jornada_ficha, id_instructor_lider_formacion, id_instructor_practicas_formacion } = req.query
   const idTeacherLeader = parseInt(id_instructor_lider_formacion as string, 10)
   const idTeacherPractical = parseInt(id_instructor_practicas_formacion as string, 10)
 
@@ -14,7 +14,7 @@ export const checkClassData = (req: Request, res: Response, next: NextFunction):
     if (isNaN(idTeacherPractical)) throw new NumberIsNaN('el id del instructor de prácticas no es un número.')
     if (isNaN(classNumber)) throw new NumberIsNaN('el numero de la ficha no es un número.')
 
-    const { error } = classSchema.validate({ numero_ficha, nombre_programa_formación, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formación, jornada_ficha, id_instructor_lider_formacion, id_instructor_practicas_formacion })
+    const { error } = classSchema.validate({ numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formacion, jornada_ficha, id_instructor_lider_formacion, id_instructor_practicas_formacion })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados para la ficha no son válidos')
     next()
   } catch (error) {
