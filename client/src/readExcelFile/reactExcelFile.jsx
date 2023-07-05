@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 import jwtdecoded from 'jwt-decode'
 import { mapValues } from '../mapeo/Map'
 import { InscriptionApprentice } from '../api/httpRequest'
+import { GetTeacherByName } from '../api/httpRequest'
 
 export const readExcelFile = async (file) => {
   if (!file) return
@@ -34,8 +35,16 @@ export const readExcelFile = async (file) => {
         return obj
       })
 
+
       for (let i = 0; i < result.length; i++) {
+        const nameTeacher = result[i].nombre_instructor_lider_inscripcion
+        const res = await GetTeacherByName(nameTeacher)
+
+        const idUsuario = res.data.data[0].id_usuario
+
+        result[i].nombre_instructor_lider_inscripcion = `${idUsuario}`
         result[i].id_usuario_responsable_inscripcion = `${id}`
+
         if (result[i].id_modalidad_inscripcion === 'Pasantía') result[i].id_modalidad_inscripcion = '1'
         if (result[i].id_modalidad_inscripcion === 'Contrato de aprendizaje') result[i].id_modalidad_inscripcion = '2'
         if (result[i].id_modalidad_inscripcion === 'Proyecto Productivo') result[i].id_modalidad_inscripcion = '3'
@@ -52,7 +61,7 @@ export const readExcelFile = async (file) => {
             confirmButtonText: 'Guardar registros',
             confirmButtonColor: '#39A900',
             denyButtonText: 'No guardar registros',
-            showDenyButton: true
+            showDenyButton: true,
           })
           if (responseModal.isConfirmed) {
             try {
@@ -62,13 +71,13 @@ export const readExcelFile = async (file) => {
               Swal.fire({
                 icon: 'success',
                 title: '¡Éxito!',
-                text: 'Se han guardado todos los registros exitosamente'
+                text: 'Se han guardado todos los registros exitosamente',
               })
             } catch (error) {
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Ha ocurrido un error al guardar los registros'
+                text: 'Ha ocurrido un error al guardar los registros',
               })
             }
           } else if (responseModal.isDenied) {
@@ -84,13 +93,13 @@ export const readExcelFile = async (file) => {
           Swal.fire({
             icon: 'success',
             title: '¡Éxito!',
-            text: 'Se han guardado todos los registros exitosamente'
+            text: 'Se han guardado todos los registros exitosamente',
           })
         } catch (error) {
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'Ha ocurrido un error al guardar los registros'
+            text: 'Ha ocurrido un error al guardar los registros',
           })
         }
       }

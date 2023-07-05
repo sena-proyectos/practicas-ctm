@@ -6,7 +6,7 @@ export const classSchema = Joi.object({
     .required()
     .min(3)
     .max(50),
-  nombre_programa_formación: Joi
+  nombre_programa_formacion: Joi
     .string()
     .required()
     .min(3)
@@ -23,7 +23,7 @@ export const classSchema = Joi.object({
   fecha_fin_practica: Joi
     .date()
     .required(),
-  nivel_programa_formación: Joi
+  nivel_programa_formacion: Joi
     .string()
     .required()
     .min(3)
