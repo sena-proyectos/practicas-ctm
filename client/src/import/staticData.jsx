@@ -63,10 +63,10 @@ export const cards = [
 export const dataInscription = [
   {
     icon: <AiOutlineUser />,
-    type: 'text',
-    name: 'nombres_inscripcion',
-    placeholder: 'Alejandro',
-    label: 'Nombres',
+    type: 'select',
+    name: 'id_modalidad_inscripcion',
+    placeholder: 'Sin seleccionar',
+    label: 'Modalidad',
     required: true,
   },
   {
@@ -75,6 +75,14 @@ export const dataInscription = [
     name: 'apellidos_inscripcion',
     placeholder: 'Rodriguez',
     label: 'Apellidos',
+    required: true,
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'text',
+    name: 'nombres_inscripcion',
+    placeholder: 'Alejandro',
+    label: 'Nombres',
     required: true,
   },
   {
@@ -111,25 +119,11 @@ export const dataInscription = [
   },
   {
     icon: <AiOutlineUser />,
-    type: 'number',
-    name: 'id_ficha_inscripcion',
-    placeholder: '2134567',
-    label: 'Número de ficha',
-  },
-
-  {
-    icon: <AiOutlineUser />,
-    type: 'select',
-    name: 'id_modalidad_inscripcion',
-    placeholder: 'Sin seleccionar',
-    label: 'Modalidad',
-  },
-  {
-    icon: <AiOutlineUser />,
     type: 'select',
     name: 'etapa_formacion_actual_inscripcion',
     placeholder: 'Sin seleccionar',
     label: 'Etapa de formación',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -137,6 +131,30 @@ export const dataInscription = [
     name: 'nivel_formacion_actual_inscripcion',
     placeholder: 'Sin seleccionar',
     label: 'Nivel de formación',
+    required: true,
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'number',
+    name: 'id_ficha_inscripcion',
+    placeholder: '2134567',
+    label: 'Número de ficha',
+    required: true,
+  },
+  {
+    icon: <AiOutlineUser />,
+    type: 'text',
+    name: 'nombre_programa_formacion_inscripcion',
+    placeholder: 'Producción multimedia',
+    label: 'Nombre del programa',
+    required: true,
+  },
+  {
+    icon: <BsCalendar4 />,
+    type: 'date',
+    name: 'fin_etapa_lectiva_inscripcion',
+    label: 'Terminación de la etapa lectiva',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -154,18 +172,12 @@ export const dataInscription = [
     required: true,
   },
   {
-    icon: <BsCalendar4 />,
-    type: 'date',
-    name: 'fin_etapa_lectiva_inscripcion',
-    label: 'Terminación de la etapa lectiva',
-    required: true,
-  },
-  {
     icon: <AiOutlineUser />,
     type: 'select',
     name: 'apoyo_sostenimiento_inscripcion',
     placeholder: 'Sin seleccionar',
     label: '¿Recibe apoyo de sostenimiento?',
+    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -173,7 +185,6 @@ export const dataInscription = [
     name: 'nit_empresa_inscripcion',
     placeholder: '123456789',
     label: 'Nit de la empresa',
-    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -181,7 +192,6 @@ export const dataInscription = [
     name: 'nombre_empresa_inscripcion',
     placeholder: 'Sena',
     label: 'Razón social (Nombre Empresa)',
-    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -189,7 +199,6 @@ export const dataInscription = [
     name: 'direccion_empresa_inscripcion',
     placeholder: 'Calle 123',
     label: 'Dirección de la empresa',
-    required: true,
   },
   {
     icon: <AiOutlineUser />,
@@ -232,6 +241,7 @@ export const dataInscription = [
     name: 'observaciones_inscripcion',
     placeholder: 'Digite una observación',
     label: '¿Tiene alguna observación?',
+    required: true,
   },
 ]
 
@@ -315,4 +325,77 @@ export const colorIcon = {
 export const estadoIcons = {
   visitado: <LuCalendarCheck2 />,
   visitadont: <LuCalendarX2 />,
+}
+
+/*
+ * src: src\components\Utils\Modals\Modals.jsx
+ */
+
+export const filter = {
+  filterStudents: [
+    {
+      type: 'text',
+      name: 'ficha',
+      placeholder: '2473196',
+      label: 'Fichas:',
+    },
+    {
+      type: 'text',
+      name: 'programaFormacion',
+      placeholder: 'ADSO',
+      label: 'Programa de formación:',
+    },
+    {
+      type: 'select',
+      name: 'modalitie',
+      placeholder: 'Sin seleccionar',
+      label: 'Modalidad:',
+    },
+  ],
+  filterVisits: [
+    {
+      type: 'date',
+      name: 'fechaInicio',
+      placeholder: '2021-01-01',
+      label: 'Fecha inicio',
+    },
+    {
+      type: 'date',
+      name: 'fechaFin',
+      placeholder: '2021-01-01',
+      label: 'Fecha fin',
+    },
+    {
+      type: 'text',
+      name: 'ficha',
+      placeholder: '2473196',
+      label: 'Ficha',
+    },
+    {
+      type: 'text',
+      name: 'empresa',
+      placeholder: 'Empresa',
+      label: 'Empresa',
+    },
+  ],
+  filterBitacoras: [
+    {
+      type: 'text',
+      name: 'ficha',
+      placeholder: '2473196',
+      label: 'Fichas',
+    },
+    {
+      type: 'text',
+      name: 'programaFormacion',
+      placeholder: 'ADSO',
+      label: 'Programa de formación',
+    },
+    {
+      type: 'text',
+      name: 'nombreAprendiz',
+      placeholder: 'Juan Perez',
+      label: 'Nombre Aprendiz',
+    },
+  ],
 }
