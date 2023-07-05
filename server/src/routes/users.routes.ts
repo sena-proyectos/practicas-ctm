@@ -8,6 +8,8 @@ const userRoutes: IRouter = Router()
 // * GET
 userRoutes.get('/users', getUsers)
 userRoutes.get('/user/:id', checkIdReq, getUserById)
+userRoutes.get('/studentName', checkName, getStudentByName)
+userRoutes.get('/teacherName', checkName, getTeacherByName)
 userRoutes.get('/teachers', getTeachers)
 userRoutes.get('/teacher/:id', checkIdReq, getTeachersById)
 userRoutes.get('/students', getStudents)

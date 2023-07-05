@@ -5,7 +5,7 @@ import { DataNotValid, type CustomError } from '../errors/customErrors.js'
 import { createRoleSchema } from '../schemas/roles.schemas.js'
 import { errorCodes } from '../models/errorCodes.enums.js'
 
-export const checkRoleName: RequestHandler<{ id: string, nombre_rol: string }, Response, roleName> = (req: Request<{ id: string, nombre_rol: string }>, res: Response, next: NextFunction): void => {
+export const checkRoleName: RequestHandler<{ id: string; nombre_rol: string }, Response, roleName> = (req: Request<{ id: string; nombre_rol: string }>, res: Response, next: NextFunction): void => {
   const { nombre_rol } = req.body
   try {
     const { error } = createRoleSchema.validate({ nombre_rol })

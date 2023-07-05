@@ -28,6 +28,11 @@ export const Student = () => {
   }
 
   const searchApprentices = async (searchTerm) => {
+    if (searchTerm.trim() === '') {
+      setError(null)
+      setSearchedApprentices([])
+      return
+    }
     try {
       const response = await GetUserByName(searchTerm)
       const { data } = response.data
@@ -72,17 +77,54 @@ export const Student = () => {
         <Siderbar />
         <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">
           <header className="grid place-items-center">
-            <Search searchFilter iconClick={handleIconClick} searchApprentices={searchApprentices} />
+            <Search searchFilter iconClick={handleIconClick} searchStudent={searchApprentices} />
           </header>
           {searchedApprentices.length > 0 && !error ? (
             <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
               {searchedApprentices.map((apprentice, i) => (
-                <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre} ${apprentice.apellido}`} subtitle={apprentice.correo_electronico} lione={apprentice.programa_formacion_inscripcion} litwo={apprentice.numero_ficha_inscripcion} key={i} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} />
+                <Card
+                  cardUser
+                  shadow={'shadow-2xl'}
+                  marginLink={'mx-auto'}
+                  scale={'scale-90'}
+                  title={`${apprentice.nombre} ${apprentice.apellido}`}
+                  subtitle={apprentice.correo_electronico}
+                  lione={apprentice.programa_formacion_inscripcion}
+                  litwo={apprentice.numero_ficha_inscripcion}
+                  key={i}
+                  userID={apprentice.id_usuario}
+                  roundedLink={'rounded-xl'}
+                  borderColor={'border-primary'}
+                  buttonText={'Más información'}
+                  link={'/home'}
+                />
               ))}
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
-              {error ? <h2 className="text-red-500">{error}</h2> : apprentices.map((apprentice, i) => <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre} ${apprentice.apellido}`} subtitle={apprentice.correo_electronico} lione={apprentice.programa_formacion_inscripcion} litwo={apprentice.numero_ficha_inscripcion} key={i} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal />)}
+              {error ? (
+                <h2 className="text-red-500">{error}</h2>
+              ) : (
+                apprentices.map((apprentice, i) => (
+                  <Card
+                    cardUser
+                    shadow={'shadow-2xl'}
+                    marginLink={'mx-auto'}
+                    scale={'scale-90'}
+                    title={`${apprentice.nombre} ${apprentice.apellido}`}
+                    subtitle={apprentice.correo_electronico}
+                    lione={apprentice.programa_formacion_inscripcion}
+                    litwo={apprentice.numero_ficha_inscripcion}
+                    key={i}
+                    userID={apprentice.id_usuario}
+                    roundedLink={'rounded-xl'}
+                    borderColor={'border-primary'}
+                    buttonText={'Más información'}
+                    isButton
+                    showModal
+                  />
+                ))
+              )}
               {apprentices.length === 0 && !error && searchedApprentices.length === 0 && (
                 <>
                   <Skeleton width={300} height={200} style={{ marginBottom: '1rem', margin: '1.2em' }} />
