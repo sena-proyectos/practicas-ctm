@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { GetUsersHttp, GetUserByName } from '../../api/httpRequest'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
-import { Card } from '../Card/Card'
+import { Card } from '../Utils/Card/Card'
 import { Footer } from '../Footer/Footer'
 import Cookies from 'js-cookie'
 
@@ -68,9 +68,9 @@ export const Student = () => {
   return (
     <>
       {mostrarModal && <Modals bodyFilter title={'Filtrar'} view={filterStudents} closeModal={handleModal} />}
-      <main className="flex flex-row min-h-screen">
+      <main className="flex min-h-screen flex-row">
         <Siderbar />
-        <section className="grid grid-rows-3-10-75-15 flex-auto w-min relative">
+        <section className="relative grid w-min flex-auto grid-rows-3-10-75-15">
           <header className="grid place-items-center">
             <Search searchFilter iconClick={handleIconClick} searchApprentices={searchApprentices} />
           </header>
