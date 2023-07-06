@@ -399,3 +399,67 @@ export const filter = {
     },
   ],
 }
+
+/*
+ * src: src\components\Bitacoras\Bitacoras.jsx
+ */
+export const testInscriptions = {
+  data: [
+    {
+      nombreCompleto: 'Guillermo Stiven Benjumea Morales',
+      programaFormacion: 'Fabicación de Muebles Contemporaneos y Modulares',
+      ficha: '2345678',
+      estado: 'Calificado',
+      fecha: '29/06/2023',
+    },
+    {
+      nombreCompleto: 'Stiven Blandón Urrego',
+      programaFormacion: 'Analisis y Desarrollo de Software',
+      ficha: '2345678',
+      estado: 'Calificado',
+      fecha: '29/06/2023',
+    },
+    {
+      nombreCompleto: 'Lorena Quiceno Giraldo',
+      programaFormacion: 'Producción y Multimedia',
+      ficha: '2345678',
+      estado: 'Calificado',
+      fecha: '28/05/2023',
+    },
+    {
+      nombreCompleto: 'Juan Guillermo Gomez Zapata',
+      programaFormacion: 'Dibujo arquitectónico',
+      ficha: '2456666',
+      estado: 'Calificado',
+      fecha: '01/06/2023',
+    },
+    {
+      nombreCompleto: 'Guillermo Stiven Benjumea Morales',
+      programaFormacion: 'Fabicación de Muebles Contemporaneos y Modulares',
+      ficha: '2345678',
+      estado: 'Sin Calificar',
+      fecha: '06/07/2023',
+    },
+    {
+      nombreCompleto: 'Stiven Blandón Urrego',
+      programaFormacion: 'Analisis y Desarrollo de Software',
+      ficha: '2345678',
+      estado: 'Sin Calificar',
+      fecha: '06/07/2023',
+    },
+    {
+      nombreCompleto: 'Lorena Quiceno Giraldo',
+      programaFormacion: 'Producción y Multimedia',
+      ficha: '2345678',
+      estado: 'Sin Calificar',
+      fecha: '06/07/2023',
+    },
+    {
+      nombreCompleto: 'Juan Guillermo Gomez Zapata',
+      programaFormacion: 'Dibujo arquitectónico',
+      ficha: '2456666',
+      estado: 'Sin Calificar',
+      fecha: '06/07/2023',
+    },
+  ],
+}
