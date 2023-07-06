@@ -35,7 +35,6 @@ export const readExcelFile = async (file) => {
         return obj
       })
 
-
       for (let i = 0; i < result.length; i++) {
         const nameTeacher = result[i].nombre_instructor_lider_inscripcion
         const res = await GetTeacherByName(nameTeacher)
