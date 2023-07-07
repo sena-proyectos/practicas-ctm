@@ -17,15 +17,6 @@ export const Student = () => {
   const [apprentices, setApprentices] = useState([])
   const [searchedApprentices, setSearchedApprentices] = useState([])
   const [error, setError] = useState(null)
-  // const [mostrarModal, setMostrarModal] = useState(false)
-
-  // const handleIconClick = () => {
-  //   setMostrarModal(!mostrarModal)
-  // }
-
-  // const handleModal = () => {
-  //   setMostrarModal(!mostrarModal)
-  // }
 
   const [modalFilter, setModalFilter] = useState(false)
   const [infoStudent, setInfoStudent] = useState(false)
