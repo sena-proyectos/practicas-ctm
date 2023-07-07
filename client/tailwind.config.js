@@ -14,6 +14,17 @@ export default {
         gray: '#D9D9D9',
         aqua: '#B8F1D8',
       },
+      boxShadowColor: {
+        primary: '#39A900',
+        secondary: '#00324D',
+        third: '#82DEF0',
+        fourth: '#FBFBE2',
+        fifth: '#385C57',
+        salmon: '#CB7766',
+        seventh: '#FFCE40',
+        gray: '#D9D9D9',
+        aqua: '#B8F1D8',
+      },
       boxShadow: {
         '2xl': '4px 4px 18px 0px rgba(0, 0, 0, 0.3)',
       },

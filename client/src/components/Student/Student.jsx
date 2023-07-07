@@ -91,8 +91,8 @@ export const Student = () => {
 
   return (
     <>
-      {infoStudent && <Modals closeModal={handleModalInfo} bodyStudent title={'Stiven Blandón Urrego'} emailStudent={'blandon0207s@gmail.com'} documentStudent={'1017924888'} celStudent={'3183577499'} trainingProgram={'Análisis y Desarrollo de Software'} ficha={'2473196'} academicLevel={'Tecnología'} trainingStage={'Lectiva'} modalitie={'Contrato de Aprendizaje'} finLectiva={'05 Abril 2023'} inicioProductiva={'02 Mayo 2023'} company={'Servicio Nacional del Aprendizaje'} innmediateSuperior={'Richard Alexander Betancur Sierra'} workstation={'Instructor'} emailSuperior={'rbetancur@misena.edu.co'} celSuperior={'123456789'} arl={'Sura'} />}
       {modalFilter && <Modals bodyFilter title={'Filtrar'} view={filterStudents} closeModal={handleModal} />}
+      {infoStudent && <Modals closeModal={handleModalInfo} bodyStudent title={'Stiven Blandón Urrego'} emailStudent={'blandon0207s@gmail.com'} documentStudent={'1017924888'} celStudent={'3183577499'} trainingProgram={'Análisis y Desarrollo de Software'} ficha={'2473196'} academicLevel={'Tecnología'} trainingStage={'Lectiva'} modalitie={'Contrato de Aprendizaje'} finLectiva={'05 Abril 2023'} inicioProductiva={'02 Mayo 2023'} company={'Servicio Nacional del Aprendizaje'} innmediateSuperior={'Richard Alexander Betancur Sierra'} workstation={'Instructor'} emailSuperior={'rbetancur@misena.edu.co'} celSuperior={'123456789'} arl={'Sura'} />}
       <main className="flex min-h-screen flex-row">
         <Siderbar />
         <section className="relative grid w-min flex-auto grid-rows-3-10-75-15">
