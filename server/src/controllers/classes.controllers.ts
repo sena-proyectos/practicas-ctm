@@ -30,7 +30,7 @@ export const getClassById: RequestHandler<{ id: string }, Response, id> = async 
 }
 
 export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Response, classes> = async (req: Request<{ numero_ficha: string }>, res: Response): Promise<Response> => {
-  const { numero_ficha } = req.body
+  const { numero_ficha } = req.query
   const classNumber = Number(numero_ficha)
   try {
     const [classQuery] = await connection.query('SELECT * FROM fichas WHERE numero_ficha = ?', [classNumber])
@@ -57,7 +57,7 @@ export const createClass: RequestHandler<{}, Response, classes> = async (req: Re
       nivel_programa_formacion,
       jornada_ficha,
       leaderTeacherNumber,
-      practicalTeacherNumber,
+      practicalTeacherNumber
     ])
     if (!Array.isArray(classQuery) && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo crear la ficha.', errorCodes.ERROR_CREATE_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
