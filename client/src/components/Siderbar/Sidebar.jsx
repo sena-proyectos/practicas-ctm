@@ -67,7 +67,7 @@ const Siderbar = () => {
             <img className="object-cover" src="public/user.png" alt="img_user" />
           </div>
           <div className={`pl-3 pr-10 w-full ${!open && 'hidden'}`}>
-            <h5 className="text-xs ">{nameUser || <Skeleton width={100}/>}</h5>
+            <h5 className="text-xs ">{nameUser || <Skeleton width={100} />}</h5>
             <span className="font-semibold text-sm text-center">{nameRol || <Skeleton />}</span>
           </div>
         </section>

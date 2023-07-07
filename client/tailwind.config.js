@@ -14,6 +14,17 @@ export default {
         gray: '#D9D9D9',
         aqua: '#B8F1D8',
       },
+      boxShadowColor: {
+        primary: '#39A900',
+        secondary: '#00324D',
+        third: '#82DEF0',
+        fourth: '#FBFBE2',
+        fifth: '#385C57',
+        salmon: '#CB7766',
+        seventh: '#FFCE40',
+        gray: '#D9D9D9',
+        aqua: '#B8F1D8',
+      },
       boxShadow: {
         '2xl': '4px 4px 18px 0px rgba(0, 0, 0, 0.3)',
       },
@@ -21,6 +32,8 @@ export default {
         '2-55-45': '55% 45%',
         '2-20r-80': '20rem auto',
         '2-16r-84': '16rem auto',
+        '2-45-55': '45% auto',
+        '2-50-50': '50% 50%',
         // '2-20r-80': '18rem auto'
       },
       gridTemplateRows: {
@@ -28,6 +41,8 @@ export default {
         '3-10-78-12': '7rem 78% 12%',
         '3-10-75-15': '4.9rem 79% 6.4vh',
         '2-25-75': '10rem auto',
+        '2-50-50': '50% 50%',
+        '2-90-10': '90% 10%',
       },
       borderWidth: {
         1: '1.5px',
