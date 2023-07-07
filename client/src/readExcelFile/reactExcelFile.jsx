@@ -3,7 +3,7 @@ import Swal from 'sweetalert2'
 import Cookies from 'js-cookie'
 import jwtdecoded from 'jwt-decode'
 import { mapValues } from '../mapeo/Map'
-import { InscriptionApprentice } from '../api/httpRequest'
+import { GetClassByNumber, InscriptionApprentice } from '../api/httpRequest'
 import { GetTeacherByName } from '../api/httpRequest'
 
 export const readExcelFile = async (file) => {
@@ -38,11 +38,15 @@ export const readExcelFile = async (file) => {
 
       for (let i = 0; i < result.length; i++) {
         const nameTeacher = result[i].nombre_instructor_lider_inscripcion
+        const classNumber = result[i].id_ficha_inscripcion
         const res = await GetTeacherByName(nameTeacher)
-
+        const response = await GetClassByNumber(classNumber)
+        
         const idUsuario = res.data.data[0].id_usuario
+        const numFicha = response.data.data[0].id_ficha
 
         result[i].nombre_instructor_lider_inscripcion = `${idUsuario}`
+        result[i].id_ficha_inscripcion = `${numFicha}`
         result[i].id_usuario_responsable_inscripcion = `${id}`
 
         if (result[i].id_modalidad_inscripcion === 'Pasantía') result[i].id_modalidad_inscripcion = '1'
