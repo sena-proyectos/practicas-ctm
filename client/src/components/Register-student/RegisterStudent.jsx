@@ -22,8 +22,7 @@ const RegisterStudent = () => {
 
     const id = decoded.data.user.id_usuario
 
-    // Validación de campos
-    // Capturación de valores
+    // Validación de campos y capturación de los valores
     const handleSubmit = async (e) => {
         e.preventDefault()
         // capturar los valores de los inputs del formulario

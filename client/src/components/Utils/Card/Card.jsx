@@ -1,6 +1,11 @@
 import { Link } from 'react-router-dom'
 
-const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/iLestar', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked }) => {
+const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/iLestar', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked, userID }) => {
+
+  const userInfo = () => {
+    modalClicked(userID)
+  }
+
   return (
     <div className={`${bgColor} bg-opacity-50 ${shadow} flex h-auto flex-col justify-center rounded-2xl px-3 py-2 ${scale && 'scale-90'}`}>
       <header className={`${cardUser && 'flex flex-row'}`}>
@@ -42,7 +47,7 @@ const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale
         </Link>
       )}
       {isButton && showModal && (
-        <button className={`${roundedLink} border-1 ${borderColor} mx-auto mt-4 w-fit justify-self-end p-1.5 text-xs font-semibold`} onClick={modalClicked}>
+        <button className={`${roundedLink} border-1 ${borderColor} mx-auto mt-4 w-fit justify-self-end p-1.5 text-xs font-semibold`} onClick={userInfo}>
           {buttonText}
         </button>
       )}
