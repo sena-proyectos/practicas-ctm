@@ -295,6 +295,10 @@ export const colorIcon = {
   '/home': 'text-salmon',
   '/aprendices': 'text-third',
   '/bitacoras': 'text-seventh',
+  '/inscribir-aprendiz': 'text-lima',
+  '/aprobaciones': 'text-secondary',
+  '/teacher': 'text-rosa',
+  '/fichas': 'text-coffee',
   '/visitas': 'text-primary',
   '/config': 'text-fifth',
 }
