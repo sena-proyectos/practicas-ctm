@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import Swal from 'sweetalert2'
 
 import { BsCheck2Circle } from 'react-icons/bs'
-import { LuUpload, LuArrowRight } from 'react-icons/lu'
+import { LuUpload, LuArrowRight, LuChevronDown } from 'react-icons/lu'
 
 import { Button } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -163,7 +163,10 @@ const RegisterStudent = () => {
                           <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" autoComplete="on" placeholder={item.placeholder} />
                         ) : item.type === 'select' ? (
                           <div className="relative">
-                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none">
+                            <span className="absolute inset-y-0 right-3 text-xl font-bold flex items-center pointer-events-none">
+                              <LuChevronDown />
+                            </span>
+                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
                               <option value={''}>Sin seleccionar</option>
                               {item.name === 'tipo_documento_inscripcion'
                                 ? idTypes.map((item, i) => {
@@ -230,7 +233,10 @@ const RegisterStudent = () => {
                           </div>
                         ) : item.type === 'select' ? (
                           <div className="relative">
-                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none">
+                            <span className="absolute inset-y-0 right-3 text-xl font-bold flex items-center pointer-events-none">
+                              <LuChevronDown />
+                            </span>
+                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
                               <option value={''}>Sin seleccionar</option>
                               {item.name === 'asume_pago_arl_inscripcion'
                                 ? pagoArl.map((item, i) => {
