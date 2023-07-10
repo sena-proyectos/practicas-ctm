@@ -152,18 +152,18 @@ const RegisterStudent = () => {
           <section>
             <form action="" ref={formRef} className="flex flex-col gap-y-6 mt-3" onSubmit={handleSubmit}>
               {showDataAprendiz && (
-                <section className="mx-auto grid w-11/12 gap-3 sm:grid-cols-2 md:grid-cols-3">
+                <section className="mx-auto grid w-11/12 gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
                   {dataInscription.dataAprendiz.map((item, i) => {
                     return (
-                      <div className="text-gray-400 m-auto flex flex-col" key={i}>
-                        <label htmlFor="nombre" className="font-normal">
-                          {item.label} {item.required && <span className="text-red-600 font-semibold">*</span>}
+                      <div className="text-gray-400 m-auto flex flex-col w-full" key={i}>
+                        <label htmlFor="nombre" className="font-normal text-sm">
+                          {item.label} {item.required && <span className="text-red-600 font-medium">*</span>}
                         </label>
                         {item.type === 'number' ? (
-                          <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-64 rounded-md border-[1.2px] bg-white py-1 pl-3 text-base text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" autoComplete="on" placeholder={item.placeholder} />
+                          <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" autoComplete="on" placeholder={item.placeholder} />
                         ) : item.type === 'select' ? (
                           <div className="relative">
-                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-64 rounded-md border-[1.2px] bg-white py-1.5 pl-3 text-base text-black focus:bg-white focus:outline-none">
+                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none">
                               <option value={''}>Sin seleccionar</option>
                               {item.name === 'tipo_documento_inscripcion'
                                 ? idTypes.map((item, i) => {
@@ -209,7 +209,7 @@ const RegisterStudent = () => {
                             </select>
                           </div>
                         ) : (
-                          <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-64 rounded-md border-[1.2px] bg-white py-1 pl-3 text-base text-black focus:bg-white focus:outline-none" autoComplete="on" placeholder={item.placeholder} />
+                          <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none" autoComplete="on" placeholder={item.placeholder} />
                         )}
                       </div>
                     )
@@ -217,20 +217,20 @@ const RegisterStudent = () => {
                 </section>
               )}
               {showDataEmpresa && (
-                <section className="mx-auto grid w-11/12 gap-3 sm:grid-cols-2 md:grid-cols-3">
+                <section className="mx-auto grid w-11/12 gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
                   {dataInscription.dataEmpresa.map((item, i) => {
                     return (
-                      <div className="text-gray-400 m-auto flex flex-col" key={i}>
-                        <label htmlFor="nombre" className="font-normal">
-                          {item.label} {item.required && <span className="text-red-600 font-semibold">*</span>}
+                      <div className="text-gray-400 m-auto flex flex-col w-full" key={i}>
+                        <label htmlFor="nombre" className="font-normal text-sm whitespace-nowrap">
+                          {item.label} {item.required && <span className="text-red-600 font-medium">*</span>}
                         </label>
                         {item.type === 'number' ? (
                           <div className="relative">
-                            <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-64 rounded-md border-[1.2px] bg-white py-1 pl-3 text-base text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" autoComplete="on" placeholder={item.placeholder} />
+                            <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" autoComplete="on" placeholder={item.placeholder} />
                           </div>
                         ) : item.type === 'select' ? (
                           <div className="relative">
-                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-64 rounded-md border-[1.2px] bg-white py-1.5 pl-3 text-base text-black focus:bg-white focus:outline-none">
+                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none">
                               <option value={''}>Sin seleccionar</option>
                               {item.name === 'asume_pago_arl_inscripcion'
                                 ? pagoArl.map((item, i) => {
@@ -245,7 +245,7 @@ const RegisterStudent = () => {
                           </div>
                         ) : (
                           <div className="relative">
-                            <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-64 rounded-md border-[1.2px] bg-white py-1 pl-3 text-base text-black focus:bg-white focus:outline-none" autoComplete="on" placeholder={item.placeholder} />
+                            <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none" autoComplete="on" placeholder={item.placeholder} />
                           </div>
                         )}
                       </div>
@@ -271,7 +271,7 @@ const RegisterStudent = () => {
                 )}
               </section>
             </form>
-            <div className="mt-3 flex flex-row w-fit gap-5 mx-auto">
+            <div className="mt-3 flex flex-col md:flex-row w-fit gap-1 md:gap-5 mb-2 mx-auto">
               <Button value={'Eliminar datos'} bg={'bg-red-600'} px={'px-[3rem]'} font={'font-medium'} textSize="text-md" py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={deleteData} />
               {showDataAprendiz && (
                 <div className="relative mx-auto w-fit">
