@@ -13,6 +13,9 @@ export default {
         seventh: '#FFCE40',
         gray: '#D9D9D9',
         aqua: '#B8F1D8',
+        rosa: '#DF1E63',
+        coffee: '#964B00',
+        lima: '#65AC45',
       },
       boxShadowColor: {
         primary: '#39A900',
