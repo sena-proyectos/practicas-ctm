@@ -9,6 +9,7 @@ import { Visits } from './components/Visits/Visits'
 import { Bitacoras } from './components/Bitacoras/Bitacoras'
 import { Settings } from './components/Settings/Settings'
 
+
 const App = () => {
   return (
     <Routes>

@@ -17,8 +17,8 @@ const Student = () => {
   const [error, setError] = useState(null)
   const [modalFilter, setModalFilter] = useState(false)
   const [infoStudent, setInfoStudent] = useState(false)
-  const [nombreCompleto, setNombreCompleto] = useState(null) 
-  const [userInfoById, setInfoUserById] = useState() 
+  const [nombreCompleto, setNombreCompleto] = useState(null)
+  const [userInfoById, setInfoUserById] = useState({})
 
   const handleIconClick = () => {
     setModalFilter(!modalFilter)
@@ -29,10 +29,7 @@ const Student = () => {
   }
 
   const modalStudent = async (userID) => {
-    setInfoStudent(true) // Mostrar la modal de información del estudiante
-
-    // console.log(userID);
-
+    setInfoStudent(true) 
     getUser(userID)
   }
 
@@ -42,18 +39,17 @@ const Student = () => {
 
   const getUser = async (userID) => {
     try {
-      const response = await GetUsersById(userID)
-      const res = response.data.data[0]
+        const response = await GetUsersById(userID)
+        const res = response.data.data[0]
 
-      const nombre = res.nombre
-      const apellido = res.apellido
-      setNombreCompleto(`${nombre} ${apellido}`)
-      setInfoUserById(res)
+        const nombre = res.nombre
+        const apellido = res.apellido
+        setNombreCompleto(`${nombre} ${apellido}`)
+        setInfoUserById(res)
     } catch (error) {
-        console.log("ah ocurrido un error al mostrar los datos del usuario");
+      console.log('ah ocurrido un error al mostrar los datos del usuario')
     }
-    
-}
+  }
 
   const searchApprentices = async (searchTerm) => {
     if (searchTerm.trim() === '') {
