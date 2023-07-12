@@ -30,6 +30,7 @@ export default {
       },
       boxShadow: {
         '2xl': '4px 4px 18px 0px rgba(0, 0, 0, 0.3)',
+        'inner-custom': 'inset 0 0 25px 20px rgba(0, 0, 0, 0.3)',
       },
       gridTemplateColumns: {
         '2-55-45': '55% 45%',
