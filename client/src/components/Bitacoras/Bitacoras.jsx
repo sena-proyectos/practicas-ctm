@@ -11,6 +11,7 @@ import { Button } from '../Utils/Button/Button'
 const Bitacoras = () => {
   const [mostrarModal, setMostrarModal] = useState(false)
   const [filteredData, setFilteredData] = useState([])
+  const [modalDetalles, setModalDetalles] = useState()
 
   const handleIconClick = () => {
     setMostrarModal(!mostrarModal)
@@ -19,6 +20,11 @@ const Bitacoras = () => {
   const handleModal = () => {
     setMostrarModal(!mostrarModal)
   }
+
+  const handleDetalles = () => {
+    setModalDetalles(!modalDetalles)
+  }
+
   const filterBitacoras = filter.filterBitacoras
 
   const filterEstado = (estado) => {
@@ -32,6 +38,7 @@ const Bitacoras = () => {
   return (
     <>
       {mostrarModal && <Modals bodyFilter view={filterBitacoras} title={'Bitacoras'} closeModal={handleModal} />}
+      {modalDetalles && <Modals detallesBitacoras title={'Detalles'} closeModal={handleDetalles} />}
       <main className="flex min-h-screen flex-row">
         <Siderbar />
         <section className="relative grid w-min flex-auto grid-rows-3-10-75-15">
@@ -71,7 +78,7 @@ const Bitacoras = () => {
                             </div>
                           </td>
                           <td className="whitespace-nowrap px-6 py-3 text-center">
-                            <span className={`rounded-full px-3 py-1 text-xs ${x.estado === 'Sin Calificar' ? 'bg-red-200 text-red-600' : 'bg-green-200 text-green-600'}`}>{x.estado}</span>
+                            <Button bg={x.estado === 'Sin Calificar' ? 'bg-red-200' : 'bg-green-200'} px={x.estado === 'Sin Calificar' ? 'px-3' : 'px-4'} py={'py-1'} textSize={'text-xs'} font={'font-medium'} rounded={'rounded-full'} textColor={x.estado === 'Sin Calificar' ? 'text-red-600' : 'text-green-600'} value={x.estado} />
                           </td>
                           <td className="px-6 py-3 text-center">
                             <div className="flex items-center justify-center">
@@ -79,13 +86,8 @@ const Bitacoras = () => {
                             </div>
                           </td>
                           <td className="px-6 py-3 text-center">
-                            <div className="item-center flex justify-center">
-                              <div className="mr-2 w-4 transform cursor-pointer hover:scale-125 hover:text-purple-500">
-                                <AiOutlineEye />
-                              </div>
-                              <div className="mr-2 w-4 transform cursor-pointer hover:scale-125 hover:text-purple-500">
-                                <HiOutlinePencil />
-                              </div>
+                            <div className="mr-2 w-4 transform cursor-pointer hover:scale-125 hover:text-purple-500" onClick={handleDetalles}>
+                              <AiOutlineEye />
                             </div>
                           </td>
                         </tr>
@@ -104,7 +106,7 @@ const Bitacoras = () => {
                             </div>
                           </td>
                           <td className="whitespace-nowrap px-6 py-3 text-center">
-                            <span className={`rounded-full px-3 py-1 text-xs ${x.estado === 'Sin Calificar' ? 'bg-red-200 text-red-600' : 'bg-green-200 text-green-600'}`}>{x.estado}</span>
+                            <Button bg={x.estado === 'Sin Calificar' ? 'bg-red-200' : 'bg-green-200'} px={x.estado === 'Sin Calificar' ? 'px-3' : 'px-4'} py={'py-1'} textSize={'text-xs'} font={'font-medium'} rounded={'rounded-full'} textColor={x.estado === 'Sin Calificar' ? 'text-red-600' : 'text-green-600'} value={x.estado} />
                           </td>
                           <td className="px-6 py-3 text-center">
                             <div className="flex items-center justify-center">
@@ -112,13 +114,8 @@ const Bitacoras = () => {
                             </div>
                           </td>
                           <td className="px-6 py-3 text-center">
-                            <div className="item-center flex justify-center">
-                              <div className="mr-2 w-4 transform cursor-pointer hover:scale-125 hover:text-purple-500">
-                                <AiOutlineEye />
-                              </div>
-                              <div className="mr-2 w-4 transform cursor-pointer hover:scale-125 hover:text-purple-500">
-                                <HiOutlinePencil />
-                              </div>
+                            <div className="mr-2 w-4 transform cursor-pointer hover:scale-125 hover:text-purple-500" onClick={handleDetalles}>
+                              <AiOutlineEye />
                             </div>
                           </td>
                         </tr>
