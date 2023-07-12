@@ -170,19 +170,19 @@ export const dataInscription = {
     {
       type: 'number',
       name: 'nit_empresa_inscripcion',
-      placeholder: '123456789',
+      placeholder: '899999034-1',
       label: 'NIT de la empresa',
     },
     {
       type: 'text',
       name: 'nombre_empresa_inscripcion',
-      placeholder: 'Sena',
+      placeholder: 'SENA',
       label: 'Razón social (Empresa)',
     },
     {
       type: 'text',
       name: 'direccion_empresa_inscripcion',
-      placeholder: 'Calle 123',
+      placeholder: 'Cra 30 No. 3E 164',
       label: 'Dirección de empresa',
     },
     {
@@ -214,6 +214,13 @@ export const dataInscription = {
       name: 'asume_pago_arl_inscripcion',
       placeholder: 'Sin seleccionar',
       label: '¿Quién asume pago arl?',
+    },
+    {
+      type: 'file',
+      name: 'documentos_pdf',
+      label: 'Documentos',
+      required: true,
+      accept: '.pdf',
     },
     {
       type: 'text',
