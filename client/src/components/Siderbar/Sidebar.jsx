@@ -4,8 +4,7 @@ import Cookies from 'js-cookie'
 import jwtdecoded from 'jwt-decode'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
-import { IoCalendarClearOutline, IoDocumentTextOutline, IoHandLeft, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline } from 'react-icons/io5'
-import { CiCircleChevRight } from 'react-icons/ci'
+import { IoCalendarClearOutline, IoDocumentTextOutline, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoPeopleOutline, IoPersonAddOutline, IoCheckmarkCircleOutline, IoBookOutline, IoArrowForwardOutline } from 'react-icons/io5'
 
 import { colorIcon } from '../../import/staticData'
 import Skeleton from 'react-loading-skeleton'
@@ -46,12 +45,12 @@ const Siderbar = () => {
   }, [])
 
   const styles = (path) => {
-    return location.pathname === path ? 'flex items-center relative pl-10 py-2 font-semibold bg-white rounded-s-2xl w-[115%] h-10' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] h-10 transition '
+    return location.pathname === path ? 'flex items-center relative pl-10 py-2 font-semibold bg-white rounded-s-2xl w-[115%] h-8' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] h-8 transition '
   }
 
   const spanStyle = (path) => {
     const color = colorIcon[path]
-    return location.pathname === path ? `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-sm' : 'pl-5 text-md'}   font-bold ${color}` : `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-xs' : 'pl-5 text-sm'} `
+    return location.pathname === path ? `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-md' : 'pl-5 text-lg'} font-bold ${color}` : `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-sm' : 'pl-5 text-md'} `
   }
 
   const logout = () => {
@@ -60,7 +59,7 @@ const Siderbar = () => {
   }
 
   return (
-    <aside className={`bg-secondary/10 ${open ? 'w-[12rem]' : 'w-[4.5rem]'} sticky left-0 top-0 rounded-r-2xl md:h-screen`}>
+    <aside className={`bg-secondary/10 ${open ? 'w-[12rem]' : 'w-[4.5rem]'} sticky left-0 top-0 h-screen rounded-r-2xl`}>
       <nav className="mx-auto grid h-screen w-4/5 grid-rows-3-10-78-12 md:grid-rows-3-10-78-12">
         <section className={`w-fit ${open === true ? 'flex flex-row pr-3' : 'mx-auto flex flex-col'} my-auto`}>
           <div className="my-auto w-[3rem] rounded-full">
@@ -99,6 +98,38 @@ const Siderbar = () => {
               </Link>
             </li>
             <li>
+              <Link to="/inscribir-aprendiz" className={styles('/inscribir-aprendiz')}>
+                <span className={spanStyle('/inscribir-aprendiz')}>
+                  <IoPersonAddOutline />
+                </span>
+                {open && 'Inscripciones'}
+              </Link>
+            </li>
+            <li>
+              <Link to="/" className={styles('/')}>
+                <span className={spanStyle('/')}>
+                  <IoCheckmarkCircleOutline />
+                </span>
+                {open && 'Aprobaciones'}
+              </Link>
+            </li>
+            <li>
+              <Link to="/" className={styles('/')}>
+                <span className={spanStyle('/')}>
+                  <IoPeopleOutline />
+                </span>
+                {open && 'Instructores'}
+              </Link>
+            </li>
+            <li>
+              <Link to="/" className={styles('/')}>
+                <span className={spanStyle('/')}>
+                  <IoBookOutline />
+                </span>
+                {open && 'Fichas'}
+              </Link>
+            </li>
+            <li>
               <Link to="/visitas" className={styles('/visitas')}>
                 <span className={spanStyle('/visitas')}>
                   <IoCalendarClearOutline />
@@ -117,16 +148,16 @@ const Siderbar = () => {
             </li>
           </section>
           <span
-            className={`absolute top-3/4 pl-1 text-2xl ${open && 'rotate-180'}`}
+            className={`absolute right-4 top-2 text-xl ${open && 'rotate-180'}`}
             onClick={() => {
               setOpen(!open)
             }}
           >
-            <CiCircleChevRight />
+            <IoArrowForwardOutline />
           </span>
           <section className="mb-0 w-full">
             <li className="relative flex h-10 w-[115%] items-center rounded-s-2xl py-2 pl-10 text-red-700 transition hover:bg-white" onClick={logout}>
-              <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-xs' : 'text-md pl-5'} text-red-700`}>
+              <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'text-md pl-3' : 'pl-5 text-lg'} text-red-700`}>
                 <IoLogOutOutline />
               </span>
               {open && 'Cerrar Sesión'}

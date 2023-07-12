@@ -1,5 +1,6 @@
 import bycrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import Joi from 'joi'
 
 import { connection } from '../config/db.js'
 import { type passwordCompare, type LoginData, type userForm } from '../interfaces/users.interfaces.js'
@@ -8,7 +9,6 @@ import { type RequestHandler, type NextFunction, type Response, type Request } f
 import { type CustomError, DataNotValid, UserExists, NumberIsNaN } from '../errors/customErrors.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
-import Joi from 'joi'
 
 export const checkExistingUser: RequestHandler<{}, Response, userForm> = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { num_documento, correo_electronico } = req.body as userForm
@@ -23,7 +23,7 @@ export const checkExistingUser: RequestHandler<{}, Response, userForm> = async (
   }
 }
 
-export const checkLoginData: RequestHandler<{ num_documento: string; contrasena: string }, Response, LoginData> = (req: Request<{ num_documento: string; contrasena: string }>, res: Response, next: NextFunction) => {
+export const checkLoginData: RequestHandler<{ num_documento: string, contrasena: string }, Response, LoginData> = (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction) => {
   const { num_documento, contrasena } = req.body as LoginData
   const numberParsed = Number(num_documento)
   try {

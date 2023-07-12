@@ -8,14 +8,23 @@ import { estadoIcons, filter } from '../../import/staticData'
 import { Modals } from '../Utils/Modals/Modals'
 
 const Visits = () => {
-  const [mostrarModal, setMostrarModal] = useState(false)
+  const [modalFilter, setModalFilter] = useState(false)
+  const [modalInfoVisita, setModalInfoVisita] = useState(false)
 
   const handleIconClick = () => {
-    setMostrarModal(!mostrarModal)
+    setModalFilter(!modalFilter)
   }
 
   const handleModal = () => {
-    setMostrarModal(!mostrarModal)
+    setModalFilter(!modalFilter)
+  }
+
+  const modalVisit = () => {
+    setModalInfoVisita(!modalInfoVisita)
+  }
+
+  const handleModalInfo = () => {
+    setModalInfoVisita(!modalInfoVisita)
   }
 
   const visits = [
@@ -79,7 +88,8 @@ const Visits = () => {
 
   return (
     <>
-      {mostrarModal && <Modals bodyFilter view={filterVisits} title={'Visitas'} closeModal={handleModal} stylesFilterVisits />}
+      {modalFilter && <Modals bodyFilter view={filterVisits} title={'Visitas'} closeModal={handleModal} stylesFilterVisits />}
+      {modalInfoVisita && <Modals closeModal={handleModalInfo} bodyVisits title={'Visitas'} />}
       <main className="flex min-h-screen flex-row">
         <Siderbar />
         <section className="relative grid w-min flex-auto grid-rows-3-10-75-15">
@@ -105,6 +115,7 @@ const Visits = () => {
                   buttonText={'Más información'}
                   isButton
                   showModal
+                  modalClicked={modalVisit}
                 />
               )
             })}
