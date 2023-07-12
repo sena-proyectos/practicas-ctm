@@ -43,8 +43,7 @@ const RegisterStudent = () => {
     setShowDataEmpresa(false)
   }
 
-  // Validación de campos
-  // Capturación de valores
+  // Validación de campos y capturación de los valores
   const handleSubmit = async (e) => {
     e.preventDefault()
     // capturar los valores de los inputs del formulario
@@ -52,11 +51,18 @@ const RegisterStudent = () => {
 
     try {
       const teacher = formValues.nombre_instructor_lider_inscripcion
+      const classNumber = formValues.id_ficha_inscripcion
 
       if (teacher) {
         const res = await GetTeacherByName(teacher)
         const response = res.data.data[0].id_usuario
         formValues.nombre_instructor_lider_inscripcion = `${response}`
+      }
+
+      if (classNumber) {
+        const res = await GetClassByNumber(classNumber)
+        const response = res.data.data[0].id_ficha
+        formValues.id_ficha_inscripcion = `${response}`
       }
     } catch (error) {
       // const message = error.response.data.error.info.message
