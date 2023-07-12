@@ -268,6 +268,10 @@ const RegisterStudent = () => {
                                 : null}
                             </select>
                           </div>
+                        ) : item.type === 'textarea' ? (
+                          <div className="relative">
+                            <textarea id="editor" rows="3" class="block absolute w-full px-0 max-h-[5.5rem] min-h-[2rem] md:max-h-[10rem] overflow-y-auto border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" placeholder={item.placeholder} required></textarea>
+                          </div>
                         ) : (
                           <div className="relative">
                             <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none" autoComplete="on" placeholder={item.placeholder} />

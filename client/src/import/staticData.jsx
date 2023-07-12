@@ -223,7 +223,7 @@ export const dataInscription = {
       accept: '.pdf',
     },
     {
-      type: 'text',
+      type: 'textarea',
       name: 'observaciones_inscripcion',
       placeholder: 'Digite una observación',
       label: '¿Observaciones?',
