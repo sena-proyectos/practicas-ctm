@@ -303,7 +303,7 @@ const RegisterStudent = () => {
                     <span className="absolute inset-y-0 left-3 flex items-center text-white">
                       <BsCheck2Circle />
                     </span>
-                    <Button value={'Guardar'} bg={'bg-primary'} px={'pl-10 pr-6'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button value={'Guardar'} bg={'bg-lime-500'} px={'pl-10 pr-6'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
                   </div>
                 )}
               </section>
@@ -312,15 +312,15 @@ const RegisterStudent = () => {
               <Button value={'Eliminar datos'} bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize="text-md" py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={deleteData} />
               {showDataEmpresa && (
                 <div className="relative mx-auto w-fit">
-                  <span className="absolute inset-y-0 left-3 flex items-center text-white">
+                  <span className="absolute inset-y-0 left-3 flex items-center text-white pointer-events-none">
                     <LuArrowLeft />
                   </span>
-                  <Button value={'Regresar'} bg={'bg-primary'} px={'pr-6 pl-10'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowDataAprendiz} />
+                  <Button value={'Regresar'} bg={'bg-sky-700'} px={'pr-6 pl-10'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowDataAprendiz} />
                 </div>
               )}
               {showDataAprendiz && (
                 <div className="relative mx-auto w-fit">
-                  <span className="absolute inset-y-0 right-2 flex items-center text-white">
+                  <span className="absolute inset-y-0 right-2 flex items-center text-white pointer-events-none">
                     <LuArrowRight />
                   </span>
                   <Button value={'Continuar'} bg={'bg-primary'} px={'pr-8 pl-5'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowDataEmpresa} />
