@@ -6,7 +6,7 @@ import { IoMdClose } from 'react-icons/io'
 import { modalities } from '../../../import/staticData'
 import { Button } from '../Button/Button'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false }) => {
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const passwordIcons = {
@@ -215,6 +215,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
               </form>
             </>
           )}
+          {detallesBitacoras && <>Detallles</>}
         </section>
       </section>
     </section>

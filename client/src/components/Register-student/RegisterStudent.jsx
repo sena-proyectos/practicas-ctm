@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import Swal from 'sweetalert2'
 
 import { BsCheck2Circle } from 'react-icons/bs'
-import { LuUpload, LuArrowRight, LuChevronDown } from 'react-icons/lu'
+import { LuUpload, LuArrowRight, LuChevronDown, LuArrowLeft } from 'react-icons/lu'
 
 import { Button } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -16,6 +16,7 @@ import { InscriptionApprentice, GetTeacherByName, GetClassByNumber } from '../..
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 import { readExcelFile } from '../../readExcelFile/reactExcelFile'
 import { inscriptionValidation } from '../../validation/inscriptionsValidation'
+import { AiOutlineCloudUpload } from 'react-icons/ai'
 
 const RegisterStudent = () => {
   const excelFileRef = useRef(null)
@@ -23,6 +24,7 @@ const RegisterStudent = () => {
   const [showDataEmpresa, setShowDataEmpresa] = useState(false)
   const [showDataAprendiz, setShowDataAprendiz] = useState(true)
   const formRef = useRef(null)
+  const fileInputRef = useRef(null)
 
   const token = Cookies.get('token')
   const decoded = jwtdecoded(token)
@@ -35,8 +37,13 @@ const RegisterStudent = () => {
     setShowDataAprendiz(false)
   }
 
-  // Validación de campos
-  // Capturación de valores
+  //Cambiar de datos empresa a datos aprendiz
+  const handleShowDataAprendiz = () => {
+    setShowDataAprendiz(true)
+    setShowDataEmpresa(false)
+  }
+
+  // Validación de campos y capturación de los valores
   const handleSubmit = async (e) => {
     e.preventDefault()
     // capturar los valores de los inputs del formulario
@@ -44,11 +51,18 @@ const RegisterStudent = () => {
 
     try {
       const teacher = formValues.nombre_instructor_lider_inscripcion
+      const classNumber = formValues.id_ficha_inscripcion
 
       if (teacher) {
         const res = await GetTeacherByName(teacher)
         const response = res.data.data[0].id_usuario
         formValues.nombre_instructor_lider_inscripcion = `${response}`
+      }
+
+      if (classNumber) {
+        const res = await GetClassByNumber(classNumber)
+        const response = res.data.data[0].id_ficha
+        formValues.id_ficha_inscripcion = `${response}`
       }
     } catch (error) {
       // const message = error.response.data.error.info.message
@@ -117,6 +131,8 @@ const RegisterStudent = () => {
   // vaciar los inputs
   const deleteData = () => {
     formRef.current.reset()
+    fileInputRef.current.value = ''
+    setSelectedFile('')
   }
 
   // Leer archivo excel
@@ -231,12 +247,21 @@ const RegisterStudent = () => {
                           <div className="relative">
                             <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" autoComplete="on" placeholder={item.placeholder} />
                           </div>
+                        ) : item.type === 'file' ? (
+                          <div className="relative">
+                            <span className="absolute inset-y-0 right-3 text-xl font-bold flex items-center pointer-events-none">
+                              <AiOutlineCloudUpload />
+                            </span>
+                            <div className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2">
+                              <input type={item.type} accept={item.accept} name={item.name} className="file:hidden w-5/6 whitespace-break-spaces text-xs" />
+                            </div>
+                          </div>
                         ) : item.type === 'select' ? (
                           <div className="relative">
                             <span className="absolute inset-y-0 right-3 text-xl font-bold flex items-center pointer-events-none">
                               <LuChevronDown />
                             </span>
-                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
+                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
                               <option value={''}>Sin seleccionar</option>
                               {item.name === 'asume_pago_arl_inscripcion'
                                 ? pagoArl.map((item, i) => {
@@ -249,6 +274,10 @@ const RegisterStudent = () => {
                                 : null}
                             </select>
                           </div>
+                        ) : item.type === 'textarea' ? (
+                          <div className="relative">
+                            <textarea id="editor" rows="3" class="block absolute w-full px-0 max-h-[5.5rem] min-h-[2rem] md:max-h-[10rem] overflow-y-auto border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" placeholder={item.placeholder} required></textarea>
+                          </div>
                         ) : (
                           <div className="relative">
                             <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none" autoComplete="on" placeholder={item.placeholder} />
@@ -260,31 +289,41 @@ const RegisterStudent = () => {
                 </section>
               )}
               <section className={`flex h-10 flex-row w-fit gap-10 place-self-center ${showDataEmpresa && 'mt-20'}`}>
-                <div className="mx-auto flex w-fit rounded-xl px-3 py-1 shadow-md bg-slate-600">
-                  <label htmlFor="upload" className="flex cursor-pointer items-center gap-2 text-white">
-                    <LuUpload />
-                    <span className="text-white font-medium">Subir archivo</span>
-                  </label>
-                  <input id="upload" ref={excelFileRef} accept=".xlsx, .xls" onChange={handleExcelFile} type="file" className="hidden w-fit" />
-                </div>
+                {showDataAprendiz && (
+                  <div className="mx-auto flex w-fit rounded-xl px-3 py-1 shadow-md bg-slate-600">
+                    <label htmlFor="upload" className="flex cursor-pointer items-center gap-2 text-white">
+                      <LuUpload />
+                      <span className="text-white font-medium">Subir archivo</span>
+                    </label>
+                    <input id="upload" ref={excelFileRef} accept=".xlsx, .xls" onChange={handleExcelFile} type="file" className="hidden w-fit" />
+                  </div>
+                )}
                 {showDataEmpresa && (
                   <div className="relative mx-auto">
-                    <span className="absolute inset-y-0 left-2 flex items-center text-white">
+                    <span className="absolute inset-y-0 left-3 flex items-center text-white">
                       <BsCheck2Circle />
                     </span>
-                    <Button value={'Guardar'} bg={'bg-primary'} px={'pl-8 pr-5'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button value={'Guardar'} bg={'bg-primary'} px={'pl-10 pr-6'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
                   </div>
                 )}
               </section>
             </form>
             <div className="mt-3 flex flex-col md:flex-row w-fit gap-1 md:gap-5 mb-2 mx-auto">
-              <Button value={'Eliminar datos'} bg={'bg-red-600'} px={'px-[3rem]'} font={'font-medium'} textSize="text-md" py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={deleteData} />
+              <Button value={'Eliminar datos'} bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize="text-md" py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={deleteData} />
+              {showDataEmpresa && (
+                <div className="relative mx-auto w-fit">
+                  <span className="absolute inset-y-0 left-3 flex items-center text-white">
+                    <LuArrowLeft />
+                  </span>
+                  <Button value={'Regresar'} bg={'bg-primary'} px={'pr-6 pl-10'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowDataAprendiz} />
+                </div>
+              )}
               {showDataAprendiz && (
                 <div className="relative mx-auto w-fit">
                   <span className="absolute inset-y-0 right-2 flex items-center text-white">
                     <LuArrowRight />
                   </span>
-                  <Button value={'Datos de la empresa'} bg={'bg-primary'} px={'pr-8 pl-5'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowDataEmpresa} />
+                  <Button value={'Continuar'} bg={'bg-primary'} px={'pr-8 pl-5'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowDataEmpresa} />
                 </div>
               )}
             </div>
