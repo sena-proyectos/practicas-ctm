@@ -41,7 +41,7 @@ export const cards = [
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-[#385C57]',
     sombra: '[#385C57]/20',
-    link: '/home',
+    link: '/aprov',
   },
   {
     title: 'Visitas no hechas',
@@ -309,7 +309,7 @@ export const colorIcon = {
   '/aprendices': 'text-third',
   '/bitacoras': 'text-seventh',
   '/inscribir-aprendiz': 'text-lima',
-  '/aprobaciones': 'text-secondary',
+  '/aprov': 'text-secondary',
   '/teacher': 'text-rosa',
   '/fichas': 'text-coffee',
   '/visitas': 'text-primary',
