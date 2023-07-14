@@ -9,8 +9,18 @@ import { Form } from '../Form/Form'
 const User = () => {
   const divRef = useRef(null)
   const loginForm = [
-    { icon: <AiOutlineIdcard />, placeholder: '1017924888', type: 'text', nameInput: 'num_documento' },
-    { icon: <BiLockAlt />, placeholder: '**********', type: 'password', nameInput: 'contrasena' },
+    {
+      icon: <AiOutlineIdcard />,
+      placeholder: '1017924888',
+      type: 'text',
+      nameInput: 'num_documento',
+    },
+    {
+      icon: <BiLockAlt />,
+      placeholder: '**********',
+      type: 'password',
+      nameInput: 'contrasena',
+    },
   ]
   const registerForm = [
     { icon: <AiOutlineIdcard />, placeholder: '1017924888', type: 'text', nameInput: 'num_documento' },
