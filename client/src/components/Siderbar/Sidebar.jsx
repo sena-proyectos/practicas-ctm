@@ -114,7 +114,7 @@ const Siderbar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/" className={styles('/')}>
+              <Link to="/instructores" className={styles('/')}>
                 <span className={spanStyle('/')}>
                   <IoPeopleOutline />
                 </span>
