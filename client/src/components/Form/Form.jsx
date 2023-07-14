@@ -82,7 +82,7 @@ const Form = ({ inputs }) => {
     <form action="" className="my-4 flex flex-col justify-center gap-3" onSubmit={handleSubmit}>
       {inputs.map((item, i) => {
         return (
-          <div className="text-gray-400 relative mx-auto" key={i}>
+          <div className="text-grey relative mx-auto" key={i}>
             <span className="absolute inset-y-0 left-0 flex items-center pl-3">{item.icon}</span>
             {item.type === 'password' ? (
               <>

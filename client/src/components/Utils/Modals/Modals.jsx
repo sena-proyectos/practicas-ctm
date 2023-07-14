@@ -5,6 +5,7 @@ import { BsCheck2Circle } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
 import { modalities } from '../../../import/staticData'
 import { Button } from '../Button/Button'
+import 'tailwindcss/tailwind.css';
 
 const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -28,6 +29,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
     }))
   }
 
+  
   const toggleDropdown = () => {
     setIsOpen(!isOpen)
   }
@@ -39,14 +41,17 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
   const handleModal = () => {
     closeModal()
   }
+
+  
   return (
-    <section className=" fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center bg-black/70">
-      <section className={`relative flex h-auto ${bodyStudent === true ? 'w-1/2' : 'w-2/5'}  flex-col rounded-2xl bg-white shadow-md`}>
-        <IoMdClose className="absolute right-5 top-[20px] h-7 w-7 cursor-pointer" onClick={handleModal} />
-        <header className="grid place-items-center pt-5">
+    <section className="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center bg-black/50 backdrop-filter backdrop-blur-sm ">
+      <section className={`relative flex h-auto ${bodyStudent ? 'w-1/2' : 'w-2/5'} flex-col rounded-2xl bg-white animate-bounce`}>
+        <IoMdClose className="absolute right-5 top-[20px] h-7 w-7 cursor-pointer " onClick={handleModal} />
+        <header className="grid place-items-center pt-5 ">
           <h2 className="w-fit border-b-1 border-primary text-center text-xl font-medium">{title}</h2>
         </header>
         <section className={`${stylesFilterVisits === false ? 'mx-auto w-5/6 flex-auto' : 'mx-auto w-fit'}`}>
+          {/* modalAprendices */}
           {bodyStudent && (
             <>
               <section className="pb-2 pt-3">
@@ -123,14 +128,16 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
               </section>
             </>
           )}
+
+          {/* modalFiltro */}
           {bodyFilter && (
             <>
               <form action="">
-                <section className={`${stylesFilterVisits === false ? 'my-4 flex flex-col justify-center gap-3 pt-2' : 'grid grid-cols-2 grid-rows-2-50-50 gap-x-9 gap-y-3 pb-6 pt-4'}`}>
+                <section className={`${stylesFilterVisits === false ? 'my-4 flex flex-col justify-center gap-3 pt-2' : 'grid grid-cols-2 grid-rows-2-50-50 gap-x-9 gap-y-3 pb-6 pt-4 '}`}>
                   {view.map((filtro, i) => {
                     return (
                       <section key={i}>
-                        <div className={`${stylesFilterVisits === false ? 'grid grid-cols-1 md:grid-cols-2-45-55' : 'flex flex-col'}`}>
+                        <div className={`${stylesFilterVisits === false ? 'grid grid-cols-1 md:grid-cols-2-45-55' : 'flex flex-col '}`}>
                           <label className="font-semibold " htmlFor="">
                             {filtro.label}
                           </label>
@@ -170,6 +177,8 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
             </>
           )}
           {bodyVisits && <>Tampoco da xd</>}
+
+          {/* ModalContraseña */}
           {bodyPassword && (
             <>
               <form action="" className="flex flex-col gap-3 pt-6">
@@ -258,6 +267,8 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
         </section>
       </section>
     </section>
+
+    
   )
 }
 

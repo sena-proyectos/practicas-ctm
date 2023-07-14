@@ -15,7 +15,7 @@ const Siderbar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [open, setOpen] = useState(true)
-
+  
   useEffect(() => {
     const handleResize = () => {
       const isSmallScreen = window.innerWidth < 640 // Tamaño de la media query "sm"
@@ -38,11 +38,11 @@ const Siderbar = () => {
     // mostrar alerta para el usuario
     if (!token) window.location.href = '/'
 
-    setTimeout(() => {
-      const decoded = jwtdecoded(token)
-      setNameRol(decoded.data.user.id_rol === 1 ? 'Administrador' : 'Instructor')
-      setNameUser(decoded.data.user.nombre + ' ' + decoded.data.user.apellido)
-    }, 2000)
+    const decoded = jwtdecoded(token)
+
+    setNameRol(decoded.data.user.id_rol === 1 ? 'Administrador' : 'Instructor')
+
+    setNameUser(decoded.data.user.nombre + ' ' + decoded.data.user.apellido)
   }, [])
 
   const styles = (path) => {
