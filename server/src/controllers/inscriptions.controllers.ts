@@ -46,9 +46,10 @@ export const createInscription: RequestHandler<{}, Response, inscriptionData> = 
     correo_jefe_inmediato_inscripcion,
     asume_pago_arl_inscripcion,
     // link_documentos_pdf_inscripcion,
+    // link_documentos_pdf_inscripcion,
     observaciones_inscripcion,
     // fecha_creacion_inscripcion,
-    id_usuario_responsable_inscripcion,
+    id_usuario_responsable_inscripcion
   } = req.body
   try {
     await connection.query(
@@ -73,7 +74,7 @@ export const createInscription: RequestHandler<{}, Response, inscriptionData> = 
         correo_jefe_inmediato_inscripcion,
         asume_pago_arl_inscripcion,
         observaciones_inscripcion,
-        id_usuario_responsable_inscripcion,
+        id_usuario_responsable_inscripcion
       ]
     )
     return res.status(httpStatus.CREATED).json({ message: 'Inscripción creada.' })
@@ -105,7 +106,7 @@ export const editInscription: RequestHandler<{ id: string }, Response, inscripti
     link_documentos_pdf_inscripcion,
     observaciones_inscripcion,
     fecha_creacion_inscripcion,
-    id_usuario_responsable_inscripcion,
+    id_usuario_responsable_inscripcion
   } = req.body
   const { id } = req.params
   try {
@@ -134,7 +135,7 @@ export const editInscription: RequestHandler<{ id: string }, Response, inscripti
         observaciones_inscripcion,
         fecha_creacion_inscripcion,
         id_usuario_responsable_inscripcion,
-        id,
+        id
       ]
     )
     if (!Array.isArray(inscription) && inscription?.affectedRows === 0) throw new DbError('No se pudo modificar la inscripción.')
