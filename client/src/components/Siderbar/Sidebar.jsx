@@ -107,8 +107,8 @@ const Siderbar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/" className={styles('/')}>
-                <span className={spanStyle('/')}>
+              <Link to="/aprov" className={styles('/aprov')}>
+                <span className={spanStyle('/aprov')}>
                   <IoCheckmarkCircleOutline />
                 </span>
                 {open && 'Aprobaciones'}
