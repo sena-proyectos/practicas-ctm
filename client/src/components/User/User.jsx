@@ -29,7 +29,7 @@ const User = () => {
         <header className="grid place-items-center">
           <h1 className="mt-10 text-4xl font-bold">SENA</h1>
         </header>
-        <div className="mt-10 flex flex-col justify-self-center pt-14">
+        <div className="mt-3 flex flex-col justify-self-center pt-14">
           <h2 className="text-center text-xl font-bold">{title.login}</h2>
           <span className="text-lg font-light ">Es un placer para nosotros tenerte aquí</span>
           <Form inputs={loginForm} />
