@@ -8,7 +8,9 @@ import { Student } from './components/Student/Student'
 import { Visits } from './components/Visits/Visits'
 import { Bitacoras } from './components/Bitacoras/Bitacoras'
 import { Settings } from './components/Settings/Settings'
-
+import { Teachers } from './components/Teachers/Teachers'
+import { AssignClass } from './components/Assign-class/AssignClass'
+import { Approvement } from './components/Approvement/approvement'
 
 const App = () => {
   return (
@@ -20,6 +22,9 @@ const App = () => {
       <Route path="/visitas" element={<Visits />} />
       <Route path="/bitacoras" element={<Bitacoras />} />
       <Route path="/config" element={<Settings />} />
+      <Route path="/instructores" element={<Teachers />} />
+      <Route path="/asignar-ficha" element={<AssignClass />} />
+      <Route path="/aprov" element={<Approvement />} />
     </Routes>
   )
 }

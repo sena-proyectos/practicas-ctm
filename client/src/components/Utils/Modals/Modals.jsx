@@ -224,8 +224,46 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
               </form>
             </>
           )}
-          {/* modalContraseña */}
-          {detallesBitacoras && <>Detallles</>}
+          {detallesBitacoras && (
+            <>
+              <form action="" className="flex flex-col gap-3 pt-8">
+                <section className="flex md:flex-row flex-col gap-2">
+                  <label className="font-medium">Responsable</label>
+                  <input type="text" name="" id="" className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
+                </section>
+                <section className="flex flex-col md:flex-row gap-3">
+                  <label htmlFor="" className="whitespace-nowrap font-medium">
+                    Fecha Creación
+                  </label>
+                  <input type="date" name="" id="" className="border-gray-400 focus:text-gray-900 w-full md:w-1/3 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
+                </section>
+                <section className="flex flex-col md:flex-row gap-3">
+                  <label htmlFor="" className="whitespace-nowrap font-medium">
+                    Fecha Asignado
+                  </label>
+                  <input type="date" name="" id="" className="border-gray-400 focus:text-gray-900 w-full md:w-1/3 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" />
+                </section>
+                <section className="flex flex-col">
+                  <label htmlFor="" className="font-medium">
+                    Observaciones
+                  </label>
+                  <textarea name="" id="" rows="10" className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] max-h-[8rem] min-h-[2rem] overflow-y-auto  bg-white py-[0.9px] pl-3 text-base  text-black focus:bg-white focus:outline-none" placeholder="Digite alguna observación" />
+                </section>
+
+                <div className="flex flex-row my-5">
+                  <div className="relative mr-auto">
+                    <Button value={'Editar'} bg={'bg-coffee/75'} px={'px-[1rem]'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  </div>
+                  <div className="relative ml-auto">
+                    <span className="absolute inset-y-0 left-2 flex items-center text-white">
+                      <IoSearchOutline />
+                    </span>
+                    <Button value={'Buscar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  </div>
+                </div>
+              </form>
+            </>
+          )}
         </section>
       </section>
     </section>

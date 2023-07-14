@@ -60,10 +60,10 @@ const Siderbar = () => {
   }
 
   return (
-    <aside className={`bg-secondary/10 ${open ? 'w-[12rem]' : 'w-[4.5rem]'} sticky top-0 left-0 md:h-screen rounded-r-2xl`}>
-      <nav className="grid grid-rows-3-10-78-12 md:grid-rows-3-10-78-12 mx-auto w-4/5 h-screen">
-        <section className={`w-fit ${open === true ? 'flex flex-row pr-3' : 'flex flex-col mx-auto'} my-auto`}>
-          <div className="w-[3rem] my-auto rounded-full">
+    <aside className={`bg-secondary/10 ${open ? 'w-[12rem]' : 'w-[4.5rem]'} sticky left-0 top-0 h-screen rounded-r-2xl`}>
+      <nav className="mx-auto grid h-screen w-4/5 grid-rows-3-10-78-12 md:grid-rows-3-10-78-12">
+        <section className={`w-fit ${open === true ? 'flex flex-row pr-3' : 'mx-auto flex flex-col'} my-auto`}>
+          <div className="my-auto w-[3rem] rounded-full">
             <img className="object-cover" src="public/user.png" alt="img_user" />
           </div>
           <div className={`w-full pl-3 pr-10 ${!open && 'hidden'}`}>
@@ -107,15 +107,15 @@ const Siderbar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/" className={styles('/')}>
-                <span className={spanStyle('/')}>
+              <Link to="/aprov" className={styles('/aprov')}>
+                <span className={spanStyle('/aprov')}>
                   <IoCheckmarkCircleOutline />
                 </span>
                 {open && 'Aprobaciones'}
               </Link>
             </li>
             <li>
-              <Link to="/" className={styles('/')}>
+              <Link to="/instructores" className={styles('/')}>
                 <span className={spanStyle('/')}>
                   <IoPeopleOutline />
                 </span>
@@ -149,16 +149,16 @@ const Siderbar = () => {
             </li>
           </section>
           <span
-            className={`absolute top-2 right-4 text-xl ${open && 'rotate-180'}`}
+            className={`absolute right-4 top-2 text-xl ${open && 'rotate-180'}`}
             onClick={() => {
               setOpen(!open)
             }}
           >
             <IoArrowForwardOutline />
           </span>
-          <section className="w-full mb-0">
-            <li className="flex items-center relative pl-10 py-2 h-10 hover:bg-white rounded-s-2xl w-[115%] transition text-red-700" onClick={logout}>
-              <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-xs' : 'pl-5 text-md'} text-red-700`}>
+          <section className="mb-0 w-full">
+            <li className="relative flex h-10 w-[115%] items-center rounded-s-2xl py-2 pl-10 text-red-700 transition hover:bg-white" onClick={logout}>
+              <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'text-md pl-3' : 'pl-5 text-lg'} text-red-700`}>
                 <IoLogOutOutline />
               </span>
               {open && 'Cerrar Sesión'}

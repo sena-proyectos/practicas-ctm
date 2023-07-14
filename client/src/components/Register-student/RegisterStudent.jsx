@@ -156,30 +156,30 @@ const RegisterStudent = () => {
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" />
-      <section className="flex min-h-screen flex-row">
+      <section className="flex flex-row min-h-screen">
         <Siderbar />
-        <section className="relative grid w-min flex-auto grid-rows-3-10-75-15">
-          <header className="flex-col place-items-center mt-5">
-            <h1 className="place-self-center text-center text-2xl font-bold">{showDataAprendiz === true ? 'Inscribe un aprendiz' : 'Datos de la empresa'}</h1>
-            <h3 className="text-center font-normal text-sm">
-              Los datos con (<span className="text-red-600 font-semibold">*</span>) son obligatorios
+        <section className="relative grid flex-auto w-min grid-rows-3-10-75-15">
+          <header className="flex-col mt-5 place-items-center">
+            <h1 className="text-2xl font-bold text-center place-self-center">{showDataAprendiz === true ? 'Inscribe un aprendiz' : 'Datos de la empresa'}</h1>
+            <h3 className="text-sm font-normal text-center">
+              Los datos con (<span className="font-semibold text-red-600">*</span>) son obligatorios
             </h3>
           </header>
           <section>
-            <form action="" ref={formRef} className="flex flex-col gap-y-6 mt-3" onSubmit={handleSubmit}>
+            <form action="" ref={formRef} className="flex flex-col mt-3 gap-y-6" onSubmit={handleSubmit}>
               {showDataAprendiz && (
-                <section className="mx-auto grid w-11/12 gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
+                <section className="grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
                   {dataInscription.dataAprendiz.map((item, i) => {
                     return (
-                      <div className="text-gray-400 m-auto flex flex-col w-full" key={i}>
-                        <label htmlFor="nombre" className="font-normal text-sm">
-                          {item.label} {item.required && <span className="text-red-600 font-medium">*</span>}
+                      <div className="flex flex-col w-full m-auto text-gray-400" key={i}>
+                        <label htmlFor="nombre" className="text-sm font-normal">
+                          {item.label} {item.required && <span className="font-medium text-red-600">*</span>}
                         </label>
                         {item.type === 'number' ? (
                           <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" autoComplete="on" placeholder={item.placeholder} />
                         ) : item.type === 'select' ? (
                           <div className="relative">
-                            <span className="absolute inset-y-0 right-3 text-xl font-bold flex items-center pointer-events-none">
+                            <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
                               <LuChevronDown />
                             </span>
                             <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
@@ -236,12 +236,12 @@ const RegisterStudent = () => {
                 </section>
               )}
               {showDataEmpresa && (
-                <section className="mx-auto grid w-11/12 gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
+                <section className="grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
                   {dataInscription.dataEmpresa.map((item, i) => {
                     return (
-                      <div className="text-gray-400 m-auto flex flex-col w-full" key={i}>
-                        <label htmlFor="nombre" className="font-normal text-sm whitespace-nowrap">
-                          {item.label} {item.required && <span className="text-red-600 font-medium">*</span>}
+                      <div className="flex flex-col w-full m-auto text-gray-400" key={i}>
+                        <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                          {item.label} {item.required && <span className="font-medium text-red-600">*</span>}
                         </label>
                         {item.type === 'number' ? (
                           <div className="relative">
@@ -249,16 +249,16 @@ const RegisterStudent = () => {
                           </div>
                         ) : item.type === 'file' ? (
                           <div className="relative">
-                            <span className="absolute inset-y-0 right-3 text-xl font-bold flex items-center pointer-events-none">
+                            <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
                               <AiOutlineCloudUpload />
                             </span>
                             <div className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2">
-                              <input type={item.type} accept={item.accept} name={item.name} className="file:hidden w-5/6 whitespace-break-spaces text-xs" />
+                              <input type={item.type} accept={item.accept} name={item.name} className="w-5/6 text-xs file:hidden whitespace-break-spaces" />
                             </div>
                           </div>
                         ) : item.type === 'select' ? (
                           <div className="relative">
-                            <span className="absolute inset-y-0 right-3 text-xl font-bold flex items-center pointer-events-none">
+                            <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
                               <LuChevronDown />
                             </span>
                             <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
@@ -290,37 +290,37 @@ const RegisterStudent = () => {
               )}
               <section className={`flex h-10 flex-row w-fit gap-10 place-self-center ${showDataEmpresa && 'mt-20'}`}>
                 {showDataAprendiz && (
-                  <div className="mx-auto flex w-fit rounded-xl px-3 py-1 shadow-md bg-slate-600">
-                    <label htmlFor="upload" className="flex cursor-pointer items-center gap-2 text-white">
+                  <div className="flex px-3 py-1 mx-auto shadow-md w-fit rounded-xl bg-slate-600">
+                    <label htmlFor="upload" className="flex items-center gap-2 text-white cursor-pointer">
                       <LuUpload />
-                      <span className="text-white font-medium">Subir archivo</span>
+                      <span className="font-medium text-white">Subir archivo</span>
                     </label>
                     <input id="upload" ref={excelFileRef} accept=".xlsx, .xls" onChange={handleExcelFile} type="file" className="hidden w-fit" />
                   </div>
                 )}
                 {showDataEmpresa && (
                   <div className="relative mx-auto">
-                    <span className="absolute inset-y-0 left-3 flex items-center text-white">
+                    <span className="absolute inset-y-0 flex items-center text-white left-3">
                       <BsCheck2Circle />
                     </span>
-                    <Button value={'Guardar'} bg={'bg-primary'} px={'pl-10 pr-6'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button value={'Guardar'} bg={'bg-lime-500'} px={'pl-10 pr-6'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
                   </div>
                 )}
               </section>
             </form>
-            <div className="mt-3 flex flex-col md:flex-row w-fit gap-1 md:gap-5 mb-2 mx-auto">
+            <div className="flex flex-col gap-1 mx-auto mt-3 mb-2 md:flex-row w-fit md:gap-5">
               <Button value={'Eliminar datos'} bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize="text-md" py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={deleteData} />
               {showDataEmpresa && (
                 <div className="relative mx-auto w-fit">
-                  <span className="absolute inset-y-0 left-3 flex items-center text-white">
+                  <span className="absolute inset-y-0 flex items-center text-white pointer-events-none left-3">
                     <LuArrowLeft />
                   </span>
-                  <Button value={'Regresar'} bg={'bg-primary'} px={'pr-6 pl-10'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowDataAprendiz} />
+                  <Button value={'Regresar'} bg={'bg-sky-700'} px={'pr-6 pl-10'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowDataAprendiz} />
                 </div>
               )}
               {showDataAprendiz && (
                 <div className="relative mx-auto w-fit">
-                  <span className="absolute inset-y-0 right-2 flex items-center text-white">
+                  <span className="absolute inset-y-0 flex items-center text-white pointer-events-none right-2">
                     <LuArrowRight />
                   </span>
                   <Button value={'Continuar'} bg={'bg-primary'} px={'pr-8 pl-5'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowDataEmpresa} />
