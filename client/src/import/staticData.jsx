@@ -310,8 +310,8 @@ export const colorIcon = {
   '/bitacoras': 'text-seventh',
   '/inscribir-aprendiz': 'text-lima',
   '/aprov': 'text-secondary',
-  '/teacher': 'text-rosa',
-  '/fichas': 'text-coffee',
+  '/instructores': 'text-rosa',
+  '/asignar-ficha': 'text-coffee',
   '/visitas': 'text-primary',
   '/config': 'text-fifth',
 }
