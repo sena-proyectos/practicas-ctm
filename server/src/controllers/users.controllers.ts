@@ -104,10 +104,10 @@ export const getStudents = async (req: Request, res: Response): Promise<Response
     const limit = parseInt(req.query.limit as string) || 10
     const offset = (Number(page) - 1) * Number(limit)
 
-    const [students] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 LIMIT ? OFFSET ?', [limit, offset])
+    const [students] = await connection.query('SELECT * FROM aprendices LIMIT ? OFFSET ?', [limit, offset])
     if (!Array.isArray(students) || students.length === 0) throw new DbErrorNotFound('No hay estudiantes registrados.', errorCodes.ERROR_GET_STUDENTS)
 
-    const [total] = (await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3')) as unknown as Array<{ count: number }>
+    const [total] = (await connection.query('SELECT COUNT(*) as count FROM aprendices')) as unknown as Array<{ count: number }>
     const totalPages = Math.ceil(Number(Array.isArray(total) && total[0].count) / Number(limit))
 
     return res.status(httpStatus.OK).json({ data: students, page, totalPages })
@@ -120,7 +120,7 @@ export const getStudentsById: RequestHandler<{ id: string }, Response, LoginData
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [student] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND id_usuario = ?', [idNumber])
+    const [student] = await connection.query('SELECT * FROM aprendices WHERE id_aprendiz = ?', [idNumber])
     if (!Array.isArray(student) || student.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)
     return res.status(httpStatus.OK).json({ data: student })
   } catch (error) {
@@ -131,7 +131,7 @@ export const getStudentsById: RequestHandler<{ id: string }, Response, LoginData
 export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
   const { nombreCompleto } = req.query
   try {
-    const [student] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND CONCAT(nombre, " ", apellido) LIKE ?', [`%${nombreCompleto as string}%`])
+    const [student] = await connection.query('SELECT * FROM aprendices WHERE id_rol = 3 AND CONCAT(nombre_aprendiz, " ", apellido_aprendiz) LIKE ?', [`%${nombreCompleto as string}%`])
     if (!Array.isArray(student) || student?.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)
     return res.status(httpStatus.OK).json({ data: student })
   } catch (error) {
@@ -139,7 +139,7 @@ export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Respon
   }
 }
 
-export const getStudentsByClasses: RequestHandler<{ classNumber: string }, Response, unknown> = async (req: Request<{ classNumber: string }>, res: Response): Promise<Response> => {
+export const getDetailInfoStudent: RequestHandler<{ classNumber: string }, Response, unknown> = async (req: Request<{ classNumber: string }>, res: Response): Promise<Response> => {
   const { classNumber } = req.query
   const parsedClassNumber = Number(classNumber)
   try {
