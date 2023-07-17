@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 import jwtdecoded from 'jwt-decode'
 import { mapValues } from '../mapeo/Map'
 import { InscriptionApprentice } from '../api/httpRequest'
+import { GetTeacherByName } from '../api/httpRequest'
 
 export const readExcelFile = async (file) => {
   if (!file) return
@@ -34,8 +35,16 @@ export const readExcelFile = async (file) => {
         return obj
       })
 
+
       for (let i = 0; i < result.length; i++) {
+        const nameTeacher = result[i].nombre_instructor_lider_inscripcion
+        const res = await GetTeacherByName(nameTeacher)
+
+        const idUsuario = res.data.data[0].id_usuario
+
+        result[i].nombre_instructor_lider_inscripcion = `${idUsuario}`
         result[i].id_usuario_responsable_inscripcion = `${id}`
+
         if (result[i].id_modalidad_inscripcion === 'Pasantía') result[i].id_modalidad_inscripcion = '1'
         if (result[i].id_modalidad_inscripcion === 'Contrato de aprendizaje') result[i].id_modalidad_inscripcion = '2'
         if (result[i].id_modalidad_inscripcion === 'Proyecto Productivo') result[i].id_modalidad_inscripcion = '3'
