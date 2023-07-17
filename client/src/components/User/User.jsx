@@ -52,16 +52,16 @@ const User = () => {
 
   return (
     <main className={`grid grid-cols-1 md:grid-cols-2-55-45 ${selectedButton === 'register' ? 'min-h-screen' : 'h-screen'}`}>
-      <section className="grid h-full grid-rows-2-30-70">
-        <header className="grid place-items-center">
-          <h1 className="text-4xl font-bold">SENA</h1>
+      <section className=" grid grid-rows-2-30-70">
+        <header className=" grid place-items-center">
+          <h1 className=" text-4xl font-bold">SENA</h1>
         </header>
-        <div className="flex flex-col justify-self-center pt-14">
-          {selectedButton === 'login' ? <h2 className="text-xl font-bold text-center">{title.login}</h2> : <h2 className="text-xl font-bold text-center">{title.register}</h2>}
+        <div className="flex flex-col justify-self-center">
+          {selectedButton === 'login' ? <h2 className="text-xl font-bold text-center ">{title.login}</h2> : <h2 className="text-xl font-bold text-center">{title.register}</h2>}
           <span className="text-lg font-light ">Es un placer para nosotros tenerte aquí</span>
           {/* TODO: Arreglar las alturas */}
-          <div className={`flex flex-row justify-items-center bg-gray rounded-lg w-72 ${selectedButton === 'register' ? 'h-[2.8rem]' : 'h-10'} mx-auto my-2.5 relative`}>
-            <div className={`absolute bg-white w-32 h-7 mt-1.5 ml-2 rounded-md transition-all`} ref={divRef}></div>
+          <div className={`flex flex-row justify-items-center bg-gray rounded-lg w-72 ${selectedButton === 'register' ? `max-h-[2.8rem]` :`h-10`} mx-auto my-2.5 relative`}>
+            <div className={`absolute bg-white w-32 h-7 mt-1.5 ml-2 rounded-md transition-all bg-red/100`} ref={divRef}></div>
             <button className="z-10 w-32 h-8 m-auto text-sm text-black rounded-md" onClick={() => handleButtonClick('login')}>
               Iniciar sesión
             </button>
@@ -74,9 +74,6 @@ const User = () => {
       </section>
 
       <section className="hidden md:bg-primary md:block">
-        <div className="flex flex-col items-center justify-center h-screen">
-          <img className="w-auto h-56" src="public/logo2.png" alt="logoSena" />
-        </div>
       </section>
     </main>
   )
