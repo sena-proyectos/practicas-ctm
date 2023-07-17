@@ -9,18 +9,18 @@ import Cookies from 'js-cookie'
 
 const Home = () => {
   useEffect(() => {
-   const token = Cookies.get('token')
-   if (!token) {
-     window.location.href = '/'
-   }
- }, [])
+    const token = Cookies.get('token')
+    if (!token) {
+      window.location.href = '/'
+    }
+  }, [])
 
   return (
-    <main className="flex min-h-screen flex-row">
+    <main className="flex flex-row min-h-screen">
       <Siderbar />
-      <section className="relative grid w-min flex-auto grid-rows-3-10-75-15">
+      <section className="relative grid flex-auto w-min grid-rows-3-10-75-15">
         <header className="grid place-items-center">
-          <h1 className="text-center text-2xl font-medium">Bienvenido </h1>
+          <h1 className="text-2xl font-medium text-center">Bienvenido </h1>
         </header>
         <div className="grid grid-cols-1 gap-1 p-5 sm:grid-cols-2 md:grid-cols-3 ">
           {cards.map(({ title, titleColor, description, buttonText, bgColor, sombra, link }) => {
