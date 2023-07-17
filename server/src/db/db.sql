@@ -28,12 +28,12 @@ CREATE TABLE `aprendices` (
   `id_aprendiz` int NOT NULL AUTO_INCREMENT,
   `nombre_aprendiz` varchar(100) NOT NULL,
   `apellido_aprendiz` varchar(100) NOT NULL,
-  `tipo_doc_aprendiz` varchar(50) NOT NULL,
-  `numero_doc_aprendiz` varchar(100) NOT NULL,
+  `tipo_documento_aprendiz` varchar(50) NOT NULL,
+  `numero_documento_aprendiz` varchar(100) NOT NULL,
   `email_aprendiz` varchar(500) NOT NULL,
   `celular_aprendiz` varchar(100) NOT NULL,
-  `fin_practica_aprendiz` varchar(100) NOT NULL,
-  `estado_aprpendiz` varchar(300) NOT NULL,
+  `fecha_fin_practica_aprendiz` date NOT NULL,
+  `estado_aprendiz` varchar(300) NOT NULL,
   `id_empresa` int NOT NULL,
   `id_modalidad` int NOT NULL,
   `id_jefe` int NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `aprendices` (
 
 LOCK TABLES `aprendices` WRITE;
 /*!40000 ALTER TABLE `aprendices` DISABLE KEYS */;
-INSERT INTO `aprendices` VALUES (1,'Cristian','Bedoya','C.C','1027944969','torres@gmail.com','3007030424','2 de nooviembre 2023','Practica',1,1,1,1);
+INSERT INTO `aprendices` VALUES (1,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','2023-11-02','practicas',1,1,1,1);
 /*!40000 ALTER TABLE `aprendices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -96,7 +96,7 @@ CREATE TABLE `bitacoras` (
   `fecha_bitacora` date NOT NULL,
   `estado_bitacora` varchar(200) NOT NULL,
   `numero_bitacora` varchar(100) NOT NULL,
-  `calificacion_bitacora` varchar(100) NOT NULL,
+  `calificacion_bitacora` double NOT NULL,
   PRIMARY KEY (`id_bitacora`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -119,9 +119,9 @@ DROP TABLE IF EXISTS `detalle_empresas`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `detalle_empresas` (
   `id_detalle_empresa` int NOT NULL AUTO_INCREMENT,
-  `nombre_sede_empresa` varchar(300) NOT NULL,
-  `telefono_empresa` varchar(300) NOT NULL,
-  `direccion_sede_empresa` varchar(500) NOT NULL,
+  `nombre_sede_empresa` varchar(300) DEFAULT NULL,
+  `telefono_empresa` varchar(300) DEFAULT NULL,
+  `direccion_sede_empresa` varchar(500) DEFAULT NULL,
   `id_localidad` int NOT NULL,
   PRIMARY KEY (`id_detalle_empresa`),
   KEY `id_localidad` (`id_localidad`),
@@ -140,29 +140,29 @@ INSERT INTO `detalle_empresas` VALUES (1,'Vizcaya','412456','El poblado',1);
 UNLOCK TABLES;
 
 --
--- Table structure for table `detalle_fichas_estudiantes`
+-- Table structure for table `detalle_fichas_aprendices`
 --
 
-DROP TABLE IF EXISTS `detalle_fichas_estudiantes`;
+DROP TABLE IF EXISTS `detalle_fichas_aprendices`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `detalle_fichas_estudiantes` (
+CREATE TABLE `detalle_fichas_aprendices` (
   `id_ficha` int NOT NULL,
   `id_aprendiz` int NOT NULL,
   KEY `id_ficha` (`id_ficha`),
   KEY `id_aprendiz` (`id_aprendiz`),
-  CONSTRAINT `detalle_fichas_estudiantes_ibfk_1` FOREIGN KEY (`id_ficha`) REFERENCES `fichas` (`id_ficha`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `detalle_fichas_estudiantes_ibfk_2` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `detalle_fichas_aprendices_ibfk_1` FOREIGN KEY (`id_ficha`) REFERENCES `fichas` (`id_ficha`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `detalle_fichas_aprendices_ibfk_2` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `detalle_fichas_estudiantes`
+-- Dumping data for table `detalle_fichas_aprendices`
 --
 
-LOCK TABLES `detalle_fichas_estudiantes` WRITE;
-/*!40000 ALTER TABLE `detalle_fichas_estudiantes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `detalle_fichas_estudiantes` ENABLE KEYS */;
+LOCK TABLES `detalle_fichas_aprendices` WRITE;
+/*!40000 ALTER TABLE `detalle_fichas_aprendices` DISABLE KEYS */;
+/*!40000 ALTER TABLE `detalle_fichas_aprendices` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -176,7 +176,7 @@ CREATE TABLE `detalles_inscripciones` (
   `id_detalle_inscripcion` int NOT NULL AUTO_INCREMENT,
   `responsable_aval` varchar(100) NOT NULL,
   `estado_aval` varchar(100) NOT NULL,
-  `observaciones` varchar(100) NOT NULL,
+  `observaciones` varchar(500) NOT NULL,
   `id_inscripcion` int NOT NULL,
   PRIMARY KEY (`id_detalle_inscripcion`),
   KEY `id_inscripcion` (`id_inscripcion`),
@@ -231,11 +231,11 @@ DROP TABLE IF EXISTS `fichas`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fichas` (
   `id_ficha` int NOT NULL AUTO_INCREMENT,
-  `numero_ficha` int NOT NULL,
+  `numero_ficha` varchar(20) NOT NULL,
   `nombre_programa_formacion` varchar(500) NOT NULL,
-  `fecha_inicio_lectiva` varchar(100) NOT NULL,
-  `fecha_fin_lectiva` varchar(100) NOT NULL,
-  `fecha_inicio_practica` varchar(100) NOT NULL,
+  `fecha_inicio_lectiva` date NOT NULL,
+  `fecha_fin_lectiva` date NOT NULL,
+  `fecha_inicio_practica` date NOT NULL,
   `id_instructor_seguimiento` int NOT NULL,
   `id_nivel_formacion` int NOT NULL,
   PRIMARY KEY (`id_ficha`),
@@ -252,7 +252,7 @@ CREATE TABLE `fichas` (
 
 LOCK TABLES `fichas` WRITE;
 /*!40000 ALTER TABLE `fichas` DISABLE KEYS */;
-INSERT INTO `fichas` VALUES (1,2473196,'ADSO','2 febrero de 2022','1 mayo de 2023','2 mayo de 2023',23,2);
+INSERT INTO `fichas` VALUES (1,'2473196','ADSO','2023-03-22','2023-05-22','2023-05-23',1,1);
 /*!40000 ALTER TABLE `fichas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -265,29 +265,29 @@ DROP TABLE IF EXISTS `inscripciones`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `inscripciones` (
   `id_inscripcion` int NOT NULL AUTO_INCREMENT,
-  `nombre_inscrip` varchar(300) NOT NULL,
-  `apellido_inscrip` varchar(300) NOT NULL,
+  `nombre_inscripcion` varchar(300) NOT NULL,
+  `apellido_inscripcion` varchar(300) NOT NULL,
   `tipo_documento_inscripcion` varchar(100) NOT NULL,
   `documento_inscripción` varchar(100) NOT NULL,
   `email_inscripcion` varchar(300) NOT NULL,
-  `inscripción_celular` int NOT NULL,
+  `inscripción_celular` varchar(20) NOT NULL,
   `etapa_actual_inscripcion` varchar(100) NOT NULL,
   `modalidad_inscripción` varchar(300) NOT NULL,
   `nombre_programa_inscripción` varchar(300) NOT NULL,
   `nivel_formacion_inscripcion` varchar(100) NOT NULL,
-  `numero_ficha_inscripcion` int NOT NULL,
-  `fecha_fin_practica_inscripcion` varchar(100) NOT NULL,
-  `instructor_lider_inscripcion` varchar(200) NOT NULL,
+  `numero_ficha_inscripcion` varchar(20) NOT NULL,
+  `fecha_fin_lectiva_inscripcion` date NOT NULL,
+  `nombre_instructor_lider_inscripcion` varchar(200) DEFAULT NULL,
   `email_instructor_lider_inscripcion` varchar(200) NOT NULL,
   `apoyo_sostenimiento_inscripcion` varchar(500) NOT NULL,
-  `nit_empresa_inscripcion` varchar(200) NOT NULL,
-  `nombre_empresa_inscripción` varchar(500) NOT NULL,
-  `direccion_empresa_inscripcion` varchar(300) NOT NULL,
-  `nombre_jefe_empresa_inscripcion` varchar(300) NOT NULL,
-  `cargo_jefe_empresa_inscripcion` varchar(300) NOT NULL,
-  `telefono_jefe_empresa_inscripcion` int NOT NULL,
+  `nit_empresa_inscripcion` varchar(200) DEFAULT NULL,
+  `nombre_empresa_inscripción` varchar(500) DEFAULT NULL,
+  `direccion_empresa_inscripcion` varchar(300) DEFAULT NULL,
+  `nombre_jefe_empresa_inscripcion` varchar(300) DEFAULT NULL,
+  `cargo_jefe_empresa_inscripcion` varchar(300) DEFAULT NULL,
+  `telefono_jefe_empresa_inscripcion` int DEFAULT NULL,
   `email_jefe_empresa_inscripcion` varchar(300) NOT NULL,
-  `Arl` varchar(1000) NOT NULL,
+  `arl` varchar(1000) NOT NULL,
   `link_documentos` varchar(100) NOT NULL,
   `observaciones` varchar(2500) NOT NULL,
   PRIMARY KEY (`id_inscripcion`)
@@ -312,10 +312,10 @@ DROP TABLE IF EXISTS `jefes`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `jefes` (
   `id_jefe` int NOT NULL AUTO_INCREMENT,
-  `nombre_jefe` varchar(200) NOT NULL,
-  `cargo_jefe` varchar(300) NOT NULL,
-  `contacto_jefe` varchar(100) NOT NULL,
-  `email_jefe` varchar(300) NOT NULL,
+  `nombre_jefe` varchar(200) DEFAULT NULL,
+  `cargo_jefe` varchar(300) DEFAULT NULL,
+  `numero_contacto_jefe` varchar(100) DEFAULT NULL,
+  `email_jefe` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`id_jefe`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -365,8 +365,8 @@ DROP TABLE IF EXISTS `modalidades`;
 CREATE TABLE `modalidades` (
   `id_modalidad` int NOT NULL AUTO_INCREMENT,
   `nombre_modalidad` varchar(500) NOT NULL,
-  `num_horas_minimas` int NOT NULL,
-  `num_horas_maximas` int NOT NULL,
+  `numero_horas_minimas` int NOT NULL,
+  `numero_horas_maximas` int NOT NULL,
   PRIMARY KEY (`id_modalidad`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -439,7 +439,7 @@ DROP TABLE IF EXISTS `seguimientos`;
 CREATE TABLE `seguimientos` (
   `id_seguimiento` int NOT NULL AUTO_INCREMENT,
   `administracion_educativa` varchar(500) NOT NULL,
-  `observacion` varchar(2500) DEFAULT NULL,
+  `observacion` longtext,
   `id_aprendiz` int NOT NULL,
   `id_visita` int NOT NULL,
   `id_bitacora` int NOT NULL,
@@ -471,12 +471,12 @@ DROP TABLE IF EXISTS `usuarios`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuarios` (
   `id_usuario` int NOT NULL AUTO_INCREMENT,
-  `Nombres_usuario` varchar(100) NOT NULL,
+  `nombres_usuario` varchar(100) NOT NULL,
   `apellidos_usuario` varchar(100) NOT NULL,
   `tipo_documento_usuario` varchar(100) NOT NULL,
   `numero_documento_usuario` varchar(100) NOT NULL,
   `email_usuario` varchar(300) NOT NULL,
-  `teléfono_usuario` varchar(20) NOT NULL,
+  `numero_celular_usuario` varchar(20) NOT NULL,
   `password_usuario` varchar(500) NOT NULL,
   `id_rol` int NOT NULL,
   PRIMARY KEY (`id_usuario`),
@@ -506,7 +506,7 @@ CREATE TABLE `visitas` (
   `id_visita` int NOT NULL AUTO_INCREMENT,
   `fecha_visita` date NOT NULL,
   `numero_visita` varchar(100) NOT NULL,
-  `observaciones_visita` varchar(2500) NOT NULL,
+  `observaciones_visita` longtext,
   `id_instructor_seguimiento` int NOT NULL,
   PRIMARY KEY (`id_visita`),
   KEY `fk_visitas_1` (`id_instructor_seguimiento`),
@@ -540,4 +540,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-14 10:41:06
+-- Dump completed on 2023-07-17 13:45:51
