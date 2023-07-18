@@ -157,7 +157,7 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
   try {
     const hashPassword: string = await bycrypt.hash(contrasena, 10)
 
-    await connection.query('INSERT INTO usuarios (nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena) VALUE (?, ?, IFNULL(?, "cc"), ?, ?, ?, IFNULL(?, 1), ?)', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword])
+    await connection.query('INSERT INTO usuarios (nombres_usuario, apellidos_usuario, tipo_documento_usuario, numero_documento_usuario, email_usuario, numero_celular_usuario, id_rol, contrasena_usuario) VALUE (?, ?, IFNULL(?, "cc"), ?, ?, ?, IFNULL(?, 3), ?)', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword])
 
     return res.status(httpStatus.CREATED).json({ message: 'Usuario creado exitosamente.' })
   } catch (error) {
