@@ -2,7 +2,7 @@ CREATE DATABASE  IF NOT EXISTS `sena_practicas` /*!40100 DEFAULT CHARACTER SET u
 USE `sena_practicas`;
 -- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
--- Host: localhost    Database: sena_practicas
+-- Host: 127.0.0.1    Database: sena_practicas
 -- ------------------------------------------------------
 -- Server version	8.0.33
 
@@ -166,6 +166,32 @@ LOCK TABLES `detalle_fichas_aprendices` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `detalle_fichas_estudiantes`
+--
+
+DROP TABLE IF EXISTS `detalle_fichas_estudiantes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `detalle_fichas_estudiantes` (
+  `id_ficha` int NOT NULL,
+  `id_aprendiz` int NOT NULL,
+  KEY `id_ficha` (`id_ficha`),
+  KEY `id_aprendiz` (`id_aprendiz`),
+  CONSTRAINT `detalle_fichas_estudiantes_ibfk_1` FOREIGN KEY (`id_ficha`) REFERENCES `fichas` (`id_ficha`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `detalle_fichas_estudiantes_ibfk_2` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `detalle_fichas_estudiantes`
+--
+
+LOCK TABLES `detalle_fichas_estudiantes` WRITE;
+/*!40000 ALTER TABLE `detalle_fichas_estudiantes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `detalle_fichas_estudiantes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `detalles_inscripciones`
 --
 
@@ -252,7 +278,6 @@ CREATE TABLE `fichas` (
 
 LOCK TABLES `fichas` WRITE;
 /*!40000 ALTER TABLE `fichas` DISABLE KEYS */;
-INSERT INTO `fichas` VALUES (1,'2473196','ADSO','2023-03-22','2023-05-22','2023-05-23',1,1);
 /*!40000 ALTER TABLE `fichas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -477,12 +502,12 @@ CREATE TABLE `usuarios` (
   `numero_documento_usuario` varchar(100) NOT NULL,
   `email_usuario` varchar(300) NOT NULL,
   `numero_celular_usuario` varchar(20) NOT NULL,
-  `password_usuario` varchar(500) NOT NULL,
+  `contrasena_usuario` varchar(500) NOT NULL,
   `id_rol` int NOT NULL,
   PRIMARY KEY (`id_usuario`),
   KEY `id_rol` (`id_rol`),
   CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -491,7 +516,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Cristian','Torres','C.C','1027944969','torres.torres@gmail.com','3007030424','NoTengoEso',1),(2,'Juan','Gomez','C.C','1024643525','juansena@gmail.com','3012455455','Hola',2),(23,'Lorena','Quiceno','C.C','1420134125','lorenaquincena@gmail.com','3421015526','TresHola',3),(24,'Stiven','Morales','C.C','1464210246','moralesstiven@gmail.com','3224567120','CuatroHola',3),(25,'Juan','Prasca','C.C','1750134256','prascamedina@gmail.com','3104756421','HolaCinco',2),(26,'Tatiana','Tati','C.C','1432412541','TatiTatiana@gmail.com','3004104210','SeisHolaSi',1),(27,'Jairo','Redondo','C.C','1348123042','RedondoRedondo@gmail.com','3042310455','SieteHola',3),(28,'Kevin','Chica','C.C','1437762253','ChicaCantante@gmail.com','3014315282','OchoHola',2),(29,'Lorena','Quiceno','C.C','1420134125','lorenaquincena@gmail.com','3421015526','TresHola',3),(30,'Stiven','Morales','C.C','1464210246','moralesstiven@gmail.com','3224567120','CuatroHola',3),(31,'Juan','Prasca','C.C','1750134256','prascamedina@gmail.com','3104756421','HolaCinco',2),(32,'Tatiana','Tati','C.C','1432412541','TatiTatiana@gmail.com','3004104210','SeisHolaSi',1),(33,'Jairo','Redondo','C.C','1348123042','RedondoRedondo@gmail.com','3042310455','SieteHola',3),(34,'Kevin','Chica','C.C','1437762253','ChicaCantante@gmail.com','3014315282','OchoHola',2);
+INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanlestar12@gmail.com','3195810996','$2b$10$G/qBWAkBBWWYv168liiN4.yNHoflbKb9y6nUEFZvtVomsVCNQhmo6',1);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -540,4 +565,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-17 13:45:51
+-- Dump completed on 2023-07-18 12:14:02
