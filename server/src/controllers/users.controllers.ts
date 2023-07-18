@@ -142,9 +142,24 @@ export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Respon
 export const getDetailInfoStudent: RequestHandler<{ classNumber: string }, Response, unknown> = async (req: Request<{ classNumber: string }>, res: Response): Promise<Response> => {
   const { classNumber } = req.query
   const parsedClassNumber = Number(classNumber)
+  // const date = new Date()
   try {
-    // ! Falta terminar la base de datos para poder hacer esta consulta
-    // const [students] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND ', [parsedClassNumber])
+    // const [students] = await connection.query(`SELECT aprendices.email_aprendiz, aprendices.numero_documento_aprendiz, aprendices.celular_aprendiz, fichas.nombre_programa_formacion, fichas.numero_ficha, niveles_formacion.nivel_formacion, CASE WHEN fichas.fecha_inicio_practica >= "${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${(date.getDate()).toString().padStart(2, '0')}" THEN 'Prácticas' ELSE 'Lectiva' END AS etapa_formacion, modalidades.nombre_modalidad, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica, empresas.nombre_empresa, jefes.nombre_jefe, jefes.cargo_jefe, jefes.email_jefe, jefes.numero_contacto_jefe, arl.nombre_arl FROM aprendices, fichas INNER JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion INNER JOIN modalidades ON aprendices.id_modalidad = modalidades.id_modalidad INNER JOIN empresas ON aprendices.id_empresa = empresas.id_empresa INNER JOIN jefes ON aprendices.id_jefe = jefes.id_jefe INNER JOIN arl ON aprendices.id_arl = arl.id_arl WHERE aprendices.id_aprendiz = 1`, [parsedClassNumber])
+    /* TODO:
+    SELECT
+aprendices.email_aprendiz, aprendices.numero_documento_aprendiz, aprendices.celular_aprendiz,
+fichas.nombre_programa_formacion, fichas.numero_ficha,
+niveles_formacion.nivel_formacion, CASE WHEN fichas.fecha_inicio_practica >= "2023-07-21" THEN 'Prácticas' ELSE 'Lectiva' END AS etapa_formacion,
+modalidades.nombre_modalidad,
+fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica,
+empresas.nombre_empresa,
+jefes.nombre_jefe, jefes.cargo_jefe, jefes.email_jefe, jefes.numero_contacto_jefe, arl.nombre_arl
+FROM aprendices, fichas
+INNER JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion
+INNER JOIN modalidades ON aprendices.id_modalidad = modalidades.id_modalidad
+INNER JOIN empresas ON aprendices.id_empresa = empresas.id_empresa
+INNER JOIN jefes ON aprendices.id_jefe = jefes.id_jefe
+INNER JOIN arl ON aprendices.id_arl = arl.id_arl; */
     // if (!Array.isArray(students) || students?.length === 0) throw new DbErrorNotFound('No se encontraron estudiantes en esta clase.', errorCodes.ERROR_GET_STUDENTS)
     return res.status(httpStatus.OK).json({ data: parsedClassNumber })
   } catch (error) {
