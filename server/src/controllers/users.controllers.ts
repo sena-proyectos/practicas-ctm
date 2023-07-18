@@ -46,7 +46,7 @@ export const editUser: RequestHandler<{}, Response, userForm> = async (req: Requ
       num_celular,
       id_rol,
       contrasena,
-      idNumber,
+      idNumber
     ])
     if (!Array.isArray(user) && user?.affectedRows === 0) throw new DbErrorNotFound('No se pudo actualizar el usuario.')
     return res.status(httpStatus.OK).json({ message: 'Usuario actualizado exitosamente.' })
@@ -104,10 +104,10 @@ export const getStudents = async (req: Request, res: Response): Promise<Response
     const limit = parseInt(req.query.limit as string) || 10
     const offset = (Number(page) - 1) * Number(limit)
 
-    const [students] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 LIMIT ? OFFSET ?', [limit, offset])
+    const [students] = await connection.query('SELECT * FROM aprendices LIMIT ? OFFSET ?', [limit, offset])
     if (!Array.isArray(students) || students.length === 0) throw new DbErrorNotFound('No hay estudiantes registrados.', errorCodes.ERROR_GET_STUDENTS)
 
-    const [total] = (await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3')) as unknown as Array<{ count: number }>
+    const [total] = (await connection.query('SELECT COUNT(*) as count FROM aprendices')) as unknown as Array<{ count: number }>
     const totalPages = Math.ceil(Number(Array.isArray(total) && total[0].count) / Number(limit))
 
     return res.status(httpStatus.OK).json({ data: students, page, totalPages })
@@ -120,7 +120,7 @@ export const getStudentsById: RequestHandler<{ id: string }, Response, LoginData
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [student] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND id_usuario = ?', [idNumber])
+    const [student] = await connection.query('SELECT * FROM aprendices WHERE id_aprendiz = ?', [idNumber])
     if (!Array.isArray(student) || student.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)
     return res.status(httpStatus.OK).json({ data: student })
   } catch (error) {
@@ -131,7 +131,7 @@ export const getStudentsById: RequestHandler<{ id: string }, Response, LoginData
 export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
   const { nombreCompleto } = req.query
   try {
-    const [student] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND CONCAT(nombre, " ", apellido) LIKE ?', [`%${nombreCompleto as string}%`])
+    const [student] = await connection.query('SELECT * FROM aprendices WHERE id_rol = 3 AND CONCAT(nombre_aprendiz, " ", apellido_aprendiz) LIKE ?', [`%${nombreCompleto as string}%`])
     if (!Array.isArray(student) || student?.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)
     return res.status(httpStatus.OK).json({ data: student })
   } catch (error) {
@@ -139,12 +139,13 @@ export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Respon
   }
 }
 
-export const getStudentsByClasses: RequestHandler<{ classNumber: string }, Response, unknown> = async (req: Request<{ classNumber: string }>, res: Response): Promise<Response> => {
+export const getDetailInfoStudent: RequestHandler<{ classNumber: string }, Response, unknown> = async (req: Request<{ classNumber: string }>, res: Response): Promise<Response> => {
   const { classNumber } = req.query
   const parsedClassNumber = Number(classNumber)
   try {
     // ! Falta terminar la base de datos para poder hacer esta consulta
     // const [students] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND ', [parsedClassNumber])
+    // if (!Array.isArray(students) || students?.length === 0) throw new DbErrorNotFound('No se encontraron estudiantes en esta clase.', errorCodes.ERROR_GET_STUDENTS)
     return res.status(httpStatus.OK).json({ data: parsedClassNumber })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -156,7 +157,7 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
   try {
     const hashPassword: string = await bycrypt.hash(contrasena, 10)
 
-    await connection.query('INSERT INTO usuarios (nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena) VALUE (?, ?, IFNULL(?, "cc"), ?, ?, ?, IFNULL(?, 1), ?)', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword])
+    await connection.query('INSERT INTO usuarios (nombres_usuario, apellidos_usuario, tipo_documento_usuario, numero_documento_usuario, email_usuario, numero_celular_usuario, id_rol, contrasena_usuario) VALUE (?, ?, IFNULL(?, "cc"), ?, ?, ?, IFNULL(?, 3), ?)', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword])
 
     return res.status(httpStatus.CREATED).json({ message: 'Usuario creado exitosamente.' })
   } catch (error) {
@@ -164,7 +165,7 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
   }
 }
 
-export const login: RequestHandler<{ num_documento: string; contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string; contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
+export const login: RequestHandler<{ num_documento: string, contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
   const { num_documento, contrasena } = req.body
   try {
     const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [num_documento])

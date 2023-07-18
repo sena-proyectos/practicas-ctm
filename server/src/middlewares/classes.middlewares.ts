@@ -23,7 +23,7 @@ export const checkClassData = (req: Request, res: Response, next: NextFunction):
 }
 
 export const checkClassNumber = (req: Request, res: Response, next: NextFunction): void => {
-  const { numero_ficha } = req.body
+  const { numero_ficha } = req.query
   const classNumber = Number(numero_ficha)
   try {
     if (isNaN(classNumber)) throw new NumberIsNaN('El número de ficha ingresado no es número')

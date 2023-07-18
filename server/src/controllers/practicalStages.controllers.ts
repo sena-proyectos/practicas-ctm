@@ -45,7 +45,7 @@ export const editPracticalStage: RequestHandler<{}, Response, PracticalStages> =
       tipo_modalidad_practica,
       num_horas_minimas_modalidad_practica,
       num_horas_maximas_modalidad_practica,
-      idNumber,
+      idNumber
     ])
     if (!Array.isArray(practicalStage) && practicalStage?.affectedRows === 0) throw new DbError('No se pudo actualizar la modalidad de etapa práctica')
     return res.status(httpStatus.OK).json({ message: 'Modalidad de etapa práctica actualizada con éxito' })
