@@ -35,9 +35,9 @@ En api crear un archivo llamado: .env que tenga la siguiente forma:
 ```sh
 PORT=3000 // Ruta del servidor de express
 DB_USER=root // Usuario del usuario MySQL
-DB_PASSWORD=1017924888 // Contraseña del usuario MySQL
+DB_PASSWORD=passwordRoot123 // Contraseña del usuario MySQL
 DB_HOST=localhost // Host del usuario MySQL
-DB_DATABASE=practicas_sena // nombre de la base de datos MySQL
+DB_DATABASE=db_root // nombre de la base de datos MySQL
 DB_PORT=3306 // Puerto de conexión de SQL
 ```
 
