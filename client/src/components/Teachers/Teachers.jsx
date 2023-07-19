@@ -1,4 +1,7 @@
 import { React } from 'react'
+import { Link } from 'react-router-dom'
+import { FaAngleRight } from 'react-icons/fa'
+
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
@@ -6,46 +9,46 @@ import { Search } from '../Search/Search'
 export const Teachers = () => {
   const colorsOddRow = [
     {
-      hrColor: 'border-purple-400',
-      sideColor: 'bg-purple-400',
-      linkColor: 'bg-purple-600',
+      hrcolor: 'border-purple-400',
+      sidecolor: 'bg-purple-400',
+      linkcolor: 'bg-purple-600',
     },
     {
-      hrColor: 'border-aqua',
-      sideColor: 'bg-aqua',
-      linkColor: 'bg-emerald-400',
+      hrcolor: 'border-aqua',
+      sidecolor: 'bg-aqua',
+      linkcolor: 'bg-emerald-400',
     },
     {
-      hrColor: 'border-salmon/75',
-      sideColor: 'bg-salmon/75',
-      linkColor: 'bg-salmon',
+      hrcolor: 'border-salmon/75',
+      sidecolor: 'bg-salmon/75',
+      linkcolor: 'bg-salmon',
     },
     {
-      hrColor: 'border-third',
-      sideColor: 'bg-third',
-      linkColor: 'bg-sky-400',
+      hrcolor: 'border-third',
+      sidecolor: 'bg-third',
+      linkcolor: 'bg-sky-400',
     },
   ]
   const colorsRowPair = [
     {
-      hrColor: 'border-third',
-      sideColor: 'bg-third',
-      linkColor: 'bg-sky-400',
+      hrcolor: 'border-third',
+      sidecolor: 'bg-third',
+      linkcolor: 'bg-sky-400',
     },
     {
-      hrColor: 'border-salmon/75',
-      sideColor: 'bg-salmon/75',
-      linkColor: 'bg-salmon',
+      hrcolor: 'border-salmon/75',
+      sidecolor: 'bg-salmon/75',
+      linkcolor: 'bg-salmon',
     },
     {
-      hrColor: 'border-aqua',
-      sideColor: 'bg-aqua',
-      linkColor: 'bg-emerald-400',
+      hrcolor: 'border-aqua',
+      sidecolor: 'bg-aqua',
+      linkcolor: 'bg-emerald-400',
     },
     {
-      hrColor: 'border-purple-400',
-      sideColor: 'bg-purple-400',
-      linkColor: 'bg-purple-600',
+      hrcolor: 'border-purple-400',
+      sidecolor: 'bg-purple-400',
+      linkcolor: 'bg-purple-600',
     },
   ]
 
@@ -109,10 +112,16 @@ export const Teachers = () => {
                 <div className="rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[8.3rem]" key={index} {...color}>
                   <div className="flex flex-col w-4/5 gap-2 mx-auto my-auto">
                     <h6 className="font-medium text-center text-[0.9rem]">{instructores[index].nombre}</h6>
-                    <hr className={`font-bold ${color.hrColor} border-1`} />
+                    <hr className={`font-bold ${color.hrcolor} border-1`} />
                     <p className="text-[0.8rem] font-light text-center">{instructores[index].rol}</p>
                   </div>
-                  <div className={`w-full h-full rounded-r-[2rem] ${color.sideColor}`}></div>
+                  <div className={`w-full h-full rounded-r-[2rem] ${color.sidecolor}`}>
+                    <div className={`w-full h-[3rem] rounded-tr-[2rem] text-white text-xl ${color.linkcolor}`}>
+                      <Link>
+                        <FaAngleRight className="h-full py-3 mx-auto" />
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               )
           )}
