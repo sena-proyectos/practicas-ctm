@@ -4,6 +4,51 @@ import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 
 export const Teachers = () => {
+  const colorsOddRow = [
+    {
+      hrColor: 'border-purple-400',
+      sideColor: 'bg-purple-400',
+      linkColor: 'bg-purple-600',
+    },
+    {
+      hrColor: 'border-aqua',
+      sideColor: 'bg-aqua',
+      linkColor: 'bg-emerald-400',
+    },
+    {
+      hrColor: 'border-salmon/75',
+      sideColor: 'bg-salmon/75',
+      linkColor: 'bg-salmon',
+    },
+    {
+      hrColor: 'border-third',
+      sideColor: 'bg-third',
+      linkColor: 'bg-sky-400',
+    },
+  ]
+  const colorsRowPair = [
+    {
+      hrColor: 'border-third',
+      sideColor: 'bg-third',
+      linkColor: 'bg-sky-400',
+    },
+    {
+      hrColor: 'border-salmon/75',
+      sideColor: 'bg-salmon/75',
+      linkColor: 'bg-salmon',
+    },
+    {
+      hrColor: 'border-aqua',
+      sideColor: 'bg-aqua',
+      linkColor: 'bg-emerald-400',
+    },
+    {
+      hrColor: 'border-purple-400',
+      sideColor: 'bg-purple-400',
+      linkColor: 'bg-purple-600',
+    },
+  ]
+
   return (
     <main className="flex flex-row min-h-screen">
       <Siderbar />
