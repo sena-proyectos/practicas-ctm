@@ -16,16 +16,15 @@ const Home = () => {
   }, [])
 
   return (
-    <main className="flex min-h-screen flex-row">
+    <main className="flex flex-row min-h-screen">
       <Siderbar />
-      <section className="relative grid w-min flex-auto grid-rows-3-10-75-15">
+      <section className="relative grid flex-auto w-min grid-rows-3-10-75-15">
         <header className="grid place-items-center">
-          <h1 className="text-center text-2xl font-bold">Bienvenido a practicas ctm. ¿Qué desea realizar hoy?</h1>
+          <h1 className="text-2xl font-medium text-center">Bienvenido </h1>
         </header>
         <div className="grid grid-cols-1 gap-1 p-5 sm:grid-cols-2 md:grid-cols-3 ">
-          {cards.map(({ title, titleColor, description, buttonText, bgColor, link }) => {
-            const shadowBgColor = bgColor.slice(3)
-            return <Card cardHome bgColor={bgColor} shadow={`shadow-md shadow-${shadowBgColor}`} scale={'scale-90'} titleColor={titleColor} title={title} description={description} roundedLink={'rounded-md'} buttonText={buttonText} key={title} link={link} />
+          {cards.map(({ title, titleColor, description, buttonText, bgColor, sombra, link }) => {
+            return <Card cardHome bgColor={bgColor} shadow={`shadow-inner-custom shadow-${sombra}`} scale={'scale-90'} titleColor={titleColor} title={title} description={description} roundedLink={'rounded-md'} buttonText={buttonText} key={title} link={link} transition={`transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 hover:${bgColor}/100 duration-500`} />
           })}
         </div>
 

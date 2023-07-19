@@ -6,7 +6,7 @@ export const mapValues = () => {
     'Numero de documento del aprendiz': 'numero_documento_inscripcion',
     'Correo electronico del aprendiz': 'correo_electronico_inscripcion',
     'Numero de celular del aprendiz': 'numero_celular_inscripcion',
-    'Numero de ficha': 'numero_ficha_inscripcion',
+    'Numero de ficha': 'id_ficha_inscripcion',
     'Tipo de Documento de Identidad': 'tipo_documento_inscripcion',
     'Nombre del programa': 'programa_formacion_inscripcion',
     'Etapa de formacion': 'etapa_formacion_actual_inscripcion',

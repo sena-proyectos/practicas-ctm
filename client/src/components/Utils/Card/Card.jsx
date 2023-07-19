@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom'
 
-const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/iLestar', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked }) => {
+const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/iLestar', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked, transition = 'transition-none', userID }) => {
+  const userInfo = () => {
+    modalClicked(userID)
+  }
+
   return (
-    <div className={`${bgColor} bg-opacity-50 ${shadow} flex h-auto flex-col justify-center rounded-2xl px-3 py-2 ${scale && 'scale-90'}`}>
+    <div className={`${bgColor} bg-opacity-60 ${shadow} flex h-auto flex-col justify-center rounded-2xl px-3 py-2 ${scale && 'scale-90'}`}>
       <header className={`${cardUser && 'flex flex-row'}`}>
         {cardUser && <img className="h-[4.5rem] w-[4.5rem] rounded-full" src={img} alt={alt} />}
         <div className={`${cardUser && 'flex w-min flex-auto flex-col py-3'}`}>
@@ -37,12 +41,12 @@ const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale
         )}
       </div>
       {link && (
-        <Link to={link} className={`${roundedLink} border-1 ${borderColor} mx-auto mt-4 w-fit justify-self-end p-1.5 text-xs font-semibold`}>
+        <Link to={link} className={`${roundedLink} border-1 ${borderColor} mx-auto mt-4 w-fit justify-self-end p-1.5 text-xs font-semibold ${transition}`}>
           {buttonText}
         </Link>
       )}
       {isButton && showModal && (
-        <button className={`${roundedLink} border-1 ${borderColor} mx-auto mt-4 w-fit justify-self-end p-1.5 text-xs font-semibold`} onClick={modalClicked}>
+        <button className={`${roundedLink} border-1 ${borderColor} mx-auto mt-4 w-fit justify-self-end p-1.5 text-xs font-semibold`} onClick={userInfo}>
           {buttonText}
         </button>
       )}

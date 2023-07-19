@@ -7,6 +7,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { IoCalendarClearOutline, IoDocumentTextOutline, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoPeopleOutline, IoPersonAddOutline, IoCheckmarkCircleOutline, IoBookOutline, IoArrowForwardOutline } from 'react-icons/io5'
 
 import { colorIcon } from '../../import/staticData'
+
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
@@ -14,7 +15,7 @@ const Siderbar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [open, setOpen] = useState(true)
-
+  
   useEffect(() => {
     const handleResize = () => {
       const isSmallScreen = window.innerWidth < 640 // Tamaño de la media query "sm"
@@ -37,11 +38,11 @@ const Siderbar = () => {
     // mostrar alerta para el usuario
     if (!token) window.location.href = '/'
 
-    setTimeout(() => {
-      const decoded = jwtdecoded(token)
-      setNameRol(decoded.data.user.id_rol === 1 ? 'Administrador' : 'Instructor')
-      setNameUser(decoded.data.user.nombre + ' ' + decoded.data.user.apellido)
-    }, 2000)
+    const decoded = jwtdecoded(token)
+
+    setNameRol(decoded.data.user.id_rol === 1 ? 'Administrador' : 'Instructor')
+
+    setNameUser(decoded.data.user.nombre + ' ' + decoded.data.user.apellido)
   }, [])
 
   const styles = (path) => {
@@ -60,17 +61,17 @@ const Siderbar = () => {
 
   return (
     <aside className={`bg-secondary/10 ${open ? 'w-[12rem]' : 'w-[4.5rem]'} sticky left-0 top-0 h-screen rounded-r-2xl`}>
-      <nav className="mx-auto grid h-screen w-4/5 grid-rows-3-10-78-12 md:grid-rows-3-10-78-12">
+      <nav className="grid w-4/5 h-screen mx-auto grid-rows-3-10-78-12 md:grid-rows-3-10-78-12">
         <section className={`w-fit ${open === true ? 'flex flex-row pr-3' : 'mx-auto flex flex-col'} my-auto`}>
           <div className="my-auto w-[3rem] rounded-full">
             <img className="object-cover" src="public/user.png" alt="img_user" />
           </div>
           <div className={`w-full pl-3 pr-10 ${!open && 'hidden'}`}>
             <h5 className="text-xs ">{nameUser || <Skeleton width={100} />}</h5>
-            <span className="text-center text-sm font-semibold">{nameRol || <Skeleton />}</span>
+            <span className="text-sm font-semibold text-center">{nameRol || <Skeleton />}</span>
           </div>
         </section>
-        <ul className="flex cursor-pointer flex-col items-start justify-center">
+        <ul className="flex flex-col items-start justify-center cursor-pointer">
           <section className="mb-auto flex w-full flex-col gap-[3px]">
             <hr className="mx-auto my-2 h-[1px] w-full text-white" />
             <li>
@@ -106,24 +107,24 @@ const Siderbar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/" className={styles('/')}>
-                <span className={spanStyle('/')}>
+              <Link to="/aprov" className={styles('/aprov')}>
+                <span className={spanStyle('/aprov')}>
                   <IoCheckmarkCircleOutline />
                 </span>
                 {open && 'Aprobaciones'}
               </Link>
             </li>
             <li>
-              <Link to="/instructores" className={styles('/')}>
-                <span className={spanStyle('/')}>
+              <Link to="/instructores" className={styles('/instructores')}>
+                <span className={spanStyle('/instructores')}>
                   <IoPeopleOutline />
                 </span>
                 {open && 'Instructores'}
               </Link>
             </li>
             <li>
-              <Link to="/" className={styles('/')}>
-                <span className={spanStyle('/')}>
+              <Link to="/asignar-ficha" className={styles('/asignar-ficha')}>
+                <span className={spanStyle('/asignar-ficha')}>
                   <IoBookOutline />
                 </span>
                 {open && 'Fichas'}
@@ -155,7 +156,7 @@ const Siderbar = () => {
           >
             <IoArrowForwardOutline />
           </span>
-          <section className="mb-0 w-full">
+          <section className="w-full mb-0">
             <li className="relative flex h-10 w-[115%] items-center rounded-s-2xl py-2 pl-10 text-red-700 transition hover:bg-white" onClick={logout}>
               <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'text-md pl-3' : 'pl-5 text-lg'} text-red-700`}>
                 <IoLogOutOutline />
