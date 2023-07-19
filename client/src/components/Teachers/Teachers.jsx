@@ -56,23 +56,19 @@ export const Teachers = () => {
         <header className="grid place-items-center">
           <Search searchFilter />
         </header>
-        <section className="grid grid-cols-4 px-12 py-gap-4 gap-x-10">
-          <div className="rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[10rem]">
-            <div className="flex flex-col w-4/5 gap-2 mx-auto my-auto">
-              <h6 className="font-medium text-center text-[0.9rem]">Guillermo Stiven Benjumea Morales</h6>
-              <hr className="font-bold border-purple-300 border-1" />
-              <p className="text-[0.8rem] font-light text-center">Instructor Seguimiento</p>
-            </div>
-            <div className="w-full h-full rounded-r-[2rem] bg-purple-400"></div>
-          </div>
-          <div className="rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[10rem]">
-            <div className="flex flex-col w-4/5 gap-2 mx-auto my-auto">
-              <h6 className="font-medium text-center text-[0.9rem]">Guillermo Stiven Benjumea Morales</h6>
-              <hr className="font-bold border-purple-300 border-1" />
-              <p className="text-[0.8rem] font-light text-center">Instructor Líder</p>
-            </div>
-            <div className="w-full h-full rounded-r-[2rem] bg-purple-400"></div>
-          </div>
+        <section className="grid grid-cols-4 px-12 mt-5 py-gap-4 gap-x-10">
+          {[...colorsOddRow, ...colorsRowPair].map((color, index) => (
+            <>
+              <div className="rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[10rem]" key={index} {...color}>
+                <div className="flex flex-col w-4/5 gap-2 mx-auto my-auto">
+                  <h6 className="font-medium text-center text-[0.9rem]">Guillermo Stiven Benjumea Morales</h6>
+                  <hr className={`font-bold ${color.hrColor} border-1`} />
+                  <p className="text-[0.8rem] font-light text-center">Instructor Seguimiento</p>
+                </div>
+                <div className={`w-full h-full rounded-r-[2rem] ${color.sideColor}`}></div>
+              </div>
+            </>
+          ))}
         </section>
         <Footer />
       </section>
