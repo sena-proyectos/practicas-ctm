@@ -2,7 +2,7 @@ CREATE DATABASE  IF NOT EXISTS `sena_practicas` /*!40100 DEFAULT CHARACTER SET u
 USE `sena_practicas`;
 -- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: sena_practicas
+-- Host: localhost    Database: sena_practicas
 -- ------------------------------------------------------
 -- Server version	8.0.33
 
@@ -166,32 +166,6 @@ LOCK TABLES `detalle_fichas_aprendices` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `detalle_fichas_estudiantes`
---
-
-DROP TABLE IF EXISTS `detalle_fichas_estudiantes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `detalle_fichas_estudiantes` (
-  `id_ficha` int NOT NULL,
-  `id_aprendiz` int NOT NULL,
-  KEY `id_ficha` (`id_ficha`),
-  KEY `id_aprendiz` (`id_aprendiz`),
-  CONSTRAINT `detalle_fichas_estudiantes_ibfk_1` FOREIGN KEY (`id_ficha`) REFERENCES `fichas` (`id_ficha`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `detalle_fichas_estudiantes_ibfk_2` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `detalle_fichas_estudiantes`
---
-
-LOCK TABLES `detalle_fichas_estudiantes` WRITE;
-/*!40000 ALTER TABLE `detalle_fichas_estudiantes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `detalle_fichas_estudiantes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `detalles_inscripciones`
 --
 
@@ -200,14 +174,14 @@ DROP TABLE IF EXISTS `detalles_inscripciones`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `detalles_inscripciones` (
   `id_detalle_inscripcion` int NOT NULL AUTO_INCREMENT,
-  `responsable_aval` varchar(100) NOT NULL,
+  `responsable_aval` varchar(100) DEFAULT NULL,
   `estado_aval` varchar(100) NOT NULL,
-  `observaciones` varchar(500) NOT NULL,
+  `observaciones` varchar(500) DEFAULT NULL,
   `id_inscripcion` int NOT NULL,
   PRIMARY KEY (`id_detalle_inscripcion`),
   KEY `id_inscripcion` (`id_inscripcion`),
   CONSTRAINT `detalles_inscripciones_ibfk_1` FOREIGN KEY (`id_inscripcion`) REFERENCES `inscripciones` (`id_inscripcion`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -216,6 +190,7 @@ CREATE TABLE `detalles_inscripciones` (
 
 LOCK TABLES `detalles_inscripciones` WRITE;
 /*!40000 ALTER TABLE `detalles_inscripciones` DISABLE KEYS */;
+INSERT INTO `detalles_inscripciones` VALUES (1,'3','Pendiente',NULL,2),(2,'4','Pendiente',NULL,2),(3,'2','Pendiente',NULL,2);
 /*!40000 ALTER TABLE `detalles_inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -263,12 +238,15 @@ CREATE TABLE `fichas` (
   `fecha_fin_lectiva` date NOT NULL,
   `fecha_inicio_practica` date NOT NULL,
   `id_instructor_seguimiento` int NOT NULL,
+  `id_instructor_lider` int NOT NULL,
   `id_nivel_formacion` int NOT NULL,
   PRIMARY KEY (`id_ficha`),
   KEY `fk_fichas_1` (`id_instructor_seguimiento`),
   KEY `id_nivel_formacion` (`id_nivel_formacion`),
+  KEY `fk_fichas_2` (`id_instructor_lider`) /*!80000 INVISIBLE */,
   CONSTRAINT `fichas_ibfk_1` FOREIGN KEY (`id_nivel_formacion`) REFERENCES `niveles_formacion` (`id_nivel_formacion`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_fichas_1` FOREIGN KEY (`id_instructor_seguimiento`) REFERENCES `usuarios` (`id_usuario`)
+  CONSTRAINT `fk_fichas_1` FOREIGN KEY (`id_instructor_seguimiento`) REFERENCES `usuarios` (`id_usuario`),
+  CONSTRAINT `fk_fichas_2` FOREIGN KEY (`id_instructor_lider`) REFERENCES `usuarios` (`id_usuario`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -278,6 +256,7 @@ CREATE TABLE `fichas` (
 
 LOCK TABLES `fichas` WRITE;
 /*!40000 ALTER TABLE `fichas` DISABLE KEYS */;
+INSERT INTO `fichas` VALUES (1,'2473196','ADSO','2022-02-01','2023-04-30','2023-05-01',3,4,2);
 /*!40000 ALTER TABLE `fichas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -302,7 +281,7 @@ CREATE TABLE `inscripciones` (
   `nivel_formacion_inscripcion` varchar(100) NOT NULL,
   `numero_ficha_inscripcion` varchar(20) NOT NULL,
   `fecha_fin_lectiva_inscripcion` date NOT NULL,
-  `nombre_instructor_lider_inscripcion` varchar(200) DEFAULT NULL,
+  `nombre_instructor_lider_inscripcion` varchar(200) NOT NULL,
   `email_instructor_lider_inscripcion` varchar(200) NOT NULL,
   `apoyo_sostenimiento_inscripcion` varchar(500) NOT NULL,
   `nit_empresa_inscripcion` varchar(200) DEFAULT NULL,
@@ -311,12 +290,12 @@ CREATE TABLE `inscripciones` (
   `nombre_jefe_empresa_inscripcion` varchar(300) DEFAULT NULL,
   `cargo_jefe_empresa_inscripcion` varchar(300) DEFAULT NULL,
   `telefono_jefe_empresa_inscripcion` int DEFAULT NULL,
-  `email_jefe_empresa_inscripcion` varchar(300) NOT NULL,
-  `arl` varchar(1000) NOT NULL,
+  `email_jefe_empresa_inscripcion` varchar(300) DEFAULT NULL,
+  `arl` varchar(1000) DEFAULT NULL,
   `link_documentos` varchar(100) NOT NULL,
   `observaciones` varchar(2500) NOT NULL,
   PRIMARY KEY (`id_inscripcion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -325,8 +304,49 @@ CREATE TABLE `inscripciones` (
 
 LOCK TABLES `inscripciones` WRITE;
 /*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
+INSERT INTO `inscripciones` VALUES (2,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','lectiva','pasantias','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','ninguna',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'la empresa','pdf.pdf','N/A');
 /*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `inscripcion_trigger` AFTER INSERT ON `inscripciones` FOR EACH ROW BEGIN
+  DECLARE instructor_seguimiento_id INT;
+  DECLARE instructor_lider_id INT;
+  DECLARE responsable_rol2_id INT;
+  
+  -- Obtener el ID del instructor de seguimiento basado en el número de ficha
+  SELECT id_instructor_seguimiento INTO instructor_seguimiento_id
+  FROM fichas
+  WHERE numero_ficha = NEW.numero_ficha_inscripcion;
+  
+  -- Obtener el ID del instructor líder basado en el número de ficha
+  SELECT id_instructor_lider INTO instructor_lider_id
+  FROM fichas
+  WHERE numero_ficha = NEW.numero_ficha_inscripcion;
+  
+  -- Obtener el ID del usuario con id_rol 2
+  SELECT id_usuario INTO responsable_rol2_id
+  FROM usuarios
+  WHERE id_rol = 2;
+  
+  -- Insertar los tres registros en detalles_inscripciones
+  INSERT INTO detalles_inscripciones (responsable_aval, estado_aval, id_inscripcion)
+  VALUES (instructor_seguimiento_id, 'Pendiente', NEW.id_inscripcion),
+         (instructor_lider_id, 'Pendiente', NEW.id_inscripcion),
+         (responsable_rol2_id, 'Pendiente', NEW.id_inscripcion);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `jefes`
@@ -441,7 +461,7 @@ CREATE TABLE `roles` (
   `id_rol` int NOT NULL AUTO_INCREMENT,
   `nombre_rol` varchar(100) NOT NULL,
   PRIMARY KEY (`id_rol`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -450,7 +470,7 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (1,'Administrador'),(2,'Coordinador'),(3,'Instructor de Seguimiento');
+INSERT INTO `roles` VALUES (1,'Administrador'),(2,'Coordinador'),(3,'Instructor de Seguimiento'),(4,'Instructor Líder');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -507,7 +527,7 @@ CREATE TABLE `usuarios` (
   PRIMARY KEY (`id_usuario`),
   KEY `id_rol` (`id_rol`),
   CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -516,7 +536,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanlestar12@gmail.com','3195810996','$2b$10$G/qBWAkBBWWYv168liiN4.yNHoflbKb9y6nUEFZvtVomsVCNQhmo6',1);
+INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanlestar12@gmail.com','3195810996','$2b$10$G/qBWAkBBWWYv168liiN4.yNHoflbKb9y6nUEFZvtVomsVCNQhmo6',1),(2,'Stiven','Blandón','CC','1017924888','blandon0207s@gmail.com','3183577499','$2b$10$GWUNM.FJKmU81l5dW0pDBOuc5EGYTeYjJxa9ENNNaioKoWM3QR.aq',2),(3,'Adelaida','Benavidez','CC','1017923453','adelaida@misena.edu.co','3183575433','$2b$10$wskcGpv.zlFyAp1gWLZSpunAe5uqGcgJ2yAhpzOQyRWdlpp./jUkG',4),(4,'Juan','Esteban','CC','1064973453','juanEsteban45@misena.edu.co','3133675433','$2b$10$SAeF4T/nxMHjfl5LhHzqjOI920j/dS9CU8NCpDecLicv.kSxegV/m',3);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -565,4 +585,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-18 12:14:02
+-- Dump completed on 2023-07-19 15:20:49

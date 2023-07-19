@@ -37,7 +37,7 @@ export const editUser: RequestHandler<{}, Response, userForm> = async (req: Requ
   const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
   const idNumber = Number(id)
   try {
-    const [user] = await connection.query('UPDATE usuarios SET nombre = IFNULL(?, nombre), apellido = IFNULL(?, apellido), tipo_documento = IFNULL(?, tipo_documento), num_documento = IFNULL(?, num_documento), correo_electronico = IFNULL(?, correo_electronico), num_celular = IFNULL(?, num_celular), id_rol = IFNULL(?, id_rol), contrasena = IFNULL(?, contrasena) WHERE id_usuario = ?', [
+    const [user] = await connection.query('UPDATE usuarios SET nombres_usuario = IFNULL(?, nombres_usuario), apellidos_usuario = IFNULL(?, apellidos_usuario), tipo_documento_usuario = IFNULL(?, tipo_documento_usuario), numero_documento_usuario = IFNULL(?, numero_documento_usuario), email_usuario = IFNULL(?, email_usuario), numero_celular_usuario = IFNULL(?, numero_celular_usuario), id_rol = IFNULL(?, id_rol), contrasena_usuario = IFNULL(?, contrasena_usuario) WHERE id_usuario = ?', [
       nombre,
       apellido,
       tipo_documento,
@@ -61,7 +61,7 @@ export const getTeachers = async (req: Request, res: Response): Promise<Response
     const limit = !Number.isNaN(parseInt(req.query.limit as string)) || 10
     const offset = (Number(page) - 1) * Number(limit)
 
-    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2 LIMIT ? OFFSET ?', [limit, offset])
+    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 LIMIT ? OFFSET ?', [limit, offset])
     if (!Array.isArray(teachers) || teachers.length === 0) throw new DbErrorNotFound('No hay instructores registrados.', errorCodes.ERROR_GET_TEACHER)
 
     const [total] = (await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3')) as unknown as Array<{ count: number }>
@@ -77,7 +77,7 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2 AND id_usuario = ?', [idNumber])
+    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND id_usuario = ?', [idNumber])
     if (!Array.isArray(teacher) || teacher.length === 0) throw new DbErrorNotFound('No se encontró el profesor.', errorCodes.ERROR_GET_TEACHER)
     return res.status(httpStatus.OK).json({ data: teacher })
   } catch (error) {
@@ -88,65 +88,9 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
 export const getTeacherByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
   const { nombreCompleto } = req.query
   try {
-    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 2 AND CONCAT(nombre, " ", apellido) LIKE ?', [`%${nombreCompleto as string}%`])
+    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND CONCAT(nombres_usuario, " ", apellidos_usuario) LIKE ?', [`%${nombreCompleto as string}%`])
     if (!Array.isArray(teacher) || teacher?.length === 0) throw new DbErrorNotFound('No se encontró el instructor.', errorCodes.ERROR_GET_TEACHER)
     return res.status(httpStatus.OK).json({ data: teacher })
-  } catch (error) {
-    return handleHTTP(res, error as CustomError)
-  }
-}
-
-export const getStudents = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    const page = parseInt(req.query.page as string) || 1
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    const limit = parseInt(req.query.limit as string) || 10
-    const offset = (Number(page) - 1) * Number(limit)
-
-    const [students] = await connection.query('SELECT * FROM aprendices LIMIT ? OFFSET ?', [limit, offset])
-    if (!Array.isArray(students) || students.length === 0) throw new DbErrorNotFound('No hay estudiantes registrados.', errorCodes.ERROR_GET_STUDENTS)
-
-    const [total] = (await connection.query('SELECT COUNT(*) as count FROM aprendices')) as unknown as Array<{ count: number }>
-    const totalPages = Math.ceil(Number(Array.isArray(total) && total[0].count) / Number(limit))
-
-    return res.status(httpStatus.OK).json({ data: students, page, totalPages })
-  } catch (error) {
-    return handleHTTP(res, error as CustomError)
-  }
-}
-
-export const getStudentsById: RequestHandler<{ id: string }, Response, LoginData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
-  const { id } = req.params
-  const idNumber = Number(id)
-  try {
-    const [student] = await connection.query('SELECT * FROM aprendices WHERE id_aprendiz = ?', [idNumber])
-    if (!Array.isArray(student) || student.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)
-    return res.status(httpStatus.OK).json({ data: student })
-  } catch (error) {
-    return handleHTTP(res, error as CustomError)
-  }
-}
-
-export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
-  const { nombreCompleto } = req.query
-  try {
-    const [student] = await connection.query('SELECT * FROM aprendices WHERE id_rol = 3 AND CONCAT(nombre_aprendiz, " ", apellido_aprendiz) LIKE ?', [`%${nombreCompleto as string}%`])
-    if (!Array.isArray(student) || student?.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)
-    return res.status(httpStatus.OK).json({ data: student })
-  } catch (error) {
-    return handleHTTP(res, error as CustomError)
-  }
-}
-
-export const getDetailInfoStudent: RequestHandler<{ classNumber: string }, Response, unknown> = async (req: Request<{ classNumber: string }>, res: Response): Promise<Response> => {
-  const { classNumber } = req.query
-  const parsedClassNumber = Number(classNumber)
-  try {
-    // ! Falta terminar la base de datos para poder hacer esta consulta
-    // const [students] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND ', [parsedClassNumber])
-    // if (!Array.isArray(students) || students?.length === 0) throw new DbErrorNotFound('No se encontraron estudiantes en esta clase.', errorCodes.ERROR_GET_STUDENTS)
-    return res.status(httpStatus.OK).json({ data: parsedClassNumber })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
@@ -168,10 +112,10 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
 export const login: RequestHandler<{ num_documento: string, contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
   const { num_documento, contrasena } = req.body
   try {
-    const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [num_documento])
+    const [user] = await connection.query('SELECT * FROM usuarios WHERE numero_documento_usuario = ?', [num_documento])
     if (!Array.isArray(user) || user?.length === 0) throw new DbErrorNotFound('No se encontró el usuario.', errorCodes.ERROR_LOGIN_USER)
 
-    const dbPassword = (user as RowDataPacket)[0].contrasena
+    const dbPassword = (user as RowDataPacket)[0].contrasena_usuario
 
     const isMatch: boolean = await comparePassword({ contrasena, dbPassword })
     if (!isMatch) throw new DataNotValid('Contraseña incorrecta.', errorCodes.ERROR_LOGIN_USER)
