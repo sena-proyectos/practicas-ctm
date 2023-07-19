@@ -18,15 +18,15 @@ export default {
         lima: '#65AC45',
       },
       boxShadowColor: {
-        primary: '#39A900',
-        secondary: '#00324D',
-        third: '#82DEF0',
-        fourth: '#FBFBE2',
-        fifth: '#385C57',
-        salmon: '#CB7766',
-        seventh: '#FFCE40',
-        gray: '#D9D9D9',
-        aqua: '#B8F1D8',
+        shadowPrimary: '#39A900',
+        shadowSecondary: '#00324D',
+        shadowThird: '#82DEF0',
+        shadowFourth: '#FBFBE2',
+        shadowFifth: '#385C57',
+        shadowSalmon: '#CB7766',
+        shadowSeventh: '#FFCE40',
+        shadowGray: '#D9D9D9',
+        shadowAqua: '#B8F1D8',
       },
       boxShadow: {
         '2xl': '4px 4px 18px 0px rgba(0, 0, 0, 0.3)',
@@ -38,6 +38,7 @@ export default {
         '2-16r-84': '16rem auto',
         '2-45-55': '45% auto',
         '2-50-50': '50% 50%',
+        '2-90-10': '80% 20%',
         // '2-20r-80': '18rem auto'
       },
       gridTemplateRows: {

@@ -13,7 +13,7 @@ export const cards = [
     description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-primary',
-    sombra: 'primary/50',
+    sombra: 'shadowPrimary/50',
     link: '/aprendices',
   },
   {
@@ -22,7 +22,7 @@ export const cards = [
     description: 'Podrás ver el listado de bitácoras que actualmente se encuentran incompletas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-salmon',
-    sombra: 'salmon/50',
+    sombra: 'shadowSalmon/50',
     link: '/bitacoras',
   },
   {
@@ -31,7 +31,7 @@ export const cards = [
     description: 'Podrás ver el listado de bitácoras que actualmente se encuentran completas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-seventh',
-    sombra: 'seventh/75',
+    sombra: 'shadowSeventh/75',
     link: '/bitacoras',
   },
   {
@@ -49,7 +49,7 @@ export const cards = [
     description: 'Podrás ver el listado de visitas que actualmente no se encuentran en realizadas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-third',
-    sombra: 'third/100',
+    sombra: 'shadowThird/100',
     link: '/visitas',
   },
   {
@@ -58,7 +58,7 @@ export const cards = [
     description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-aqua',
-    sombra: 'aqua/100',
+    sombra: 'shadowAqua/100',
     link: '/inscribir-aprendiz',
   },
 ]
