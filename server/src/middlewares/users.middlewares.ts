@@ -15,8 +15,8 @@ export const checkExistingUser: RequestHandler<{}, Response, userForm> = async (
   const numberParsed = Number(num_documento)
   try {
     if (isNaN(numberParsed)) throw new NumberIsNaN('El número de documento no es un número válido.')
-    const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ? OR correo_electronico = ?', [numberParsed, correo_electronico])
-    if (Array.isArray(user) && user.length > 0) throw new UserExists('Este documento y/o correo ya está/n registrado/s en el sistema.')
+    const [user] = await connection.query('SELECT numero_documento_usuario, email_usuario FROM usuarios WHERE numero_documento_usuario = ? OR email_usuario = ?', [numberParsed, correo_electronico])
+    if ((Array.isArray(user) && user.length > 0)) throw new UserExists('Este documento y/o correo ya está/n registrado/s en el sistema.')
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)

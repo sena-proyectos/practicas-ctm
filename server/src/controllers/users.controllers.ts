@@ -183,10 +183,10 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
 export const login: RequestHandler<{ num_documento: string, contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
   const { num_documento, contrasena } = req.body
   try {
-    const [user] = await connection.query('SELECT * FROM usuarios WHERE num_documento = ?', [num_documento])
+    const [user] = await connection.query('SELECT * FROM usuarios WHERE numero_documento_usuario = ?', [num_documento])
     if (!Array.isArray(user) || user?.length === 0) throw new DbErrorNotFound('No se encontró el usuario.', errorCodes.ERROR_LOGIN_USER)
 
-    const dbPassword = (user as RowDataPacket)[0].contrasena
+    const dbPassword = (user as RowDataPacket)[0].contrasena_usuario
 
     const isMatch: boolean = await comparePassword({ contrasena, dbPassword })
     if (!isMatch) throw new DataNotValid('Contraseña incorrecta.', errorCodes.ERROR_LOGIN_USER)

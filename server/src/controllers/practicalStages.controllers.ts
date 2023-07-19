@@ -3,7 +3,7 @@ import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { DbErrorNotFound, type CustomError, DbError } from '../errors/customErrors.js'
-import { type PracticalStages } from '../interfaces/PracticalStages.interfaces.js'
+import { type PracticalStages } from '../interfaces/practicalStages.interfaces.js'
 
 export const getPracticalStages = async (_req: Request, res: Response): Promise<Response> => {
   try {
