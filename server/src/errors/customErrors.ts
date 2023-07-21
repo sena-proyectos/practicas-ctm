@@ -6,7 +6,7 @@ export class CustomError extends Error {
   errorCode: string
   header: string
 
-  constructor(message: string, statusCode = httpStatus.INTERNAL_SERVER_ERROR, errorCode = errorCodes.INTERNAL_SERVER_ERROR) {
+  constructor (message: string, statusCode = httpStatus.INTERNAL_SERVER_ERROR, errorCode = errorCodes.INTERNAL_SERVER_ERROR) {
     super(message)
     this.header = 'Custom_error'
     this.statusCode = statusCode
@@ -15,7 +15,7 @@ export class CustomError extends Error {
 }
 
 export class DbError extends CustomError {
-  constructor(message: string) {
+  constructor (message: string) {
     super(message)
     this.header = 'DB_ERROR'
     this.statusCode = httpStatus.INTERNAL_SERVER_ERROR
@@ -25,7 +25,7 @@ export class DbError extends CustomError {
 
 export class DbErrorNotFound extends CustomError {
   errorCode: string
-  constructor(message: string, errorCode = errorCodes.INTERNAL_SERVER_ERROR) {
+  constructor (message: string, errorCode = errorCodes.INTERNAL_SERVER_ERROR) {
     super(message)
     this.header = 'DB_ERROR'
     this.statusCode = httpStatus.NOT_FOUND
@@ -34,7 +34,7 @@ export class DbErrorNotFound extends CustomError {
 }
 
 export class DataNotValid extends CustomError {
-  constructor(message: string, errorCode = errorCodes.INTERNAL_SERVER_ERROR) {
+  constructor (message: string, errorCode = errorCodes.INTERNAL_SERVER_ERROR) {
     super(message)
     this.header = 'DATA_ERROR'
     this.statusCode = httpStatus.INTERNAL_SERVER_ERROR
@@ -43,7 +43,7 @@ export class DataNotValid extends CustomError {
 }
 
 export class UserExists extends CustomError {
-  constructor(message: string) {
+  constructor (message: string) {
     super(message)
     this.header = 'DATA_EXIST'
     this.statusCode = httpStatus.INTERNAL_SERVER_ERROR
@@ -52,7 +52,7 @@ export class UserExists extends CustomError {
 }
 
 export class IdIsNaN extends CustomError {
-  constructor(message: string) {
+  constructor (message: string) {
     super(message)
     this.header = 'ID_ERROR'
     this.statusCode = httpStatus.BAD_REQUEST
@@ -61,7 +61,7 @@ export class IdIsNaN extends CustomError {
 }
 
 export class NumberIsNaN extends CustomError {
-  constructor(message: string) {
+  constructor (message: string) {
     super(message)
     this.header = 'NUMBER_ERROR'
     this.statusCode = httpStatus.BAD_REQUEST
