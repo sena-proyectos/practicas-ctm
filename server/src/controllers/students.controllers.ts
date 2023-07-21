@@ -4,6 +4,7 @@ import { errorCodes } from '../models/errorCodes.enums.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { DbErrorNotFound, type CustomError } from '../errors/customErrors.js'
+import { type RowDataPacket } from 'mysql2'
 
 export const getStudents = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -79,31 +80,16 @@ INNER JOIN arl ON aprendices.id_arl = arl.id_arl; */
 export const createStudents = async (req: Request, res: Response): Promise<Response> => {
   const students = req.body
   try {
-    const createdStudents = []
+    let i = 0
     for (const student of students) {
-      const {
-        nombre_aprendiz,
-        apellido_aprendiz,
-        tipo_documento_aprendiz,
-        numero_documento_aprendiz,
-        email_aprendiz,
-        celular_aprendiz,
-        fecha_fin_practica_aprendiz,
-        estado_aprendiz,
-        id_empresa,
-        id_modalidad,
-        id_jefe,
-        id_arl
-      } = student
+      const { nombre_aprendiz, apellido_aprendiz, tipo_documento_aprendiz, numero_documento_aprendiz, email_aprendiz, celular_aprendiz, fecha_fin_practica_aprendiz, estado_aprendiz, id_empresa, id_modalidad, id_jefe, id_arl } = student
       const [result] = await connection.query('INSERT INTO aprendices (nombre_aprendiz, apellido_aprendiz, tipo_documento_aprendiz, numero_documento_aprendiz, email_aprendiz, celular_aprendiz, fecha_fin_practica_aprendiz, estado_aprendiz, id_empresa, id_modalidad, id_jefe, id_arl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [nombre_aprendiz, apellido_aprendiz, tipo_documento_aprendiz, numero_documento_aprendiz, email_aprendiz, celular_aprendiz, fecha_fin_practica_aprendiz, estado_aprendiz, id_empresa, id_modalidad, id_jefe, id_arl])
-      if (!Array.isArray(result) || result.length === 0) {
-        throw new DbErrorNotFound('No se pudo crear el estudiante.', errorCodes.ERROR_CREATE_STUDENT)
-      }
-      createdStudents.push(result)
+      if ((result as RowDataPacket[]).length === 0) throw new DbErrorNotFound(`No se pudo crear el estudiante ${i}.`, errorCodes.ERROR_CREATE_STUDENT)
+      i += 1
     }
-
-    return res.status(httpStatus.CREATED).json({ data: { infoStudents: createStudents, msg: 'Aprendices creados' } })
+    return res.status(httpStatus.CREATED).json({ data: { infoStudents: `Added ${i}`, msg: 'Aprendices creados' } })
   } catch (error) {
+    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
