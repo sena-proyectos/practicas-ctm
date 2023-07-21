@@ -6,7 +6,7 @@ import { inscriptionRoutes } from './inscriptions.routes.js'
 import { practicalStageRoutes } from './practicalStages.routes.js'
 import { classRoutes } from './classes.routes.js'
 import { unableRoutes } from './changeStatusId.routes.js'
-import { studentRoutes } from './student.routes.js'
+import { studentRoutes } from './students.routes.js'
 
 const indexRoutes = Router()
 
