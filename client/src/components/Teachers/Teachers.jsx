@@ -340,7 +340,7 @@ export const Teachers = () => {
                   </div>
                   <div className={`w-full h-full rounded-r-[2rem] ${color.sidecolor}`}>
                     <div className={`w-full h-[3rem] rounded-tr-[2rem] text-white text-xl ${color.linkcolor}`}>
-                      <Link to="#">
+                      <Link to="/asignar-ficha">
                         <FaAngleRight className="h-full py-3 mx-auto" />
                       </Link>
                     </div>
