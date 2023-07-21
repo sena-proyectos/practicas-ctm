@@ -52,8 +52,8 @@ export const GetTeacherByName = async (data) => {
 
 // OBTENER FICHA POR NUMERO DE FICHA
 export const GetClassByNumber = async (data) => {
-  const URL = `${baseUrl}${api}/classNumber`
-  const response = await axios.get(URL, data)
+  const URL = `${baseUrl}${api}/classNumber?numero_ficha=${data}`
+  const response = await axios.get(URL)
 
   return response
 }

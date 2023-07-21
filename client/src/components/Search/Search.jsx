@@ -31,9 +31,9 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, iconClick
     <section className={` ${searchFilter === true ? 'w-2/4' : 'w-1/5'}  flex h-9 items-center justify-center`}>
       {searchFilter && (
         <>
-          <form action="" method="get" className="flex w-full items-center rounded-3xl bg-secondary/10 shadow-md saturate-[100%] backdrop-blur-sm " onChange={handleSearch} onSubmit={evnt}>
+          <form action="" method="get" className="flex min-w-fit w-full items-center rounded-3xl bg-[#E8E8E8] shadow-md saturate-[100%] backdrop-blur-sm " onChange={handleSearch} onSubmit={evnt}>
             <Button bg={'bg-transparent'} px="px-3" textColor="text-black" className="absolute right-[6px]" value={<IoSearchOutline />} />
-            <input type="text" placeholder="Busca a un aprendiz" className="w-full flex-1 rounded-3xl bg-transparent px-5 py-1 outline-none" ref={search} name="nombreCompleto" autoComplete="off" />
+            <input type="text" placeholder="Busca a un aprendiz" className="w-fit flex-1 rounded-3xl bg-transparent py-1 outline-none" ref={search} name="nombreCompleto" autoComplete="off" />
           </form>
           <article className="relative right-[40px]">
             <Button bg={'bg-transparent'} px={'px-3'} textColor="text-black" clickeame={iconClick} value={<LuSettings2 />} />
@@ -43,7 +43,7 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, iconClick
       {filter && (
         <>
           <Button
-            bg={'bg-secondary/10'}
+            bg={'bg-[#E8E8E8]'}
             shadow="shadow-md"
             rounded="rounded-3xl"
             px="px-5"

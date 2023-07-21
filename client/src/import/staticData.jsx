@@ -13,6 +13,7 @@ export const cards = [
     description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-primary',
+    sombra: 'shadowPrimary/50',
     link: '/aprendices',
   },
   {
@@ -21,6 +22,7 @@ export const cards = [
     description: 'Podrás ver el listado de bitácoras que actualmente se encuentran incompletas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-salmon',
+    sombra: 'shadowSalmon/50',
     link: '/bitacoras',
   },
   {
@@ -29,6 +31,7 @@ export const cards = [
     description: 'Podrás ver el listado de bitácoras que actualmente se encuentran completas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-seventh',
+    sombra: 'shadowSeventh/75',
     link: '/bitacoras',
   },
   {
@@ -37,7 +40,8 @@ export const cards = [
     description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-[#385C57]',
-    link: '/home',
+    sombra: '[#385C57]/20',
+    link: '/aprov',
   },
   {
     title: 'Visitas no hechas',
@@ -45,6 +49,7 @@ export const cards = [
     description: 'Podrás ver el listado de visitas que actualmente no se encuentran en realizadas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-third',
+    sombra: 'shadowThird/100',
     link: '/visitas',
   },
   {
@@ -53,6 +58,7 @@ export const cards = [
     description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
     buttonText: 'LLÉVAME AHÍ',
     bgColor: 'bg-aqua',
+    sombra: 'shadowAqua/100',
     link: '/inscribir-aprendiz',
   },
 ]
@@ -170,19 +176,19 @@ export const dataInscription = {
     {
       type: 'number',
       name: 'nit_empresa_inscripcion',
-      placeholder: '123456789',
+      placeholder: '899999034-1',
       label: 'NIT de la empresa',
     },
     {
       type: 'text',
       name: 'nombre_empresa_inscripcion',
-      placeholder: 'Sena',
+      placeholder: 'SENA',
       label: 'Razón social (Empresa)',
     },
     {
       type: 'text',
       name: 'direccion_empresa_inscripcion',
-      placeholder: 'Calle 123',
+      placeholder: 'Cra 30 No. 3E 164',
       label: 'Dirección de empresa',
     },
     {
@@ -216,7 +222,14 @@ export const dataInscription = {
       label: '¿Quién asume pago arl?',
     },
     {
-      type: 'text',
+      type: 'file',
+      name: 'documentos_pdf',
+      label: 'Documentos',
+      required: true,
+      accept: '.pdf',
+    },
+    {
+      type: 'textarea',
       name: 'observaciones_inscripcion',
       placeholder: 'Digite una observación',
       label: '¿Observaciones?',
@@ -296,9 +309,9 @@ export const colorIcon = {
   '/aprendices': 'text-third',
   '/bitacoras': 'text-seventh',
   '/inscribir-aprendiz': 'text-lima',
-  '/aprobaciones': 'text-secondary',
-  '/teacher': 'text-rosa',
-  '/fichas': 'text-coffee',
+  '/aprov': 'text-secondary',
+  '/instructores': 'text-rosa',
+  '/asignar-ficha': 'text-coffee',
   '/visitas': 'text-primary',
   '/config': 'text-fifth',
 }

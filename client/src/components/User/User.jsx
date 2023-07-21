@@ -1,48 +1,98 @@
-import { AiOutlineIdcard } from 'react-icons/ai'
-import { BiLockAlt } from 'react-icons/bi'
+import { useState, useEffect, useRef } from "react";
 
-import { Form } from '../Form/Form'
+import { AiOutlineIdcard, AiOutlineMail, AiOutlinePhone } from "react-icons/ai";
+import { BiLockAlt } from "react-icons/bi";
+import { IoPersonOutline } from "react-icons/io5";
+
+import { Form } from "../Form/Form";
 
 const User = () => {
+  const divRef = useRef(null);
   const loginForm = [
     {
       icon: <AiOutlineIdcard />,
-      placeholder: '1017924888',
-      type: 'text',
-      nameInput: 'num_documento',
+      placeholder: "1017924888",
+      type: "text",
+      nameInput: "num_documento",
     },
     {
       icon: <BiLockAlt />,
-      placeholder: '**********',
-      type: 'password',
-      nameInput: 'contrasena',
+      placeholder: "**********",
+      type: "password",
+      nameInput: "contrasena",
     },
-  ]
+  ];
+  const registerForm = [
+    { icon: <AiOutlineIdcard />, placeholder: "1017924888", type: "text", nameInput: "num_documento" },
+    { icon: <IoPersonOutline />, placeholder: "Juan", type: "text", nameInput: "nombre" },
+    { icon: <IoPersonOutline />, placeholder: "Gonzales", type: "text", nameInput: "apellido" },
+    { icon: <AiOutlineMail />, placeholder: "correo@correo.com", type: "email", nameInput: "correo_electronico" },
+    { icon: <BiLockAlt />, placeholder: "********", type: "password", nameInput: "contrasena" },
+  ];
+
+  const [selectedButton, setSelectedButton] = useState("login");
+
+  const handleButtonClick = (button) => {
+    setSelectedButton(button);
+  };
+
+  useEffect(() => {
+    if (selectedButton === "register") {
+      divRef.current.classList.add("translate-x-[8.9rem]");
+    } else {
+      divRef.current.classList.remove("translate-x-[8.9rem]");
+    }
+  }, [selectedButton]);
 
   const title = {
-    login: 'Bienvenido de vuelta',
-  }
+    login: "Bienvenido de vuelta",
+    register: "Bienvenido a SENA",
+  };
 
   return (
-    <main className={`grid grid-cols-1 md:grid-cols-2-55-45 `}>
-      <section className="grid h-full grid-rows-2-30-70">
-        <header className="grid place-items-center">
-          <h1 className="mt-10 text-4xl font-bold">SENA</h1>
-        </header>
-        <div className="mt-10 flex flex-col justify-self-center pt-14">
-          <h2 className="text-center text-xl font-bold">{title.login}</h2>
-          <span className="text-lg font-light ">Es un placer para nosotros tenerte aquí</span>
-          <Form inputs={loginForm} />
-        </div>
-      </section>
+    <section>
+      <div className="flex h-screen w-full overflow-hidden">
+        <div className="fixed">
 
-      <section className="hidden md:block md:bg-primary">
-        <div className="flex h-screen flex-col items-center justify-center">
-          <img className="h-56 w-auto" src="public/logo2.png" alt="logoSena" />
+          <div className="absolute left-[-8rem] mt-[-10rem] hidden lg:flex">
+            <div className=" pulse h-[30rem] w-[30rem] rounded-full bg-aqua/100 "/>
+          </div>
+          <div className="absolute left-[28rem] mt-[10rem] hidden lg:flex">
+            <div className=" h-[10rem] w-[10rem] rounded-full bg-salmon "/>
+          </div>
+          <div className="absolute left-[68.5rem] mt-[18.5rem] hidden lg:flex">
+            <div className=" h-[20rem] w-[20rem] rounded-full bg-seventh "/>
+          </div>
+          <div className="absolute left-[75rem] mt-[4rem] hidden lg:flex">
+            <div className=" h-[3rem] w-[3rem] rounded-full bg-seventh "/>
+          </div>
+          <div className="absolute left-[50rem] mt-[20rem] hidden lg:flex ">
+            <div className=" h-[10rem] w-[10rem] rounded-full bg-third "/>
+          </div>
+          <div className="absolute left-[8rem] mt-[30rem] hidden lg:flex ">
+            <div className=" h-[3rem] w-[3rem]  rounded-full bg-third "/>
+          </div>
         </div>
-      </section>
-    </main>
-  )
-}
 
-export { User }
+        <div className="relative flex w-full items-center justify-center">
+          <div className="z-10 flex flex-col justify-self-center rounded-2xl border border-neutral-400 bg-white p-8 shadow-xl ">
+            {selectedButton === "login" ? <h2 className="text-center text-xl font-bold">{title.login}</h2> : <h2 className="text-center text-xl font-bold">{title.register}</h2>}
+            <span className="text-lg font-light ">Es un placer para nosotros tenerte aquí</span>
+            <div className={`flex w-72 flex-row justify-items-center rounded-lg bg-gray ${selectedButton === "register"}  relative mx-auto my-2.5 `}>
+              <div className={`absolute ml-2 mt-1 h-6 w-32 rounded-md bg-white transition-all `} ref={divRef}></div>
+              <button className="z-10 m-auto h-8 w-32 rounded-md text-sm text-black" onClick={() => handleButtonClick("login")}>
+                Iniciar sesión
+              </button>
+              <button className="z-10 m-auto h-8 w-32 rounded-md text-sm text-black" onClick={() => handleButtonClick("register")}>
+                Registrarse
+              </button>
+            </div>
+            {selectedButton === "login" ? <Form inputs={loginForm} isLoginForm={true} /> : <Form inputs={registerForm} isLoginForm={false} />}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export { User };

@@ -125,6 +125,9 @@ const Visits = () => {
       </main>
     </>
   )
-}
+} 
+
+  
 
 export { Visits }
+
