@@ -1,6 +1,6 @@
 # Bienvenido a ctm_practicas 👋
 
-![Version](https://img.shields.io/badge/version-0.0.3--alpha-blue.svg?cacheSeconds=2592000)
+![Version](https://img.shields.io/badge/version-1.0.0--blue.svg?cacheSeconds=2592000)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 > Proyecto dedicado al registro y seguimiento de los aprendices que se encuentren actualmente en la etapa practica de su programa de formacion
@@ -30,6 +30,7 @@
 ```
 
 ## Notas en el API
+
 En api crear un archivo llamado: .env que tenga la siguiente forma:
 
 ```sh
@@ -47,6 +48,7 @@ El contenido de client fue creado usando: Vite.
 El contenido de server fue creado usando: npm init y tsc --init.
 
 ## Tecnologías
+
 ![TypeScript](https://img.shields.io/badge/TypeScript-ts-blue.svg?logo=typescript&logoColor=blue)
 ![React](https://img.shields.io/badge/React-react-blue.svg?logo=react&logoColor=blue)
 
