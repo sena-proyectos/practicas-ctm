@@ -48,6 +48,7 @@ export default {
         '2-25-75': '10rem auto',
         '2-50-50': '50% 50%',
         '2-90-10': '90% 10%',
+        '2-80-20': '80% 20%',
       },
       borderWidth: {
         1: '1.5px',
@@ -60,6 +61,10 @@ export default {
           '0%': { backgroundPosition: '0% 0%' },
           '100%': { backgroundPosition: '100% 0%' },
         },
+      },
+      screens: {
+        st1: { max: '980px', min: '777px' },
+        st2: { max: '776px', min: '640px' },
       },
     },
   },

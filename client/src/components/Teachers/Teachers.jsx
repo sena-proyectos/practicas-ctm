@@ -31,8 +31,6 @@ export const Teachers = () => {
       sidecolor: 'bg-third',
       linkcolor: 'bg-sky-400',
     },
-  ]
-  const colorsRowPair = [
     {
       hrcolor: 'border-third',
       sidecolor: 'bg-third',
@@ -135,7 +133,6 @@ export const Teachers = () => {
 
   const allColors = instructores.map((_, index) => ({
     ...colorsOddRow[index % colorsOddRow.length],
-    ...colorsRowPair[index % colorsRowPair.length],
   }))
 
   const startIndex = pageNumber * instructoresPerPage
@@ -148,11 +145,11 @@ export const Teachers = () => {
         <header className="grid place-items-center">
           <Search searchFilter />
         </header>
-        <section className="relative flex flex-col items-center">
-          <section className="grid grid-cols-4 px-12 py-6 gap-y-9 gap-x-10">
+        <section className="flex flex-col h-full gap-3">
+          <section className="grid grid-cols-1 gap-x-3 gap-y-4 md:grid-cols-4 px-8 md:px-12 pt-6 md:gap-y-2 md:gap-x-8 h-fit md:h-[85%] st1:grid-cols-3 st1:gap-y-4 st2:gap-y-4 st2:grid-cols-2">
             {allColors.slice(startIndex, endIndex).map((color, index) =>
               instructores[startIndex + index] ? (
-                <div className="rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[8.3rem]" key={index} {...color}>
+                <div className="rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[9rem]" key={index} {...color}>
                   <div className="flex flex-col w-4/5 gap-2 mx-auto my-auto">
                     <h6 className="font-medium text-center text-[0.9rem]">{instructores[startIndex + index].nombre}</h6>
                     <hr className={`font-bold ${color.hrcolor} border-1`} />
@@ -169,7 +166,9 @@ export const Teachers = () => {
               ) : null
             )}
           </section>
-          <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+          <div className="flex justify-center h-[13vh] relative st1:bottom-[-1.5rem] st2:bottom-[-3rem] bottom-[-4rem] md:bottom-0">
+            <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+          </div>
         </section>
         <Footer />
       </section>

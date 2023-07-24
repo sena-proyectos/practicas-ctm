@@ -19,7 +19,22 @@ export const AssignClass = () => {
         assign: true,
       },
       {
-        ficha: 2869476,
+        ficha: 2869467,
+        name: 'Pan y Tomate',
+        assign: false,
+      },
+      {
+        ficha: 1234567,
+        name: 'Fabricación de muebles contemporaneos',
+        assign: false,
+      },
+      {
+        ficha: 7654321,
+        name: 'Analisis y desarrollo de software',
+        assign: true,
+      },
+      {
+        ficha: 1234765,
         name: 'Pan y Tomate',
         assign: false,
       },
@@ -87,10 +102,10 @@ export const AssignClass = () => {
             <Button value={'Asignados'} bg="bg-third" px="px-2" textColor="text-black" font="font-light" textSize="text-sm" rounded="rounded-2xl" py="py-1" shadow="shadow-lg" clickeame={handleFilterAssigned} />
             <Button value={'Sin asignar'} bg="bg-third" px="px-2" textColor="text-black" font="font-light" textSize="text-sm" rounded="rounded-2xl" py="py-1" shadow="shadow-lg" clickeame={handleFilterUnassigned} />
           </div>
-          <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 px-10 h-[25rem] gap-4 pt-5">
+          <section className="grid grid-cols-1 px-10 pt-5 pb-2 gap-x-4 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
             {allColors.map((color, index) =>
               filteredCourses[index] ? (
-                <div key={index} {...color} className={`flex flex-col gap-1 p-3 border-2 rounded-xl ${color.bordercolor} h-fit`}>
+                <div key={index} {...color} className={`flex flex-col gap-1 p-3 border-2 rounded-xl ${color.bordercolor} md:h-[10.5rem] sm:h-[10rem]`}>
                   <header className="flex flex-row w-fit ">
                     <div className={`border-2 rounded-full w-14 h-14 ${color.bgcolor} ${color.bordercolor}`}>
                       <FaUser className="w-full h-full scale-75 rounded-full" />
@@ -99,9 +114,9 @@ export const AssignClass = () => {
                       <p className="text-xs font-medium">{filteredCourses[index].ficha}</p>
                     </div>
                   </header>
-                  <p className="text-sm font-light">{filteredCourses[index].name}</p>
-                  <div className="ml-auto w-fit">
-                    <Button value={filteredCourses[index].assign ? 'Quitar' : 'Asignar'} bg={filteredCourses[index].assign ? 'bg-red-300' : 'bg-slate-200'} textColor="text-black" font="font-extralight" rounded="rounded-full" textSize="text-sm" px="px-5" py="py-1" clickeame={() => handleBtnAssign(filteredCourses[index].ficha)} />
+                  <p className="text-[13px] font-light text-justify">{filteredCourses[index].name}</p>
+                  <div className="mt-auto ml-auto w-fit">
+                    <Button value={filteredCourses[index].assign ? 'Quitar' : 'Asignar'} bg={filteredCourses[index].assign ? 'bg-red-300' : 'bg-slate-200'} textColor="text-black" font="font-extralight" rounded="rounded-full" textSize="text-sm" px="px-5" py="py-[0.8px]" hover={filteredCourses[index].assign ? 'hover:bg-red-400' : 'hover:bg-green-300'} clickeame={() => handleBtnAssign(filteredCourses[index].ficha)} />
                   </div>
                 </div>
               ) : null
