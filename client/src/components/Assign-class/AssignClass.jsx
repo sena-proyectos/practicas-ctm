@@ -3,8 +3,77 @@ import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
 import { FaUser } from 'react-icons/fa'
+import { useState } from 'react'
 
 export const AssignClass = () => {
+  const [courses, setCourses] = useState({
+    data: [
+      {
+        ficha: 2473196,
+        name: 'Fabricación de muebles contemporaneos',
+        assign: false,
+      },
+      {
+        ficha: 2689476,
+        name: 'Analisis y desarrollo de software',
+        assign: true,
+      },
+      {
+        ficha: 2869476,
+        name: 'Pan y Tomate',
+        assign: false,
+      },
+    ],
+  })
+
+  const [filterAssign, setFilterAssign] = useState('assigned')
+
+  const handleBtnAssign = (ficha) => {
+    const updatedCourses = courses.data.map((course) => {
+      if (course.ficha === ficha) {
+        return {
+          ...course,
+          assign: !course.assign,
+        }
+      }
+      return course
+    })
+
+    setCourses({ data: updatedCourses })
+  }
+
+  const handleFilterAssigned = () => {
+    setFilterAssign('assigned')
+  }
+
+  const handleFilterUnassigned = () => {
+    setFilterAssign('unassigned')
+  }
+
+  const filteredCourses = courses.data.filter((course) => {
+    if (filterAssign === 'assigned') {
+      return course.assign === true
+    } else if (filterAssign === 'unassigned') {
+      return course.assign === false
+    }
+    return true // Si el filtro es "Mostrar Todos", muestra todos los cursos
+  })
+
+  const colorsCard = [
+    {
+      bordercolor: 'border-sky-400',
+      bgcolor: 'bg-third',
+    },
+    {
+      bordercolor: 'border-sky-950',
+      bgcolor: 'bg-slate-500',
+    },
+  ]
+
+  const allColors = filteredCourses.map((_, index) => ({
+    ...colorsCard[index % colorsCard.length],
+  }))
+
   return (
     <main className="flex flex-row min-h-screen">
       <Siderbar />
@@ -14,49 +83,29 @@ export const AssignClass = () => {
         </header>
         <section>
           <h2 className="text-center">Stiven Blandón Urrego</h2>
+          <div className="flex flex-row gap-5 mx-auto mt-2 w-fit">
+            <Button value={'Asignados'} bg="bg-third" px="px-2" textColor="text-black" font="font-light" textSize="text-sm" rounded="rounded-2xl" py="py-1" shadow="shadow-lg" clickeame={handleFilterAssigned} />
+            <Button value={'Sin asignar'} bg="bg-third" px="px-2" textColor="text-black" font="font-light" textSize="text-sm" rounded="rounded-2xl" py="py-1" shadow="shadow-lg" clickeame={handleFilterUnassigned} />
+          </div>
           <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 px-10 h-[25rem] gap-4 pt-5">
-            <div className="flex flex-col gap-1 p-3 border-2 rounded-xl border-sky-400 h-fit">
-              <header className="flex flex-row w-fit ">
-                <div className="border-2 rounded-full w-14 h-14 bg-sky-200 border-sky-500">
-                  <FaUser className="w-full h-full scale-75 rounded-full" />
+            {allColors.map((color, index) =>
+              filteredCourses[index] ? (
+                <div key={index} {...color} className={`flex flex-col gap-1 p-3 border-2 rounded-xl ${color.bordercolor} h-fit`}>
+                  <header className="flex flex-row w-fit ">
+                    <div className={`border-2 rounded-full w-14 h-14 ${color.bgcolor} ${color.bordercolor}`}>
+                      <FaUser className="w-full h-full scale-75 rounded-full" />
+                    </div>
+                    <div className={`relative w-24 h-5 my-auto text-center rounded-r-full ${color.bgcolor} ${color.bordercolor} right-2 -z-10`}>
+                      <p className="text-xs font-medium">{filteredCourses[index].ficha}</p>
+                    </div>
+                  </header>
+                  <p className="text-sm font-light">{filteredCourses[index].name}</p>
+                  <div className="ml-auto w-fit">
+                    <Button value={filteredCourses[index].assign ? 'Quitar' : 'Asignar'} bg={filteredCourses[index].assign ? 'bg-red-300' : 'bg-slate-200'} textColor="text-black" font="font-extralight" rounded="rounded-full" textSize="text-sm" px="px-5" py="py-1" clickeame={() => handleBtnAssign(filteredCourses[index].ficha)} />
+                  </div>
                 </div>
-                <div className="relative w-24 h-5 my-auto text-center rounded-r-full bg-sky-200 border-1 border-sky-500 right-2 -z-10">
-                  <p className="text-xs font-medium">2473196</p>
-                </div>
-              </header>
-              <p className="text-sm font-light">Fabricación de muebles contemporaneos</p>
-              <div className="ml-auto w-fit">
-                <Button value={'asignar'} bg="bg-slate-300" textColor="text-black" font="font-extraligth" rounded="rounded-full" textSize="text-sm" px="px-5" py="py-1" />
-              </div>
-            </div>
-            <div className="flex flex-col gap-1 p-3 border-2 rounded-xl border-sky-950 h-fit">
-              <header className="flex flex-row w-fit ">
-                <div className="border-2 rounded-full w-14 h-14 bg-slate-500 border-sky-950">
-                  <FaUser className="w-full h-full scale-75 rounded-full" />
-                </div>
-                <div className="relative w-24 h-5 my-auto text-center rounded-r-full bg-slate-500 border-1 border-sky-950 right-2 -z-10">
-                  <p className="text-xs font-medium">2473196</p>
-                </div>
-              </header>
-              <p className="text-sm font-light">Fabricación de muebles contemporaneos</p>
-              <div className="ml-auto w-fit">
-                <Button value={'asignar'} bg="bg-slate-300" textColor="text-black" font="font-extraligth" rounded="rounded-full" textSize="text-sm" px="px-5" py="py-1" />
-              </div>
-            </div>
-            <div className="flex flex-col gap-1 p-3 border-2 rounded-xl border-sky-400 h-fit">
-              <header className="flex flex-row w-fit ">
-                <div className="border-2 rounded-full w-14 h-14 bg-sky-200 border-sky-500">
-                  <FaUser className="w-full h-full scale-75 rounded-full" />
-                </div>
-                <div className="relative w-24 h-5 my-auto text-center rounded-r-full bg-sky-200 border-1 border-sky-500 right-2 -z-10">
-                  <p className="text-xs font-medium">2473196</p>
-                </div>
-              </header>
-              <p className="text-sm font-light">Fabricación de muebles contemporaneos</p>
-              <div className="ml-auto w-fit">
-                <Button value={'asignar'} bg="bg-slate-300" textColor="text-black" font="font-extraligth" rounded="rounded-full" textSize="text-sm" px="px-5" py="py-1" />
-              </div>
-            </div>
+              ) : null
+            )}
           </section>
         </section>
         <Footer />
