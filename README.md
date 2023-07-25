@@ -47,6 +47,10 @@ Reemplazar credenciales para conectarte a MySQL. Este archivo va ser ignorado en
 El contenido de client fue creado usando: Vite.
 El contenido de server fue creado usando: npm init y tsc --init.
 
+## Diseños de baja fidelidad
+
+> Figma https://www.figma.com/file/kEti36tdXAc1RqEp7MVGGi/Dise%C3%B1os-de-baja-fidelidad-SENA?type=design&node-id=0%3A1&mode=design&t=VrfBPJ0BYJrpWkEp-1
+
 ## Tecnologías
 
 ### Front end
