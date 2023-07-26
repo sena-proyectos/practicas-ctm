@@ -42,8 +42,8 @@ const Student = () => {
       const response = await GetUsersById(userID)
       const res = response.data.data[0]
 
-      const nombre = res.nombre
-      const apellido = res.apellido
+      const nombre = res.nombre_aprendiz
+      const apellido = res.apellido_aprendiz
       setNombreCompleto(`${nombre} ${apellido}`)
       setInfoUserById(res)
     } catch (error) {
@@ -97,22 +97,22 @@ const Student = () => {
   return (
     <>
       {modalFilter && <Modals bodyFilter title={'Filtrar'} view={filterStudents} closeModal={handleModal} />}
-      {infoStudent && <Modals closeModal={handleModalInfo} bodyStudent title={nombreCompleto} emailStudent={userInfoById.correo_electronico} documentStudent={userInfoById.num_documento} celStudent={userInfoById.num_celular} trainingProgram={'Análisis y Desarrollo de Software'} ficha={'2473196'} academicLevel={'Tecnología'} trainingStage={'Lectiva'} modalitie={'Contrato de Aprendizaje'} finLectiva={'05 Abril 2023'} inicioProductiva={'02 Mayo 2023'} company={'Servicio Nacional del Aprendizaje'} innmediateSuperior={'Richard Alexander Betancur Sierra'} workstation={'Instructor'} emailSuperior={'rbetancur@misena.edu.co'} celSuperior={'123456789'} arl={'Sura'} />}
-      <main className="flex min-h-screen flex-row">
+      {infoStudent && <Modals closeModal={handleModalInfo} bodyStudent title={nombreCompleto} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} celStudent={userInfoById.celular_aprendiz} trainingProgram={'Análisis y Desarrollo de Software'} ficha={'2473196'} academicLevel={'Tecnología'} trainingStage={'Lectiva'} modalitie={'Contrato de Aprendizaje'} finLectiva={'05 Abril 2023'} inicioProductiva={'02 Mayo 2023'} company={'Servicio Nacional del Aprendizaje'} innmediateSuperior={'Richard Alexander Betancur Sierra'} workstation={'Instructor'} emailSuperior={'rbetancur@misena.edu.co'} celSuperior={'123456789'} arl={'Sura'} />}
+      <main className="flex flex-row min-h-screen">
         <Siderbar />
-        <section className="relative grid w-min flex-auto grid-rows-3-10-75-15 ">
+        <section className="relative grid flex-auto w-min grid-rows-3-10-75-15 ">
           <header className="grid place-items-center ">
             <Search searchFilter iconClick={handleIconClick} searchStudent={searchApprentices} />
           </header>
           {searchedApprentices.length > 0 && !error ? (
             <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
               {searchedApprentices.map((apprentice, i) => (
-                <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre} ${apprentice.apellido}`} subtitle={apprentice.correo_electronico} lione={apprentice.programa_formacion_inscripcion} litwo={apprentice.numero_ficha_inscripcion} key={i} userID={apprentice.id_usuario} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} modalClicked={modalStudent} />
+                <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_aprendiz} ${apprentice.apellido_aprendiz}`} subtitle={apprentice.email_aprendiz} lione={apprentice.programa_formacion_inscripcion} litwo={apprentice.numero_ficha_inscripcion} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} modalClicked={modalStudent} />
               ))}
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3 ">
-              {error ? <h2 className="text-red-500">{error}</h2> : apprentices.map((apprentice, i) => <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre} ${apprentice.apellido}`} subtitle={apprentice.correo_electron} lione={apprentice.programa_formacion_inscripcion} litwo={apprentice.numero_ficha_inscripcion} key={i} userID={apprentice.id_usuario} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal modalClicked={modalStudent}/>)}
+              {error ? <h2 className="text-red-500">{error}</h2> : apprentices.map((apprentice, i) => <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_aprendiz} ${apprentice.apellido_aprendiz}`} subtitle={apprentice.email_aprendiz} lione={apprentice.programa_formacion_inscripcion} litwo={apprentice.numero_ficha_inscripcion} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal modalClicked={modalStudent} />)}
               {apprentices.length === 0 && !error && searchedApprentices.length === 0 && (
                 <>
                   <Skeleton width={300} height={200} style={{ marginBottom: '1rem', margin: '1.2em' }} />

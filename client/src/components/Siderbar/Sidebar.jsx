@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 
 import Cookies from 'js-cookie'
-import jwtdecoded from 'jwt-decode'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { IoCalendarClearOutline, IoDocumentTextOutline, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoPeopleOutline, IoPersonAddOutline, IoCheckmarkCircleOutline, IoBookOutline, IoArrowForwardOutline } from 'react-icons/io5'
@@ -10,12 +9,16 @@ import { colorIcon } from '../../import/staticData'
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { useDispatch, useSelector } from 'react-redux'
+import jwtDecode from 'jwt-decode'
+import { setIdRol } from '../../app/rolesSlice'
 
 const Siderbar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [open, setOpen] = useState(true)
-  
+  const [dataFullName, setDataFullName] = useState(null)
+
   useEffect(() => {
     const handleResize = () => {
       const isSmallScreen = window.innerWidth < 640 // Tamaño de la media query "sm"
@@ -30,20 +33,31 @@ const Siderbar = () => {
     }
   }, [])
 
-  const [nameRol, setNameRol] = useState('')
-  const [nameUser, setNameUser] = useState('')
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const token = Cookies.get('token')
-    // mostrar alerta para el usuario
-    if (!token) window.location.href = '/'
 
-    const decoded = jwtdecoded(token)
+    if (!token) {
+      window.location.href = '/'
+      return
+    }
 
-    setNameRol(decoded.data.user.id_rol === 1 ? 'Administrador' : 'Instructor')
+    const tokenData = jwtDecode(token)
+    const { id_rol, nombres_usuario, apellidos_usuario } = tokenData.data.user
+    const fullName = `${nombres_usuario} ${apellidos_usuario}`
+    setDataFullName(fullName)
+    dispatch(setIdRol(id_rol))
+  }, [dispatch])
 
-    setNameUser(decoded.data.user.nombre + ' ' + decoded.data.user.apellido)
-  }, [])
+  const idRol = useSelector((state) => state.id_rol)
+
+  const rolesNames = {
+    1: 'Administrador',
+    2: 'Coordinador',
+    3: 'Instructor de Seguimiento',
+    4: 'Instructor Líder',
+  }
 
   const styles = (path) => {
     return location.pathname === path ? 'flex items-center relative pl-10 py-2 font-semibold bg-white rounded-s-2xl w-[115%] h-8' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] h-8 transition '
@@ -67,8 +81,8 @@ const Siderbar = () => {
             <img className="object-cover" src="public/user.png" alt="img_user" />
           </div>
           <div className={`w-full pl-3 pr-10 ${!open && 'hidden'}`}>
-            <h5 className="text-xs ">{nameUser || <Skeleton width={100} />}</h5>
-            <span className="text-sm font-semibold text-center">{nameRol || <Skeleton />}</span>
+            <h5 className="text-xs ">{dataFullName || <Skeleton width={100} />}</h5>
+            <span className="text-sm font-semibold text-center">{rolesNames[idRol] || <Skeleton />}</span>
           </div>
         </section>
         <ul className="flex flex-col items-start justify-center cursor-pointer">
