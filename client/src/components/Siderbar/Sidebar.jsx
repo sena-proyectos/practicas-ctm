@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { IoCalendarClearOutline, IoDocumentTextOutline, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoPeopleOutline, IoPersonAddOutline, IoCheckmarkCircleOutline, IoBookOutline, IoArrowForwardOutline } from 'react-icons/io5'
 
-import { colorIcon } from '../../import/staticData'
+import { colorIcon, rolesNames, keysRoles } from '../../import/staticData'
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -52,13 +52,6 @@ const Siderbar = () => {
 
   const idRol = useSelector((state) => state.id_rol)
 
-  const rolesNames = {
-    1: 'Administrador',
-    2: 'Coordinador',
-    3: 'Instructor de Seguimiento',
-    4: 'Instructor Líder',
-  }
-
   const styles = (path) => {
     return location.pathname === path ? 'flex items-center relative pl-10 py-2 font-semibold bg-white rounded-s-2xl w-[115%] h-8' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] h-8 transition '
   }
@@ -104,22 +97,26 @@ const Siderbar = () => {
                 {open && 'Aprendices'}
               </Link>
             </li>
-            <li>
-              <Link to="/bitacoras" className={styles('/bitacoras')}>
-                <span className={spanStyle('/bitacoras')}>
-                  <IoDocumentTextOutline />
-                </span>
-                {open && 'Bitácoras'}
-              </Link>
-            </li>
-            <li>
-              <Link to="/inscribir-aprendiz" className={styles('/inscribir-aprendiz')}>
-                <span className={spanStyle('/inscribir-aprendiz')}>
-                  <IoPersonAddOutline />
-                </span>
-                {open && 'Inscripciones'}
-              </Link>
-            </li>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number([2])) && (
+              <li>
+                <Link to="/bitacoras" className={styles('/bitacoras')}>
+                  <span className={spanStyle('/bitacoras')}>
+                    <IoDocumentTextOutline />
+                  </span>
+                  {open && 'Bitácoras'}
+                </Link>
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <li>
+                <Link to="/inscribir-aprendiz" className={styles('/inscribir-aprendiz')}>
+                  <span className={spanStyle('/inscribir-aprendiz')}>
+                    <IoPersonAddOutline />
+                  </span>
+                  {open && 'Inscripciones'}
+                </Link>
+              </li>
+            )}
             <li>
               <Link to="/aprov" className={styles('/aprov')}>
                 <span className={spanStyle('/aprov')}>
@@ -128,14 +125,16 @@ const Siderbar = () => {
                 {open && 'Aprobaciones'}
               </Link>
             </li>
-            <li>
-              <Link to="/instructores" className={styles('/instructores')}>
-                <span className={spanStyle('/instructores')}>
-                  <IoPeopleOutline />
-                </span>
-                {open && 'Instructores'}
-              </Link>
-            </li>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <li>
+                <Link to="/instructores" className={styles('/instructores')}>
+                  <span className={spanStyle('/instructores')}>
+                    <IoPeopleOutline />
+                  </span>
+                  {open && 'Instructores'}
+                </Link>
+              </li>
+            )}
             <li>
               <Link to="/asignar-ficha" className={styles('/asignar-ficha')}>
                 <span className={spanStyle('/asignar-ficha')}>
@@ -144,14 +143,16 @@ const Siderbar = () => {
                 {open && 'Fichas'}
               </Link>
             </li>
-            <li>
-              <Link to="/visitas" className={styles('/visitas')}>
-                <span className={spanStyle('/visitas')}>
-                  <IoCalendarClearOutline />
-                </span>
-                {open && 'Visitas'}
-              </Link>
-            </li>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number([2])) && (
+              <li>
+                <Link to="/visitas" className={styles('/visitas')}>
+                  <span className={spanStyle('/visitas')}>
+                    <IoCalendarClearOutline />
+                  </span>
+                  {open && 'Visitas'}
+                </Link>
+              </li>
+            )}
             <hr className="mx-auto my-2 h-[1px] w-full text-white" />
             <li>
               <Link to="/config" className={styles('/config')}>

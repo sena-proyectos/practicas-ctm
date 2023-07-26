@@ -3,6 +3,15 @@ import { FaRegAddressBook } from 'react-icons/fa'
 import { BsCalendar4 } from 'react-icons/bs'
 import { LuCalendarCheck2, LuCalendarX2 } from 'react-icons/lu'
 
+export const rolesNames = {
+  1: 'Administrador',
+  2: 'Coordinador',
+  3: 'Instructor de Seguimiento',
+  4: 'Instructor Líder',
+}
+
+export const keysRoles = Object.keys(rolesNames)
+
 /*
  * src: src\components\Home\Home.jsx
  */
