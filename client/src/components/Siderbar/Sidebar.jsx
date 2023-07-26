@@ -97,7 +97,7 @@ const Siderbar = () => {
                 {open && 'Aprendices'}
               </Link>
             </li>
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number([2])) && (
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
               <li>
                 <Link to="/bitacoras" className={styles('/bitacoras')}>
                   <span className={spanStyle('/bitacoras')}>
@@ -143,7 +143,7 @@ const Siderbar = () => {
                 {open && 'Fichas'}
               </Link>
             </li>
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number([2])) && (
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
               <li>
                 <Link to="/visitas" className={styles('/visitas')}>
                   <span className={spanStyle('/visitas')}>
