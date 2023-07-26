@@ -49,6 +49,16 @@ export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Respon
   }
 }
 
+export const getDetailInfoStudents: RequestHandler<{}, Response, unknown> = async (_req: Request, res: Response): Promise<Response> => {
+  try {
+    const [students] = await connection.query('SELECT CONCAT(aprendices.nombre_aprendiz, " ", aprendices.apellido_aprendiz) AS nombre_completo, aprendices.email_aprendiz, fichas.nombre_programa_formacion, fichas.numero_ficha FROM aprendices INNER JOIN detalle_fichas_aprendices ON aprendices.id_aprendiz = detalle_fichas_aprendices.id_aprendiz INNER JOIN fichas ON detalle_fichas_aprendices.id_ficha = fichas.id_ficha', [])
+    if (!Array.isArray(students) || students?.length === 0) throw new DbErrorNotFound('Error al conseguir la información de los estudiantes.', errorCodes.ERROR_GET_STUDENTS)
+    return res.status(httpStatus.OK).json({ data: students })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 export const getDetailInfoStudent: RequestHandler<{ }, Response, unknown> = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params
   try {
