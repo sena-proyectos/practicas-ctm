@@ -1,24 +1,30 @@
 export interface inscriptionData {
-  id_modalidad_inscripcion: number
-  nombres_inscripcion: string
-  apellidos_inscripcion: string
+  nombre_inscripcion: string
+  apellido_inscripcion: string
   tipo_documento_inscripcion: string
-  numero_documento_inscripcion: string
-  correo_electronico_inscripcion: string
-  numero_celular_inscripcion: string
-  etapa_formacion_actual_inscripcion: string
-  nivel_formacion_actual_inscripcion: string
-  id_ficha_inscripcion: number
-  id_instructor_lider_inscripcion: number
+  documento_inscripción: number
+  email_inscripcion: string
+  inscripción_celular: number
+  etapa_actual_inscripcion: string
+  modalidad_inscripción: string
+  nombre_programa_inscripción: string
+  nivel_formacion_inscripcion: string
+  numero_ficha_inscripcion: number
+  fecha_fin_lectiva_inscripcion: Date
+  nombre_instructor_lider_inscripcion: string
+  email_instructor_lider_inscripcion: string
   apoyo_sostenimiento_inscripcion: string
-  id_empresa_inscripcion?: number
-  nombre_completo_jefe_inmediato_inscripcion?: string
-  cargo_jefe_inmediato_inscripcion?: string
-  telefono_jefe_inmediato_inscripcion?: string
-  correo_jefe_inmediato_inscripcion?: string
-  asume_pago_arl_inscripcion?: string
-  link_documentos_pdf_inscripcion: string
-  observaciones_inscripcion: string
-  fecha_creacion_inscripcion: Date
-  id_usuario_responsable_inscripcion: number
+  nit_empresa_inscripcion?: number
+  nombre_empresa_inscripción?: string
+  direccion_empresa_inscripcion?: string
+  nombre_jefe_empresa_inscripcion?: string
+  cargo_jefe_empresa_inscripcion?: string
+  telefono_jefe_empresa_inscripcion?: number
+  email_jefe_empresa_inscripcion?: string
+  arl?: string
+  link_documentos: string
+  observaciones: string
+  estado_general_inscripcion?: string
+  fecha_creación?: Date
+  responsable_inscripcion: string
 }

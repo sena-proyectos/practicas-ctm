@@ -5,6 +5,7 @@ import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { DbErrorNotFound, type CustomError } from '../errors/customErrors.js'
 import { type RowDataPacket } from 'mysql2'
+import { type infoStudents } from '../interfaces/students.interfaces.js'
 
 export const getStudents = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -70,8 +71,8 @@ export const getDetailInfoStudent: RequestHandler<{ }, Response, unknown> = asyn
   }
 }
 
-export const createStudents = async (req: Request, res: Response): Promise<Response> => {
-  const students = req.body
+export const createStudents: RequestHandler<{}, Response, infoStudents[]> = async (req: Request, res: Response): Promise<Response> => {
+  const students = req.body as infoStudents[]
   try {
     let i = 0
     for (const student of students) {
