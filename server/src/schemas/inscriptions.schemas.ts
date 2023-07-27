@@ -89,11 +89,11 @@ export const inscriptionSchema = Joi.object({
     .allow(null)
     .min(3),
   link_documentos: Joi
+    .string()
     .required(),
   observaciones: Joi
     .string()
-    .required()
-    .min(3),
+    .required(),
   responsable_inscripcion: Joi
     .string()
     .required()
