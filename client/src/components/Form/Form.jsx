@@ -6,7 +6,6 @@ import { Button } from '../Utils/Button/Button'
 import { Login } from '../../api/httpRequest'
 
 import Cookie from 'js-cookie'
-import jwtdecoded from 'jwt-decode'
 import Swal from 'sweetalert2'
 
 const Form = ({ inputs }) => {
@@ -50,13 +49,7 @@ const Form = ({ inputs }) => {
         secure: true,
       })
 
-      const getCookies = Cookie.get('token')
-
-      const decoded = jwtdecoded(getCookies)
-
-      const id_rol = decoded.data.user.id_rol
-
-      if (id_rol === 1 || id_rol === 2) navigate('/home')
+      navigate('/home')
     } catch (error) {
       const message = error.response.data.error.info.message
       Swal.fire({

@@ -16,14 +16,14 @@ export const checkExistingUser: RequestHandler<{}, Response, userForm> = async (
   try {
     if (isNaN(numberParsed)) throw new NumberIsNaN('El número de documento no es un número válido.')
     const [user] = await connection.query('SELECT numero_documento_usuario, email_usuario FROM usuarios WHERE numero_documento_usuario = ? OR email_usuario = ?', [numberParsed, correo_electronico])
-    if ((Array.isArray(user) && user.length > 0)) throw new UserExists('Este documento y/o correo ya está/n registrado/s en el sistema.')
+    if (Array.isArray(user) && user.length > 0) throw new UserExists('Este documento y/o correo ya está/n registrado/s en el sistema.')
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)
   }
 }
 
-export const checkLoginData: RequestHandler<{ num_documento: string, contrasena: string }, Response, LoginData> = (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction) => {
+export const checkLoginData: RequestHandler<{ num_documento: string; contrasena: string }, Response, LoginData> = (req: Request<{ num_documento: string; contrasena: string }>, res: Response, next: NextFunction) => {
   const { num_documento, contrasena } = req.body as LoginData
   const numberParsed = Number(num_documento)
   try {

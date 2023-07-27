@@ -1,20 +1,11 @@
 import { Card } from '../Utils/Card/Card'
 import { Siderbar } from '../Siderbar/Sidebar'
-import { cards } from '../../import/staticData'
+import { rolesCard } from '../../import/staticData'
 import { Footer } from '../Footer/Footer'
-
-import { useEffect } from 'react'
-
-import Cookies from 'js-cookie'
+import { useSelector } from 'react-redux'
 
 const Home = () => {
-  useEffect(() => {
-    const token = Cookies.get('token')
-    if (!token) {
-      window.location.href = '/'
-    }
-  }, [])
-
+  const idRol = useSelector((state) => state.id_rol)
   return (
     <main className="flex flex-row min-h-screen">
       <Siderbar />
@@ -23,7 +14,7 @@ const Home = () => {
           <h1 className="text-2xl font-medium text-center">Bienvenido </h1>
         </header>
         <div className="grid grid-cols-1 gap-1 p-5 sm:grid-cols-2 md:grid-cols-3 ">
-          {cards.map(({ title, titleColor, description, buttonText, bgColor, sombra, link }) => {
+          {rolesCard[idRol ?? 1].map(({ title, titleColor, description, buttonText, bgColor, sombra, link }) => {
             return <Card cardHome bgColor={bgColor} shadow={`shadow-inner-custom shadow-${sombra}`} scale={'scale-90'} titleColor={titleColor} title={title} description={description} roundedLink={'rounded-md'} buttonText={buttonText} key={title} link={link} transition={`transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 hover:${bgColor}/100 duration-500`} />
           })}
         </div>
