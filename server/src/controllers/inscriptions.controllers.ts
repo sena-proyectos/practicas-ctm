@@ -3,7 +3,9 @@ import { type inscriptionData } from '../interfaces/inscriptions.interfaces.js'
 import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
-import { DbError, type CustomError } from '../errors/customErrors.js'
+import { type CustomError, DbErrorNotFound } from '../errors/customErrors.js'
+import { type RowDataPacket } from 'mysql2'
+import { errorCodes } from '../models/errorCodes.enums.js'
 
 export const getInscriptions = async (_req: Request, res: Response): Promise<Response> => {
   try {
@@ -25,65 +27,30 @@ export const getInscriptionById: RequestHandler<{ id: string }, Response, inscri
   }
 }
 
-export const createInscription: RequestHandler<{}, Response, inscriptionData> = async (req: Request, res: Response): Promise<Response> => {
-  const {
-    id_modalidad_inscripcion,
-    nombres_inscripcion,
-    apellidos_inscripcion,
-    tipo_documento_inscripcion,
-    numero_documento_inscripcion,
-    correo_electronico_inscripcion,
-    numero_celular_inscripcion,
-    etapa_formacion_actual_inscripcion,
-    nivel_formacion_actual_inscripcion,
-    id_ficha_inscripcion,
-    id_instructor_lider_inscripcion,
-    apoyo_sostenimiento_inscripcion,
-    id_empresa_inscripcion,
-    nombre_completo_jefe_inmediato_inscripcion,
-    cargo_jefe_inmediato_inscripcion,
-    telefono_jefe_inmediato_inscripcion,
-    correo_jefe_inmediato_inscripcion,
-    asume_pago_arl_inscripcion,
-    link_documentos_pdf_inscripcion,
-    observaciones_inscripcion,
-    // fecha_creacion_inscripcion,
-    id_usuario_responsable_inscripcion
-  } = req.body
+export const createInscriptions: RequestHandler<{}, Response, inscriptionData> = async (req: Request, res: Response): Promise<Response> => {
+  const inscriptions = req.body as inscriptionData[]
   try {
-    await connection.query(
-      'INSERT INTO inscripciones (id_modalidad_inscripcion, nombres_inscripcion, apellidos_inscripcion, tipo_documento_inscripcion, numero_documento_inscripcion, correo_electronico_inscripcion, numero_celular_inscripcion, etapa_formacion_actual_inscripcion, nivel_formacion_actual_inscripcion, id_ficha_inscripcion, id_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, id_empresa_inscripcion, nombre_completo_jefe_inmediato_inscripcion, cargo_jefe_inmediato_inscripcion, telefono_jefe_inmediato_inscripcion, correo_jefe_inmediato_inscripcion, asume_pago_arl_inscripcion, link_documentos_pdf_inscripcion, observaciones_inscripcion, id_usuario_responsable_inscripcion, fecha_creacion_inscripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE())',
-      [
-        id_modalidad_inscripcion,
-        nombres_inscripcion,
-        apellidos_inscripcion,
-        tipo_documento_inscripcion,
-        numero_documento_inscripcion,
-        correo_electronico_inscripcion,
-        numero_celular_inscripcion,
-        etapa_formacion_actual_inscripcion,
-        nivel_formacion_actual_inscripcion,
-        id_ficha_inscripcion,
-        id_instructor_lider_inscripcion,
-        apoyo_sostenimiento_inscripcion,
-        id_empresa_inscripcion,
-        nombre_completo_jefe_inmediato_inscripcion,
-        cargo_jefe_inmediato_inscripcion,
-        telefono_jefe_inmediato_inscripcion,
-        correo_jefe_inmediato_inscripcion,
-        asume_pago_arl_inscripcion,
-        link_documentos_pdf_inscripcion,
-        observaciones_inscripcion,
-        id_usuario_responsable_inscripcion
-      ]
-    )
-    return res.status(httpStatus.CREATED).json({ message: 'Inscripción creada.' })
+    let i = 0
+    for (const inscription of inscriptions) {
+      const {
+        nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripción, email_inscripcion, inscripción_celular, etapa_actual_inscripcion, modalidad_inscripción, nombre_programa_inscripción, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
+      } = inscription
+      const [result] = await connection.query(
+        'INSERT INTO inscripciones (nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripción, email_inscripcion, inscripción_celular, etapa_actual_inscripcion, modalidad_inscripción, nombre_programa_inscripción, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripción, email_inscripcion, inscripción_celular, etapa_actual_inscripcion, modalidad_inscripción, nombre_programa_inscripción, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
+        ]
+      )
+      if ((result as RowDataPacket[]).length === 0) throw new DbErrorNotFound(`No se pudo crear la inscripcion número ${i}.`, errorCodes.ERROR_CREATE_STUDENT)
+      i += 1
+    }
+    return res.status(httpStatus.CREATED).json({ data: { infoInscription: `Added ${i}`, msg: 'Inscripciones creados' } })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
 }
 
-export const editInscription: RequestHandler<{ id: string }, Response, inscriptionData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+// ! NOT BEING USED ----------------------------------------------
+/* export const editInscription: RequestHandler<{ id: string }, Response, inscriptionData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
   const {
     id_modalidad_inscripcion,
     nombres_inscripcion,
@@ -143,4 +110,4 @@ export const editInscription: RequestHandler<{ id: string }, Response, inscripti
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
-}
+} */

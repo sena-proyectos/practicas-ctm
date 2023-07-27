@@ -1,107 +1,101 @@
 import Joi from 'joi'
 
 export const inscriptionSchema = Joi.object({
-  id_modalidad_inscripcion: Joi
-    .number()
-    .required()
-    .min(1),
-  nombres_inscripcion: Joi
+  nombre_inscripcion: Joi
     .string()
     .required()
-    .min(3)
-    .max(50),
-  apellidos_inscripcion: Joi
+    .min(3),
+  apellido_inscripcion: Joi
     .string()
     .required()
-    .min(3)
-    .max(45),
+    .min(3),
   tipo_documento_inscripcion: Joi
     .string()
-    .required()
-    .min(2)
-    .max(10),
-  numero_documento_inscripcion: Joi
-    .string()
-    .required()
-    .min(5)
-    .max(20),
-  correo_electronico_inscripcion: Joi
-    .string()
-    .required()
-    .min(5)
-    .max(60),
-  numero_celular_inscripcion: Joi
-    .string()
-    .required()
-    .min(5)
-    .max(15),
-  etapa_formacion_actual_inscripcion: Joi
-    .string()
-    .required()
-    .min(3)
-    .max(15),
-  nivel_formacion_actual_inscripcion: Joi
-    .string()
-    .required()
-    .min(3)
-    .max(20),
-  id_ficha_inscripcion: Joi
+    .required(),
+  documento_inscripción: Joi
     .number()
+    .required(),
+  email_inscripcion: Joi
+    .string()
+    .email()
     .required()
-    .min(1),
-  id_instructor_lider_inscripcion: Joi
+    .min(3),
+  inscripción_celular: Joi
     .number()
+    .required(),
+  etapa_actual_inscripcion: Joi
+    .string()
     .required()
-    .min(1),
+    .min(3),
+  modalidad_inscripción: Joi
+    .string()
+    .required()
+    .min(3),
+  nombre_programa_inscripción: Joi
+    .string()
+    .required(),
+  nivel_formacion_inscripcion: Joi
+    .string()
+    .required()
+    .min(3),
+  numero_ficha_inscripcion: Joi
+    .number()
+    .required(),
+  fecha_fin_lectiva_inscripcion: Joi
+    .date()
+    .required(),
+  nombre_instructor_lider_inscripcion: Joi
+    .string()
+    .required()
+    .min(3),
+  email_instructor_lider_inscripcion: Joi
+    .string()
+    .email()
+    .required()
+    .min(3),
   apoyo_sostenimiento_inscripcion: Joi
     .string()
     .required()
-    .min(2)
-    .max(50),
-  id_empresa_inscripcion: Joi
+    .min(3),
+  nit_empresa_inscripcion: Joi
     .number()
-    .min(1)
     .allow(null),
-  nombre_completo_jefe_inmediato_inscripcion: Joi
+  nombre_empresa_inscripción: Joi
     .string()
-    .min(3)
-    .max(100)
+    .allow(null)
+    .min(3),
+  direccion_empresa_inscripcion: Joi
+    .string()
+    .allow(null)
+    .min(3),
+  nombre_jefe_empresa_inscripcion: Joi
+    .string()
+    .allow(null)
+    .min(3),
+  cargo_jefe_empresa_inscripcion: Joi
+    .string()
+    .allow(null)
+    .min(3),
+  telefono_jefe_empresa_inscripcion: Joi
+    .number()
     .allow(null),
-  cargo_jefe_inmediato_inscripcion: Joi
+  email_jefe_empresa_inscripcion: Joi
     .string()
-    .min(3)
-    .max(100)
-    .allow(null),
-  telefono_jefe_inmediato_inscripcion: Joi
+    .email()
+    .allow(null)
+    .min(3),
+  arl: Joi
     .string()
-    .min(5)
-    .max(100)
-    .allow(null),
-  correo_jefe_inmediato_inscripcion: Joi
+    .allow(null)
+    .min(3),
+  link_documentos: Joi
     .string()
-    .min(5)
-    .max(100)
-    .allow(null),
-  asume_pago_arl_inscripcion: Joi
-    .string()
-    .min(2)
-    .max(20)
-    .allow(null),
-  link_documentos_pdf_inscripcion: Joi
-    .string()
-    .required()
-    .min(5)
-    .max(200),
-  observaciones_inscripcion: Joi
-    .string()
-    .required()
-    .min(1)
-    .max(200),
-  fecha_creacion_inscripcion: Joi
-    .date()
     .required(),
-  id_usuario_responsable_inscripcion: Joi
-    .number()
+  observaciones: Joi
+    .string()
+    .required(),
+  responsable_inscripcion: Joi
+    .string()
     .required()
-    .min(1)
+    .min(3)
 })

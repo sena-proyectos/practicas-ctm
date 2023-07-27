@@ -47,7 +47,7 @@ CREATE TABLE `aprendices` (
   CONSTRAINT `aprendices_ibfk_2` FOREIGN KEY (`id_modalidad`) REFERENCES `modalidades` (`id_modalidad`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `aprendices_ibfk_3` FOREIGN KEY (`id_jefe`) REFERENCES `jefes` (`id_jefe`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `aprendices_ibfk_4` FOREIGN KEY (`id_arl`) REFERENCES `arl` (`id_arl`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,7 +56,7 @@ CREATE TABLE `aprendices` (
 
 LOCK TABLES `aprendices` WRITE;
 /*!40000 ALTER TABLE `aprendices` DISABLE KEYS */;
-INSERT INTO `aprendices` VALUES (1,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','2023-11-02','practicas',1,1,1,1);
+INSERT INTO `aprendices` VALUES (1,'Lorena','Quiceno Giraldo','CC','1028882894','lorenquiceno@gmail.com','3245887367','2023-11-02','practicas',1,1,1,1),(2,'Stiven','Benjumea','CC','1028882444','stevenbenjumea9@gmail.com','3245880123','2023-11-02','practicas',1,1,1,1),(3,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','2023-11-02','practicas',1,1,1,1),(4,'Juan Guillermo','Gomez','CC','1023456789','ilestar@gmail.com','3105440924','2023-11-02','practicas',1,1,1,1);
 /*!40000 ALTER TABLE `aprendices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -162,6 +162,7 @@ CREATE TABLE `detalle_fichas_aprendices` (
 
 LOCK TABLES `detalle_fichas_aprendices` WRITE;
 /*!40000 ALTER TABLE `detalle_fichas_aprendices` DISABLE KEYS */;
+INSERT INTO `detalle_fichas_aprendices` VALUES (1,1),(1,2);
 /*!40000 ALTER TABLE `detalle_fichas_aprendices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -181,7 +182,7 @@ CREATE TABLE `detalles_inscripciones` (
   PRIMARY KEY (`id_detalle_inscripcion`),
   KEY `id_inscripcion` (`id_inscripcion`),
   CONSTRAINT `detalles_inscripciones_ibfk_1` FOREIGN KEY (`id_inscripcion`) REFERENCES `inscripciones` (`id_inscripcion`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +191,7 @@ CREATE TABLE `detalles_inscripciones` (
 
 LOCK TABLES `detalles_inscripciones` WRITE;
 /*!40000 ALTER TABLE `detalles_inscripciones` DISABLE KEYS */;
-INSERT INTO `detalles_inscripciones` VALUES (1,'3','Pendiente',NULL,2),(2,'4','Pendiente',NULL,2),(3,'2','Pendiente',NULL,2);
+INSERT INTO `detalles_inscripciones` VALUES (1,'3','Pendiente',NULL,1),(2,'4','Pendiente',NULL,1),(3,'2','Pendiente',NULL,1),(4,'3','Pendiente',NULL,2),(5,'4','Pendiente',NULL,2),(6,'2','Pendiente',NULL,2);
 /*!40000 ALTER TABLE `detalles_inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -289,11 +290,14 @@ CREATE TABLE `inscripciones` (
   `direccion_empresa_inscripcion` varchar(300) DEFAULT NULL,
   `nombre_jefe_empresa_inscripcion` varchar(300) DEFAULT NULL,
   `cargo_jefe_empresa_inscripcion` varchar(300) DEFAULT NULL,
-  `telefono_jefe_empresa_inscripcion` int DEFAULT NULL,
+  `telefono_jefe_empresa_inscripcion` varchar(300) DEFAULT NULL,
   `email_jefe_empresa_inscripcion` varchar(300) DEFAULT NULL,
   `arl` varchar(1000) DEFAULT NULL,
   `link_documentos` varchar(100) NOT NULL,
   `observaciones` varchar(2500) NOT NULL,
+  `estado_general_inscripcion` varchar(60) NOT NULL DEFAULT 'Pendiente',
+  `fecha_creación` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `responsable_inscripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id_inscripcion`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -304,7 +308,7 @@ CREATE TABLE `inscripciones` (
 
 LOCK TABLES `inscripciones` WRITE;
 /*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
-INSERT INTO `inscripciones` VALUES (2,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','lectiva','pasantias','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','ninguna',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'la empresa','pdf.pdf','N/A');
+INSERT INTO `inscripciones` VALUES (1,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','lectiva','pasantias','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','ninguna',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'la empresa','pdf.pdf','N/A','Pendiente','2023-07-27 16:34:43','Admin Admin'),(2,'Lorena','Quiceno Giraldo','CC','1082882294','lorenquiceno@gmail.com','3245887367','Prácticas','Contrato de aprendizaje','Análisis y Desarrollo de Software','Tecnología','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','La empresa','9003238537','Teleperformance','Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','la empresa','pdf(1).pdf','N/A','Pendiente','2023-07-27 17:16:00','Admin Admin');
 /*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -585,4 +589,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-19 15:20:49
+-- Dump completed on 2023-07-27 12:43:59
