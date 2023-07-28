@@ -47,7 +47,7 @@ CREATE TABLE `aprendices` (
   CONSTRAINT `aprendices_ibfk_2` FOREIGN KEY (`id_modalidad`) REFERENCES `modalidades` (`id_modalidad`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `aprendices_ibfk_3` FOREIGN KEY (`id_jefe`) REFERENCES `jefes` (`id_jefe`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `aprendices_ibfk_4` FOREIGN KEY (`id_arl`) REFERENCES `arl` (`id_arl`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,7 +56,7 @@ CREATE TABLE `aprendices` (
 
 LOCK TABLES `aprendices` WRITE;
 /*!40000 ALTER TABLE `aprendices` DISABLE KEYS */;
-INSERT INTO `aprendices` VALUES (1,'Lorena','Quiceno Giraldo','CC','1028882894','lorenquiceno@gmail.com','3245887367','2023-11-02','practicas',1,1,1,1),(2,'Stiven','Benjumea','CC','1028882444','stevenbenjumea9@gmail.com','3245880123','2023-11-02','practicas',1,1,1,1),(3,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','2023-11-02','practicas',1,1,1,1),(4,'Juan Guillermo','Gomez','CC','1023456789','ilestar@gmail.com','3105440924','2023-11-02','practicas',1,1,1,1);
+INSERT INTO `aprendices` VALUES (1,'Lorena','Quiceno Giraldo','CC','1028882894','lorenquiceno@gmail.com','3245887367','2023-11-02','practicas',1,1,1,1),(2,'Stiven','Benjumea','CC','1028882444','stevenbenjumea9@gmail.com','3245880123','2023-11-02','practicas',1,1,1,1),(3,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','2023-11-02','practicas',1,1,1,1),(5,'Juan Guillermo','Gomez Zapata','CC','1027800913','juanlestar0408@gmail.com','3006953395','2023-10-05','Practicas',1,1,1,1);
 /*!40000 ALTER TABLE `aprendices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,7 +182,7 @@ CREATE TABLE `detalles_inscripciones` (
   PRIMARY KEY (`id_detalle_inscripcion`),
   KEY `id_inscripcion` (`id_inscripcion`),
   CONSTRAINT `detalles_inscripciones_ibfk_1` FOREIGN KEY (`id_inscripcion`) REFERENCES `inscripciones` (`id_inscripcion`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,9 +191,103 @@ CREATE TABLE `detalles_inscripciones` (
 
 LOCK TABLES `detalles_inscripciones` WRITE;
 /*!40000 ALTER TABLE `detalles_inscripciones` DISABLE KEYS */;
-INSERT INTO `detalles_inscripciones` VALUES (1,'3','Pendiente',NULL,1),(2,'4','Pendiente',NULL,1),(3,'2','Pendiente',NULL,1),(4,'3','Pendiente',NULL,2),(5,'4','Pendiente',NULL,2),(6,'2','Pendiente',NULL,2);
+INSERT INTO `detalles_inscripciones` VALUES (1,'3','Pendiente',NULL,1),(2,'4','Pendiente',NULL,1),(3,'2','Pendiente',NULL,1),(4,'3','Pendiente',NULL,2),(5,'4','Pendiente',NULL,2),(6,'2','Pendiente',NULL,2),(7,'3','Aprobado',NULL,3),(8,'4','Aprobado',NULL,3),(9,'2','Aprobado',NULL,3);
 /*!40000 ALTER TABLE `detalles_inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `tr_upd_estado_inscripcion` AFTER UPDATE ON `detalles_inscripciones` FOR EACH ROW BEGIN
+  -- Verificar si el nuevo estado es "Rechazado"
+  IF NEW.estado_aval = 'Rechazado' THEN
+    -- Actualizar el estado de "inscripciones" a "Rechazado"
+    UPDATE inscripciones
+    SET estado_general_inscripcion = 'Rechazado'
+    WHERE id_inscripcion = NEW.id_inscripcion;
+  -- Verificar si el nuevo estado es "Pendiente"
+  ELSEIF NEW.estado_aval = 'Pendiente' THEN
+    -- Verificar si hay algún detalle_inscripcion con estado diferente de "Pendiente"
+    IF NOT EXISTS (
+        SELECT 1
+        FROM detalles_inscripciones
+        WHERE id_inscripcion = NEW.id_inscripcion AND estado_aval != 'Pendiente'
+    ) THEN
+      -- Si no hay otros detalles_inscripciones con estado diferente de "Pendiente",
+      -- entonces actualizamos el estado de "inscripciones" a "Pendiente"
+      UPDATE inscripciones
+      SET estado_general_inscripcion = 'Pendiente'
+      WHERE id_inscripcion = NEW.id_inscripcion;
+    END IF;
+  END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `inscripcion_aprobada_trigger` AFTER UPDATE ON `detalles_inscripciones` FOR EACH ROW BEGIN
+    DECLARE total_aprobados INT;
+    DECLARE var_nombre_aprendiz VARCHAR(100);
+    DECLARE var_apellido_aprendiz VARCHAR(100);
+    DECLARE var_tipo_documento_aprendiz VARCHAR(50);
+    DECLARE var_numero_documento_aprendiz VARCHAR(100);
+    DECLARE var_email_aprendiz VARCHAR(500);
+    DECLARE var_celular_aprendiz VARCHAR(100);
+    DECLARE fecha_fin_lectiva_inscripcion_sum DATE;
+    DECLARE var_fecha_fin_practica_aprendiz DATE;
+    DECLARE var_estado_aprendiz VARCHAR(300);
+    
+    -- Verificar si todos los detalles_inscripciones relacionados al id_inscripcion están en "Aprobado"
+    SELECT COUNT(*) INTO total_aprobados
+    FROM detalles_inscripciones
+    WHERE id_inscripcion = NEW.id_inscripcion AND estado_aval = 'Aprobado';
+
+    IF total_aprobados = 3 THEN
+        -- Cambiar el estado_general_inscripcion a "Aprobado" en la tabla inscripciones
+        UPDATE inscripciones SET estado_general_inscripcion = 'Aprobado' WHERE id_inscripcion = NEW.id_inscripcion;
+
+        -- Obtener los datos necesarios para crear el nuevo aprendiz
+        SELECT nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripción, email_inscripcion, inscripción_celular, fecha_fin_lectiva_inscripcion
+        INTO var_nombre_aprendiz, var_apellido_aprendiz, var_tipo_documento_aprendiz, var_numero_documento_aprendiz, var_email_aprendiz, var_celular_aprendiz, fecha_fin_lectiva_inscripcion_sum
+        FROM inscripciones WHERE id_inscripcion = NEW.id_inscripcion;
+
+        -- Calcular la fecha de fin de práctica sumando 6 meses a la fecha_fin_lectiva_inscripcion
+        SET var_fecha_fin_practica_aprendiz = DATE_ADD(fecha_fin_lectiva_inscripcion_sum, INTERVAL 6 MONTH);
+
+        -- Determinar el estado del aprendiz
+        IF CURDATE() BETWEEN fecha_fin_lectiva_inscripcion_sum AND var_fecha_fin_practica_aprendiz THEN
+            SET var_estado_aprendiz = 'Practicas';
+        ELSEIF CURDATE() < fecha_fin_lectiva_inscripcion THEN
+            SET var_estado_aprendiz = 'Lectiva';
+        ELSE
+            SET var_estado_aprendiz = 'Terminado';
+        END IF;
+
+        -- Insertar el nuevo aprendiz en la tabla 'aprendices'
+        INSERT INTO aprendices (nombre_aprendiz, apellido_aprendiz, tipo_documento_aprendiz, numero_documento_aprendiz, email_aprendiz, celular_aprendiz, fecha_fin_practica_aprendiz, estado_aprendiz, id_empresa, id_modalidad, id_jefe, id_arl)
+        VALUES (var_nombre_aprendiz, var_apellido_aprendiz, var_tipo_documento_aprendiz, var_numero_documento_aprendiz, var_email_aprendiz, var_celular_aprendiz, var_fecha_fin_practica_aprendiz, var_estado_aprendiz, 1, 1, 1, 1);
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `empresas`
@@ -299,7 +393,7 @@ CREATE TABLE `inscripciones` (
   `fecha_creación` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `responsable_inscripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id_inscripcion`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -308,7 +402,7 @@ CREATE TABLE `inscripciones` (
 
 LOCK TABLES `inscripciones` WRITE;
 /*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
-INSERT INTO `inscripciones` VALUES (1,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','lectiva','pasantias','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','ninguna',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'la empresa','pdf.pdf','N/A','Pendiente','2023-07-27 16:34:43','Admin Admin'),(2,'Lorena','Quiceno Giraldo','CC','1082882294','lorenquiceno@gmail.com','3245887367','Prácticas','Contrato de aprendizaje','Análisis y Desarrollo de Software','Tecnología','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','La empresa','9003238537','Teleperformance','Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','la empresa','pdf(1).pdf','N/A','Pendiente','2023-07-27 17:16:00','Admin Admin');
+INSERT INTO `inscripciones` VALUES (1,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','lectiva','pasantias','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','ninguna',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'la empresa','pdf.pdf','N/A','Pendiente','2023-07-27 16:34:43','Admin Admin'),(2,'Lorena','Quiceno Giraldo','CC','1082882294','lorenquiceno@gmail.com','3245887367','Prácticas','Contrato de aprendizaje','Análisis y Desarrollo de Software','Tecnología','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','La empresa','9003238537','Teleperformance','Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','la empresa','pdf(1).pdf','N/A','Pendiente','2023-07-27 17:16:00','Admin Admin'),(3,'Juan Guillermo','Gomez Zapata','CC','1027800913','juanlestar0408@gmail.com','3006953395','practicas','contrato de aprendizaje','ADSO','tecnologia','2473196','2023-04-05','Adelaida','acanom@sena.edu.co','La empresa','9003238537','Teleperformance','Cra 40 #43b-33','Jessica Martinez','HHRR','3233459687','jessicalamejor@teleformance.co','la empresa','pdf(1)(1).pdf','Ninguna','Aprobado','2023-07-28 16:23:38','Admin Admin');
 /*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -589,4 +683,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-27 12:43:59
+-- Dump completed on 2023-07-28 11:45:11
