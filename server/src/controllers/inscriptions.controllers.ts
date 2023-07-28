@@ -1,9 +1,9 @@
 import { type RequestHandler, type Request, type Response } from 'express'
-import { type inscriptionData } from '../interfaces/inscriptions.interfaces.js'
+import { type inscripcionDetailData, type inscriptionData } from '../interfaces/inscriptions.interfaces.js'
 import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
-import { type CustomError, DbErrorNotFound } from '../errors/customErrors.js'
+import { type CustomError, DbErrorNotFound, DbError } from '../errors/customErrors.js'
 import { type RowDataPacket } from 'mysql2'
 import { errorCodes } from '../models/errorCodes.enums.js'
 
@@ -44,6 +44,18 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
       i += 1
     }
     return res.status(httpStatus.CREATED).json({ data: { infoInscription: `Added ${i}`, msg: 'Inscripciones creados' } })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const editInscriptionDetail: RequestHandler<{ }, Response, inscripcionDetailData> = async (req: Request, res: Response) => {
+  const { responsable_aval } = req.params
+  const { estado_aval, observaciones, id_inscripcion } = req.body
+  try {
+    const [result] = await connection.query('UPDATE detalles_inscripciones SET estado_aval = ?, observaciones = ? WHERE id_inscripcion = ? AND responsable_aval = ?', [estado_aval, observaciones, id_inscripcion, responsable_aval])
+    if (!Array.isArray(result) && result?.affectedRows === 0) throw new DbError('No se pudo actualizar la modalidad de etapa práctica')
+    return res.status(httpStatus.OK).json({ message: 'Modalidad de etapa práctica actualizada con éxito' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }

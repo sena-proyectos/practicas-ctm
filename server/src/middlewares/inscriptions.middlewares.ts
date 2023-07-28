@@ -1,6 +1,6 @@
 import { type Request, type NextFunction, type RequestHandler, type Response } from 'express'
-import { type inscriptionData } from '../interfaces/inscriptions.interfaces.js'
-import { inscriptionSchema } from '../schemas/inscriptions.schemas.js'
+import { type inscripcionDetailData, type inscriptionData } from '../interfaces/inscriptions.interfaces.js'
+import { inscriptionDetailSchema, inscriptionSchema } from '../schemas/inscriptions.schemas.js'
 import { type CustomError, DataNotValid, NumberIsNaN } from '../errors/customErrors.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 
@@ -30,6 +30,22 @@ export const checkInscriptionData: RequestHandler<{}, Response, inscriptionData>
       if (error !== undefined) throw new DataNotValid(`Los datos ingresados del id ${inscriptionLength} no son válidos, verifícalos.`)
       inscriptionLength += 1
     }
+    next()
+  } catch (error) {
+    handleHTTP(res, error as CustomError)
+  }
+}
+
+export const checkInscriptionDetailData: RequestHandler<{ }, Response, inscripcionDetailData> = (req: Request, res: Response, next: NextFunction): void => {
+  const { responsable_aval } = req.params
+  const { estado_aval, observaciones, id_inscripcion } = req.body
+  try {
+    const idUserNumber = Number(responsable_aval)
+    const idInscriptionNumber = Number(id_inscripcion)
+    if (isNaN(idInscriptionNumber)) throw new NumberIsNaN('El id del usuario no es un nÃ®mero.')
+    if (isNaN(idUserNumber)) throw new NumberIsNaN('El id del usuario no es un número.')
+    const { error } = inscriptionDetailSchema.validate({ id_inscripcion, responsable_aval, estado_aval, observaciones })
+    if (error !== undefined) throw new DataNotValid('Los datos ingresados no son válidos, verifícalos.')
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)

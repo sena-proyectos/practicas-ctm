@@ -28,3 +28,11 @@ export interface inscriptionData {
   fecha_creación?: Date
   responsable_inscripcion: string
 }
+
+export interface inscripcionDetailData {
+  id_detalle_inscripcion?: number
+  responsable_aval: number
+  estado_aval: string
+  observaciones: string
+  id_inscripcion: number
+}
