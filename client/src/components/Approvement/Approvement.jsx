@@ -15,7 +15,7 @@ const Approvement = () => {
 
   return (
     <>
-      {modalAval && <Modals bodyAvales closeModal={handleAvales} />}
+      {modalAval && <Modals bodyAvales title={'Guillermo Stiven Benjumea Morales'} subtitle textSubtitle={'2473196'} closeModal={handleAvales} />}
       <main className="flex flex-row min-h-screen">
         <Siderbar />
         <section className="relative grid flex-auto w-min grid-rows-3-10-75-15">
