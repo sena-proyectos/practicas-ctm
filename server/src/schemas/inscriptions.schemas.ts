@@ -99,3 +99,18 @@ export const inscriptionSchema = Joi.object({
     .required()
     .min(3)
 })
+
+export const inscriptionDetailSchema = Joi.object({
+  id_inscripcion: Joi
+    .number()
+    .required(),
+  responsable_aval: Joi
+    .number()
+    .required(),
+  estado_aval: Joi
+    .string()
+    .required(),
+  observaciones: Joi
+    .string()
+    .allow(null)
+})
