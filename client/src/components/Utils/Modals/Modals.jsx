@@ -43,7 +43,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
 
   return (
     <section className="fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen bg-black/50 backdrop-blur-sm backdrop-filter ">
-      <section className={`relative flex h-auto ${bodyStudent ? 'w-1/2' : 'w-2/5'} flex-col rounded-2xl bg-white bounce`}>
+      <section className={`relative flex h-auto w-11/12 ${bodyStudent ? 'md:w-1/2' : ' md:w-2/5'} flex-col rounded-2xl bg-white bounce`}>
         <IoMdClose className="absolute right-5 top-[20px] h-7 w-7 cursor-pointer " onClick={handleModal} />
         <header className="grid pt-5 place-items-center ">
           <h2 className={`text-xl font-medium text-center w-fit ${subtitle === true ? 'border-0' : 'border-b-1'} border-primary`}>{title}</h2>
@@ -266,9 +266,9 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
           {bodyAvales && (
             <>
               <form action="" className="flex flex-col gap-4 pt-6">
-                <section className="grid gap-5 grid-cols-2-60-40">
+                <section className="flex flex-col gap-5 md:grid md:grid-cols-2-60-40">
                   <section className="grid items-center grid-rows-3 gap-5">
-                    <div class="relative">
+                    <div className="relative">
                       <span className="absolute inset-y-0 flex items-center text-xl font-bold text-purple-700 pointer-events-none right-3">
                         <LuChevronDown />
                       </span>
@@ -277,11 +277,11 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                         <option value="2">Coordinador 2</option>
                         <option value="3">Coordinador 3</option>
                       </select>
-                      <label for="coordi" class="absolute left-3 -top-[10.6px] px-1 bg-white text-gray-600 text-[12px] text-sm font-light">
+                      <label htmlFor="coordi" className="absolute left-3 -top-[10.6px] px-1 bg-white text-gray-600 text-[12px] text-sm font-light">
                         Coordinador Asignado
                       </label>
                     </div>
-                    <div class="relative">
+                    <div className="relative">
                       <span className="absolute inset-y-0 flex items-center text-xl font-bold text-purple-700 pointer-events-none right-3">
                         <LuChevronDown />
                       </span>
@@ -290,23 +290,23 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                         <option value="2">Instructor 2</option>
                         <option value="3">Instructor 3</option>
                       </select>
-                      <label for="inst" class="absolute left-3 -top-[10.6px] px-1 bg-white text-gray-600 text-[12px] text-sm font-light">
+                      <label htmlFor="inst" className="absolute left-3 -top-[10.6px] px-1 bg-white text-gray-600 text-[12px] text-sm font-light">
                         Instructor Responsable
                       </label>
                     </div>
-                    <div class="relative">
+                    <div className="relative">
                       <span className="absolute inset-y-0 flex items-center text-xl font-bold text-purple-700 pointer-events-none right-3">
                         <LuChevronDown />
                       </span>
                       <select name="inst" id="inst" className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white pt-[3.5px] pl-2 text-sm font-light text-black focus:bg-white focus:outline-none appearance-none">
                         <option value="1">Instructor Líder</option>
                       </select>
-                      <label for="inst" class="absolute left-3 -top-[10.6px] px-1 bg-white text-gray-600 text-[12px] text-sm font-light">
+                      <label htmlFor="inst" className="absolute left-3 -top-[10.6px] px-1 bg-white text-gray-600 text-[12px] text-sm font-light">
                         Instructor Líder
                       </label>
                     </div>
                   </section>
-                  <section className="grid items-center grid-rows-4 gap-5">
+                  <section className="grid items-center grid-cols-2 grid-rows-2 gap-5 md:grid-rows-4 md:grid-cols-1">
                     <div className="flex flex-row items-center gap-3 h-fit w-fit">
                       <input type="checkbox" id="avalcoor" name="avalcoor" className="w-5 h-5 accent-purple-700" />
                       <label htmlFor="avalcoor" className="text-sm font-light">
