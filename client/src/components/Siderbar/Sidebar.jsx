@@ -9,9 +9,7 @@ import { colorIcon, rolesNames, keysRoles } from '../../import/staticData'
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { useDispatch, useSelector } from 'react-redux'
 import jwtDecode from 'jwt-decode'
-import { setIdRol } from '../../app/rolesSlice'
 
 const Siderbar = () => {
   const location = useLocation()
@@ -33,8 +31,6 @@ const Siderbar = () => {
     }
   }, [])
 
-  const dispatch = useDispatch()
-
   useEffect(() => {
     const token = Cookies.get('token')
 
@@ -47,10 +43,11 @@ const Siderbar = () => {
     const { id_rol, nombres_usuario, apellidos_usuario } = tokenData.data.user
     const fullName = `${nombres_usuario} ${apellidos_usuario}`
     setDataFullName(fullName)
-    dispatch(setIdRol(id_rol))
-  }, [dispatch])
 
-  const idRol = useSelector((state) => state.id_rol)
+    localStorage.setItem('idRol', id_rol)
+  }, [])
+
+  const idRol = Number(localStorage.getItem('idRol'))
 
   const styles = (path) => {
     return location.pathname === path ? 'flex items-center relative pl-10 py-2 font-semibold bg-white rounded-s-2xl w-[115%] h-8' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] h-8 transition '

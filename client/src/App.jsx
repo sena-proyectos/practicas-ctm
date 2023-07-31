@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import { User } from './components/User/User'
@@ -11,12 +11,11 @@ import { Settings } from './components/Settings/Settings'
 import { Teachers } from './components/Teachers/Teachers'
 import { AssignClass } from './components/Assign-class/AssignClass'
 import { Approvement } from './components/Approvement/approvement'
-import { useSelector } from 'react-redux'
 import { ProtectedRoute } from './ProtectedRoute'
 import { keysRoles } from './import/staticData'
 
 const App = () => {
-  const idRol = useSelector((state) => state.id_rol)
+  const idRol = Number(localStorage.getItem('idRol'))
 
   return (
     <Routes>

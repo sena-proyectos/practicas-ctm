@@ -8,7 +8,7 @@ const ProtectedRoute = ({ idRol, children, redirectTo = '/' }) => {
     if (!idRol) {
       return navigate(redirectTo)
     }
-  }, [idRol])
+  }, [idRol, navigate])
 
   return children || <Outlet />
 }
