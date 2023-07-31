@@ -64,15 +64,15 @@ const Siderbar = () => {
   }
 
   return (
-    <aside className={`bg-secondary/10 ${open ? 'w-[12rem]' : 'w-[4.5rem]'} sticky left-0 top-0 h-screen rounded-r-2xl`}>
+    <aside className={`bg-secondary/10 ${open ? 'w-[13rem]' : 'w-[4.5rem]'} sticky left-0 top-0 h-screen rounded-r-2xl`}>
       <nav className="grid w-4/5 h-screen mx-auto grid-rows-3-10-78-12 md:grid-rows-3-10-78-12">
         <section className={`w-fit ${open === true ? 'flex flex-row pr-3' : 'mx-auto flex flex-col'} my-auto`}>
           <div className="my-auto w-[3rem] rounded-full">
             <img className="object-cover" src="public/user.png" alt="img_user" />
           </div>
           <div className={`w-full pl-3 pr-10 ${!open && 'hidden'}`}>
-            <h5 className="text-xs ">{dataFullName || <Skeleton width={100} />}</h5>
-            <span className="text-sm font-semibold text-center">{rolesNames[idRol] || <Skeleton />}</span>
+            <h5 className="text-xs text-center">{dataFullName || <Skeleton width={100} />}</h5>
+            <h6 className="text-sm font-semibold text-center">{rolesNames[idRol] || <Skeleton />}</h6>
           </div>
         </section>
         <ul className="flex flex-col items-start justify-center cursor-pointer">
