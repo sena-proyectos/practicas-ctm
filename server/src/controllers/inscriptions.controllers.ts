@@ -16,6 +16,38 @@ export const getInscriptions = async (_req: Request, res: Response): Promise<Res
   }
 }
 
+export const getInscriptionsDetailsByUser: RequestHandler<{ id: string }, Response, unknown> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id: id_responsable } = req.params
+  const { limit, offset } = req.query
+  const idNumber = Number(id_responsable)
+  const limitNumber = Number(limit)
+  const offsetNumber = Number(offset)
+  try {
+    // ! El limit y el offset son obligatorios, de esta forma evitar tantos datos en una busqueda grande.
+    const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE responsable_aval = ? LIMIT ? OFFSET ?', [idNumber, limitNumber, offsetNumber])
+    return res.status(httpStatus.OK).json({ data: inscriptions })
+  } catch (err) {
+    console.log(err)
+    return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
+  }
+}
+
+export const getInscriptionsDetailsByInscription: RequestHandler<{ id: string }, Response, unknown> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id: id_inscripcion } = req.params
+  const { limit, offset } = req.query
+  const idNumber = Number(id_inscripcion)
+  const limitNumber = Number(limit)
+  const offsetNumber = Number(offset)
+  try {
+    // ! El limit y el offset son obligatorios, de esta forma evitar tantos datos en una busqueda grande.
+    const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE id_inscripcion = ? LIMIT ? OFFSET ?', [idNumber, limitNumber, offsetNumber])
+    return res.status(httpStatus.OK).json({ data: inscriptions })
+  } catch (err) {
+    console.log(err)
+    return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
+  }
+}
+
 export const getInscriptionById: RequestHandler<{ id: string }, Response, inscriptionData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
   const { id } = req.params
   const idNumber = Number(id)
