@@ -2,10 +2,9 @@ import { Card } from '../Utils/Card/Card'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { rolesCard } from '../../import/staticData'
 import { Footer } from '../Footer/Footer'
-import { useSelector } from 'react-redux'
 
 const Home = () => {
-  const idRol = useSelector((state) => state.id_rol)
+  const idRol = Number(localStorage.getItem('idRol'))
   return (
     <main className="flex flex-row min-h-screen">
       <Siderbar />
