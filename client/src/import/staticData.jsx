@@ -1,6 +1,3 @@
-import { AiOutlineIdcard, AiOutlineMail, AiOutlinePhone, AiOutlineUser } from 'react-icons/ai'
-import { FaRegAddressBook } from 'react-icons/fa'
-import { BsCalendar4 } from 'react-icons/bs'
 import { LuCalendarCheck2, LuCalendarX2 } from 'react-icons/lu'
 
 export const rolesNames = {
@@ -55,9 +52,9 @@ export const rolesCard = {
       link: '/aprov',
     },
     {
-      title: 'Visitas no hechas',
+      title: 'Visitas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de visitas que actualmente no se encuentran en realizadas.',
+      description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadowThird/100',
@@ -111,9 +108,9 @@ export const rolesCard = {
       link: '/aprov',
     },
     {
-      title: 'Visitas no hechas',
+      title: 'Visitas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de visitas que actualmente no se encuentran en realizadas.',
+      description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadowThird/100',
@@ -167,9 +164,9 @@ export const rolesCard = {
       link: '/aprov',
     },
     {
-      title: 'Visitas no hechas',
+      title: 'Visitas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de visitas que actualmente no se encuentran en realizadas.',
+      description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadowThird/100',
@@ -182,8 +179,8 @@ export const rolesCard = {
       titleColor: 'black',
       description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
       buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-primary',
-      sombra: 'shadowPrimary/50',
+      bgColor: 'bg-aqua',
+      sombra: 'shadowAqua/100',
       link: '/aprendices',
     },
     {
@@ -191,8 +188,8 @@ export const rolesCard = {
       titleColor: 'black',
       description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-[#385C57]',
-      sombra: '[#385C57]/20',
+      bgColor: 'bg-seventh',
+      sombra: 'shadowSeventh/75',
       link: '/aprov',
     },
     {
@@ -200,8 +197,8 @@ export const rolesCard = {
       titleColor: 'black',
       description: 'Podrás ver el listado de fichas que tienes asignadas.',
       buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-seventh',
-      sombra: 'shadowSeventh/75',
+      bgColor: 'bg-salmon',
+      sombra: 'shadowSalmon/50',
       link: '/fichas',
     },
   ],
