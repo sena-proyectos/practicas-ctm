@@ -41,12 +41,7 @@ export const editPracticalStage: RequestHandler<{}, Response, PracticalStages> =
   const { tipo_modalidad_practica, num_horas_minimas_modalidad_practica, num_horas_maximas_modalidad_practica } = req.body
   const idNumber = Number(id)
   try {
-    const [practicalStage] = await connection.query('UPDATE modalidades_etapa_practica SET tipo_modalidad_practica = IFNULL(?, tipo_modalidad_practica), num_horas_minimas_modalidad_practica = IFNULL(?, num_horas_minimas_modalidad_practica), num_horas_maximas_modalidad_practica = IFNULL(?, num_horas_maximas_modalidad_practica) WHERE id_modalidad_practica = ?', [
-      tipo_modalidad_practica,
-      num_horas_minimas_modalidad_practica,
-      num_horas_maximas_modalidad_practica,
-      idNumber
-    ])
+    const [practicalStage] = await connection.query('UPDATE modalidades_etapa_practica SET tipo_modalidad_practica = IFNULL(?, tipo_modalidad_practica), num_horas_minimas_modalidad_practica = IFNULL(?, num_horas_minimas_modalidad_practica), num_horas_maximas_modalidad_practica = IFNULL(?, num_horas_maximas_modalidad_practica) WHERE id_modalidad_practica = ?', [tipo_modalidad_practica, num_horas_minimas_modalidad_practica, num_horas_maximas_modalidad_practica, idNumber])
     if (!Array.isArray(practicalStage) && practicalStage?.affectedRows === 0) throw new DbError('No se pudo actualizar la modalidad de etapa práctica')
     return res.status(httpStatus.OK).json({ message: 'Modalidad de etapa práctica actualizada con éxito' })
   } catch (error) {
