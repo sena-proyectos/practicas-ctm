@@ -31,20 +31,28 @@ const Siderbar = () => {
     }
   }, [])
 
+  const removeIdRolFromLocalStorage = () => {
+    localStorage.removeItem('idRol')
+  }
+
   useEffect(() => {
     const token = Cookies.get('token')
 
     if (!token) {
       window.location.href = '/'
+      removeIdRolFromLocalStorage()
       return
     }
 
-    const tokenData = jwtDecode(token)
-    const { id_rol, nombres_usuario, apellidos_usuario } = tokenData.data.user
-    const fullName = `${nombres_usuario} ${apellidos_usuario}`
-    setDataFullName(fullName)
-
-    localStorage.setItem('idRol', id_rol)
+    try {
+      const tokenData = jwtDecode(token)
+      const { nombres_usuario, apellidos_usuario } = tokenData.data.user
+      const fullName = `${nombres_usuario} ${apellidos_usuario}`
+      setDataFullName(fullName)
+    } catch (error) {
+      window.location.href = '/'
+      removeIdRolFromLocalStorage()
+    }
   }, [])
 
   const idRol = Number(localStorage.getItem('idRol'))
@@ -60,6 +68,7 @@ const Siderbar = () => {
 
   const logout = () => {
     Cookies.remove('token')
+    removeIdRolFromLocalStorage()
     navigate('/')
   }
 
