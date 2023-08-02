@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { GetUsersHttp, GetUserByName, GetUsersById } from '../../api/httpRequest'
+import { GetUserByName, detailInfoStudents, GetStudentsDetailyId } from '../../api/httpRequest'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
 import { Card } from '../Utils/Card/Card'
@@ -39,7 +39,8 @@ const Student = () => {
 
   const getUser = async (userID) => {
     try {
-      const response = await GetUsersById(userID)
+      const response = await GetStudentsDetailyId(userID)
+      console.log(response)
       const res = response.data.data[0]
 
       const nombre = res.nombre_aprendiz
@@ -47,7 +48,7 @@ const Student = () => {
       setNombreCompleto(`${nombre} ${apellido}`)
       setInfoUserById(res)
     } catch (error) {
-      console.log('ah ocurrido un error al mostrar los datos del usuario')
+      console.log('Ha ocurrido un error al mostrar los datos del usuario')
     }
   }
 
@@ -81,7 +82,7 @@ const Student = () => {
 
     const getApprentices = async () => {
       try {
-        const response = await GetUsersHttp()
+        const response = await detailInfoStudents()
         const { data } = response.data
         setApprentices(data)
       } catch (error) {
@@ -94,10 +95,11 @@ const Student = () => {
 
   const filterStudents = filter.filterStudents
 
+
   return (
     <>
       {modalFilter && <Modals bodyFilter title={'Filtrar'} view={filterStudents} closeModal={handleModal} />}
-      {infoStudent && <Modals closeModal={handleModalInfo} bodyStudent title={nombreCompleto} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} celStudent={userInfoById.celular_aprendiz} trainingProgram={'Análisis y Desarrollo de Software'} ficha={'2473196'} academicLevel={'Tecnología'} trainingStage={'Lectiva'} modalitie={'Contrato de Aprendizaje'} finLectiva={'05 Abril 2023'} inicioProductiva={'02 Mayo 2023'} company={'Servicio Nacional del Aprendizaje'} innmediateSuperior={'Richard Alexander Betancur Sierra'} workstation={'Instructor'} emailSuperior={'rbetancur@misena.edu.co'} celSuperior={'123456789'} arl={'Sura'} />}
+      {infoStudent && <Modals closeModal={handleModalInfo} bodyStudent title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} celStudent={userInfoById.celular_aprendiz} trainingProgram={userInfoById.nombre_programa_formacion} ficha={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} trainingStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} finLectiva={userInfoById.fecha_fin_lectiva} inicioProductiva={userInfoById.fecha_inicio_practica} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} workstation={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />}
       <main className="flex flex-row min-h-screen">
         <Siderbar />
         <section className="relative grid flex-auto w-min grid-rows-3-10-75-15 ">
@@ -107,12 +109,12 @@ const Student = () => {
           {searchedApprentices.length > 0 && !error ? (
             <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
               {searchedApprentices.map((apprentice, i) => (
-                <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_aprendiz} ${apprentice.apellido_aprendiz}`} subtitle={apprentice.email_aprendiz} lione={apprentice.programa_formacion_inscripcion} litwo={apprentice.numero_ficha_inscripcion} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} modalClicked={modalStudent} />
+                <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_completo}`} subtitle={apprentice.email_aprendiz} lione={apprentice.nombre_programa_formacio} litwo={apprentice.numero_ficha} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} modalClicked={modalStudent} />
               ))}
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3 ">
-              {error ? <h2 className="text-red-500">{error}</h2> : apprentices.map((apprentice, i) => <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_aprendiz} ${apprentice.apellido_aprendiz}`} subtitle={apprentice.email_aprendiz} lione={apprentice.programa_formacion_inscripcion} litwo={apprentice.numero_ficha_inscripcion} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal modalClicked={modalStudent} />)}
+              {error ? <h2 className="text-red-500">{error}</h2> : apprentices.map((apprentice, i) => <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_completo}`} subtitle={apprentice.email_aprendiz} lione={apprentice.nombre_programa_formacion} litwo={apprentice.numero_ficha} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal modalClicked={modalStudent} />)}
               {apprentices.length === 0 && !error && searchedApprentices.length === 0 && (
                 <>
                   <Skeleton width={300} height={200} style={{ marginBottom: '1rem', margin: '1.2em' }} />
