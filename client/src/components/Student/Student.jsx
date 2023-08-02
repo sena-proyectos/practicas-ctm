@@ -113,8 +113,8 @@ const Student = () => {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3 ">
-              {error ? <h2 className="text-red-500">{error}</h2> : apprentices.map((apprentice, i) => <Card cardUser shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_completo}`} subtitle={apprentice.email_aprendiz} lione={apprentice.nombre_programa_formacion} litwo={apprentice.numero_ficha} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal modalClicked={modalStudent} />)}
+            <div className="grid grid-cols-1 gap-1 p-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3">
+              {error ? <h2 className="text-red-500">{error}</h2> : apprentices.map((apprentice, i) => <Card cardUser height={'h-[12.5rem] st2:h-[12.5rem] st1:h-[14rem] md:h-[14rem]'} shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_completo}`} subtitle={apprentice.email_aprendiz} lione={apprentice.programa_formacion_inscripcion} litwo={apprentice.numero_ficha_inscripcion} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal modalClicked={modalStudent} />)}
               {apprentices.length === 0 && !error && searchedApprentices.length === 0 && (
                 <>
                   <Skeleton width={300} height={200} style={{ marginBottom: '1rem', margin: '1.2em' }} />
