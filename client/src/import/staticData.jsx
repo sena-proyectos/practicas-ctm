@@ -449,7 +449,7 @@ export const colorIcon = {
   '/home': 'text-salmon',
   '/aprendices': 'text-third',
   '/bitacoras': 'text-seventh',
-  '/inscribir-aprendiz': 'text-lima',
+  '/registros': 'text-lima',
   '/aprov': 'text-secondary',
   '/instructores': 'text-rosa',
   '/asignar-ficha': 'text-coffee',
