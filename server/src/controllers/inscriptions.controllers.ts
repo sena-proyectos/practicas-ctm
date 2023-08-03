@@ -65,11 +65,11 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
     let i = 0
     for (const inscription of inscriptions) {
       const {
-        nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripción, email_inscripcion, inscripción_celular, etapa_actual_inscripcion, modalidad_inscripción, nombre_programa_inscripción, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
+        nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
       } = inscription
       const [result] = await connection.query(
-        'INSERT INTO inscripciones (nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripción, email_inscripcion, inscripción_celular, etapa_actual_inscripcion, modalidad_inscripción, nombre_programa_inscripción, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripción, email_inscripcion, inscripción_celular, etapa_actual_inscripcion, modalidad_inscripción, nombre_programa_inscripción, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
+        'INSERT INTO inscripciones (nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
         ]
       )
       if ((result as RowDataPacket[]).length === 0) throw new DbErrorNotFound(`No se pudo crear la inscripcion número ${i}.`, errorCodes.ERROR_CREATE_STUDENT)
@@ -93,65 +93,17 @@ export const editInscriptionDetail: RequestHandler<{ }, Response, inscripcionDet
   }
 }
 
-// ! NOT BEING USED ----------------------------------------------
-/* export const editInscription: RequestHandler<{ id: string }, Response, inscriptionData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
-  const {
-    id_modalidad_inscripcion,
-    nombres_inscripcion,
-    apellidos_inscripcion,
-    tipo_documento_inscripcion,
-    numero_documento_inscripcion,
-    correo_electronico_inscripcion,
-    numero_celular_inscripcion,
-    etapa_formacion_actual_inscripcion,
-    nivel_formacion_actual_inscripcion,
-    id_ficha_inscripcion,
-    id_instructor_lider_inscripcion,
-    apoyo_sostenimiento_inscripcion,
-    id_empresa_inscripcion,
-    nombre_completo_jefe_inmediato_inscripcion,
-    cargo_jefe_inmediato_inscripcion,
-    telefono_jefe_inmediato_inscripcion,
-    correo_jefe_inmediato_inscripcion,
-    asume_pago_arl_inscripcion,
-    link_documentos_pdf_inscripcion,
-    observaciones_inscripcion,
-    fecha_creacion_inscripcion,
-    id_usuario_responsable_inscripcion
-  } = req.body
+export const editInscription: RequestHandler<{ id: string }, Response, inscriptionData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones } = req.body
   const { id } = req.params
   try {
     const [inscription] = await connection.query(
-      'UPDATE inscripciones SET id_modalidad_inscripcion = IFNULL(?, id_modalidad_inscripcion), nombres_inscripcion = IFNULL(?,nombres_inscripcion), apellidos_inscripcion = IFNULL(?, apellidos_inscripcion), tipo_documento_inscripcion = IFNULL(?, tipo_documento_inscripcion), numero_documento_inscripcion = IFNULL(?, numero_documento_inscripcion), correo_electronico_inscripcion = IFNULL(?, correo_electronico_inscripcion), numero_celular_inscripcion = IFNULL(?, numero_celular_inscripcion), etapa_formacion_actual_inscripcion = IFNULL(?, etapa_formacion_actual_inscripcion), nivel_formacion_actual_inscripcion = IFNULL(?, nivel_formacion_actual_inscripcion), id_ficha_inscripcion = IFNULL(?, id_ficha_inscripcion), id_instructor_lider_inscripcion = IFNULL(?, id_instructor_lider_inscripcion), apoyo_sostenimiento_inscripcion = IFNULL(?, apoyo_sostenimiento_inscripcion), id_empresa_inscripcion = IFNULL(?, id_empresa_inscripcion), nombre_completo_jefe_inmediato_inscripcion = IFNULL(?, nombre_completo_jefe_inmediato_inscripcion), cargo_jefe_inmediato_inscripcion = IFNULL(?, cargo_jefe_inmediato_inscripcion), telefono_jefe_inmediato_inscripcion = IFNULL(?, telefono_jefe_inmediato_inscripcion), correo_jefe_inmediato_inscripcion = IFNULL(?, correo_jefe_inmediato_inscripcion), asume_pago_arl_inscripcion = IFNULL(?, asume_pago_arl_inscripcion), link_documentos_pdf_inscripcion = IFNULL(?, link_documentos_pdf_inscripcion), observaciones_inscripcion = IFNULL(?, observaciones_inscripcion), fecha_creacion_inscripcion = IFNULL(?, fecha_creacion_inscripcion), id_usuario_responsable_inscripcion = IFNULL(?, id_usuario_responsable_inscripcion) WHERE id_inscripcion = ? ',
-      [
-        id_modalidad_inscripcion,
-        nombres_inscripcion,
-        apellidos_inscripcion,
-        tipo_documento_inscripcion,
-        numero_documento_inscripcion,
-        correo_electronico_inscripcion,
-        numero_celular_inscripcion,
-        etapa_formacion_actual_inscripcion,
-        nivel_formacion_actual_inscripcion,
-        id_ficha_inscripcion,
-        id_instructor_lider_inscripcion,
-        apoyo_sostenimiento_inscripcion,
-        id_empresa_inscripcion,
-        nombre_completo_jefe_inmediato_inscripcion,
-        cargo_jefe_inmediato_inscripcion,
-        telefono_jefe_inmediato_inscripcion,
-        correo_jefe_inmediato_inscripcion,
-        asume_pago_arl_inscripcion,
-        link_documentos_pdf_inscripcion,
-        observaciones_inscripcion,
-        fecha_creacion_inscripcion,
-        id_usuario_responsable_inscripcion,
-        id
-      ]
+      'UPDATE inscripciones SET nombre_inscripcion = IFNULL(?, nombre_inscripcion), apellido_inscripcion = IFNULL(?,apellido_inscripcion), tipo_documento_inscripcion = IFNULL(?, tipo_documento_inscripcion), documento_inscripcion = IFNULL(?, documento_inscripcion), email_inscripcion = IFNULL(?, email_inscripcion), inscripcion_celular = IFNULL(?, inscripcion_celular), etapa_actual_inscripcion = IFNULL(?, etapa_actual_inscripcion), modalidad_inscripcion = IFNULL(?, modalidad_inscripcion), nivel_formacion_inscripcion = IFNULL(?, nivel_formacion_inscripcion), numero_ficha_inscripcion = IFNULL(?, numero_ficha_inscripcion), fecha_fin_lectiva_inscripcion = IFNULL(?, fecha_fin_lectiva_inscripcion), nombre_instructor_lider_inscripcion = IFNULL(?, nombre_instructor_lider_inscripcion), email_instructor_lider_inscripcion = IFNULL(?, email_instructor_lider_inscripcion), apoyo_sostenimiento_inscripcion = IFNULL(?, apoyo_sostenimiento_inscripcion), nit_empresa_inscripcion = IFNULL(?, nit_empresa_inscripcion), nombre_empresa_inscripción = IFNULL(?, nombre_empresa_inscripción), direccion_empresa_inscripcion = IFNULL(?, direccion_empresa_inscripcion), nombre_jefe_empresa_inscripcion = IFNULL(?, nombre_jefe_empresa_inscripcion), cargo_jefe_empresa_inscripcion = IFNULL(?, cargo_jefe_empresa_inscripcion), telefono_jefe_empresa_inscripcion = IFNULL(?, telefono_jefe_empresa_inscripcion), email_jefe_empresa_inscripcion = IFNULL(?, email_jefe_empresa_inscripcion), arl = IFNULL(?, arl), link_documentos = IFNULL(?, link_documentos), observaciones = IFNULL(?, observaciones) WHERE id_inscripcion = ? ',
+      [nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, id]
     )
     if (!Array.isArray(inscription) && inscription?.affectedRows === 0) throw new DbError('No se pudo modificar la inscripción.')
     return res.status(httpStatus.OK).json({ message: 'Inscripción modificada con éxito.' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
-} */
+}
