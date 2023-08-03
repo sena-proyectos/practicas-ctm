@@ -11,9 +11,9 @@ import { Teachers } from './components/Teachers/Teachers'
 import { AssignClass } from './components/Assign-class/AssignClass'
 import { ProtectedRoute } from './ProtectedRoute'
 import { keysRoles } from './import/staticData'
-import { RegisterList } from './components/Register-student/Register-list/RegisterList'
-import { RegisterStudent } from './components/Register-student/Register-form/RegisterStudent'
-import { RegisterDetails } from './components/Register-student/Register-detail/RegisterDetails'
+import { RegisterList } from './components/Register-list/RegisterList'
+import { RegisterStudent } from './components/Register-student/RegisterStudent'
+import { RegisterDetails } from './components/Register-detail/RegisterDetails'
 
 const App = () => {
   const idRol = Number(localStorage.getItem('idRol'))
@@ -26,8 +26,8 @@ const App = () => {
         <Route path="/config" element={<Settings />} />
         <Route path="/aprendices" element={<Student />} />
         <Route path="/registros" element={<RegisterList />} />
-        <Route path="/registros/registrar-aprendiz" element={<RegisterStudent />} />
-        <Route path="/registros/registro-detalles" element={<RegisterDetails />} />
+        <Route path="/registrar-aprendiz" element={<RegisterStudent />} />
+        <Route path="/registro-detalles" element={<RegisterDetails />} />
         <Route path="/asignar-ficha" element={<AssignClass />} />
       </Route>
 
