@@ -7,6 +7,12 @@ import { type CustomError, DbErrorNotFound, DbError } from '../errors/customErro
 import { type RowDataPacket } from 'mysql2'
 import { errorCodes } from '../models/errorCodes.enums.js'
 
+/**
+ * @description Obtiene todas las inscripciones.
+ * @param _req La solicitud HTTP (no se utiliza en esta función).
+ * @param res La respuesta HTTP.
+ * @returns Respuesta JSON con las inscripciones o un error.
+ */
 export const getInscriptions = async (_req: Request, res: Response): Promise<Response> => {
   try {
     const [inscriptions] = await connection.query('SELECT * FROM inscripciones')
@@ -16,6 +22,12 @@ export const getInscriptions = async (_req: Request, res: Response): Promise<Res
   }
 }
 
+/**
+ * @description Obtiene detalles de inscripción por el ID del usuario responsable.
+ * @param req La solicitud HTTP con el parámetro de ID y parámetros de consulta (limit y offset).
+ * @param res La respuesta HTTP.
+ * @returns Respuesta JSON con los detalles de inscripción correspondientes al usuario responsable o un error.
+ */
 export const getInscriptionsDetailsByUser: RequestHandler<{ id: string }, Response, unknown> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
   const { id: id_responsable } = req.params
   const { limit, offset } = req.query
@@ -32,6 +44,12 @@ export const getInscriptionsDetailsByUser: RequestHandler<{ id: string }, Respon
   }
 }
 
+/**
+ * @description Obtiene detalles de inscripción por su ID.
+ * @param req La solicitud HTTP con el parámetro de ID y parámetros de consulta (limit y offset).
+ * @param res La respuesta HTTP.
+ * @returns Respuesta JSON con los detalles de inscripción correspondientes o un error.
+ */
 export const getInscriptionsDetailsByInscription: RequestHandler<{ id: string }, Response, unknown> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
   const { id: id_inscripcion } = req.params
   const { limit, offset } = req.query
@@ -48,6 +66,12 @@ export const getInscriptionsDetailsByInscription: RequestHandler<{ id: string },
   }
 }
 
+/**
+ * @description Obtiene una inscripción por su ID.
+ * @param req La solicitud HTTP con el parámetro de ID.
+ * @param res La respuesta HTTP.
+ * @returns Respuesta JSON con la inscripción correspondiente o un error.
+ */
 export const getInscriptionById: RequestHandler<{ id: string }, Response, inscriptionData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
   const { id } = req.params
   const idNumber = Number(id)
@@ -59,6 +83,12 @@ export const getInscriptionById: RequestHandler<{ id: string }, Response, inscri
   }
 }
 
+/**
+ * @description Crea inscripciones en la base de datos.
+ * @param req La solicitud HTTP con los datos de inscripción en el cuerpo (inscriptions).
+ * @param res La respuesta HTTP.
+ * @returns Respuesta JSON con información sobre las inscripciones creadas o un error.
+ */
 export const createInscriptions: RequestHandler<{}, Response, inscriptionData> = async (req: Request, res: Response): Promise<Response> => {
   const inscriptions = req.body as inscriptionData[]
   try {
@@ -81,6 +111,12 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
   }
 }
 
+/**
+ * @description Actualiza detalles de inscripción por el ID del usuario responsable.
+ * @param req La solicitud HTTP con los parámetros de ruta y datos de actualización en el cuerpo.
+ * @param res La respuesta HTTP.
+ * @returns Respuesta JSON con mensaje de éxito o un error.
+ */
 export const editInscriptionDetail: RequestHandler<{ }, Response, inscripcionDetailData> = async (req: Request, res: Response) => {
   const { responsable_aval } = req.params
   const { estado_aval, observaciones, id_inscripcion } = req.body
@@ -93,6 +129,12 @@ export const editInscriptionDetail: RequestHandler<{ }, Response, inscripcionDet
   }
 }
 
+/**
+ * @description Actualiza una inscripción por su ID.
+ * @param req La solicitud HTTP con el ID de inscripción en los parámetros y los datos a actualizar en el cuerpo.
+ * @param res La respuesta HTTP.
+ * @returns Respuesta JSON con mensaje de éxito o un error.
+ */
 export const editInscription: RequestHandler<{ id: string }, Response, inscriptionData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
   const { nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripción, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones } = req.body
   const { id } = req.params
