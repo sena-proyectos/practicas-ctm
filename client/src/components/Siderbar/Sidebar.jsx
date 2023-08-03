@@ -115,22 +115,14 @@ const Siderbar = () => {
             )}
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <li>
-                <Link to="/inscribir-aprendiz" className={styles('/inscribir-aprendiz')}>
-                  <span className={spanStyle('/inscribir-aprendiz')}>
+                <Link to="/registros" className={styles('/registros')}>
+                  <span className={spanStyle('/registros')}>
                     <IoPersonAddOutline />
                   </span>
-                  {open && 'Inscripciones'}
+                  {open && 'Registro'}
                 </Link>
               </li>
             )}
-            <li>
-              <Link to="/aprov" className={styles('/aprov')}>
-                <span className={spanStyle('/aprov')}>
-                  <IoCheckmarkCircleOutline />
-                </span>
-                {open && 'Aprobaciones'}
-              </Link>
-            </li>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <li>
                 <Link to="/instructores" className={styles('/instructores')}>
