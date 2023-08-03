@@ -4,21 +4,23 @@ import jwtdecoded from 'jwt-decode'
 import { ToastContainer } from 'react-toastify'
 import Swal from 'sweetalert2'
 
+// icons
 import { BsCheck2Circle } from 'react-icons/bs'
 import { LuUpload, LuArrowRight, LuChevronDown, LuArrowLeft } from 'react-icons/lu'
+import { AiOutlineCloudUpload } from 'react-icons/ai'
 
-import { Button } from '../Utils/Button/Button'
+// Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
+import { Button } from '../Utils/Button/Button'
 
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
 import { InscriptionApprentice, GetTeacherByName, GetClassByNumber } from '../../api/httpRequest'
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
 import { readExcelFile } from '../../readExcelFile/reactExcelFile'
 import { inscriptionValidation } from '../../validation/inscriptionsValidation'
-import { AiOutlineCloudUpload } from 'react-icons/ai'
 
-const RegisterStudent = () => {
+export const RegisterStudent = () => {
   const excelFileRef = useRef(null)
   const [msg, setMessage] = useState({})
   const [showDataEmpresa, setShowDataEmpresa] = useState(false)
@@ -334,5 +336,3 @@ const RegisterStudent = () => {
     </>
   )
 }
-
-export { RegisterStudent }

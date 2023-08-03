@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Footer } from '../../Footer/Footer'
-import { Search } from '../../Search/Search'
-import { Siderbar } from '../../Siderbar/Sidebar'
-import { Button } from '../../Utils/Button/Button'
-import { Pagination } from '../../Utils/Pagination/Pagination'
+import { Footer } from '../Footer/Footer'
+import { Search } from '../Search/Search'
+import { Siderbar } from '../Siderbar/Sidebar'
+import { Button } from '../Utils/Button/Button'
+import { Pagination } from '../Utils/Pagination/Pagination'
 import { BsPatchCheck, BsHourglass, BsXOctagon } from 'react-icons/bs'
 import { useNavigate } from 'react-router-dom'
 
@@ -57,10 +57,10 @@ export const RegisterList = () => {
 
   const navigate = useNavigate()
   const handleAvales = () => {
-    return navigate('/registros/registro-detalles')
+    return navigate('/registro-detalles')
   }
   const handleRegister = () => {
-    return navigate('/registros/registrar-aprendiz')
+    return navigate('/registrar-aprendiz')
   }
 
   return (
