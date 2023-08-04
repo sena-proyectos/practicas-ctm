@@ -33,16 +33,9 @@ export const RegisterStudent = () => {
 
   const id = decoded.data.user.id_usuario
 
-  //Cambiar de datos aprendiz a datos empresa
-  const handleShowDataEmpresa = () => {
-    setShowDataEmpresa(true)
-    setShowDataAprendiz(false)
-  }
-
-  //Cambiar de datos empresa a datos aprendiz
-  const handleShowDataAprendiz = () => {
-    setShowDataAprendiz(true)
-    setShowDataEmpresa(false)
+  const handleChangeSection = (section) => {
+    setShowDataEmpresa(section === 'empresa')
+    setShowDataAprendiz(section === 'aprendiz')
   }
 
   // Validación de campos y capturación de los valores
@@ -169,7 +162,7 @@ export const RegisterStudent = () => {
           </header>
           <section>
             <form action="" ref={formRef} className="flex flex-col mt-3 gap-y-6" onSubmit={handleSubmit}>
-              {showDataAprendiz && (
+              <div className={showDataAprendiz ? 'visible' : 'hidden'}>
                 <section className="grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
                   {dataInscription.dataAprendiz.map((item, i) => {
                     return (
@@ -194,7 +187,7 @@ export const RegisterStudent = () => {
                                       </option>
                                     )
                                   })
-                                : item.name === 'id_modalidad_inscripcion'
+                                : item.name === 'modalidad_inscripcion'
                                 ? modalities.map((item, i) => {
                                     return (
                                       <option value={item.value} key={i}>
@@ -202,7 +195,7 @@ export const RegisterStudent = () => {
                                       </option>
                                     )
                                   })
-                                : item.name === 'etapa_formacion_actual_inscripcion'
+                                : item.name === 'etapa_actual_inscripcion'
                                 ? etapasFormacion.map((item, i) => {
                                     return (
                                       <option value={item.value} key={i}>
@@ -210,7 +203,7 @@ export const RegisterStudent = () => {
                                       </option>
                                     )
                                   })
-                                : item.name === 'nivel_formacion_actual_inscripcion'
+                                : item.name === 'nivel_formacion_inscripcion'
                                 ? nivelFormacion.map((item, i) => {
                                     return (
                                       <option value={item.value} key={i}>
@@ -236,8 +229,8 @@ export const RegisterStudent = () => {
                     )
                   })}
                 </section>
-              )}
-              {showDataEmpresa && (
+              </div>
+              <div className={showDataEmpresa ? 'visible' : 'hidden'}>
                 <section className="grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
                   {dataInscription.dataEmpresa.map((item, i) => {
                     return (
@@ -265,7 +258,7 @@ export const RegisterStudent = () => {
                             </span>
                             <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
                               <option value={''}>Sin seleccionar</option>
-                              {item.name === 'asume_pago_arl_inscripcion'
+                              {item.name === 'arl'
                                 ? pagoArl.map((item, i) => {
                                     return (
                                       <option value={item.value} key={i}>
@@ -289,7 +282,7 @@ export const RegisterStudent = () => {
                     )
                   })}
                 </section>
-              )}
+              </div>
               <section className={`flex h-10 flex-row w-fit gap-10 place-self-center ${showDataEmpresa && 'mt-20'}`}>
                 {showDataAprendiz && (
                   <div className="flex px-3 py-1 mx-auto shadow-md w-fit rounded-xl bg-slate-600">
@@ -317,7 +310,7 @@ export const RegisterStudent = () => {
                   <span className="absolute inset-y-0 flex items-center text-white pointer-events-none left-3">
                     <LuArrowLeft />
                   </span>
-                  <Button value={'Regresar'} bg={'bg-sky-700'} px={'pr-6 pl-10'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowDataAprendiz} />
+                  <Button value={'Regresar'} bg={'bg-sky-700'} px={'pr-6 pl-10'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={() => handleChangeSection('aprendiz')} />
                 </div>
               )}
               {showDataAprendiz && (
@@ -325,7 +318,7 @@ export const RegisterStudent = () => {
                   <span className="absolute inset-y-0 flex items-center text-white pointer-events-none right-2">
                     <LuArrowRight />
                   </span>
-                  <Button value={'Continuar'} bg={'bg-primary'} px={'pr-8 pl-5'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowDataEmpresa} />
+                  <Button value={'Continuar'} bg={'bg-primary'} px={'pr-8 pl-5'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={() => handleChangeSection('empresa')} />
                 </div>
               )}
             </div>
