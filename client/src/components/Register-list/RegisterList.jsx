@@ -1,54 +1,34 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+//icons
+import { BsPatchCheck, BsHourglass, BsXOctagon } from 'react-icons/bs'
+
+//Componentes
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Button } from '../Utils/Button/Button'
 import { Pagination } from '../Utils/Pagination/Pagination'
-import { BsPatchCheck, BsHourglass, BsXOctagon } from 'react-icons/bs'
-import { useNavigate } from 'react-router-dom'
+
+import { getInscriptions } from '../../api/httpRequest'
 
 export const RegisterList = () => {
   const [pageNumber, setPageNumber] = useState(0)
-  const registers = {
-    data: [
-      {
-        name: 'Guillermo Stiven Benjumea Morales',
-        modalidad: 'Pasantía',
-        estado: 'Aprobado',
-        avales: 3,
-      },
-      {
-        name: 'Stiven Blandón Urrego',
-        modalidad: 'Monitoria',
-        estado: 'Sin aprobar',
-        avales: 2,
-      },
-      {
-        name: 'Lorena Quiceno Giraldo',
-        modalidad: 'Contrato de Aprendizaje',
-        estado: 'Rechazado',
-        avales: 0,
-      },
-      {
-        name: 'Guillermo Stiven Benjumea Morales',
-        modalidad: 'Contrato Laboral',
-        estado: 'Aprobado',
-        avales: 3,
-      },
-      {
-        name: 'Stiven Blandón Urrego',
-        modalidad: 'Proyecto Productivo',
-        estado: 'Sin aprobar',
-        avales: 1,
-      },
-      {
-        name: 'Stiven Blandón Urrego',
-        modalidad: 'Proyecto Productivo',
-        estado: 'Rechazado',
-        avales: 0,
-      },
-    ],
-  }
+  const [inscriptions, setInscriptions] = useState([])
+
+  useEffect(() => {
+    const getRegistros = async () => {
+      try {
+        const response = await getInscriptions()
+        const { data } = response.data
+        setInscriptions(data)
+      } catch (error) {
+        setError('Error al obtener los aprendices')
+      }
+    }
+    setTimeout(getRegistros, 1000)
+  }, [])
 
   const registersPerPage = 6
   const pageCount = Math.ceil(registers.data.length / registersPerPage)
@@ -56,8 +36,8 @@ export const RegisterList = () => {
   const endIndex = startIndex + registersPerPage
 
   const navigate = useNavigate()
-  const handleAvales = () => {
-    return navigate('/registro-detalles')
+  const handleAvales = (id) => {
+    return navigate(`/registro-detalles?id=${id}`)
   }
   const handleRegister = () => {
     return navigate('/registrar-aprendiz')
@@ -83,23 +63,25 @@ export const RegisterList = () => {
               </tr>
             </thead>
             <tbody>
-              {registers.data.slice(startIndex, endIndex).map((x, i) => {
+              {inscriptions.slice(startIndex, endIndex).map((x) => {
                 return (
-                  <tr className="text-sm border-b border-gray-200 h-[3rem]" key={i}>
-                    <td className="font-medium text-center break-words ">{x.name}</td>
-                    <td className="px-5 font-light text-center">{x.modalidad}</td>
-                    <td className="px-5 font-light text-center">2023 - 04 - 05</td>
+                  <tr className="text-sm border-b border-gray-200 h-[3rem]" key={x.id_inscripcion}>
+                    <td className="font-medium text-center break-words ">
+                      {x.nombre_inscripcion} {x.apellido_inscripcion}
+                    </td>
+                    <td className="px-5 font-light text-center">{x.modalidad_inscripción}</td>
+                    <td className="px-5 font-light text-center">{x.fecha_creación}</td>
                     <td className="px-5 text-sm font-light text-center">
-                      <div className="w-10 rounded-full select-none bg-gray">{x.avales} | 3</div>
+                      <div className="w-10 rounded-full select-none bg-gray">{/* {x.avales}  */}| 3</div>
                     </td>
                     <td className="px-5 text-sm font-normal text-center whitespace-nowrap">
-                      <div className={`px-2 py-[1px] ${x.estado === 'Aprobado' ? 'bg-green-200 text-emerald-700' : x.estado === 'Sin aprobar' ? 'bg-slate-200 text-slate-600' : x.estado === 'Rechazado' ? 'bg-red-200 text-red-700' : ''} rounded-full flex flex-row gap-1 items-center justify-center select-none`}>
-                        <span>{x.estado}</span>
-                        <span>{x.estado === 'Aprobado' ? <BsPatchCheck /> : x.estado === 'Sin aprobar' ? <BsHourglass /> : x.estado === 'Rechazado' ? <BsXOctagon /> : ''}</span>
+                      <div className={`px-2 py-[1px] ${x.estado_general_inscripcion === 'Aprobado' ? 'bg-green-200 text-emerald-700' : x.estado_general_inscripcion === 'Pendiente' ? 'bg-slate-200 text-slate-600' : x.estado_general_inscripcion === 'Rechazado' ? 'bg-red-200 text-red-700' : ''} rounded-full flex flex-row gap-1 items-center justify-center select-none`}>
+                        <span>{x.estado_general_inscripcion}</span>
+                        <span>{x.estado_general_inscripcion === 'Aprobado' ? <BsPatchCheck /> : x.estado_general_inscripcion === 'Pendiente' ? <BsHourglass /> : x.estado_general_inscripcion === 'Rechazado' ? <BsXOctagon /> : ''}</span>
                       </div>
                     </td>
                     <td className="text-center">
-                      <Button value={'Detalles'} rounded="rounded-full" bg="bg-sky-600" px="px-2" py="py-[1px]" textSize="text-sm" font="font-medium" clickeame={handleAvales} />
+                      <Button value={'Detalles'} rounded="rounded-full" bg="bg-sky-600" px="px-2" py="py-[1px]" textSize="text-sm" font="font-medium" clickeame={() => handleAvales(x.id_inscripcion)} />
                     </td>
                   </tr>
                 )
