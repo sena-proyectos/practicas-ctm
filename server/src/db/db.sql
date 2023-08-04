@@ -191,7 +191,7 @@ CREATE TABLE `detalles_inscripciones` (
 
 LOCK TABLES `detalles_inscripciones` WRITE;
 /*!40000 ALTER TABLE `detalles_inscripciones` DISABLE KEYS */;
-INSERT INTO `detalles_inscripciones` VALUES (1,'3','Pendiente',NULL,1),(2,'4','Pendiente',NULL,1),(3,'2','Pendiente',NULL,1),(4,'3','Pendiente',NULL,2),(5,'4','Pendiente',NULL,2),(6,'2','Pendiente',NULL,2),(7,'3','Aprobado',NULL,3),(8,'4','Aprobado',NULL,3),(9,'2','Aprobado',NULL,3);
+INSERT INTO `detalles_inscripciones` VALUES (1,'3','Rechazado',NULL,1),(2,'4','Pendiente',NULL,1),(3,'2','Pendiente',NULL,1),(4,'3','Pendiente',NULL,2),(5,'4','Pendiente',NULL,2),(6,'2','Pendiente',NULL,2),(7,'3','Aprobado',NULL,3),(8,'4','Aprobado',NULL,3),(9,'2','Aprobado',NULL,3);
 /*!40000 ALTER TABLE `detalles_inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -367,12 +367,12 @@ CREATE TABLE `inscripciones` (
   `nombre_inscripcion` varchar(300) NOT NULL,
   `apellido_inscripcion` varchar(300) NOT NULL,
   `tipo_documento_inscripcion` varchar(100) NOT NULL,
-  `documento_inscripción` varchar(100) NOT NULL,
+  `documento_inscripcion` varchar(100) NOT NULL,
   `email_inscripcion` varchar(300) NOT NULL,
-  `inscripción_celular` varchar(20) NOT NULL,
+  `inscripcion_celular` varchar(20) NOT NULL,
   `etapa_actual_inscripcion` varchar(100) NOT NULL,
-  `modalidad_inscripción` varchar(300) NOT NULL,
-  `nombre_programa_inscripción` varchar(300) NOT NULL,
+  `modalidad_inscripcion` varchar(300) NOT NULL,
+  `nombre_programa_inscripcion` varchar(300) NOT NULL,
   `nivel_formacion_inscripcion` varchar(100) NOT NULL,
   `numero_ficha_inscripcion` varchar(20) NOT NULL,
   `fecha_fin_lectiva_inscripcion` date NOT NULL,
@@ -390,7 +390,7 @@ CREATE TABLE `inscripciones` (
   `link_documentos` varchar(100) NOT NULL,
   `observaciones` varchar(2500) NOT NULL,
   `estado_general_inscripcion` varchar(60) NOT NULL DEFAULT 'Pendiente',
-  `fecha_creación` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_creacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `responsable_inscripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id_inscripcion`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -402,7 +402,7 @@ CREATE TABLE `inscripciones` (
 
 LOCK TABLES `inscripciones` WRITE;
 /*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
-INSERT INTO `inscripciones` VALUES (1,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','lectiva','pasantias','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','ninguna',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'la empresa','pdf.pdf','N/A','Pendiente','2023-07-27 16:34:43','Admin Admin'),(2,'Lorena','Quiceno Giraldo','CC','1082882294','lorenquiceno@gmail.com','3245887367','Prácticas','Contrato de aprendizaje','Análisis y Desarrollo de Software','Tecnología','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','La empresa','9003238537','Teleperformance','Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','la empresa','pdf(1).pdf','N/A','Pendiente','2023-07-27 17:16:00','Admin Admin'),(3,'Juan Guillermo','Gomez Zapata','CC','1027800913','juanlestar0408@gmail.com','3006953395','practicas','contrato de aprendizaje','ADSO','tecnologia','2473196','2023-04-05','Adelaida','acanom@sena.edu.co','La empresa','9003238537','Teleperformance','Cra 40 #43b-33','Jessica Martinez','HHRR','3233459687','jessicalamejor@teleformance.co','la empresa','pdf(1)(1).pdf','Ninguna','Aprobado','2023-07-28 16:23:38','Admin Admin');
+INSERT INTO `inscripciones` VALUES (1,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','lectiva','pasantias','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','ninguna',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'la empresa','pdf.pdf','N/A','Rechazado','2023-07-27 16:34:43','Admin Admin'),(2,'Lorena','Quiceno Giraldo','CC','1082882294','lorenquiceno@gmail.com','3245887367','Prácticas','Contrato de aprendizaje','Análisis y Desarrollo de Software','Tecnología','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','La empresa','9003238537','Teleperformance','Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','la empresa','pdf(1).pdf','N/A','Pendiente','2023-07-27 17:16:00','Admin Admin'),(3,'Juan Guillermo','Gomez Zapata','CC','1027800913','juanlestar0408@gmail.com','3006953395','practicas','contrato de aprendizaje','ADSO','tecnologia','2473196','2023-04-05','Adelaida','acanom@sena.edu.co','La empresa','9003238537','Teleperformance','Cra 40 #43b-33','Jessica Martinez','HHRR','3233459687','jessicalamejor@teleformance.co','la empresa','pdf(1)(1).pdf','Ninguna','Aprobado','2023-07-28 16:23:38','Admin Admin');
 /*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -683,4 +683,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-28 11:45:11
+-- Dump completed on 2023-08-04 14:36:30
