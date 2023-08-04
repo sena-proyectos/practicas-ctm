@@ -30,10 +30,10 @@ export const RegisterList = () => {
     setTimeout(getRegistros, 1000)
   }, [])
 
-  const registersPerPage = 6
-  const pageCount = Math.ceil(registers.data.length / registersPerPage)
-  const startIndex = pageNumber * registersPerPage
-  const endIndex = startIndex + registersPerPage
+  const inscriptionsPerPage = 6
+  const pageCount = Math.ceil(inscriptions.length / inscriptionsPerPage)
+  const startIndex = pageNumber * inscriptionsPerPage
+  const endIndex = startIndex + inscriptionsPerPage
 
   const navigate = useNavigate()
   const handleAvales = (id) => {
