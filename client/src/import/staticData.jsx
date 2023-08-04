@@ -211,21 +211,21 @@ export const dataInscription = {
   dataAprendiz: [
     {
       type: 'select',
-      name: 'id_modalidad_inscripcion',
+      name: 'modalidad_inscripcion',
       placeholder: 'Sin seleccionar',
       label: 'Modalidad',
       required: true,
     },
     {
       type: 'text',
-      name: 'apellidos_inscripcion',
+      name: 'apellido_inscripcion',
       placeholder: 'Rodriguez',
       label: 'Apellidos',
       required: true,
     },
     {
       type: 'text',
-      name: 'nombres_inscripcion',
+      name: 'nombre_inscripcion',
       placeholder: 'Alejandro',
       label: 'Nombres',
       required: true,
@@ -239,56 +239,56 @@ export const dataInscription = {
     },
     {
       type: 'number',
-      name: 'numero_documento_inscripcion',
+      name: 'documento_inscripcion',
       placeholder: '1023456789',
       label: 'Número documento',
       required: true,
     },
     {
       type: 'email',
-      name: 'correo_electronico_inscripcion',
+      name: 'email_inscripcion',
       placeholder: 'example@sena.edu.co',
       label: 'Correo electrónico',
       required: true,
     },
     {
       type: 'number',
-      name: 'numero_celular_inscripcion',
+      name: 'inscripcion_celular',
       placeholder: '3012345467',
       label: 'Número de celular',
       required: true,
     },
     {
       type: 'select',
-      name: 'etapa_formacion_actual_inscripcion',
+      name: 'etapa_actual_inscripcion',
       placeholder: 'Sin seleccionar',
       label: 'Etapa de formación',
       required: true,
     },
     {
       type: 'select',
-      name: 'nivel_formacion_actual_inscripcion',
+      name: 'nivel_formacion_inscripcion',
       placeholder: 'Sin seleccionar',
       label: 'Nivel de formación',
       required: true,
     },
     {
       type: 'number',
-      name: 'id_ficha_inscripcion',
+      name: 'numero_ficha_inscripcion',
       placeholder: '2134567',
       label: 'Número de ficha',
       required: true,
     },
     {
       type: 'text',
-      name: 'nombre_programa_formacion_inscripcion',
+      name: 'nombre_programa_inscripcion',
       placeholder: 'Producción multimedia',
       label: 'Programa formación',
       required: true,
     },
     {
       type: 'date',
-      name: 'fin_etapa_lectiva_inscripcion',
+      name: 'fecha_fin_lectiva_inscripcion',
       label: 'Fin etapa lectiva',
       required: true,
     },
@@ -300,7 +300,7 @@ export const dataInscription = {
     },
     {
       type: 'email',
-      name: 'correo_electronico_instructor_lider_inscripcion',
+      name: 'email_instructor_lider_inscripcion',
       placeholder: 'example@sena.edu.co',
       label: 'Correo instructor lider',
       required: true,
@@ -322,7 +322,7 @@ export const dataInscription = {
     },
     {
       type: 'text',
-      name: 'nombre_empresa_inscripcion',
+      name: 'nombre_empresa_inscripción',
       placeholder: 'SENA',
       label: 'Razón social (Empresa)',
     },
@@ -334,44 +334,44 @@ export const dataInscription = {
     },
     {
       type: 'text',
-      name: 'nombre_completo_jefe_inmediato_inscripcion',
+      name: 'nombre_jefe_empresa_inscripcion',
       placeholder: 'Juan Perez',
       label: 'Nombre jefe inmediato',
     },
     {
       type: 'text',
-      name: 'cargo_jefe_inmediato_inscripcion',
+      name: 'cargo_jefe_empresa_inscripcion',
       placeholder: 'Gerente',
       label: 'Cargo jefe inmediato',
     },
     {
       type: 'number',
-      name: 'telefono_jefe_inmediato_inscripcion',
+      name: 'telefono_jefe_empresa_inscripcion',
       placeholder: '3012345678',
       label: 'Teléfono jefe inmediato',
     },
     {
       type: 'email',
-      name: 'correo_jefe_inmediato_inscripcion',
+      name: 'email_jefe_empresa_inscripcion',
       placeholder: 'example@sena.edu.co',
       label: 'Correo jefe Inmediato',
     },
     {
       type: 'select',
-      name: 'asume_pago_arl_inscripcion',
+      name: 'arl',
       placeholder: 'Sin seleccionar',
       label: '¿Quién asume pago arl?',
     },
     {
       type: 'file',
-      name: 'documentos_pdf',
+      name: 'link_documentos',
       label: 'Documentos',
       required: true,
       accept: '.pdf',
     },
     {
       type: 'textarea',
-      name: 'observaciones_inscripcion',
+      name: 'observaciones',
       placeholder: 'Digite una observación',
       label: '¿Observaciones?',
       required: true,
@@ -383,9 +383,9 @@ export const dataInscription = {
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const idTypes = [
-  { value: 'C.C', name: 'Cédula de ciudadanía' },
-  { value: 'C.E', name: 'Cédula de extranjería' },
-  { value: 'T.I', name: 'Tarjeta de identidad' },
+  { value: 'CC', name: 'Cédula de ciudadanía' },
+  { value: 'CE', name: 'Cédula de extranjería' },
+  { value: 'TI', name: 'Tarjeta de identidad' },
   { value: 'PEP', name: 'Persona expuesta políticamente' },
 ]
 
@@ -393,8 +393,8 @@ export const idTypes = [
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const modalities = [
-  { value: 1, name: 'Pasantías' },
-  { value: 2, name: 'Contrato de aprendizaje' },
+  { value: 1, name: 'Contrato de aprendizaje' },
+  { value: 2, name: 'Pasantías' },
   { value: 3, name: 'Proyecto productivo' },
   { value: 4, name: 'Monitoria' },
   { value: 5, name: 'Vinculación laboral' },
@@ -404,16 +404,16 @@ export const modalities = [
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const etapasFormacion = [
-  { value: 'Lectiva', name: 'Lectiva' },
-  { value: 'Práctica', name: 'Práctica' },
+  { value: 'lectiva', name: 'Lectiva' },
+  { value: 'practica', name: 'Práctica' },
 ]
 
 /*
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const nivelFormacion = [
-  { value: 'Técnico', name: 'Técnico' },
-  { value: 'Tecnología', name: 'Tecnología' },
+  { value: 'tecnico', name: 'Técnico' },
+  { value: 'tecnologia', name: 'Tecnología' },
 ]
 
 /*
@@ -421,16 +421,16 @@ export const nivelFormacion = [
  */
 export const apoyoSostenimiento = [
   { value: 'FIC', name: 'FIC' },
-  { value: 'Jóvenes en Acción', name: 'Jóvenes en Acción' },
-  { value: 'Apoyo de sostenimiento Sena', name: 'Apoyo de sostenimiento Sena' },
-  { value: 'Ninguno', name: 'Ninguno' },
+  { value: 'jovenes en accion', name: 'Jóvenes en Acción' },
+  { value: 'apoyo de sostenimiento sena', name: 'Apoyo de sostenimiento Sena' },
+  { value: 'ninguno', name: 'ninguno' },
 ]
 
 /*
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const pagoArl = [
-  { value: 'Empresa', name: 'Empresa' },
+  { value: 'empresa', name: 'Empresa' },
   { value: 'SENA', name: 'SENA' },
 ]
 
