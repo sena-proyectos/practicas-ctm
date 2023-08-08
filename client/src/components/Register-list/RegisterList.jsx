@@ -69,8 +69,8 @@ export const RegisterList = () => {
                     <td className="font-medium text-center break-words ">
                       {x.nombre_inscripcion} {x.apellido_inscripcion}
                     </td>
-                    <td className="px-5 font-light text-center">{x.modalidad_inscripción}</td>
-                    <td className="px-5 font-light text-center">{x.fecha_creación}</td>
+                    <td className="px-5 font-light text-center">{x.modalidad_inscripcion === '1' ? 'Contrato de aprendizaje' : x.modalidad_inscripcion === '2' ? 'Pasantías' : null}</td>
+                    <td className="px-5 font-light text-center">{x.fecha_creacion}</td>
                     <td className="px-5 text-sm font-light text-center">
                       <div className="w-10 rounded-full select-none bg-gray">{/* {x.avales}  */}| 3</div>
                     </td>
