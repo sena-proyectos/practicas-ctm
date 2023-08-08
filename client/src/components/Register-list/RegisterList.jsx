@@ -50,8 +50,8 @@ export const RegisterList = () => {
         <header className="grid place-items-center">
           <Search filter />
         </header>
-        <section className="flex flex-col w-11/12 h-full gap-3 mx-auto mt-2">
-          <table className="w-full h-full table-auto">
+        <section className="flex flex-col w-11/12 gap-3 mx-auto mt-2">
+          <table className="w-full h-96">
             <thead>
               <tr>
                 <th className="px-6 text-[16px] font-semibold whitespace-nowrap">Nombre Completo</th>
@@ -65,14 +65,14 @@ export const RegisterList = () => {
             <tbody>
               {inscriptions.slice(startIndex, endIndex).map((x) => {
                 return (
-                  <tr className="text-sm border-b border-gray-200 h-[3rem]" key={x.id_inscripcion}>
+                  <tr className="text-sm border-b border-gray-200 h-28" key={x.id_inscripcion}>
                     <td className="font-medium text-center break-words ">
                       {x.nombre_inscripcion} {x.apellido_inscripcion}
                     </td>
                     <td className="px-5 font-light text-center">{x.modalidad_inscripcion === '1' ? 'Contrato de aprendizaje' : x.modalidad_inscripcion === '2' ? 'Pasantías' : null}</td>
-                    <td className="px-5 font-light text-center">{x.fecha_creacion}</td>
+                    <td className="px-5 font-light text-center">{x.fecha_creacion.split('T')[0]}</td>
                     <td className="px-5 text-sm font-light text-center">
-                      <div className="w-10 rounded-full select-none bg-gray">{/* {x.avales}  */}| 3</div>
+                      <div className="w-10 rounded-full select-none bg-gray">0 | 3</div>
                     </td>
                     <td className="px-5 text-sm font-normal text-center whitespace-nowrap">
                       <div className={`px-2 py-[1px] ${x.estado_general_inscripcion === 'Aprobado' ? 'bg-green-200 text-emerald-700' : x.estado_general_inscripcion === 'Pendiente' ? 'bg-slate-200 text-slate-600' : x.estado_general_inscripcion === 'Rechazado' ? 'bg-red-200 text-red-700' : ''} rounded-full flex flex-row gap-1 items-center justify-center select-none`}>
