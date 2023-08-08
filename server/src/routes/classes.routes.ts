@@ -12,6 +12,9 @@ const classRoutes: IRouter = Router()
 `getClasses` del archivo 'classes.controllers.js'. */
 classRoutes.get('/classes', getClasses)
 
+/* `classRoutes.get('/classesDetail', getClassDetail)` está definiendo una ruta GET para el punto final
+'/classesDetail'. Cuando se realiza una solicitud GET a este punto final, ejecutará la función del
+controlador `getClassDetail`. */
 classRoutes.get('/classesDetail', getClassDetail)
 
 /* `classRoutes.get('/class/:id', checkIdReq, getClassById)` está definiendo una ruta GET para el punto
