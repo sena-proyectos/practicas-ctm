@@ -134,8 +134,8 @@ const Siderbar = () => {
               </li>
             )}
             <li>
-              <Link to="/asignar-ficha" className={styles('/asignar-ficha')}>
-                <span className={spanStyle('/asignar-ficha')}>
+              <Link to="/fichas" className={styles('/fichas')}>
+                <span className={spanStyle('/fichas')}>
                   <IoBookOutline />
                 </span>
                 {open && 'Fichas'}

@@ -452,7 +452,7 @@ export const colorIcon = {
   '/registros': 'text-lima',
   '/aprov': 'text-secondary',
   '/instructores': 'text-rosa',
-  '/asignar-ficha': 'text-coffee',
+  '/fichas': 'text-coffee',
   '/visitas': 'text-primary',
   '/config': 'text-fifth',
 }
