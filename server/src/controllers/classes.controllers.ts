@@ -28,6 +28,27 @@ export const getClasses = async (_req: Request, res: Response): Promise<Response
 }
 
 /**
+ * Esta función de TypeScript recupera los detalles de la clase en función de un parámetro
+ * "numero_ficha" determinado.
+ * @param {Request} req - El parámetro `req` es el objeto de solicitud que contiene información sobre
+ * la solicitud HTTP entrante, como encabezados, parámetros de consulta y cuerpo de la solicitud. En
+ * este caso, es del tipo `Request` de la biblioteca Express.js.
+ * @param {Response} res - El parámetro `res` es el objeto de respuesta que se usa para enviar la
+ * respuesta HTTP al cliente. Es una instancia de la clase `Respuesta` del marco Express.
+ * @returns una promesa que se resuelve en un objeto de respuesta.
+ */
+export const getClassDetail: RequestHandler<{ }, Response, classes> = async (req: Request, res: Response): Promise<Response> => {
+  const { numero_ficha } = req.body
+  try {
+    const [classes] = await connection.query('SELECT * FROM detalles_fichas_aprendices', [numero_ficha])
+    if (!Array.isArray(classes) || classes?.length === 0) throw new DbErrorNotFound('No hay detalles de fichas.', errorCodes.ERROR_GET_CLASSES)
+    return res.status(httpStatus.OK).json({ data: classes })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+/**
  * Esta función de TypeScript recupera datos de clase de una base de datos en función del ID
  * proporcionado.
  * @param req - El parámetro `req` es el objeto de solicitud que contiene información sobre la
