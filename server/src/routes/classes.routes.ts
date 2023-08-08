@@ -1,6 +1,6 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { getClasses, getClassById, getClassByClassNumber, createClass, editClass, getClassByPracticalInstructorId, editPracticalInstructorClass } from '../controllers/classes.controllers.js'
+import { getClasses, getClassById, getClassByClassNumber, createClass, editClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail } from '../controllers/classes.controllers.js'
 import { checkClassData, checkClassNumber, checkPracticalTeacherId } from '../middlewares/classes.middlewares.js'
 
 const classRoutes: IRouter = Router()
@@ -11,6 +11,8 @@ const classRoutes: IRouter = Router()
 '/classes'. Cuando se realiza una solicitud GET a este punto final, se ejecutará la función
 `getClasses` del archivo 'classes.controllers.js'. */
 classRoutes.get('/classes', getClasses)
+
+classRoutes.get('/classesDetail', getClassDetail)
 
 /* `classRoutes.get('/class/:id', checkIdReq, getClassById)` está definiendo una ruta GET para el punto
 final '/class/:id'. Cuando se realiza una solicitud GET a este punto final, ejecutará la función de
