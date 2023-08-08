@@ -64,3 +64,19 @@ export const detailInfoStudents = async () => {
   const response = await axios.get(URL)
   return response
 }
+
+//OBTENER REGISTROS
+export const getInscriptions = async () => {
+  const URL = `${baseUrl}${api}/inscriptions`
+
+  const response = await axios.get(URL)
+  return response
+}
+
+//OBTENER REGISTRO POR ID
+export const getInscriptionById = async (id) => {
+  const URL = `${baseUrl}${api}/inscription/${id}`
+
+  const response = await axios.get(URL)
+  return response
+}
