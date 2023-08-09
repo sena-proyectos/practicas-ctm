@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 //Componentes
 import { Footer } from '../Footer/Footer'
@@ -6,9 +6,11 @@ import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
 import { Pagination } from '../Utils/Pagination/Pagination'
+import Skeleton from 'react-loading-skeleton'
 
 export const Courses = () => {
   const [pageNumber, setPageNumber] = useState(0)
+  const [loading, setLoading] = useState(true)
   const Courses = {
     data: [
       {
@@ -73,6 +75,12 @@ export const Courses = () => {
   const startIndex = pageNumber * coursesPerPage
   const endIndex = startIndex + coursesPerPage
 
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 5000)
+  }, [])
+
   return (
     <main className="flex flex-row min-h-screen">
       <Siderbar />
@@ -82,9 +90,20 @@ export const Courses = () => {
         </header>
         <section>
           <section className="grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 sm:grid-cols-2 md:grid-cols-3">
-            {Courses.data.slice(startIndex, endIndex).map((course, i) => {
-              return <Card3D key={i} header={course.ficha} title={course.name} subtitle={course.etapa} item1={course.seguimiento} item2={course.lider} item3={course.finLectiva} item4={course.inicioProductiva} />
-            })}
+            {loading ? (
+              <>
+                <SkeletonLoading />
+                <SkeletonLoading />
+                <SkeletonLoading />
+                <SkeletonLoading />
+                <SkeletonLoading />
+                <SkeletonLoading />
+              </>
+            ) : (
+              Courses.data.slice(startIndex, endIndex).map((course, i) => {
+                return <Card3D key={i} header={course.ficha} title={course.name} subtitle={course.etapa} item1={course.seguimiento} item2={course.lider} item3={course.finLectiva} item4={course.inicioProductiva} />
+              })
+            )}
           </section>
           <div className="flex justify-center h-[13vh] relative bottom-0">
             <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
@@ -94,4 +113,8 @@ export const Courses = () => {
       </section>
     </main>
   )
+}
+
+const SkeletonLoading = () => {
+  return <Card3D header={<Skeleton />} title={<Skeleton />} subtitle={<Skeleton />} item1={<Skeleton />} item2={<Skeleton />} item3={<Skeleton />} item4={<Skeleton />} />
 }
