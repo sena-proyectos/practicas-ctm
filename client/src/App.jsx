@@ -14,6 +14,7 @@ import { keysRoles } from './import/staticData'
 import { RegisterList } from './components/Register-list/RegisterList'
 import { RegisterStudent } from './components/Register-student/RegisterStudent'
 import { RegisterDetails } from './components/Register-detail/RegisterDetails'
+import { Courses } from './components/Courses/Courses'
 
 const App = () => {
   const idRol = Number(localStorage.getItem('idRol'))
@@ -29,6 +30,7 @@ const App = () => {
         <Route path="/registrar-aprendiz" element={<RegisterStudent />} />
         <Route path="/registro-detalles" element={<RegisterDetails />} />
         <Route path="/asignar-ficha" element={<AssignClass />} />
+        <Route path="/fichas" element={<Courses />} />
       </Route>
 
       <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])} redirectTo="/home" />}>

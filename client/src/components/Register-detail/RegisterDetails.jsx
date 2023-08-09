@@ -84,7 +84,7 @@ export const RegisterDetails = () => {
       <Siderbar />
       <section className="relative grid flex-auto w-min grid-rows-3-10-75-15">
         <header className="grid place-items-center">
-          <h1 className="text-2xl font-bold text-center place-self-center">{showDataAprendiz === true ? 'Datos del aprendiz' : showDataEmpresa === true ? 'Datos de la empresa' : 'Avales de administrativos'}</h1>
+          <h1 className="text-2xl font-bold text-center place-self-center">{showDataAprendiz === true ? 'Datos del aprendiz' : showDataEmpresa === true ? 'Datos de la empresa' : 'Avales'}</h1>
         </header>
         <section>
           <form action="" className="flex flex-col mt-3 gap-y-6">
@@ -178,7 +178,7 @@ export const RegisterDetails = () => {
                             <AiOutlineCloudUpload />
                           </span>
                           <div className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2">
-                            <input type={item.type} accept={item.accept} name={item.name} className="w-5/6 text-xs file:hidden whitespace-break-spaces" />
+                            <input type={item.type} accept={item.accept} name={item.name} className="w-5/6 text-xs cursor-pointer file:hidden whitespace-break-spaces" />
                           </div>
                         </div>
                       ) : item.type === 'select' ? (
@@ -201,7 +201,7 @@ export const RegisterDetails = () => {
                         </div>
                       ) : item.type === 'textarea' ? (
                         <div className="relative">
-                          <textarea id="editor" rows="3" ref={inputRef} className="block absolute w-full px-0 max-h-[5.5rem] min-h-[2rem] md:max-h-[10rem] overflow-y-auto border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" placeholder={item.placeholder} required></textarea>
+                          <textarea id="editor" rows="3" ref={inputRef} className="block w-full px-0 max-h-[5.5rem] overflow-y-auto resize-none border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-sm text-black focus:bg-white focus:outline-none" placeholder={item.placeholder} required></textarea>
                         </div>
                       ) : (
                         <div className="relative">
@@ -213,11 +213,98 @@ export const RegisterDetails = () => {
                 })}
               </section>
             </div>
-            <div className={showDataAvales ? 'visible' : 'hidden'}>
-              <section className="grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3"></section>
+            <div className={`w-11/12 mx-auto flex flex-col gap-5 ${showDataAvales ? 'visible' : 'hidden'}`}>
+              <section className="grid gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
+                <div className="flex flex-col w-full m-auto text-gray-400">
+                  <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                    Coordinador Responsable
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                      <LuChevronDown />
+                    </span>
+                    <select className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
+                      <option value={''}>Sin seleccionar</option>
+                      <option value="" selected>
+                        Marianela
+                      </option>
+                      <option value="">Otros</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex flex-col w-full m-auto text-gray-400">
+                  <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                    Instructor de Seguimiento
+                  </label>
+                  <div className="relative">
+                    <input type="text" className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none" autoComplete="on" />
+                  </div>
+                </div>
+                <div className="flex flex-col w-full m-auto text-gray-400">
+                  <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                    Instructor Líder
+                  </label>
+                  <div className="relative">
+                    <input type="text" className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none" autoComplete="on" />
+                  </div>
+                </div>
+                <div className="flex flex-col w-full m-auto text-gray-400">
+                  <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                    Aval Coordinador
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                      <LuChevronDown />
+                    </span>
+                    <select className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
+                      <option value={''}>Sin seleccionar</option>
+                      <option value="">Si</option>
+                      <option value="">No</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex flex-col w-full m-auto text-gray-400">
+                  <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                    Aval Instructor Seguimiento
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                      <LuChevronDown />
+                    </span>
+                    <select className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
+                      <option value={''}>Sin seleccionar</option>
+                      <option value="">Si</option>
+                      <option value="">No</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex flex-col w-full m-auto text-gray-400">
+                  <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                    Aval Instructor Líder
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                      <LuChevronDown />
+                    </span>
+                    <select className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
+                      <option value={''}>Sin seleccionar</option>
+                      <option value="">Si</option>
+                      <option value="">No</option>
+                    </select>
+                  </div>
+                </div>
+              </section>
+              <div className="flex flex-col text-gray-400">
+                <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                  Observaciones
+                </label>
+                <div className="relative">
+                  <textarea className="w-full h-16 border-gray-400 min-h-[6rem] resize-none focus:text-gray-900 rounded-md border-[1.2px] bg-white py-1 px-3 text-sm text-black focus:bg-white focus:outline-none" />
+                </div>
+              </div>
             </div>
           </form>
-          <div className="flex flex-col gap-1 mx-auto mt-3 mb-2 md:flex-row w-fit md:gap-5">
+          <div className="flex flex-row gap-1 mx-auto mt-3 mb-2 md:flex-row w-fit md:gap-5">
             {showDataEmpresa && (
               <>
                 <div className="relative mx-auto w-fit">

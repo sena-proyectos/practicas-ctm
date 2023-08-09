@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
 
-const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/iLestar', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked, transition = 'transition-none', userID, height = 'h-auto', width = 'w-auto' }) => {
+//Icons
+import { BsJournalBookmark } from 'react-icons/bs'
+
+export const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/ConanGH-S', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked, transition = 'transition-none', userID, height = 'h-auto', width = 'w-auto' }) => {
   const userInfo = () => {
     modalClicked(userID)
   }
@@ -54,4 +57,45 @@ const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale
   )
 }
 
-export { Card }
+export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4 }) => {
+  return (
+    <div className="[perspective:1000px] group flex flex-col gap-1 rounded-xl md:h-[9.5rem] sm:h-[10rem] h-[8rem]">
+      <div className="relative w-full h-full rounded-xl transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] ">
+        <div className="absolute flex flex-col w-full h-full gap-3 justify-center p-3 shadow-lg rounded-xl [backface-visibility:hidden] border-slate-100 border-1">
+          <header className="flex flex-row w-fit ">
+            <div className="border-2 rounded-full w-14 h-14 border-violet-800 bg-violet-200">
+              <BsJournalBookmark className="w-full h-full scale-50" />
+            </div>
+            <div className="relative w-24 h-5 my-auto text-center border-2 rounded-r-full right-2 -z-10 border-violet-800 bg-violet-200">
+              <p className="text-xs font-medium">{header}</p>
+            </div>
+          </header>
+          <section>
+            <p className="text-sm font-medium">{title}</p>
+            <span className="text-xs font-light">{subtitle}</span>
+          </section>
+        </div>
+        <div className="absolute w-full h-full shadow-lg rounded-xl border-slate-100 border-1  [transform:rotateY(180deg)] [backface-visibility:hidden] p-3 flex flex-col gap-1 justify-center">
+          <section className="flex flex-col items-center">
+            <h6 className="text-xs font-medium">Instructor de Seguimiento</h6>
+            <p className="text-xs font-light">{item1}</p>
+          </section>
+          <section className="flex flex-col items-center">
+            <h6 className="text-xs font-medium">Instructor Líder</h6>
+            <p className="text-xs font-light">{item2}</p>
+          </section>
+          <section className="grid grid-cols-2">
+            <section className="flex flex-col items-center">
+              <h6 className="text-xs font-medium">Final Lectiva</h6>
+              <p className="text-xs font-light">{item3}</p>
+            </section>
+            <section className="flex flex-col items-center">
+              <h6 className="text-xs font-medium">Inicio Práctica</h6>
+              <p className="text-xs font-light">{item4}</p>
+            </section>
+          </section>
+        </div>
+      </div>
+    </div>
+  )
+}

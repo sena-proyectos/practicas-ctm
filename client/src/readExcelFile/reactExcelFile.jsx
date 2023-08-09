@@ -40,19 +40,19 @@ export const readExcelFile = async (file) => {
         const classNumber = result[i].id_ficha_inscripcion
         const res = await GetTeacherByName(nameTeacher)
         const response = await GetClassByNumber(classNumber)
-        
+
         const idUsuario = res.data.data[0].id_usuario
         const numFicha = response.data.data[0].id_ficha
 
         result[i].nombre_instructor_lider_inscripcion = `${idUsuario}`
-        result[i].id_ficha_inscripcion = `${numFicha}`
+        result[i].numero_ficha_inscripcion = `${numFicha}`
         result[i].id_usuario_responsable_inscripcion = `${id}`
 
-        if (result[i].id_modalidad_inscripcion === 'Pasantía') result[i].id_modalidad_inscripcion = '1'
-        if (result[i].id_modalidad_inscripcion === 'Contrato de aprendizaje') result[i].id_modalidad_inscripcion = '2'
-        if (result[i].id_modalidad_inscripcion === 'Proyecto Productivo') result[i].id_modalidad_inscripcion = '3'
-        if (result[i].id_modalidad_inscripcion === 'Monitoria') result[i].id_modalidad_inscripcion = '4'
-        if (result[i].id_modalidad_inscripcion === 'Vinculación laboral') result[i].id_modalidad_inscripcion = '5'
+        if (result[i].modalidad_inscripcion === 'Pasantía') result[i].modalidad_inscripcion = '1'
+        if (result[i].modalidad_inscripcion === 'Contrato de aprendizaje') result[i].modalidad_inscripcion = '2'
+        if (result[i].modalidad_inscripcion === 'Proyecto Productivo') result[i].modalidad_inscripcion = '3'
+        if (result[i].modalidad_inscripcion === 'Monitoria') result[i].modalidad_inscripcion = '4'
+        if (result[i].modalidad_inscripcion === 'Vinculación laboral') result[i].modalidad_inscripcion = '5'
       }
 
       if (result.length > 2) {

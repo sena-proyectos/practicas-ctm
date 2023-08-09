@@ -393,8 +393,8 @@ export const idTypes = [
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const modalities = [
-  { value: 1, name: 'Contrato de aprendizaje' },
-  { value: 2, name: 'Pasantías' },
+  { value: 1, name: 'Pasantías' },
+  { value: 2, name: 'Contrato de aprendizaje' },
   { value: 3, name: 'Proyecto productivo' },
   { value: 4, name: 'Monitoria' },
   { value: 5, name: 'Vinculación laboral' },
@@ -452,7 +452,7 @@ export const colorIcon = {
   '/registros': 'text-lima',
   '/aprov': 'text-secondary',
   '/instructores': 'text-rosa',
-  '/asignar-ficha': 'text-coffee',
+  '/fichas': 'text-coffee',
   '/visitas': 'text-primary',
   '/config': 'text-fifth',
 }
@@ -601,3 +601,46 @@ export const testInscriptions = {
     },
   ],
 }
+
+export const colorsOddRow = [
+  {
+    hrcolor: 'border-purple-400',
+    sidecolor: 'bg-purple-400',
+    linkcolor: 'bg-purple-600',
+  },
+  {
+    hrcolor: 'border-aqua',
+    sidecolor: 'bg-aqua',
+    linkcolor: 'bg-emerald-400',
+  },
+  {
+    hrcolor: 'border-salmon/75',
+    sidecolor: 'bg-salmon/75',
+    linkcolor: 'bg-salmon',
+  },
+  {
+    hrcolor: 'border-third',
+    sidecolor: 'bg-third',
+    linkcolor: 'bg-sky-400',
+  },
+  {
+    hrcolor: 'border-third',
+    sidecolor: 'bg-third',
+    linkcolor: 'bg-sky-400',
+  },
+  {
+    hrcolor: 'border-salmon/75',
+    sidecolor: 'bg-salmon/75',
+    linkcolor: 'bg-salmon',
+  },
+  {
+    hrcolor: 'border-aqua',
+    sidecolor: 'bg-aqua',
+    linkcolor: 'bg-emerald-400',
+  },
+  {
+    hrcolor: 'border-purple-400',
+    sidecolor: 'bg-purple-400',
+    linkcolor: 'bg-purple-600',
+  },
+]

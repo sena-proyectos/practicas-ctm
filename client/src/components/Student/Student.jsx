@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react'
-import { GetUserByName, detailInfoStudents, GetStudentsDetailyId } from '../../api/httpRequest'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
+//Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
 import { Card } from '../Utils/Card/Card'
-import { Footer } from '../Footer/Footer'
-import Cookies from 'js-cookie'
-
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
 import { Modals } from '../Utils/Modals/Modals'
+import { Footer } from '../Footer/Footer'
 import { filter } from '../../import/staticData'
+import { GetUserByName, detailInfoStudents, GetStudentsDetailyId } from '../../api/httpRequest'
 
-const Student = () => {
+export const Student = () => {
   const [apprentices, setApprentices] = useState([])
   const [searchedApprentices, setSearchedApprentices] = useState([])
   const [error, setError] = useState(null)
@@ -19,6 +19,7 @@ const Student = () => {
   const [infoStudent, setInfoStudent] = useState(false)
   const [nombreCompleto, setNombreCompleto] = useState(null)
   const [userInfoById, setInfoUserById] = useState({})
+  const [loading, setLoading] = useState(true)
 
   const handleIconClick = () => {
     setModalFilter(!modalFilter)
@@ -77,19 +78,17 @@ const Student = () => {
   }
 
   useEffect(() => {
-    //const token = Cookies.get('token')
-    //if (!token) window.location.href = '/'
-
     const getApprentices = async () => {
       try {
         const response = await detailInfoStudents()
         const { data } = response.data
         setApprentices(data)
+        setLoading(false)
       } catch (error) {
         setError('Error al obtener los aprendices')
       }
     }
-    setTimeout(getApprentices, 1000)
+    setTimeout(getApprentices, 999)
     // getApprentices()
   }, [])
 
@@ -113,17 +112,28 @@ const Student = () => {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-1 p-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3">
-              {error ? <h2 className="text-red-500">{error}</h2> : apprentices.map((apprentice, i) => <Card cardUser height={'h-[12.5rem] st2:h-[12.5rem] st1:h-[14rem] md:h-[14rem]'} shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_completo}`} subtitle={apprentice.email_aprendiz} lione={apprentice.nombre_programa_formacion} litwo={apprentice.numero_ficha} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal modalClicked={modalStudent} />)}
-              {apprentices.length === 0 && !error && searchedApprentices.length === 0 && (
+            <div className="grid grid-cols-1 gap-1 px-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3">
+              {loading ? (
                 <>
-                  <Skeleton width={300} height={200} style={{ marginBottom: '1rem', margin: '1.2em' }} />
-                  <Skeleton width={300} height={200} style={{ marginBottom: '1rem', margin: '1.2em' }} />
-                  <Skeleton width={300} height={200} style={{ marginBottom: '1rem', margin: '1.2em' }} />
-                  <Skeleton width={300} height={200} style={{ marginBottom: '1rem', margin: '1.2em' }} />
-                  <Skeleton width={300} height={200} style={{ marginBottom: '1rem', margin: '1.2em' }} />
-                  <Skeleton width={300} height={200} style={{ marginBottom: '1rem', margin: '1.2em' }} />
+                  <SkeletonLoading />
+                  <SkeletonLoading />
+                  <SkeletonLoading />
+                  <SkeletonLoading />
+                  <SkeletonLoading />
+                  <SkeletonLoading />
                 </>
+              ) : error ? (
+                <h2 className="text-red-500">{error}</h2>
+              ) : (
+                apprentices.map((apprentice, i) => {
+                  return (
+                    <>
+                      <Card cardUser height={'h-[12.5rem] st2:h-[12.5rem] st1:h-[14rem] md:h-[14rem]'} shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_completo}`} subtitle={apprentice.email_aprendiz} lione={apprentice.nombre_programa_formacion} litwo={apprentice.numero_ficha} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal modalClicked={modalStudent} />
+                      <Card cardUser height={'h-[12.5rem] st2:h-[12.5rem] st1:h-[14rem] md:h-[14rem]'} shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_completo}`} subtitle={apprentice.email_aprendiz} lione={apprentice.nombre_programa_formacion} litwo={apprentice.numero_ficha} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal modalClicked={modalStudent} />
+                      <Card cardUser height={'h-[12.5rem] st2:h-[12.5rem] st1:h-[14rem] md:h-[14rem]'} shadow={'shadow-2xl'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_completo}`} subtitle={apprentice.email_aprendiz} lione={apprentice.nombre_programa_formacion} litwo={apprentice.numero_ficha} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal modalClicked={modalStudent} />
+                    </>
+                  )
+                })
               )}
             </div>
           )}
@@ -134,4 +144,8 @@ const Student = () => {
   )
 }
 
-export { Student }
+const SkeletonLoading = () => (
+  <div>
+    <Skeleton height={'14rem'} className="scale-90 rounded-2xl" />
+  </div>
+)
