@@ -9,7 +9,23 @@ import Cookie from 'js-cookie'
 import Swal from 'sweetalert2'
 import jwtDecode from 'jwt-decode'
 
-const Form = ({ inputs }) => {
+import React from 'react';
+
+function App() {
+  const originalDateString = "2023-04-30T05:00:00.000Z";
+  const dateWithoutTime = originalDateString.split("T")[0];
+
+  return (
+    <div>
+      Original Date String: {originalDateString}
+      <br />
+      Date Without Time: {dateWithoutTime}
+    </div>
+  );
+}
+export default App;
+
+function Form({ inputs }) {
   const navigate = useNavigate()
 
   const passwordIcons = {
@@ -102,3 +118,4 @@ const Form = ({ inputs }) => {
 }
 
 export { Form }
+
