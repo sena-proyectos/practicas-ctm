@@ -601,3 +601,46 @@ export const testInscriptions = {
     },
   ],
 }
+
+export const colorsOddRow = [
+  {
+    hrcolor: 'border-purple-400',
+    sidecolor: 'bg-purple-400',
+    linkcolor: 'bg-purple-600',
+  },
+  {
+    hrcolor: 'border-aqua',
+    sidecolor: 'bg-aqua',
+    linkcolor: 'bg-emerald-400',
+  },
+  {
+    hrcolor: 'border-salmon/75',
+    sidecolor: 'bg-salmon/75',
+    linkcolor: 'bg-salmon',
+  },
+  {
+    hrcolor: 'border-third',
+    sidecolor: 'bg-third',
+    linkcolor: 'bg-sky-400',
+  },
+  {
+    hrcolor: 'border-third',
+    sidecolor: 'bg-third',
+    linkcolor: 'bg-sky-400',
+  },
+  {
+    hrcolor: 'border-salmon/75',
+    sidecolor: 'bg-salmon/75',
+    linkcolor: 'bg-salmon',
+  },
+  {
+    hrcolor: 'border-aqua',
+    sidecolor: 'bg-aqua',
+    linkcolor: 'bg-emerald-400',
+  },
+  {
+    hrcolor: 'border-purple-400',
+    sidecolor: 'bg-purple-400',
+    linkcolor: 'bg-purple-600',
+  },
+]
