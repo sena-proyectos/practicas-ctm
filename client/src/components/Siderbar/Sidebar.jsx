@@ -103,7 +103,7 @@ const Siderbar = () => {
                 {open && 'Aprendices'}
               </Link>
             </li>
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
+            {/* {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
               <li>
                 <Link to="/bitacoras" className={styles('/bitacoras')}>
                   <span className={spanStyle('/bitacoras')}>
@@ -112,7 +112,7 @@ const Siderbar = () => {
                   {open && 'Bitácoras'}
                 </Link>
               </li>
-            )}
+            )} */}
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <li>
                 <Link to="/registros" className={styles('/registros')}>
@@ -141,7 +141,7 @@ const Siderbar = () => {
                 {open && 'Fichas'}
               </Link>
             </li>
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
+            {/* {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
               <li>
                 <Link to="/visitas" className={styles('/visitas')}>
                   <span className={spanStyle('/visitas')}>
@@ -150,7 +150,7 @@ const Siderbar = () => {
                   {open && 'Visitas'}
                 </Link>
               </li>
-            )}
+            )} */}
             <hr className="mx-auto my-2 h-[1px] w-full text-white" />
             <li>
               <Link to="/config" className={styles('/config')}>
