@@ -393,8 +393,8 @@ export const idTypes = [
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const modalities = [
-  { value: 1, name: 'Contrato de aprendizaje' },
-  { value: 2, name: 'Pasantías' },
+  { value: 1, name: 'Pasantías' },
+  { value: 2, name: 'Contrato de aprendizaje' },
   { value: 3, name: 'Proyecto productivo' },
   { value: 4, name: 'Monitoria' },
   { value: 5, name: 'Vinculación laboral' },
