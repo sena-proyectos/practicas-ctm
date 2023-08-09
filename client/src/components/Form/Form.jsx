@@ -7,6 +7,7 @@ import { Login } from '../../api/httpRequest'
 
 import Cookie from 'js-cookie'
 import Swal from 'sweetalert2'
+import jwtDecode from 'jwt-decode'
 
 const Form = ({ inputs }) => {
   const navigate = useNavigate()
@@ -48,6 +49,10 @@ const Form = ({ inputs }) => {
         sameSite: 'none',
         secure: true,
       })
+
+      const tokenData = jwtDecode(Token)
+      const { id_rol } = tokenData.data.user
+      localStorage.setItem('idRol', id_rol)
 
       navigate('/home')
     } catch (error) {

@@ -7,6 +7,16 @@ import { httpStatus } from '../models/httpStatus.enums.js'
 import { type id } from '../interfaces/users.interfaces.js'
 import { type classes } from '../interfaces/classes.interfaces.js'
 
+/**
+ * La función `getClasses` recupera una lista de clases de una base de datos y las devuelve como una
+ * respuesta JSON.
+ * @param {Request} _req - El parámetro `_req` es del tipo `Request`, que representa la solicitud HTTP
+ * recibida por el servidor. Contiene información como el método de solicitud, los encabezados, los
+ * parámetros de consulta y el cuerpo.
+ * @param {Response} res - El parámetro `res` es el objeto de respuesta que se devolverá al cliente. Se
+ * utiliza para enviar la respuesta HTTP con los datos de las clases o un mensaje de error.
+ * @returns una promesa que se resuelve en un objeto de respuesta.
+ */
 export const getClasses = async (_req: Request, res: Response): Promise<Response> => {
   try {
     const [classes] = await connection.query('SELECT * FROM fichas')
@@ -17,6 +27,36 @@ export const getClasses = async (_req: Request, res: Response): Promise<Response
   }
 }
 
+/**
+ * Esta función de TypeScript recupera los detalles de la clase en función de un parámetro
+ * "numero_ficha" determinado.
+ * @param {Request} req - El parámetro `req` es el objeto de solicitud que contiene información sobre
+ * la solicitud HTTP entrante, como encabezados, parámetros de consulta y cuerpo de la solicitud. En
+ * este caso, es del tipo `Request` de la biblioteca Express.js.
+ * @param {Response} res - El parámetro `res` es el objeto de respuesta que se usa para enviar la
+ * respuesta HTTP al cliente. Es una instancia de la clase `Respuesta` del marco Express.
+ * @returns una promesa que se resuelve en un objeto de respuesta.
+ */
+export const getClassDetail: RequestHandler<{ }, Response, classes> = async (req: Request, res: Response): Promise<Response> => {
+  const { numero_ficha } = req.body
+  try {
+    const [classes] = await connection.query('SELECT * FROM detalles_fichas_aprendices', [numero_ficha])
+    if (!Array.isArray(classes) || classes?.length === 0) throw new DbErrorNotFound('No hay detalles de fichas.', errorCodes.ERROR_GET_CLASSES)
+    return res.status(httpStatus.OK).json({ data: classes })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+/**
+ * Esta función de TypeScript recupera datos de clase de una base de datos en función del ID
+ * proporcionado.
+ * @param req - El parámetro `req` es el objeto de solicitud que contiene información sobre la
+ * solicitud HTTP entrante, como encabezados, parámetros de consulta y cuerpo de la solicitud.
+ * @param {Response} res - El parámetro `res` es el objeto de respuesta que se usa para enviar la
+ * respuesta HTTP al cliente. Es una instancia de la clase `Respuesta` del marco Express.
+ * @returns una promesa que se resuelve en un objeto de respuesta.
+ */
 export const getClassById: RequestHandler<{ id: string }, Response, id> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
   const { id } = req.params
   const idNumber = Number(id)
@@ -29,6 +69,39 @@ export const getClassById: RequestHandler<{ id: string }, Response, id> = async 
   }
 }
 
+/**
+ * Esta función de TypeScript recupera una clase por la identificación del maestro de seguimiento de una base de
+ * datos.
+ * @param req - El parámetro `req` es el objeto de solicitud que contiene información sobre la
+ * solicitud HTTP entrante, como los encabezados de la solicitud, los parámetros de la solicitud, el
+ * cuerpo de la solicitud, etc. En este caso, es del tipo `Request<{ id: string }>` , lo que significa
+ * que es un objeto de solicitud con un parámetro `id
+ * @param {Response} res - El parámetro `res` es el objeto de respuesta que se usa para enviar la
+ * respuesta HTTP al cliente. Es una instancia de la clase `Respuesta` del marco Express.
+ * @returns una promesa que se resuelve en un objeto de respuesta.
+ */
+export const getClassByPracticalInstructorId: RequestHandler<{ id: string }, Response, id> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id } = req.params
+  const idNumber = Number(id)
+  try {
+    const [classData] = await connection.query('SELECT * FROM fichas WHERE id_instructor_seguimiento = ?', [idNumber])
+    if (!Array.isArray(classData) || classData?.length === 0) throw new DbErrorNotFound('No se encontraron clases del instructor de seguimiento.', errorCodes.ERROR_GET_CLASS)
+    return res.status(httpStatus.OK).json({ data: classData })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+/**
+ * Esta función de TypeScript recupera una clase de una base de datos en función de su número de clase
+ * y devuelve el resultado como una respuesta JSON.
+ * @param req - El parámetro `req` es el objeto de solicitud que contiene información sobre la
+ * solicitud HTTP entrante, como los encabezados de solicitud, los parámetros de consulta y el cuerpo.
+ * @param {Response} res - El parámetro `res` es el objeto de respuesta que se usa para enviar la
+ * respuesta HTTP al cliente. Contiene métodos y propiedades para configurar el estado de la respuesta,
+ * los encabezados y el cuerpo.
+ * @returns una promesa que se resuelve en un objeto de respuesta.
+ */
 export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Response, classes> = async (req: Request<{ numero_ficha: string }>, res: Response): Promise<Response> => {
   const { numero_ficha } = req.query
   const classNumber = Number(numero_ficha)
@@ -41,6 +114,14 @@ export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Res
   }
 }
 
+/**
+ * Esta función de TypeScript crea un registro de clase en una tabla de base de datos.
+ * @param req - El parámetro `req` es el objeto de solicitud que contiene información sobre la
+ * solicitud HTTP entrante, como encabezados, parámetros de consulta y el cuerpo de la solicitud.
+ * @param {Response} res - El parámetro `res` es el objeto de respuesta que se devolverá al cliente. Se
+ * utiliza para enviar la respuesta HTTP con el código de estado y los datos apropiados.
+ * @returns una promesa que se resuelve en un objeto de respuesta.
+ */
 export const createClass: RequestHandler<{}, Response, classes> = async (req: Request<{}>, res: Response): Promise<Response> => {
   const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formacion, jornada_ficha, id_instructor_lider_formacion, id_instructor_practicas_formacion } = req.body
   const classNumber = Number(numero_ficha)
@@ -66,6 +147,16 @@ export const createClass: RequestHandler<{}, Response, classes> = async (req: Re
   }
 }
 
+/**
+ * La función anterior es un controlador de solicitudes asincrónicas en TypeScript que actualiza un
+ * registro de clase en una base de datos según los parámetros proporcionados.
+ * @param req - El parámetro `req` es un objeto que representa la solicitud HTTP realizada al servidor.
+ * Contiene información como el método de solicitud, los encabezados, los parámetros de consulta y el
+ * cuerpo de la solicitud.
+ * @param {Response} res - El parámetro `res` es el objeto de respuesta que se devolverá al cliente. Se
+ * utiliza para enviar la respuesta HTTP con los datos de clase actualizados o un mensaje de error.
+ * @returns una promesa que se resuelve en un objeto de respuesta.
+ */
 export const editClass: RequestHandler<{ id: string }, Response, classes> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
   const { id } = req.params
   const idNumber = Number(id)
@@ -79,6 +170,29 @@ export const editClass: RequestHandler<{ id: string }, Response, classes> = asyn
       [classNumber, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formacion, jornada_ficha, leaderTeacherNumber, practicalTeacherNumber, idNumber]
     )
     if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se pudo editar la ficha.', errorCodes.ERROR_EDIT_CLASS)
+    return res.status(httpStatus.OK).json({ data: classQuery })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+/**
+ * Esta función de TypeScript actualiza el instructor práctico de una clase en una base de datos.
+ * @param req - El parámetro `req` es el objeto de solicitud que contiene información sobre la
+ * solicitud HTTP realizada al servidor. Incluye propiedades como el método de solicitud, los
+ * encabezados de la solicitud, el cuerpo de la solicitud y los parámetros de la solicitud.
+ * @param {Response} res - El parámetro `res` es el objeto de respuesta que se devolverá al cliente. Se
+ * utiliza para enviar la respuesta HTTP con los datos actualizados o un mensaje de error.
+ * @returns una promesa que se resuelve en un objeto de respuesta.
+ */
+export const editPracticalInstructorClass: RequestHandler<{}, Response, classes> = async (req: Request, res: Response): Promise<Response> => {
+  const { numero_ficha } = req.query
+  const { id_instructor_seguimiento } = req.body
+  const idNumber = Number(id_instructor_seguimiento)
+  const classNumberNumber = Number(numero_ficha)
+  try {
+    const [classQuery] = await connection.query('UPDATE fichas SET id_instructor_seguimiento = ? WHERE numero_ficha LIKE ?', [idNumber, classNumberNumber])
+    if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se pudo editar el instructor de prácticas de la ficha.', errorCodes.ERROR_EDIT_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
     return handleHTTP(res, error as CustomError)

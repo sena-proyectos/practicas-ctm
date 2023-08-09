@@ -1,6 +1,3 @@
-import { AiOutlineIdcard, AiOutlineMail, AiOutlinePhone, AiOutlineUser } from 'react-icons/ai'
-import { FaRegAddressBook } from 'react-icons/fa'
-import { BsCalendar4 } from 'react-icons/bs'
 import { LuCalendarCheck2, LuCalendarX2 } from 'react-icons/lu'
 
 export const rolesNames = {
@@ -55,9 +52,9 @@ export const rolesCard = {
       link: '/aprov',
     },
     {
-      title: 'Visitas no hechas',
+      title: 'Visitas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de visitas que actualmente no se encuentran en realizadas.',
+      description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadowThird/100',
@@ -111,9 +108,9 @@ export const rolesCard = {
       link: '/aprov',
     },
     {
-      title: 'Visitas no hechas',
+      title: 'Visitas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de visitas que actualmente no se encuentran en realizadas.',
+      description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadowThird/100',
@@ -167,9 +164,9 @@ export const rolesCard = {
       link: '/aprov',
     },
     {
-      title: 'Visitas no hechas',
+      title: 'Visitas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de visitas que actualmente no se encuentran en realizadas.',
+      description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadowThird/100',
@@ -182,8 +179,8 @@ export const rolesCard = {
       titleColor: 'black',
       description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
       buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-primary',
-      sombra: 'shadowPrimary/50',
+      bgColor: 'bg-aqua',
+      sombra: 'shadowAqua/100',
       link: '/aprendices',
     },
     {
@@ -191,8 +188,8 @@ export const rolesCard = {
       titleColor: 'black',
       description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-[#385C57]',
-      sombra: '[#385C57]/20',
+      bgColor: 'bg-seventh',
+      sombra: 'shadowSeventh/75',
       link: '/aprov',
     },
     {
@@ -200,8 +197,8 @@ export const rolesCard = {
       titleColor: 'black',
       description: 'Podrás ver el listado de fichas que tienes asignadas.',
       buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-seventh',
-      sombra: 'shadowSeventh/75',
+      bgColor: 'bg-salmon',
+      sombra: 'shadowSalmon/50',
       link: '/fichas',
     },
   ],
@@ -214,21 +211,21 @@ export const dataInscription = {
   dataAprendiz: [
     {
       type: 'select',
-      name: 'id_modalidad_inscripcion',
+      name: 'modalidad_inscripcion',
       placeholder: 'Sin seleccionar',
       label: 'Modalidad',
       required: true,
     },
     {
       type: 'text',
-      name: 'apellidos_inscripcion',
+      name: 'apellido_inscripcion',
       placeholder: 'Rodriguez',
       label: 'Apellidos',
       required: true,
     },
     {
       type: 'text',
-      name: 'nombres_inscripcion',
+      name: 'nombre_inscripcion',
       placeholder: 'Alejandro',
       label: 'Nombres',
       required: true,
@@ -242,56 +239,56 @@ export const dataInscription = {
     },
     {
       type: 'number',
-      name: 'numero_documento_inscripcion',
+      name: 'documento_inscripcion',
       placeholder: '1023456789',
       label: 'Número documento',
       required: true,
     },
     {
       type: 'email',
-      name: 'correo_electronico_inscripcion',
+      name: 'email_inscripcion',
       placeholder: 'example@sena.edu.co',
       label: 'Correo electrónico',
       required: true,
     },
     {
       type: 'number',
-      name: 'numero_celular_inscripcion',
+      name: 'inscripcion_celular',
       placeholder: '3012345467',
       label: 'Número de celular',
       required: true,
     },
     {
       type: 'select',
-      name: 'etapa_formacion_actual_inscripcion',
+      name: 'etapa_actual_inscripcion',
       placeholder: 'Sin seleccionar',
       label: 'Etapa de formación',
       required: true,
     },
     {
       type: 'select',
-      name: 'nivel_formacion_actual_inscripcion',
+      name: 'nivel_formacion_inscripcion',
       placeholder: 'Sin seleccionar',
       label: 'Nivel de formación',
       required: true,
     },
     {
       type: 'number',
-      name: 'id_ficha_inscripcion',
+      name: 'numero_ficha_inscripcion',
       placeholder: '2134567',
       label: 'Número de ficha',
       required: true,
     },
     {
       type: 'text',
-      name: 'nombre_programa_formacion_inscripcion',
+      name: 'nombre_programa_inscripcion',
       placeholder: 'Producción multimedia',
       label: 'Programa formación',
       required: true,
     },
     {
       type: 'date',
-      name: 'fin_etapa_lectiva_inscripcion',
+      name: 'fecha_fin_lectiva_inscripcion',
       label: 'Fin etapa lectiva',
       required: true,
     },
@@ -303,7 +300,7 @@ export const dataInscription = {
     },
     {
       type: 'email',
-      name: 'correo_electronico_instructor_lider_inscripcion',
+      name: 'email_instructor_lider_inscripcion',
       placeholder: 'example@sena.edu.co',
       label: 'Correo instructor lider',
       required: true,
@@ -325,7 +322,7 @@ export const dataInscription = {
     },
     {
       type: 'text',
-      name: 'nombre_empresa_inscripcion',
+      name: 'nombre_empresa_inscripción',
       placeholder: 'SENA',
       label: 'Razón social (Empresa)',
     },
@@ -337,44 +334,44 @@ export const dataInscription = {
     },
     {
       type: 'text',
-      name: 'nombre_completo_jefe_inmediato_inscripcion',
+      name: 'nombre_jefe_empresa_inscripcion',
       placeholder: 'Juan Perez',
       label: 'Nombre jefe inmediato',
     },
     {
       type: 'text',
-      name: 'cargo_jefe_inmediato_inscripcion',
+      name: 'cargo_jefe_empresa_inscripcion',
       placeholder: 'Gerente',
       label: 'Cargo jefe inmediato',
     },
     {
       type: 'number',
-      name: 'telefono_jefe_inmediato_inscripcion',
+      name: 'telefono_jefe_empresa_inscripcion',
       placeholder: '3012345678',
       label: 'Teléfono jefe inmediato',
     },
     {
       type: 'email',
-      name: 'correo_jefe_inmediato_inscripcion',
+      name: 'email_jefe_empresa_inscripcion',
       placeholder: 'example@sena.edu.co',
       label: 'Correo jefe Inmediato',
     },
     {
       type: 'select',
-      name: 'asume_pago_arl_inscripcion',
+      name: 'arl',
       placeholder: 'Sin seleccionar',
       label: '¿Quién asume pago arl?',
     },
     {
       type: 'file',
-      name: 'documentos_pdf',
+      name: 'link_documentos',
       label: 'Documentos',
       required: true,
       accept: '.pdf',
     },
     {
       type: 'textarea',
-      name: 'observaciones_inscripcion',
+      name: 'observaciones',
       placeholder: 'Digite una observación',
       label: '¿Observaciones?',
       required: true,
@@ -386,9 +383,9 @@ export const dataInscription = {
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const idTypes = [
-  { value: 'C.C', name: 'Cédula de ciudadanía' },
-  { value: 'C.E', name: 'Cédula de extranjería' },
-  { value: 'T.I', name: 'Tarjeta de identidad' },
+  { value: 'CC', name: 'Cédula de ciudadanía' },
+  { value: 'CE', name: 'Cédula de extranjería' },
+  { value: 'TI', name: 'Tarjeta de identidad' },
   { value: 'PEP', name: 'Persona expuesta políticamente' },
 ]
 
@@ -407,16 +404,16 @@ export const modalities = [
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const etapasFormacion = [
-  { value: 'Lectiva', name: 'Lectiva' },
-  { value: 'Práctica', name: 'Práctica' },
+  { value: 'lectiva', name: 'Lectiva' },
+  { value: 'practica', name: 'Práctica' },
 ]
 
 /*
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const nivelFormacion = [
-  { value: 'Técnico', name: 'Técnico' },
-  { value: 'Tecnología', name: 'Tecnología' },
+  { value: 'tecnico', name: 'Técnico' },
+  { value: 'tecnologia', name: 'Tecnología' },
 ]
 
 /*
@@ -424,16 +421,16 @@ export const nivelFormacion = [
  */
 export const apoyoSostenimiento = [
   { value: 'FIC', name: 'FIC' },
-  { value: 'Jóvenes en Acción', name: 'Jóvenes en Acción' },
-  { value: 'Apoyo de sostenimiento Sena', name: 'Apoyo de sostenimiento Sena' },
-  { value: 'Ninguno', name: 'Ninguno' },
+  { value: 'jovenes en accion', name: 'Jóvenes en Acción' },
+  { value: 'apoyo de sostenimiento sena', name: 'Apoyo de sostenimiento Sena' },
+  { value: 'ninguno', name: 'ninguno' },
 ]
 
 /*
  * src: src\components\Register-student\RegisterStudent.jsx
  */
 export const pagoArl = [
-  { value: 'Empresa', name: 'Empresa' },
+  { value: 'empresa', name: 'Empresa' },
   { value: 'SENA', name: 'SENA' },
 ]
 
@@ -452,10 +449,10 @@ export const colorIcon = {
   '/home': 'text-salmon',
   '/aprendices': 'text-third',
   '/bitacoras': 'text-seventh',
-  '/inscribir-aprendiz': 'text-lima',
+  '/registros': 'text-lima',
   '/aprov': 'text-secondary',
   '/instructores': 'text-rosa',
-  '/asignar-ficha': 'text-coffee',
+  '/fichas': 'text-coffee',
   '/visitas': 'text-primary',
   '/config': 'text-fifth',
 }
@@ -604,3 +601,46 @@ export const testInscriptions = {
     },
   ],
 }
+
+export const colorsOddRow = [
+  {
+    hrcolor: 'border-purple-400',
+    sidecolor: 'bg-purple-400',
+    linkcolor: 'bg-purple-600',
+  },
+  {
+    hrcolor: 'border-aqua',
+    sidecolor: 'bg-aqua',
+    linkcolor: 'bg-emerald-400',
+  },
+  {
+    hrcolor: 'border-salmon/75',
+    sidecolor: 'bg-salmon/75',
+    linkcolor: 'bg-salmon',
+  },
+  {
+    hrcolor: 'border-third',
+    sidecolor: 'bg-third',
+    linkcolor: 'bg-sky-400',
+  },
+  {
+    hrcolor: 'border-third',
+    sidecolor: 'bg-third',
+    linkcolor: 'bg-sky-400',
+  },
+  {
+    hrcolor: 'border-salmon/75',
+    sidecolor: 'bg-salmon/75',
+    linkcolor: 'bg-salmon',
+  },
+  {
+    hrcolor: 'border-aqua',
+    sidecolor: 'bg-aqua',
+    linkcolor: 'bg-emerald-400',
+  },
+  {
+    hrcolor: 'border-purple-400',
+    sidecolor: 'bg-purple-400',
+    linkcolor: 'bg-purple-600',
+  },
+]

@@ -40,6 +40,7 @@ export default {
         '2-50-50': '50% 50%',
         '2-90-10': '80% 20%',
         '2-60-40': '60% 40%',
+        '6-columns-table': '2fr 1fr 1fr 1fr 1fr 1fr',
         // '2-20r-80': '18rem auto'
       },
       gridTemplateRows: {
