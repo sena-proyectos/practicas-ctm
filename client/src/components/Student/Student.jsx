@@ -30,7 +30,8 @@ const Student = () => {
 
   const modalStudent = async (userID) => {
     setInfoStudent(true)
-    getUser(userID)
+    getU
+    ser(userID)
   }
 
   const handleModalInfo = () => {

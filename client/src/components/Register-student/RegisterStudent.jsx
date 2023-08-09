@@ -33,14 +33,25 @@ const RegisterStudent = () => {
 
   //Cambiar de datos aprendiz a datos empresa
   const handleShowDataEmpresa = () => {
-    setShowDataEmpresa(true)
-    setShowDataAprendiz(false)
+    setShowDataEmpresa(true);
+    setShowDataAprendiz(false);
   }
 
   //Cambiar de datos empresa a datos aprendiz
   const handleShowDataAprendiz = () => {
-    setShowDataAprendiz(true)
-    setShowDataEmpresa(false)
+    setShowDataAprendiz(true);
+    setShowDataEmpresa(false);
+  }
+  // recuperar valores del tipo de documento
+  const [tipoDeDocumento, setTipoDeDocumento] = useState('')
+  const [ nameSelect, setSelectName ] = useState('')
+
+  const handleTipoDeDocumento = (event) => {
+    setTipoDeDocumento(event.target.value)
+  }
+  const handleNameSelect = (event) => {
+    const newValue = event.target.value;
+    setSelectName(newValue)
   }
 
   // Validación de campos y capturación de los valores
@@ -52,6 +63,8 @@ const RegisterStudent = () => {
     try {
       const teacher = formValues.nombre_instructor_lider_inscripcion
       const classNumber = formValues.id_ficha_inscripcion
+      const modalidad = formValues.id_modalidad_inscripcion
+      const tipoDocumento = formValues.tipo_documento_inscripcion
 
       if (teacher) {
         const res = await GetTeacherByName(teacher)
@@ -110,6 +123,11 @@ const RegisterStudent = () => {
       })
     }
 
+    // Validar tipo de documento
+    const { tipo_documento_inscripcion } = formValues;
+    
+
+
     // enviar los datos al backend
     sendDataInscription(formValues)
 
@@ -152,6 +170,7 @@ const RegisterStudent = () => {
       return
     }
     readExcelFile(currentFile)
+
   }
   return (
     <>
@@ -182,15 +201,16 @@ const RegisterStudent = () => {
                             <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
                               <LuChevronDown />
                             </span>
-                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
-                              <option value={''}>Sin seleccionar</option>
+                            <select name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none" >
+                              <option value={item.name}>Sin seleccionar</option>
                               {item.name === 'tipo_documento_inscripcion'
                                 ? idTypes.map((item, i) => {
                                     return (
                                       <option value={item.value} key={i}>
-                                        {item.name}
+                                        { item.name}
                                       </option>
-                                    )
+                                    );
+                                    
                                   })
                                 : item.name === 'id_modalidad_inscripcion'
                                 ? modalities.map((item, i) => {
@@ -276,7 +296,7 @@ const RegisterStudent = () => {
                           </div>
                         ) : item.type === 'textarea' ? (
                           <div className="relative">
-                            <textarea id="editor" rows="3" class="block absolute w-full px-0 max-h-[5.5rem] min-h-[2rem] md:max-h-[10rem] overflow-y-auto border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" placeholder={item.placeholder} required></textarea>
+                            <textarea id="editor" rows="3" className="block absolute w-full px-0 max-h-[5.5rem] min-h-[2rem] md:max-h-[10rem] overflow-y-auto border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" placeholder={item.placeholder} required></textarea>
                           </div>
                         ) : (
                           <div className="relative">

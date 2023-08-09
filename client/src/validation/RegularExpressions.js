@@ -13,6 +13,7 @@ export const ValidateEmail = (correo_electronico_aprendiz_inscripcion) => {
 
   return esEmailValido
 }
+// export const validate
 
 export const ValidateInputsTypeNumber = (numero_documento_aprendiz_inscripcion, numero_telefono_aprendiz_inscripcion, numero_ficha_aprendiz_inscripcion) => {
   // validamos que los campos sean de tipo number

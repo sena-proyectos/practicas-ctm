@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import { User } from './components/User/User'
@@ -13,9 +13,19 @@ import { AssignClass } from './components/Assign-class/AssignClass'
 import { Approvement } from './components/Approvement/approvement'
 import { ProtectedRoute } from './ProtectedRoute'
 import { keysRoles } from './import/staticData'
+import { GetFichasHttp } from './api/httpRequest'
 
 const App = () => {
   const idRol = Number(localStorage.getItem('idRol'))
+  const [ficha, setFicha] = useState([])
+  useEffect(() => {
+    const getFichas = async () => {
+      const fichasData = await GetFichasHttp();
+      setFicha(fichasData)
+    }
+    getFichas()
+  }, [])
+
 
   return (
     <Routes>
@@ -25,7 +35,7 @@ const App = () => {
         <Route path="/config" element={<Settings />} />
         <Route path="/aprendices" element={<Student />} />
         <Route path="/aprov" element={<Approvement />} />
-        <Route path="/asignar-ficha" element={<AssignClass />} />
+        <Route path="/asignar-ficha" element={<AssignClass fichas={ficha} />} />
       </Route>
 
       <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])} redirectTo="/home" />}>
