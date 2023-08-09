@@ -81,7 +81,7 @@ export const Courses = () => {
           <Search searchFilter />
         </header>
         <section>
-          <section className="grid grid-cols-1 px-10 pt-5 pb-2 gap-x-4 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
+          <section className="grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 sm:grid-cols-2 md:grid-cols-3">
             {Courses.data.slice(startIndex, endIndex).map((course, i) => {
               return <Card3D key={i} header={course.ficha} title={course.name} subtitle={course.etapa} item1={course.seguimiento} item2={course.lider} item3={course.finLectiva} item4={course.inicioProductiva} />
             })}
