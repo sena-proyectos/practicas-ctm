@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-
 //Componentes
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
@@ -7,66 +6,32 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
 import { Pagination } from '../Utils/Pagination/Pagination'
 import Skeleton from 'react-loading-skeleton'
+import { GetFichasHttp } from '../../api/httpRequest'
+import { date } from 'joi'
+
 
 export const Courses = () => {
   const [pageNumber, setPageNumber] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [ficha, setFicha] = useState([])
+  useEffect(() => {
+    const getFichas = async () => {
+      const fichasData = await GetFichasHttp();
+      setFicha(fichasData)
+    }
+    getFichas()
+  }, [])
   const Courses = {
     data: [
-      {
-        ficha: 2473196,
-        name: 'Fabricación de muebles contemporaneos',
-        lider: 'Peranito 1',
-        seguimiento: 'Seguimient 1',
-        etapa: 'Lectiva',
-        finLectiva: '04-05-23',
-        inicioProductiva: '04-06-23',
-      },
-      {
-        ficha: 2689476,
-        name: 'Analisis y desarrollo de software',
-        lider: 'Peranito 2',
-        seguimiento: 'Seguimient 2',
-        etapa: 'Productiva',
-        finLectiva: '04-05-23',
-        inicioProductiva: '04-06-23',
-      },
-      {
-        ficha: 2869467,
-        name: 'Pan y Tomate',
-        lider: 'Peranito 3',
-        seguimiento: 'Seguimient 3',
-        etapa: 'Lectiva',
-        finLectiva: '04-05-23',
-        inicioProductiva: '04-06-23',
-      },
-      {
-        ficha: 1234567,
-        name: 'Fabricación de muebles contemporaneos',
-        lider: 'Peranito 4',
-        seguimiento: 'Seguimient 4',
-        etapa: 'Productiva',
-        finLectiva: '04-05-23',
-        inicioProductiva: '04-06-23',
-      },
-      {
-        ficha: 7654321,
-        name: 'Analisis y desarrollo de software',
-        lider: 'Peranito 5',
-        seguimiento: 'Seguimient 5',
-        etapa: 'Lectiva',
-        finLectiva: '04-05-23',
-        inicioProductiva: '04-06-23',
-      },
-      {
-        ficha: 1234765,
-        name: 'Pan y Tomate',
-        lider: 'Peranito 6',
-        seguimiento: 'Seguimient 6',
-        etapa: 'Productiva',
-        finLectiva: '04-05-23',
-        inicioProductiva: '04-06-23',
-      },
+      ...ficha.map(item => ({
+        ficha: item.numero_ficha,
+        name: item.nombre_programa_formacion,
+        lider: item.id_instructor_lider,
+        seguimiento: item.id_instructor_seguimiento,
+        finLectiva: item.fecha_fin_lectiva,
+        inicioProductiva: item.fecha_inicio_practica
+
+      }))
     ],
   }
 

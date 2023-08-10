@@ -22,7 +22,6 @@ export const GetFichasHttp = async () => {
   const URL = `${baseUrl}${api}/classes`
 
   const response = await axios.get(URL)
-  console.log(response.data.data)
   return response.data.data
 }
 
@@ -36,7 +35,6 @@ export const GetStudentsDetailyId = async (userID) => {
 /* INSCRIBIR APRENDICES */
 export const InscriptionApprentice = async (data) => {
   const URL = `${baseUrl}${api}/create-inscription`
-
   const response = await axios.post(URL, data)
   return response
 }

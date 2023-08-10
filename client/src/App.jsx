@@ -15,17 +15,11 @@ import { RegisterList } from './components/Register-list/RegisterList'
 import { RegisterStudent } from './components/Register-student/RegisterStudent'
 import { RegisterDetails } from './components/Register-detail/RegisterDetails'
 import { Courses } from './components/Courses/Courses'
+import { GetFichasHttp } from './api/httpRequest'
 
 const App = () => {
   const idRol = Number(localStorage.getItem('idRol'))
-  const [ficha, setFicha] = useState([])
-  useEffect(() => {
-    const getFichas = async () => {
-      const fichasData = await GetFichasHttp();
-      setFicha(fichasData)
-    }
-    getFichas()
-  }, [])
+  
 
 
   return (

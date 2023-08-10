@@ -8,11 +8,36 @@ import { useState } from 'react'
 export const AssignClass = ({ fichas = [] }) => {
   const [courses, setCourses] = useState({
     data: [
-      ...fichas.map((item) => {
-        ficha:  item.numero_ficha;
-        name: item.nombre_programa_formacion;
-        assign: false
-      })
+      {
+        ficha: 247319,
+        name: 'Fabricación de muebles contemporaneos',
+        assign: false,
+      },
+      {
+        ficha: 2689476,
+        name: 'Analisis y desarrollo de software',
+        assign: true,
+      },
+      {
+        ficha: 2869467,
+        name: 'Pan y Tomate',
+        assign: false,
+      },
+      {
+        ficha: 1234567,
+        name: 'Fabricación de muebles contemporaneos',
+        assign: false,
+      },
+      {
+        ficha: 7654321,
+        name: 'Analisis y desarrollo de software',
+        assign: true,
+      },
+      {
+        ficha: 1234765,
+        name: 'Pan y Tomate',
+        assign: false,
+      },
     ],
   })
 
