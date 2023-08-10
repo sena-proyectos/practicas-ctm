@@ -1,13 +1,18 @@
 import { React, useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { FaAngleRight } from 'react-icons/fa'
+import { Link, useNavigate } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 
+//Icons
+import { FaAngleRight } from 'react-icons/fa'
+import { LuBookPlus } from 'react-icons/lu'
+
+//Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Pagination } from '../Utils/Pagination/Pagination'
 import { colorsOddRow } from '../../import/staticData'
+import { Button } from '../Utils/Button/Button'
 
 export const Teachers = () => {
   const [pageNumber, setPageNumber] = useState(0)
@@ -98,6 +103,11 @@ export const Teachers = () => {
   const startIndex = pageNumber * instructoresPerPage
   const endIndex = startIndex + instructoresPerPage
 
+  const navigate = useNavigate()
+  const handleAsign = () => {
+    return navigate('/asignar-ficha')
+  }
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(false)
@@ -128,7 +138,7 @@ export const Teachers = () => {
                     </div>
                     <div className={`w-full h-full rounded-r-[2rem] ${color.sidecolor}`}>
                       <div className={`w-full h-[3rem] rounded-tr-[2rem] text-white text-xl ${color.linkcolor}`}>
-                        <Link to="/asignar-ficha">
+                        <Link to="/fichas">
                           <FaAngleRight className="h-full py-3 mx-auto" />
                         </Link>
                       </div>
@@ -140,6 +150,9 @@ export const Teachers = () => {
           </section>
           <div className="flex justify-center h-[13vh] relative st1:bottom-[-1.5rem] st2:bottom-[-3rem] bottom-[-4rem] md:bottom-0">
             <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+          </div>
+          <div className="absolute right-12 bottom-20">
+            <Button value={'Agregar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[4px]" textSize="text-sm" font="font-medium" textColor="text-white" clickeame={handleAsign} icon={<LuBookPlus className="text-xl" />} />
           </div>
         </section>
         <Footer />
@@ -163,7 +176,7 @@ const SkeletonLoading = () => {
         </div>
         <div className={`w-full h-full rounded-r-[2rem] ${color.sidecolor}`}>
           <div className={`w-full h-[3rem] rounded-tr-[2rem] text-white text-xl ${color.linkcolor}`}>
-            <Link to="/asignar-ficha">
+            <Link to="/fichas">
               <FaAngleRight className="h-full py-3 mx-auto" />
             </Link>
           </div>
