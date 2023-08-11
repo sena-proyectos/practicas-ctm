@@ -103,26 +103,14 @@ const Siderbar = () => {
                 {open && 'Aprendices'}
               </Link>
             </li>
-            {/* {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
-              <li>
-                <Link to="/bitacoras" className={styles('/bitacoras')}>
-                  <span className={spanStyle('/bitacoras')}>
-                    <IoDocumentTextOutline />
-                  </span>
-                  {open && 'Bitácoras'}
-                </Link>
-              </li>
-            )} */}
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-              <li>
-                <Link to="/registros" className={styles('/registros')}>
-                  <span className={spanStyle('/registros')}>
-                    <IoPersonAddOutline />
-                  </span>
-                  {open && 'Registro'}
-                </Link>
-              </li>
-            )}
+            <li>
+              <Link to="/registros" className={styles('/registros')}>
+                <span className={spanStyle('/registros')}>
+                  <IoPersonAddOutline />
+                </span>
+                {open && 'Registro'}
+              </Link>
+            </li>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <li>
                 <Link to="/instructores" className={styles('/instructores')}>
@@ -138,9 +126,19 @@ const Siderbar = () => {
                 <span className={spanStyle('/fichas')}>
                   <IoBookOutline />
                 </span>
-                {open && 'Fichas'}
+                {open && (idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) ? 'Fichas' : 'Mis fichas')}
               </Link>
             </li>
+            {/* {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
+              <li>
+                <Link to="/bitacoras" className={styles('/bitacoras')}>
+                  <span className={spanStyle('/bitacoras')}>
+                    <IoDocumentTextOutline />
+                  </span>
+                  {open && 'Bitácoras'}
+                </Link>
+              </li>
+            )} */}
             {/* {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
               <li>
                 <Link to="/visitas" className={styles('/visitas')}>
