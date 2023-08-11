@@ -166,9 +166,33 @@ export const editClass: RequestHandler<{ id: string }, Response, classes> = asyn
   const practicalTeacherNumber = Number(id_instructor_practicas_formacion)
   try {
     const [classQuery] = await connection.query(
-      'UPDATE fichas SET numero_ficha = IFNULL(?, numero_ficha), nombre_programa_formacion = IFNULL(?, nombre_programa_formacion), fecha_inicio_lectiva = IFNULL(?, fecha_inicio_lectiva), fecha_fin_lectiva = IFNULL(?, fecha_fin_lectiva), fecha_inicio_practica = IFNULL(?, fecha_inicio_practica), fecha_fin_practica = IFNULL(?, fecha_fin_practica), nivel_programa_formacion = IFNULL(?, nivel_programa_formacion), jornada_ficha = IFNULL(?, jornada_ficha), id_instructor_lider_formacion = IFNULL(?, id_instructor_lider_formacion), id_instructor_practicas_formacion = IFNULL(?, id_instructor_practicas_formacion) WHERE id_ficha = ?',
+      'UPDATE fichas SET numero_ficha = IFNULL(?, numero_ficha), nombre_programa_formacion = IFNULL(?, nombre_programa_formacion), fecha_inicio_lectiva = IFNULL(?, fecha_inicio_lectiva), fecha_fin_lectiva = IFNULL(?, fecha_fin_lectiva), fecha_inicio_practica = IFNULL(?, fecha_inicio_practica), , nivel_programa_formacion = IFNULL(?, nivel_programa_formacion), jornada_ficha = IFNULL(?, jornada_ficha), id_instructor_lider_formacion = IFNULL(?, id_instructor_lider_formacion), id_instructor_practicas_formacion = IFNULL(?, id_instructor_practicas_formacion) WHERE id_ficha = ?',
       [classNumber, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, fecha_fin_practica, nivel_programa_formacion, jornada_ficha, leaderTeacherNumber, practicalTeacherNumber, idNumber]
     )
+    if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se pudo editar la ficha.', errorCodes.ERROR_EDIT_CLASS)
+    return res.status(httpStatus.OK).json({ data: classQuery })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+/**
+ * La función `editClassDates` actualiza las fechas de inicio y finalización de una clase y la fecha de
+ * inicio de una sesión de práctica en una tabla de base de datos según el número de clase
+ * proporcionado.
+ * @param {Request} req - El parámetro `req` es un objeto que representa la solicitud HTTP realizada al
+ * servidor. Contiene información como los encabezados de la solicitud, los parámetros de la consulta y
+ * el cuerpo de la solicitud.
+ * @param {Response} res - El parámetro `res` es el objeto de respuesta que se devolverá al cliente. Se
+ * utiliza para enviar la respuesta HTTP con las fechas de clases actualizadas o un mensaje de error.
+ * @returns una promesa que se resuelve en un objeto de respuesta.
+ */
+export const editClassDates: RequestHandler<{}, Response, classes> = async (req: Request, res: Response): Promise<Response> => {
+  const { numero_ficha } = req.query
+  const { fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica } = req.body
+  const classNumber = Number(numero_ficha)
+  try {
+    const [classQuery] = await connection.query('UPDATE fichas SET fecha_inicio_lectiva = IFNULL(?, fecha_inicio_lectiva), fecha_fin_lectiva = IFNULL(?, fecha_fin_lectiva), fecha_inicio_practica = IFNULL(?, fecha_inicio_practica) WHERE numero_ficha LIKE ?', [fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, classNumber])
     if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se pudo editar la ficha.', errorCodes.ERROR_EDIT_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
