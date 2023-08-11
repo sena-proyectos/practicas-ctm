@@ -20,24 +20,15 @@ export const classSchema = Joi.object({
   fecha_inicio_practica: Joi
     .date()
     .required(),
-  nivel_programa_formacion: Joi
-    .string()
-    .required()
-    .min(3)
-    .max(50),
-  jornada_ficha: Joi
-    .string()
-    .required()
-    .min(3)
-    .max(50),
-  id_instructor_lider_formacion: Joi
+  id_instructor_seguimiento: Joi
     .number()
-    .required()
-    .min(1),
-  id_instructor_practicas_formacion: Joi
+    .required(),
+  id_instructor_lider: Joi
     .number()
-    .allow(null)
-    .min(1)
+    .required(),
+  id_nivel_formacion: Joi
+    .number()
+    .required
 })
 
 export const classDates = Joi.object({
