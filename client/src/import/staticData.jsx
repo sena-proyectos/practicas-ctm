@@ -644,3 +644,46 @@ export const colorsOddRow = [
     linkcolor: 'bg-purple-600',
   },
 ]
+
+export const instructores = [
+  {
+    nombre: 'Guillermo Stiven Benjumea Morales',
+    rol: 'Instructor Seguimiento',
+  },
+  {
+    nombre: 'Stiven Urrego',
+    rol: 'Instructor Líder',
+  },
+  {
+    nombre: 'Carlos Prasca',
+    rol: 'Instructor Seguimiento',
+  },
+  {
+    nombre: 'Jairo Elías Redondo',
+    rol: 'Instructor Seguimiento',
+  },
+  {
+    nombre: 'Juan Guillermo Gomez Zapata',
+    rol: 'Instructor Líder',
+  },
+  {
+    nombre: 'Kevin Alexis Chica Ruiz',
+    rol: 'Instructor Seguimiento',
+  },
+  {
+    nombre: 'Cristian Bedoya',
+    rol: 'Instructor Líder',
+  },
+  {
+    nombre: 'Angie Tatiana Mosquera Arco',
+    rol: 'Instructor Líder',
+  },
+  {
+    nombre: 'Lorena Quiceno Giraldo',
+    rol: 'Instructor Líder',
+  },
+  {
+    nombre: 'Guillermo Stiven Benjumea',
+    rol: 'Instructor Seguimiento',
+  },
+]
