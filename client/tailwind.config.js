@@ -18,14 +18,14 @@ export default {
         lima: '#65AC45',
       },
       boxShadowColor: {
-        shadowPrimary: '#39A900',
+        shadowPrimary: '#62bb34',
         shadowSecondary: '#00324D',
         shadowThird: '#82DEF0',
         shadowFourth: '#FBFBE2',
         shadowFifth: '#385C57',
-        shadowSalmon: '#CB7766',
-        shadowSeventh: '#FFCE40',
-        shadowGray: '#D9D9D9',
+        shadowSalmon: '#d69385',
+        shadowSeventh: '#ffd458',
+        shadowGray: '#687f7b',
         shadowAqua: '#B8F1D8',
       },
       boxShadow: {

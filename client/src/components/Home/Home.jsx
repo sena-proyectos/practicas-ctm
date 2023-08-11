@@ -14,7 +14,7 @@ const Home = () => {
         </header>
         <div className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3">
           {rolesCard[idRol].map(({ title, titleColor, description, buttonText, bgColor, sombra, link }) => {
-            return <Card cardHome height={'h-[11.5rem] sm:h-[15.7rem] md:h-[14rem]'} bgColor={bgColor} shadow={`shadow-inner-custom shadow-${sombra}`} scale={'scale-90'} titleColor={titleColor} title={title} description={description} roundedLink={'rounded-md'} buttonText={buttonText} key={title} link={link} transition={`transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 hover:${bgColor}/100 duration-500`} />
+            return <Card cardHome height={'h-[11.5rem] sm:h-[15.7rem] md:h-[14rem]'} bgColor={bgColor} shadow={`shadow-inner-custom`} shadowColor={sombra} scale={'scale-90'} titleColor={titleColor} title={title} description={description} roundedLink={'rounded-md'} buttonText={buttonText} key={title} link={link} transition={`transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 hover:${bgColor}/100 duration-500`} />
           })}
         </div>
 
