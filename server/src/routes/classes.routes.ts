@@ -1,7 +1,7 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { getClasses, getClassById, getClassByClassNumber, createClass, editClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail } from '../controllers/classes.controllers.js'
-import { checkClassData, checkClassNumber, checkPracticalTeacherId } from '../middlewares/classes.middlewares.js'
+import { getClasses, getClassById, getClassByClassNumber, createClass, editClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates } from '../controllers/classes.controllers.js'
+import { checkClassData, checkClassDate, checkClassNumber, checkPracticalTeacherId } from '../middlewares/classes.middlewares.js'
 
 const classRoutes: IRouter = Router()
 
@@ -55,5 +55,11 @@ editPracticalInstructorClass)` define una ruta para el método PATCH en el extre
 de middleware `checkClassNumber`, seguida de la función de middleware `checkPracticalTeacherId` y,
 finalmente, la función de controlador `editPracticalInstructorClass`. */
 classRoutes.patch('/teacherClass', checkClassNumber, checkPracticalTeacherId, editPracticalInstructorClass)
+
+/* La línea `classRoutes.patch('/dateClass', checkClassNumber, checkClassDate, editClassDates)` define
+una ruta para el método PATCH en el punto final '/dateClass'. Cuando se realiza una solicitud PATCH
+a este punto final, ejecutará la función de middleware `checkClassNumber`, seguida de la función de
+middleware `checkClassDate` y, finalmente, la función de controlador `editClassDates`. */
+classRoutes.patch('/dateClass', checkClassNumber, checkClassDate, editClassDates)
 
 export { classRoutes }
