@@ -11,87 +11,12 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Pagination } from '../Utils/Pagination/Pagination'
-import { colorsOddRow } from '../../import/staticData'
+import { colorsOddRow, instructores } from '../../import/staticData'
 import { Button } from '../Utils/Button/Button'
 
 export const Teachers = () => {
   const [pageNumber, setPageNumber] = useState(0)
   const [loading, setLoading] = useState(true)
-
-  const instructores = [
-    {
-      nombre: 'Guillermo Stiven Benjumea Morales',
-      rol: 'Instructor Seguimiento',
-    },
-    {
-      nombre: 'Stiven Blandón Urrego',
-      rol: 'Instructor Líder',
-    },
-    {
-      nombre: 'Juan Carlos Prasca',
-      rol: 'Instructor Seguimiento',
-    },
-    {
-      nombre: 'Jairo Elías Villalba Redondo',
-      rol: 'Instructor Seguimiento',
-    },
-    {
-      nombre: 'Juan Guillermo Gomez Zapata',
-      rol: 'Instructor Líder',
-    },
-    {
-      nombre: 'Kevin Alexis Chica Ruiz',
-      rol: 'Instructor Seguimiento',
-    },
-    {
-      nombre: 'Cristian David Bedoya Torres',
-      rol: 'Instructor Líder',
-    },
-    {
-      nombre: 'Angie Tatiana Mosquera Arco',
-      rol: 'Instructor Líder',
-    },
-    {
-      nombre: 'Lorena Quiceno Giraldo',
-      rol: 'Instructor Líder',
-    },
-    {
-      nombre: 'Guillermo Stiven Benjumea Morales',
-      rol: 'Instructor Seguimiento',
-    },
-    {
-      nombre: 'Stiven Blandón Urrego',
-      rol: 'Instructor Líder',
-    },
-    {
-      nombre: 'Juan Carlos Prasca',
-      rol: 'Instructor Seguimiento',
-    },
-    {
-      nombre: 'Jairo Elías Villalba Redondo',
-      rol: 'Instructor Seguimiento',
-    },
-    {
-      nombre: 'Juan Guillermo Gomez Zapata',
-      rol: 'Instructor Líder',
-    },
-    {
-      nombre: 'Kevin Alexis Chica Ruiz',
-      rol: 'Instructor Seguimiento',
-    },
-    {
-      nombre: 'Cristian David Bedoya Torres',
-      rol: 'Instructor Líder',
-    },
-    {
-      nombre: 'Angie Tatiana Mosquera Arco',
-      rol: 'Instructor Líder',
-    },
-    {
-      nombre: 'Lorena Quiceno Giraldo',
-      rol: 'Instructor Líder',
-    },
-  ]
 
   const instructoresPerPage = 8
   const pageCount = Math.ceil(instructores.length / instructoresPerPage)
