@@ -1,13 +1,17 @@
 import { useState } from 'react'
+import Select from 'react-tailwindcss-select'
+
+//icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { IoSearchOutline } from 'react-icons/io5'
 import { BsCheck2Circle } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
-import { modalities } from '../../../import/staticData'
-import { Button } from '../Button/Button'
-import { LuChevronDown } from 'react-icons/lu'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, bodyAvales = false, subtitle = false, textSubtitle }) => {
+//componentes
+import { modalities, instructores } from '../../../import/staticData'
+import { Button } from '../Button/Button'
+
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const passwordIcons = {
@@ -39,6 +43,18 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
 
   const handleModal = () => {
     closeModal()
+  }
+
+  const options = instructores.map((instructor) => ({
+    value: instructor.nombre,
+    label: instructor.nombre,
+  }))
+
+  const [inst, setInst] = useState(null)
+
+  const handleChange = (value) => {
+    // console.log('value:', value)
+    setInst(value)
   }
 
   return (
@@ -263,88 +279,38 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
               </form>
             </>
           )}
-          {bodyAvales && (
-            <>
-              <form action="" className="flex flex-col gap-4 pt-6">
-                <section className="flex flex-col gap-5 md:grid md:grid-cols-2-60-40">
-                  <section className="grid items-center grid-rows-3 gap-5">
-                    <div className="relative">
-                      <span className="absolute inset-y-0 flex items-center text-xl font-bold text-purple-700 pointer-events-none right-3">
-                        <LuChevronDown />
-                      </span>
-                      <select name="coordi" id="coordi" className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white pt-[3.5px] pl-2 text-sm font-light text-black focus:bg-white focus:outline-none appearance-none">
-                        <option value="1">Coordinador 1</option>
-                        <option value="2">Coordinador 2</option>
-                        <option value="3">Coordinador 3</option>
-                      </select>
-                      <label htmlFor="coordi" className="absolute left-3 -top-[10.6px] px-1 bg-white text-gray-600 text-[12px] text-sm font-light">
-                        Coordinador Asignado
-                      </label>
-                    </div>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 flex items-center text-xl font-bold text-purple-700 pointer-events-none right-3">
-                        <LuChevronDown />
-                      </span>
-                      <select name="inst" id="inst" className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white pt-[3.5px] pl-2 text-sm font-light text-black focus:bg-white focus:outline-none appearance-none">
-                        <option value="1">Instructor 1</option>
-                        <option value="2">Instructor 2</option>
-                        <option value="3">Instructor 3</option>
-                      </select>
-                      <label htmlFor="inst" className="absolute left-3 -top-[10.6px] px-1 bg-white text-gray-600 text-[12px] text-sm font-light">
-                        Instructor Responsable
-                      </label>
-                    </div>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 flex items-center text-xl font-bold text-purple-700 pointer-events-none right-3">
-                        <LuChevronDown />
-                      </span>
-                      <select name="inst" id="inst" className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white pt-[3.5px] pl-2 text-sm font-light text-black focus:bg-white focus:outline-none appearance-none">
-                        <option value="1">Instructor Líder</option>
-                      </select>
-                      <label htmlFor="inst" className="absolute left-3 -top-[10.6px] px-1 bg-white text-gray-600 text-[12px] text-sm font-light">
-                        Instructor Líder
-                      </label>
-                    </div>
-                  </section>
-                  <section className="grid items-center grid-cols-2 grid-rows-2 gap-5 md:grid-rows-4 md:grid-cols-1">
-                    <div className="flex flex-row items-center gap-3 h-fit w-fit">
-                      <input type="checkbox" id="avalcoor" name="avalcoor" className="w-5 h-5 accent-purple-700" />
-                      <label htmlFor="avalcoor" className="text-sm font-light">
-                        Aval Coordinador
-                      </label>
-                    </div>
-                    <div className="flex flex-row items-center gap-3 h-fit w-fit">
-                      <input type="checkbox" name="avalins" id="avalins" className="w-5 h-5 accent-purple-700" />
-                      <label htmlFor="avalins" className="text-sm font-light">
-                        Aval Instructor
-                      </label>
-                    </div>
-                    <div className="flex flex-row items-center gap-3 h-fit w-fit">
-                      <input type="checkbox" id="raps" name="raps" className="w-5 h-5 accent-purple-700" />
-                      <label htmlFor="raps" className="text-sm font-light">
-                        RAPS Aprobados
-                      </label>
-                    </div>
-                    <div className="flex flex-row items-center gap-3 h-fit w-fit">
-                      <input type="checkbox" id="next" name="next" className="w-5 h-5 accent-purple-700" />
-                      <label htmlFor="next" className="text-sm font-light">
-                        Continuar Registro
-                      </label>
-                    </div>
-                  </section>
-                </section>
-                <section>
-                  <h2 className="pb-2 font-normal text-center">Observaciones</h2>
-                  <textarea name="" id="" rows="10" className="border-gray-400 focus:text-gray-900 max-h-[4rem] min-h-[2rem] w-full overflow-y-auto rounded-md border-[1.2px]  bg-white py-[0.9px] pl-3 text-sm font-light text-black focus:bg-white focus:outline-none" placeholder="Digite alguna observación" />
-                </section>
-                <div className="relative mx-auto mb-3">
-                  <span className="absolute inset-y-0 flex items-center text-white left-2">
-                    <BsCheck2Circle />
-                  </span>
-                  <Button value={'Guardar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize="text-md" py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+          {bodyAsign && (
+            <section className="flex flex-col gap-3 my-5">
+              <header>
+                <h3 className="text-[16px] font-medium text-right">2473196</h3>
+                <h3 className="text-[16px] font-light text-right">Análisis y Desarrollo de Software</h3>
+              </header>
+              <form action="" className="flex flex-col gap-6">
+                <div>
+                  <label htmlFor="asig" className="text-[16px] font-normal">
+                    Instructor Seguimiento
+                  </label>
+                  <Select
+                    value={inst}
+                    searchInputPlaceholder="Ingrese nombre instructor"
+                    options={options}
+                    placeholder="Nombre instructor"
+                    isSearchable
+                    onChange={handleChange}
+                    primaryColor={'pink'}
+                    classNames={{
+                      // menu: 'rounded-md border-gray-600 border-[1px] mt-1',
+                      searchBox: 'rounded-md w-full pl-8 h-8 my-1 focus:outline-none border-[1px] border-gray-600 text-sm',
+                      searchIcon: 'absolute mt-2.5 ml-2 h-5',
+                      list: 'max-h-[9rem] min-h-[2rem] text-sm overflow-y-auto',
+                      closeIcon: 'red-900',
+                      select: 'rounded-md',
+                    }}
+                  />
                 </div>
+                <Button value={'Asignar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[4px]" textSize="text-ms" font="font-medium" textColor="text-white" icon={<BsCheck2Circle className="text-xl" />} />
               </form>
-            </>
+            </section>
           )}
         </section>
       </section>
