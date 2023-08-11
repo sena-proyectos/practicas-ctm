@@ -1,13 +1,11 @@
 export interface classes {
   id_ficha?: string
-  numero_ficha: string
+  numero_ficha: number
   nombre_programa_formacion: string
   fecha_inicio_lectiva: Date
   fecha_fin_lectiva: Date
   fecha_inicio_practica: Date
-  fecha_fin_practica: Date
-  nivel_programa_formacion: string
-  jornada_ficha: string
-  id_instructor_lider_formacion: string
-  id_instructor_practicas_formacion?: string
+  id_instructor_lider: number
+  id_instructor_seguimiento: number
+  id_nivel_formacion: number
 }
