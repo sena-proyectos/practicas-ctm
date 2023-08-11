@@ -1,13 +1,17 @@
 import { useState } from 'react'
+import Select from 'react-tailwindcss-select'
+
+//icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { IoSearchOutline } from 'react-icons/io5'
 import { BsCheck2Circle } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
-import { modalities } from '../../../import/staticData'
-import { Button } from '../Button/Button'
-import { LuChevronDown } from 'react-icons/lu'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle }) => {
+//componentes
+import { modalities, instructores } from '../../../import/staticData'
+import { Button } from '../Button/Button'
+
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const passwordIcons = {
@@ -39,6 +43,18 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
 
   const handleModal = () => {
     closeModal()
+  }
+
+  const options = instructores.map((instructor) => ({
+    value: instructor.nombre,
+    label: instructor.nombre,
+  }))
+
+  const [inst, setInst] = useState(null)
+
+  const handleChange = (value) => {
+    // console.log('value:', value)
+    setInst(value)
   }
 
   return (
@@ -262,6 +278,39 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                 </div>
               </form>
             </>
+          )}
+          {bodyAsign && (
+            <section className="flex flex-col gap-3 my-5">
+              <header>
+                <h3 className="text-[16px] font-medium text-right">2473196</h3>
+                <h3 className="text-[16px] font-light text-right">Análisis y Desarrollo de Software</h3>
+              </header>
+              <form action="" className="flex flex-col gap-6">
+                <div>
+                  <label htmlFor="asig" className="text-[16px] font-normal">
+                    Instructor Seguimiento
+                  </label>
+                  <Select
+                    value={inst}
+                    searchInputPlaceholder="Ingrese nombre instructor"
+                    options={options}
+                    placeholder="Nombre instructor"
+                    isSearchable
+                    onChange={handleChange}
+                    primaryColor={'pink'}
+                    classNames={{
+                      // menu: 'rounded-md border-gray-600 border-[1px] mt-1',
+                      searchBox: 'rounded-md w-full pl-8 h-8 my-1 focus:outline-none border-[1px] border-gray-600 text-sm',
+                      searchIcon: 'absolute mt-2.5 ml-2 h-5',
+                      list: 'max-h-[9rem] min-h-[2rem] text-sm overflow-y-auto',
+                      closeIcon: 'red-900',
+                      select: 'rounded-md',
+                    }}
+                  />
+                </div>
+                <Button value={'Asignar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[4px]" textSize="text-ms" font="font-medium" textColor="text-white" icon={<BsCheck2Circle className="text-xl" />} />
+              </form>
+            </section>
           )}
         </section>
       </section>
