@@ -51,7 +51,6 @@ export const GetUserByName = async (searchQuery) => {
 export const GetTeacherByName = async (data) => {
   const URL = `${baseUrl}${api}/teacherName?nombreCompleto=${data}`
   const response = await axios.get(URL)
-
   return response
 }
 
