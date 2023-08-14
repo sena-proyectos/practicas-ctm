@@ -80,8 +80,8 @@ const Siderbar = () => {
             <img className="object-cover" src="public/user.png" alt="img_user" />
           </div>
           <div className={`w-full pl-3 pr-10 ${!open && 'hidden'}`}>
-            <h5 className="text-xs text-center">{dataFullName || <Skeleton width={100} />}</h5>
-            <h6 className="text-sm font-semibold text-center">{rolesNames[idRol] || <Skeleton />}</h6>
+            <h5 className="text-sm font-light text-center">{dataFullName || <Skeleton width={100} />}</h5>
+            <h6 className="text-base font-semibold text-center">{rolesNames[idRol] || <Skeleton />}</h6>
           </div>
         </section>
         <ul className="flex flex-col items-start justify-center cursor-pointer">
