@@ -15,10 +15,13 @@ import { Button } from '../Utils/Button/Button'
 import { Pagination } from '../Utils/Pagination/Pagination'
 
 import { getInscriptions } from '../../api/httpRequest'
+import { keysRoles } from '../../import/staticData'
 
 export const RegisterList = () => {
   const [pageNumber, setPageNumber] = useState(0)
   const [inscriptions, setInscriptions] = useState([])
+
+  const idRol = Number(localStorage.getItem('idRol'))
 
   useEffect(() => {
     const getRegistros = async () => {
@@ -103,10 +106,12 @@ export const RegisterList = () => {
           <div className="flex justify-center h-[13vh] relative bottom-0">
             <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
-          <div className="absolute flex flex-row-reverse gap-3 right-12 bottom-16">
-            <Button value={'Agregar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[4px]" textSize="text-sm" font="font-medium" textColor="text-white" clickeame={handleRegister} icon={<IoAddCircleOutline className="text-xl" />} />
-            <Button value={'Subir excel'} rounded="rounded-full" bg="bg-cyan-600" px="px-3" py="py-[6px]" textSize="text-sm" textColor="text-white" font="font-medium" clickeame={handleRegister} icon={<AiOutlineFileAdd className="text-lg" />} />
-          </div>
+          {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+            <div className="absolute flex flex-row-reverse gap-3 right-12 bottom-16">
+              <Button value={'Agregar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[4px]" textSize="text-sm" font="font-medium" textColor="text-white" clickeame={handleRegister} icon={<IoAddCircleOutline className="text-xl" />} />
+              <Button value={'Subir excel'} rounded="rounded-full" bg="bg-cyan-600" px="px-3" py="py-[6px]" textSize="text-sm" textColor="text-white" font="font-medium" clickeame={handleRegister} icon={<AiOutlineFileAdd className="text-lg" />} />
+            </div>
+          )}
         </section>
         <Footer />
       </section>
