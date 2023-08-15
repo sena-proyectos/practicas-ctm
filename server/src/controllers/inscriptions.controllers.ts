@@ -15,7 +15,7 @@ import { errorCodes } from '../models/errorCodes.enums.js'
  */
 export const getInscriptions = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const [inscriptions] = await connection.query('SELECT * FROM inscripciones')
+    const [inscriptions] = await connection.query('SELECT i.*, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" GROUP BY i.id_inscripcion')
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -121,7 +121,7 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
         arl,
         link_documentos,
         observaciones,
-        responsable_inscripcion,
+        responsable_inscripcion
       ])
       if ((result as RowDataPacket[]).length === 0) throw new DbErrorNotFound(`No se pudo crear la inscripcion número ${i}.`, errorCodes.ERROR_CREATE_STUDENT)
       i += 1

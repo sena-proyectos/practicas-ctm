@@ -20,25 +20,25 @@ export const classSchema = Joi.object({
   fecha_inicio_practica: Joi
     .date()
     .required(),
-  fecha_fin_practica: Joi
+  id_instructor_seguimiento: Joi
+    .number()
+    .required(),
+  id_instructor_lider: Joi
+    .number()
+    .required(),
+  id_nivel_formacion: Joi
+    .number()
+    .required
+})
+
+export const classDates = Joi.object({
+  fecha_inicio_lectiva: Joi
     .date()
     .required(),
-  nivel_programa_formacion: Joi
-    .string()
+  fecha_fin_lectiva: Joi
+    .date()
+    .required(),
+  fecha_inicio_practica: Joi
+    .date()
     .required()
-    .min(3)
-    .max(50),
-  jornada_ficha: Joi
-    .string()
-    .required()
-    .min(3)
-    .max(50),
-  id_instructor_lider_formacion: Joi
-    .number()
-    .required()
-    .min(1),
-  id_instructor_practicas_formacion: Joi
-    .number()
-    .allow(null)
-    .min(1)
 })

@@ -21,7 +21,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-primary',
-      sombra: 'shadowPrimary/50',
+      sombra: 'shadow-shadowPrimary',
       link: '/aprendices',
     },
     {
@@ -30,7 +30,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de bitácoras que actualmente se encuentran incompletas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
-      sombra: 'shadowSalmon/50',
+      sombra: 'shadow-shadowSalmon',
       link: '/bitacoras',
     },
     {
@@ -39,7 +39,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de bitácoras que actualmente se encuentran completas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-seventh',
-      sombra: 'shadowSeventh/75',
+      sombra: 'shadow-shadowSeventh',
       link: '/bitacoras',
     },
     {
@@ -48,7 +48,7 @@ export const rolesCard = {
       description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-[#385C57]',
-      sombra: '[#385C57]/20',
+      sombra: 'shadow-shadowGray',
       link: '/aprov',
     },
     {
@@ -57,7 +57,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
-      sombra: 'shadowThird/100',
+      sombra: 'shadow-shadowThird',
       link: '/visitas',
     },
     {
@@ -66,7 +66,7 @@ export const rolesCard = {
       description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-aqua',
-      sombra: 'shadowAqua/100',
+      sombra: 'shadow-shadowAqua',
       link: '/inscribir-aprendiz',
     },
   ],
@@ -77,7 +77,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-primary',
-      sombra: 'shadowPrimary/50',
+      sombra: 'shadow-shadowPrimary',
       link: '/aprendices',
     },
     {
@@ -86,7 +86,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de bitácoras que actualmente se encuentran incompletas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
-      sombra: 'shadowSalmon/50',
+      sombra: 'shadow-shadowSalmon',
       link: '/bitacoras',
     },
     {
@@ -95,7 +95,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de bitácoras que actualmente se encuentran completas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-seventh',
-      sombra: 'shadowSeventh/75',
+      sombra: 'shadow-shadowSeventh',
       link: '/bitacoras',
     },
     {
@@ -104,7 +104,7 @@ export const rolesCard = {
       description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-[#385C57]',
-      sombra: '[#385C57]/20',
+      sombra: 'shadow-shadowGray',
       link: '/aprov',
     },
     {
@@ -113,7 +113,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
-      sombra: 'shadowThird/100',
+      sombra: 'shadow-shadowThird',
       link: '/visitas',
     },
     {
@@ -122,7 +122,7 @@ export const rolesCard = {
       description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-aqua',
-      sombra: 'shadowAqua/100',
+      sombra: 'shadow-shadowAqua',
       link: '/inscribir-aprendiz',
     },
   ],
@@ -133,7 +133,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-primary',
-      sombra: 'shadowPrimary/50',
+      sombra: 'shadow-shadowPrimary',
       link: '/aprendices',
     },
     {
@@ -142,7 +142,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de bitácoras que actualmente se encuentran incompletas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
-      sombra: 'shadowSalmon/50',
+      sombra: 'shadow-shadowSalmon',
       link: '/bitacoras',
     },
     {
@@ -151,7 +151,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de bitácoras que actualmente se encuentran completas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-seventh',
-      sombra: 'shadowSeventh/75',
+      sombra: 'shadow-shadowSeventh',
       link: '/bitacoras',
     },
     {
@@ -160,7 +160,7 @@ export const rolesCard = {
       description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-[#385C57]',
-      sombra: '[#385C57]/20',
+      sombra: 'shadow-shadowGray',
       link: '/aprov',
     },
     {
@@ -169,7 +169,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
-      sombra: 'shadowThird/100',
+      sombra: 'shadow-shadowThird',
       link: '/visitas',
     },
   ],
@@ -180,7 +180,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-aqua',
-      sombra: 'shadowAqua/100',
+      sombra: 'shadow-shadowAqua',
       link: '/aprendices',
     },
     {
@@ -189,7 +189,7 @@ export const rolesCard = {
       description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-seventh',
-      sombra: 'shadowSeventh/75',
+      sombra: 'shadow-shadowSeventh',
       link: '/aprov',
     },
     {
@@ -198,7 +198,7 @@ export const rolesCard = {
       description: 'Podrás ver el listado de fichas que tienes asignadas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
-      sombra: 'shadowSalmon/50',
+      sombra: 'shadow-shadowSalmon',
       link: '/fichas',
     },
   ],
@@ -642,5 +642,48 @@ export const colorsOddRow = [
     hrcolor: 'border-purple-400',
     sidecolor: 'bg-purple-400',
     linkcolor: 'bg-purple-600',
+  },
+]
+
+export const instructores = [
+  {
+    nombre: 'Guillermo Stiven Benjumea Morales',
+    rol: 'Instructor Seguimiento',
+  },
+  {
+    nombre: 'Stiven Urrego',
+    rol: 'Instructor Líder',
+  },
+  {
+    nombre: 'Carlos Prasca',
+    rol: 'Instructor Seguimiento',
+  },
+  {
+    nombre: 'Jairo Elías Redondo',
+    rol: 'Instructor Seguimiento',
+  },
+  {
+    nombre: 'Juan Guillermo Gomez Zapata',
+    rol: 'Instructor Líder',
+  },
+  {
+    nombre: 'Kevin Alexis Chica Ruiz',
+    rol: 'Instructor Seguimiento',
+  },
+  {
+    nombre: 'Cristian Bedoya',
+    rol: 'Instructor Líder',
+  },
+  {
+    nombre: 'Angie Tatiana Mosquera Arco',
+    rol: 'Instructor Líder',
+  },
+  {
+    nombre: 'Lorena Quiceno Giraldo',
+    rol: 'Instructor Líder',
+  },
+  {
+    nombre: 'Guillermo Stiven Benjumea',
+    rol: 'Instructor Seguimiento',
   },
 ]

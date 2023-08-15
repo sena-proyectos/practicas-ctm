@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom'
 //Icons
 import { BsJournalBookmark } from 'react-icons/bs'
 
-export const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/ConanGH-S', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked, transition = 'transition-none', userID, height = 'h-auto', width = 'w-auto' }) => {
+export const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/ConanGH-S', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked, transition = 'transition-none', userID, height = 'h-auto', width = 'w-auto', shadowColor }) => {
   const userInfo = () => {
     modalClicked(userID)
   }
 
   return (
-    <div className={`${bgColor} bg-opacity-60 ${shadow} flex ${height} flex-col justify-center rounded-2xl px-3 py-2 ${scale && 'scale-90'} ${width}`}>
+    <div className={`${bgColor} bg-opacity-60 ${shadow} ${shadowColor} flex ${height} flex-col justify-center rounded-2xl px-3 py-2 ${scale && 'scale-90'} ${width}`}>
       <header className={`${cardUser && 'flex flex-row'}`}>
         {cardUser && <img className="h-[4.5rem] w-[4.5rem] rounded-full" src={img} alt={alt} />}
         <div className={`${cardUser && 'flex w-min flex-auto flex-col py-3'}`}>
