@@ -319,37 +319,28 @@ export const RegisterDetails = () => {
               </div>
             </div>
           </form>
-          <div className="flex flex-row gap-1 mx-auto mt-3 mb-2 md:flex-row w-fit md:gap-5">
+          <div className="flex flex-row justify-center mx-auto">
+            <div className="absolute bottom-20 ">
+              <Button value={'Guardar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[6px]" textSize="text-base" font="font-medium" textColor="text-white" icon={<BsCheck2Circle className="text-xl" />} />
+            </div>
             {showDataEmpresa && (
               <>
-                <div className="relative mx-auto w-fit">
-                  <span className="absolute inset-y-0 flex items-center text-white pointer-events-none left-3">
-                    <LuArrowLeft />
-                  </span>
-                  <Button value={'Regresar'} bg={'bg-sky-700'} px={'pr-6 pl-10'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={() => handleChangeSection('aprendiz')} />
+                <div className="absolute left-12 bottom-20">
+                  <Button value={'Regresar'} rounded="rounded-full" bg="bg-sky-600" px="px-4" py="py-[6px]" textSize="text-base" font="font-medium" textColor="text-white" clickeame={() => handleChangeSection('aprendiz')} icon={<LuArrowLeft className="text-xl" />} />
                 </div>
-                <div className="relative ml-auto w-fit">
-                  <span className="absolute inset-y-0 flex items-center text-white pointer-events-none right-2">
-                    <LuArrowRight />
-                  </span>
-                  <Button value={'Continuar'} bg={'bg-primary'} px={'pr-8 pl-5'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={() => handleChangeSection('avales')} />
+                <div className="absolute right-12 bottom-20">
+                  <Button value={'Continuar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[6px]" textSize="text-base" font="font-medium" textColor="text-white" clickeame={() => handleChangeSection('avales')} icon={<LuArrowRight className="text-xl" />} />
                 </div>
               </>
             )}
             {showDataAprendiz && (
-              <div className="relative mx-auto w-fit">
-                <span className="absolute inset-y-0 flex items-center text-white pointer-events-none right-2">
-                  <LuArrowRight />
-                </span>
-                <Button value={'Continuar'} bg={'bg-primary'} px={'pr-8 pl-5'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={() => handleChangeSection('empresa')} />
+              <div className="absolute right-12 bottom-20">
+                <Button value={'Continuar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[6px]" textSize="text-base" font="font-medium" textColor="text-white" clickeame={() => handleChangeSection('empresa')} icon={<LuArrowRight className="text-xl" />} />
               </div>
             )}
             {showDataAvales && (
-              <div className="relative mx-auto w-fit">
-                <span className="absolute inset-y-0 flex items-center text-white pointer-events-none left-3">
-                  <LuArrowLeft />
-                </span>
-                <Button value={'Regresar'} bg={'bg-sky-700'} px={'pr-6 pl-10'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={() => handleChangeSection('empresa')} />
+              <div className="absolute left-12 bottom-20">
+                <Button value={'Regresar'} rounded="rounded-full" bg="bg-sky-600" px="px-4" py="py-[6px]" textSize="text-base" font="font-medium" textColor="text-white" clickeame={() => handleChangeSection('empresa')} icon={<LuArrowLeft className="text-xl" />} />
               </div>
             )}
           </div>
