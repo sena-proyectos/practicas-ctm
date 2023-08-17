@@ -73,7 +73,7 @@ export const RegisterList = () => {
 const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
   const navigate = useNavigate()
   const handleAvales = (id) => {
-    return navigate(`/registro-detalles?id=${id}`)
+    return navigate(`/registro-detalles/${id}`)
   }
   return (
     <table className="w-full h-96">
