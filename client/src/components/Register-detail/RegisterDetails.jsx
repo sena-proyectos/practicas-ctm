@@ -1,35 +1,33 @@
 import { useEffect, useState, useRef } from 'react'
+import { useParams } from 'react-router-dom'
+
+// icons
+import { BsCheck2Circle } from 'react-icons/bs'
+import { LuArrowRight, LuChevronDown, LuArrowLeft } from 'react-icons/lu'
+import { AiOutlineCloudUpload } from 'react-icons/ai'
 
 //Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
-
-// icons
-import { BsCheck2Circle } from 'react-icons/bs'
-import { LuUpload, LuArrowRight, LuChevronDown, LuArrowLeft } from 'react-icons/lu'
-import { AiOutlineCloudUpload } from 'react-icons/ai'
-
+import { Select } from '../Utils/Select/Select'
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription, keysRoles } from '../../import/staticData'
-import { getInscriptionById } from '../../api/httpRequest'
-import { useLocation } from 'react-router-dom'
+import { getInscriptionById, getInscriptionDetails } from '../../api/httpRequest'
 
 export const RegisterDetails = () => {
   const [showDataEmpresa, setShowDataEmpresa] = useState(false)
   const [showDataAprendiz, setShowDataAprendiz] = useState(true)
   const [showDataAvales, setShowDataAvales] = useState(false)
   const [inscriptionById, setInscriptionById] = useState()
-  const location = useLocation()
-  const searchParams = new URLSearchParams(location.search)
-  const inscriptionId = searchParams.get('id')
+  const [inscriptionDetails, setInscriptionDetails] = useState()
+  const { id } = useParams()
 
   const idRol = Number(localStorage.getItem('idRol'))
 
   useEffect(() => {
-    if (inscriptionId) {
-      getInscriptionAprendiz(inscriptionId)
-    }
-  }, [inscriptionId])
+    getInscriptionAprendiz(id)
+    getDetallesInscripcion(id)
+  }, [id])
 
   const handleChangeSection = (section) => {
     setShowDataEmpresa(section === 'empresa')
@@ -67,7 +65,6 @@ export const RegisterDetails = () => {
   const getInscriptionAprendiz = async (id) => {
     try {
       const response = await getInscriptionById(id)
-      console.log(response)
       const res = response.data.data[0]
       setInscriptionById(res)
 
@@ -80,6 +77,23 @@ export const RegisterDetails = () => {
       console.log('Ha ocurrido un error al mostrar los datos del usuario')
     }
   }
+
+  const getDetallesInscripcion = async (id) => {
+    try {
+      const response = await getInscriptionDetails(id)
+      // id === Cookies.id => habilitado ? desha
+      setInscriptionDetails(response)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const option = [
+    { value: 'Sergio Soto Henao', key: 'Sergio Soto Henao' },
+    { value: 'Marianela Henao Atehortúa', key: 'Marianela Henao Atehortúa' },
+    { value: 'Jaime León Vergara Areiza', key: 'Jaime León Vergara Areiza' },
+    { value: 'Mauro Isaías Arango Vanegas', key: 'Mauro Isaías Arango Vanegas' },
+  ]
 
   return (
     <main className="flex flex-row min-h-screen">
@@ -225,21 +239,42 @@ export const RegisterDetails = () => {
                       <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
                         Coordinador Responsable
                       </label>
+                      <Select placeholder="Coordinador" rounded="rounded-md" py="py-1" hoverColor="hover:bg-gray" hoverTextColor="hover:text-black" textSize="text-sm" options={option} />
+                    </div>
+
+                    <div className="flex flex-col w-full m-auto text-gray-400">
+                      <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                        Instructor de Seguimiento
+                      </label>
                       <div className="relative">
                         <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
                           <LuChevronDown />
                         </span>
                         <select className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
-                          <option value={''}>Sin seleccionar</option>
-                          <option value="" selected>
-                            Marianela Henao Atehortúa
-                          </option>
-                          <option value="">Coordinador 2</option>
-                          <option value="">Coordinador 3</option>
+                          <option value="">Sin seleccionar</option>
+                          <option value="">Instructor 1</option>
+                          <option value="">Instructor 2</option>
+                          <option value="">Instructor 3</option>
                         </select>
                       </div>
                     </div>
                     <div className="flex flex-col w-full m-auto text-gray-400">
+                      <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                        Instructor Líder
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                          <LuChevronDown />
+                        </span>
+                        <select className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
+                          <option value="">Sin seleccionar</option>
+                          <option value="">Instructor 1</option>
+                          <option value="">Instructor 2</option>
+                          <option value="">Instructor 3</option>
+                        </select>
+                      </div>
+                    </div>
+                    {/* <div className="flex flex-col w-full m-auto text-gray-400">
                       <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
                         Instructor de Seguimiento
                       </label>
@@ -254,7 +289,7 @@ export const RegisterDetails = () => {
                       <div className="relative">
                         <input type="text" className="w-full rounded-md border-[1.2px] bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2] py-1 pl-2 text-sm  focus:outline-none" autoComplete="on" disabled />
                       </div>
-                    </div>
+                    </div> */}
                   </>
                 )}
                 {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
