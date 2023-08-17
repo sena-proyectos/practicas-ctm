@@ -80,3 +80,19 @@ export const getInscriptionById = async (id) => {
   const response = await axios.get(URL)
   return response
 }
+
+//OBTENER DETALLES INSCRIPCION BY ID
+export const getInscriptionDetails = async (id, limit = 3, offset = 0) => {
+  const URL = `${baseUrl}${api}/inscriptionDetails/${id}?limit=${limit}&offset=${offset}`
+
+  const response = await axios.get(URL)
+  return response
+}
+
+//OBTENER DETALLES INSCRIPCION POR USUARIO
+export const inscriptionDetailUser = async (id, limit = 3, offset = 0) => {
+  const URL = `${baseUrl}${api}/inscriptionDetailsUser/${id}?limit=${limit}&offset=${offset}`
+
+  const response = await axios.get(URL)
+  return response
+}
