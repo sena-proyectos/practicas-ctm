@@ -7,6 +7,7 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
 import { Pagination } from '../Utils/Pagination/Pagination'
 import Skeleton from 'react-loading-skeleton'
+import { useNavigate } from 'react-router-dom'
 
 export const Courses = () => {
   const [pageNumber, setPageNumber] = useState(0)
@@ -79,14 +80,19 @@ export const Courses = () => {
     setLoading(false)
   }, [])
 
+  const navigate = useNavigate()
+  const handleStudents = () => {
+    return navigate(`/aprendices`)
+  }
+
   return (
-    <main className="flex flex-row min-h-screen">
+    <main className="flex flex-row min-h-screen bg-whitesmoke">
       <Siderbar />
       <section className="relative grid flex-auto grid-rows-3-10-75-15">
         <header className="grid place-items-center">
           <Search searchFilter />
         </header>
-        <section className='grid content-center'>
+        <section className="grid content-center">
           <section className="grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 sm:grid-cols-2 md:grid-cols-3">
             {loading ? (
               <>
@@ -99,7 +105,7 @@ export const Courses = () => {
               </>
             ) : (
               Courses.data.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.ficha} title={course.name} subtitle={course.etapa} item1={course.seguimiento} item2={course.lider} item3={course.finLectiva} item4={course.inicioProductiva} />
+                return <Card3D key={i} header={course.ficha} title={course.name} subtitle={course.etapa} item1={course.seguimiento} item2={course.lider} item3={course.finLectiva} item4={course.inicioProductiva} onClick={handleStudents} />
               })
             )}
           </section>
