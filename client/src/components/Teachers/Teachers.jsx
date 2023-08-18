@@ -38,7 +38,7 @@ export const Teachers = () => {
   }, [])
 
   return (
-    <main className="flex flex-row min-h-screen">
+    <main className="flex flex-row min-h-screen bg-whitesmoke">
       <Siderbar />
       <section className="relative grid flex-auto w-min grid-rows-3-10-75-15">
         <header className="grid place-items-center">
@@ -53,7 +53,7 @@ export const Teachers = () => {
             ) : (
               allColors.slice(startIndex, endIndex).map((color, index) =>
                 instructores[startIndex + index] ? (
-                  <div className="rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[9rem]" key={index} {...color}>
+                  <div className="rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[9rem] bg-white" key={index} {...color}>
                     <div className="flex flex-col w-4/5 gap-2 mx-auto my-auto">
                       <h6 className="font-medium text-center text-[0.9rem]">{instructores[startIndex + index].nombre}</h6>
                       <hr className={`font-bold ${color.hrcolor} border-1`} />

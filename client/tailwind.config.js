@@ -16,6 +16,7 @@ export default {
         rosa: '#DF1E63',
         coffee: '#964B00',
         lima: '#65AC45',
+        whitesmoke: '#F5F5F5',
       },
       boxShadowColor: {
         shadowPrimary: '#62bb34',
@@ -41,6 +42,7 @@ export default {
         '2-90-10': '80% 20%',
         '2-60-40': '60% 40%',
         '6-columns-table': '2fr 1fr 1fr 1fr 1fr 1fr',
+        '4-columns-table': '2fr 1fr 1fr 1fr',
         // '2-20r-80': '18rem auto'
       },
       gridTemplateRows: {

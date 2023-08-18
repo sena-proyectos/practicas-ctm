@@ -96,7 +96,7 @@ export const RegisterDetails = () => {
   ]
 
   return (
-    <main className="flex flex-row min-h-screen">
+    <main className="flex flex-row min-h-screen bg-whitesmoke">
       <Siderbar />
       <section className="relative grid flex-auto w-min grid-rows-3-10-75-15">
         <header className="grid place-items-center">
