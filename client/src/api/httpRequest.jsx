@@ -19,7 +19,7 @@ export const GetUsersHttp = async () => {
   return response
 }
 
-export const GetStudentsDetailyId = async (userID) => {
+export const GetStudentsDetailById = async (userID) => {
   const URL = `${baseUrl}${api}/detailInfoStudent/${userID}`
 
   const response = await axios.get(URL)
