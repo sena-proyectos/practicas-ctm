@@ -23,7 +23,7 @@ export const Select = ({ options, placeholder, placeholderSearch, hoverColor, ho
         {options.map((option, i) => (
           <li
             key={option.key}
-            className={`px-1.5 py-1 my-1 text-sm ${hoverColor} ${hoverTextColor} rounded-md cursor-pointer hover:text-white select-none
+            className={`px-1.5 py-1 my-1 text-sm ${hoverColor} ${hoverTextColor} rounded-md cursor-pointer select-none
              ${option.value.toLowerCase() === selected.toLowerCase() && selectedColor}
              ${option.value.toLowerCase().startsWith(inputValue) ? 'block' : 'hidden'}`}
             onClick={() => {
