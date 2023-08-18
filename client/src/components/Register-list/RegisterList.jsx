@@ -95,7 +95,7 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
             return (
               <tr className="grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center" key={x.id_inscripcion}>
                 <td className="max-w-[20ch] font-medium text-center break-words">{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</td>
-                <td className="font-light text-center ">{x.modalidad_inscripcion === '1' ? 'Pasantías' : x.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : null}</td>
+                <td className="font-light text-center ">{x.modalidad_inscripcion === '1' ? 'Pasantías' : x.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : x.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : x.modalidad_inscripcion === '4' ? 'Monitoría' : x.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</td>
                 <td className="font-light text-center ">{x.fecha_creacion.split('T')[0]}</td>
                 <td className="text-sm font-light text-center ">
                   <div className="w-10 mx-auto rounded-full select-none bg-gray">{x.estado_general_inscripcion === 'Rechazado' ? 'N/A' : `${x.avales_aprobados} | 3`}</div>
