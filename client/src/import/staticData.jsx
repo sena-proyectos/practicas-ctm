@@ -447,7 +447,7 @@ export const passwordStatus = {
  */
 export const colorIcon = {
   '/home': 'text-salmon',
-  '/aprendices': 'text-third',
+  '/seguimiento-aprendices': 'text-third',
   '/bitacoras': 'text-seventh',
   '/registros': 'text-lima',
   '/aprov': 'text-secondary',

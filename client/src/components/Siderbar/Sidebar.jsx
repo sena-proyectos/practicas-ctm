@@ -95,8 +95,8 @@ const Siderbar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/aprendices" className={styles('/aprendices')}>
-                <span className={spanStyle('/aprendices')}>
+              <Link to="/seguimiento-aprendices" className={styles('/seguimiento-aprendices')}>
+                <span className={spanStyle('/seguimiento-aprendices')}>
                   <IoPersonOutline />
                 </span>
                 {open && 'Aprendices'}
