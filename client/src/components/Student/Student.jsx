@@ -88,8 +88,7 @@ export const Student = () => {
         setError('Error al obtener los aprendices')
       }
     }
-    setTimeout(getApprentices, 999)
-    // getApprentices()
+    getApprentices()
   }, [])
 
   const filterStudents = filter.filterStudents

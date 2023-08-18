@@ -12,7 +12,7 @@ export const inscriptionSchema = Joi.object({
   tipo_documento_inscripcion: Joi
     .string()
     .required(),
-  documento_inscripción: Joi
+  documento_inscripcion: Joi
     .number()
     .required(),
   email_inscripcion: Joi
@@ -20,18 +20,17 @@ export const inscriptionSchema = Joi.object({
     .email()
     .required()
     .min(3),
-  inscripción_celular: Joi
+  inscripcion_celular: Joi
     .number()
     .required(),
   etapa_actual_inscripcion: Joi
     .string()
     .required()
     .min(3),
-  modalidad_inscripción: Joi
-    .string()
-    .required()
-    .min(3),
-  nombre_programa_inscripción: Joi
+  modalidad_inscripcion: Joi
+    .number()
+    .required(),
+  nombre_programa_inscripcion: Joi
     .string()
     .required(),
   nivel_formacion_inscripcion: Joi
@@ -60,7 +59,7 @@ export const inscriptionSchema = Joi.object({
   nit_empresa_inscripcion: Joi
     .number()
     .allow(null),
-  nombre_empresa_inscripción: Joi
+  nombre_empresa_inscripcion: Joi
     .string()
     .allow(null)
     .min(3),
