@@ -6,7 +6,7 @@ export interface inscriptionData {
   email_inscripcion: string
   inscripcion_celular: number
   etapa_actual_inscripcion: string
-  modalidad_inscripcion: string
+  modalidad_inscripcion: number
   nombre_programa_inscripcion: string
   nivel_formacion_inscripcion: string
   numero_ficha_inscripcion: number
@@ -15,7 +15,7 @@ export interface inscriptionData {
   email_instructor_lider_inscripcion: string
   apoyo_sostenimiento_inscripcion: string
   nit_empresa_inscripcion?: number
-  nombre_empresa_inscripción?: string
+  nombre_empresa_inscripcion?: string
   direccion_empresa_inscripcion?: string
   nombre_jefe_empresa_inscripcion?: string
   cargo_jefe_empresa_inscripcion?: string

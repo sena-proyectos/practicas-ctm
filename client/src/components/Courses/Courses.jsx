@@ -76,9 +76,7 @@ export const Courses = () => {
   const endIndex = startIndex + coursesPerPage
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    }, 5000)
+    setLoading(false)
   }, [])
 
   return (
