@@ -89,7 +89,7 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
       </thead>
       <tbody className="grid grid-rows-6">
         {inscriptions.length === 0 ? (
-          <LoadingTableList number={3} />
+          <LoadingTableList number={6} />
         ) : (
           inscriptions.slice(startIndex, endIndex).map((x) => {
             return (
@@ -120,7 +120,7 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
 
 const LoadingTableList = ({ number = 6 }) =>
   [...Array(number)].map((_, index) => (
-    <tr className="grid items-center text-sm border-b border-gray-200 grid-cols-6-columns-table justify-items-center h-28" key={index}>
+    <tr className="grid items-center text-sm border-b border-gray-200 grid-cols-6-columns-table justify-items-center h-[60px] select-none" key={index}>
       <td className="max-w-[20ch] font-medium text-center break-words">
         <Skeleton width={150} />
       </td>
