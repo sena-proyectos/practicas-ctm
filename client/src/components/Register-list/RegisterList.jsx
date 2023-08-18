@@ -87,13 +87,13 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
           <th className="text-[16px] w-fit font-semibold whitespace-nowrap">Detalles</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody className="grid grid-rows-6">
         {inscriptions.length === 0 ? (
           <LoadingTableList number={3} />
         ) : (
           inscriptions.slice(startIndex, endIndex).map((x) => {
             return (
-              <tr className="grid items-center text-sm border-b border-gray-200 grid-cols-6-columns-table justify-items-center h-28" key={x.id_inscripcion}>
+              <tr className="grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center" key={x.id_inscripcion}>
                 <td className="max-w-[20ch] font-medium text-center break-words">{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</td>
                 <td className="font-light text-center ">{x.modalidad_inscripcion === '1' ? 'Pasantías' : x.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : null}</td>
                 <td className="font-light text-center ">{x.fecha_creacion.split('T')[0]}</td>
