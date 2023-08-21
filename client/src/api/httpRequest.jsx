@@ -19,7 +19,7 @@ export const GetUsersHttp = async () => {
   return response
 }
 
-export const GetStudentsDetailyId = async (userID) => {
+export const GetStudentsDetailById = async (userID) => {
   const URL = `${baseUrl}${api}/detailInfoStudent/${userID}`
 
   const response = await axios.get(URL)
@@ -76,6 +76,22 @@ export const getInscriptions = async () => {
 // OBTENER REGISTRO POR ID
 export const getInscriptionById = async (id) => {
   const URL = `${baseUrl}${api}/inscription/${id}`
+
+  const response = await axios.get(URL)
+  return response
+}
+
+//OBTENER DETALLES INSCRIPCION BY ID
+export const getInscriptionDetails = async (id, limit = 3, offset = 0) => {
+  const URL = `${baseUrl}${api}/inscriptionDetails/${id}?limit=${limit}&offset=${offset}`
+
+  const response = await axios.get(URL)
+  return response
+}
+
+//OBTENER DETALLES INSCRIPCION POR USUARIO
+export const inscriptionDetailUser = async (id, limit = 3, offset = 0) => {
+  const URL = `${baseUrl}${api}/inscriptionDetailsUser/${id}?limit=${limit}&offset=${offset}`
 
   const response = await axios.get(URL)
   return response

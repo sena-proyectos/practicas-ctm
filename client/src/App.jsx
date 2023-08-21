@@ -2,7 +2,7 @@ import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import { User } from './components/User/User'
 import { Home } from './components/Home/Home'
-import { Student } from './components/Student/Student'
+import { StudentMonitoring } from './components/Student-monitoring/StudentMonitoring'
 import { Visits } from './components/Visits/Visits'
 import { Bitacoras } from './components/Bitacoras/Bitacoras'
 import { Settings } from './components/Settings/Settings'
@@ -14,6 +14,7 @@ import { RegisterList } from './components/Register-list/RegisterList'
 import { RegisterStudent } from './components/Register-student/RegisterStudent'
 import { RegisterDetails } from './components/Register-detail/RegisterDetails'
 import { Courses } from './components/Courses/Courses'
+import { Students } from './components/Students/Students'
 
 const App = () => {
   const idRol = Number(localStorage.getItem('idRol'))
@@ -24,12 +25,13 @@ const App = () => {
       <Route element={<ProtectedRoute idRol={idRol} />}>
         <Route path="/home" element={<Home />} />
         <Route path="/config" element={<Settings />} />
-        <Route path="/aprendices" element={<Student />} />
+        <Route path="/seguimiento-aprendices" element={<StudentMonitoring />} />
         <Route path="/registros" element={<RegisterList />} />
         <Route path="/registrar-aprendiz" element={<RegisterStudent />} />
-        <Route path="/registro-detalles" element={<RegisterDetails />} />
+        <Route path="/registro-detalles/:id" element={<RegisterDetails />} />
         <Route path="/asignar-ficha" element={<AssignClass />} />
         <Route path="/fichas" element={<Courses />} />
+        <Route path="/aprendices" element={<Students />} />
       </Route>
 
       <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])} redirectTo="/home" />}>

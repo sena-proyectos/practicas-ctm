@@ -73,7 +73,7 @@ export const RegisterList = () => {
   }
 
   return (
-    <main className='flex flex-row min-h-screen'>
+    <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
@@ -107,7 +107,7 @@ export const RegisterList = () => {
 const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
   const navigate = useNavigate()
   const handleAvales = (id) => {
-    return navigate(`/registro-detalles?id=${id}`)
+    return navigate(`/registro-detalles/${id}`)
   }
   return (
     <table className='w-full h-96'>
@@ -121,17 +121,17 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
           <th className='text-[16px] w-fit font-semibold whitespace-nowrap'>Detalles</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody className='grid grid-rows-6'>
         {inscriptions.length === 0
           ? (
-          <LoadingTableList number={3} />
+          <LoadingTableList number={6} />
             )
           : (
               inscriptions.slice(startIndex, endIndex).map((x) => {
                 return (
-              <tr className='grid items-center text-sm border-b border-gray-200 grid-cols-6-columns-table justify-items-center h-28' key={x.id_inscripcion}>
+              <tr className='grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center' key={x.id_inscripcion}>
                 <td className='max-w-[20ch] font-medium text-center break-words'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</td>
-                <td className='font-light text-center '>{x.modalidad_inscripcion === '1' ? 'Pasantías' : x.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : null}</td>
+                <td className='font-light text-center '>{x.modalidad_inscripcion === '1' ? 'Pasantías' : x.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : x.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : x.modalidad_inscripcion === '4' ? 'Monitoría' : x.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</td>
                 <td className='font-light text-center '>{x.fecha_creacion.split('T')[0]}</td>
                 <td className='text-sm font-light text-center '>
                   <div className='w-10 mx-auto rounded-full select-none bg-gray'>{x.estado_general_inscripcion === 'Rechazado' ? 'N/A' : `${x.avales_aprobados} | 3`}</div>
@@ -156,7 +156,7 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
 
 const LoadingTableList = ({ number = 6 }) =>
   [...Array(number)].map((_, index) => (
-    <tr className='grid items-center text-sm border-b border-gray-200 grid-cols-6-columns-table justify-items-center h-28' key={index}>
+    <tr className='grid items-center text-sm border-b border-gray-200 grid-cols-6-columns-table justify-items-center h-[60px] select-none' key={index}>
       <td className='max-w-[20ch] font-medium text-center break-words'>
         <Skeleton width={150} />
       </td>

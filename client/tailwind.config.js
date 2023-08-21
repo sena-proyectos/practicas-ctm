@@ -15,7 +15,8 @@ export default {
         aqua: '#B8F1D8',
         rosa: '#DF1E63',
         coffee: '#964B00',
-        lima: '#65AC45'
+        lima: '#65AC45',
+        whitesmoke: '#F5F5F5'
       },
       boxShadowColor: {
         shadowPrimary: '#62bb34',
@@ -40,13 +41,15 @@ export default {
         '2-50-50': '50% 50%',
         '2-90-10': '80% 20%',
         '2-60-40': '60% 40%',
-        '6-columns-table': '2fr 1fr 1fr 1fr 1fr 1fr'
+        '6-columns-table': '2fr 1fr 1fr 1fr 1fr 1fr',
+        '4-columns-table': '2fr 1fr 1fr 1fr'
         // '2-20r-80': '18rem auto'
       },
       gridTemplateRows: {
         '2-30-70': '10rem 70%',
         '3-10-78-12': '7rem 78% 12%',
         '3-10-75-15': '4.9rem 79% 6.4vh',
+        '2-85-15': '92% 6.4vh',
         '2-25-75': '10rem auto',
         '2-50-50': '50% 50%',
         '2-90-10': '90% 10%',
