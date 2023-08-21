@@ -71,7 +71,7 @@ export const RegisterStudent = () => {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Por favor, completa todos los campos',
+        text: 'Por favor, completa todos los campos'
       })
     }
     const { error } = inscriptionValidation.validate(formValues)
@@ -79,7 +79,7 @@ export const RegisterStudent = () => {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: error,
+        text: error
       })
     }
 
@@ -95,13 +95,13 @@ export const RegisterStudent = () => {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'El número de documento no es válido',
+        text: 'El número de documento no es válido'
       })
     } else if (!isEmailValid) {
       return Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'El correo electrónico no es válido',
+        text: 'El correo electrónico no es válido'
       })
     }
 
@@ -112,7 +112,7 @@ export const RegisterStudent = () => {
     Swal.fire({
       icon: 'success',
       title: '¡Éxito!',
-      text: msg,
+      text: msg
     })
   }
 
@@ -141,7 +141,7 @@ export const RegisterStudent = () => {
         icon: 'error',
         title: '¡Error!',
         text: 'Has ingresado un formato inválido. ¡Por favor escoga un formato válido de excel!',
-        footer: '.xlsx, .xls',
+        footer: '.xlsx, .xls'
       })
       excelFileRef.current.value = ''
       return
@@ -170,9 +170,12 @@ export const RegisterStudent = () => {
                         <label htmlFor="nombre" className="text-sm font-normal">
                           {item.label} {item.required && <span className="font-medium text-red-600">*</span>}
                         </label>
-                        {item.type === 'number' ? (
+                        {item.type === 'number'
+                          ? (
                           <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" autoComplete="on" placeholder={item.placeholder} />
-                        ) : item.type === 'select' ? (
+                            )
+                          : item.type === 'select'
+                            ? (
                           <div className="relative">
                             <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
                               <LuChevronDown />
@@ -181,50 +184,51 @@ export const RegisterStudent = () => {
                               <option value={''}>Sin seleccionar</option>
                               {item.name === 'tipo_documento_inscripcion'
                                 ? idTypes.map((item, i) => {
-                                    return (
+                                  return (
                                       <option value={item.value} key={i}>
                                         {item.name}
                                       </option>
-                                    )
-                                  })
+                                  )
+                                })
                                 : item.name === 'modalidad_inscripcion'
-                                ? modalities.map((item, i) => {
+                                  ? modalities.map((item, i) => {
                                     return (
                                       <option value={item.value} key={i}>
                                         {item.name}
                                       </option>
                                     )
                                   })
-                                : item.name === 'etapa_actual_inscripcion'
-                                ? etapasFormacion.map((item, i) => {
-                                    return (
+                                  : item.name === 'etapa_actual_inscripcion'
+                                    ? etapasFormacion.map((item, i) => {
+                                      return (
                                       <option value={item.value} key={i}>
                                         {item.name}
                                       </option>
-                                    )
-                                  })
-                                : item.name === 'nivel_formacion_inscripcion'
-                                ? nivelFormacion.map((item, i) => {
-                                    return (
+                                      )
+                                    })
+                                    : item.name === 'nivel_formacion_inscripcion'
+                                      ? nivelFormacion.map((item, i) => {
+                                        return (
                                       <option value={item.value} key={i}>
                                         {item.name}
                                       </option>
-                                    )
-                                  })
-                                : item.name === 'apoyo_sostenimiento_inscripcion'
-                                ? apoyoSostenimiento.map((item, i) => {
-                                    return (
+                                        )
+                                      })
+                                      : item.name === 'apoyo_sostenimiento_inscripcion'
+                                        ? apoyoSostenimiento.map((item, i) => {
+                                          return (
                                       <option value={item.value} key={i}>
                                         {item.name}
                                       </option>
-                                    )
-                                  })
-                                : null}
+                                          )
+                                        })
+                                        : null}
                             </select>
                           </div>
-                        ) : (
+                              )
+                            : (
                           <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 pr-3 text-sm text-black focus:bg-white focus:outline-none" autoComplete="on" placeholder={item.placeholder} />
-                        )}
+                              )}
                       </div>
                     )
                   })}
@@ -238,11 +242,14 @@ export const RegisterStudent = () => {
                         <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
                           {item.label} {item.required && <span className="font-medium text-red-600">*</span>}
                         </label>
-                        {item.type === 'number' ? (
+                        {item.type === 'number'
+                          ? (
                           <div className="relative">
                             <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" autoComplete="on" placeholder={item.placeholder} />
                           </div>
-                        ) : item.type === 'file' ? (
+                            )
+                          : item.type === 'file'
+                            ? (
                           <div className="relative">
                             <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
                               <AiOutlineCloudUpload />
@@ -251,7 +258,9 @@ export const RegisterStudent = () => {
                               <input type={item.type} accept={item.accept} name={item.name} className="w-5/6 text-xs file:hidden whitespace-break-spaces" />
                             </div>
                           </div>
-                        ) : item.type === 'select' ? (
+                              )
+                            : item.type === 'select'
+                              ? (
                           <div className="relative">
                             <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
                               <LuChevronDown />
@@ -260,24 +269,27 @@ export const RegisterStudent = () => {
                               <option value={''}>Sin seleccionar</option>
                               {item.name === 'arl'
                                 ? pagoArl.map((item, i) => {
-                                    return (
+                                  return (
                                       <option value={item.value} key={i}>
                                         {item.name}
                                       </option>
-                                    )
-                                  })
+                                  )
+                                })
                                 : null}
                             </select>
                           </div>
-                        ) : item.type === 'textarea' ? (
+                                )
+                              : item.type === 'textarea'
+                                ? (
                           <div className="relative">
                             <textarea id="editor" rows="3" className="block absolute w-full px-0 max-h-[5.5rem] min-h-[2rem] md:max-h-[10rem] overflow-y-auto border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none" placeholder={item.placeholder} required></textarea>
                           </div>
-                        ) : (
+                                  )
+                                : (
                           <div className="relative">
                             <input type={item.type} name={item.name} className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none" autoComplete="on" placeholder={item.placeholder} />
                           </div>
-                        )}
+                                  )}
                       </div>
                     )
                   })}

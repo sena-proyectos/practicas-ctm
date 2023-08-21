@@ -61,6 +61,7 @@ export const RegisterList = () => {
             <div className="absolute flex flex-row-reverse gap-3 right-12 bottom-16">
               <Button value={'Agregar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[4px]" textSize="text-sm" font="font-medium" textColor="text-white" clickeame={handleRegister} icon={<IoAddCircleOutline className="text-xl" />} />
               <Button value={'Subir excel'} rounded="rounded-full" bg="bg-cyan-600" px="px-3" py="py-[6px]" textSize="text-sm" textColor="text-white" font="font-medium" clickeame={handleRegister} icon={<AiOutlineFileAdd className="text-lg" />} />
+              <input type="file" name="excelFile" id="excelFile" accept='xlsx, xls' />
             </div>
           )}
         </section>
