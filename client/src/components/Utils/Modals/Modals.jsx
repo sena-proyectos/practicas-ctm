@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import Select from 'react-tailwindcss-select'
 
 //icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
@@ -10,6 +9,7 @@ import { IoMdClose } from 'react-icons/io'
 //componentes
 import { modalities, instructores } from '../../../import/staticData'
 import { Button } from '../Button/Button'
+import { Select } from '../Select/Select'
 
 const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -45,17 +45,10 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
     closeModal()
   }
 
-  const options = instructores.map((instructor) => ({
+  const option = instructores.map((instructor, i) => ({
     value: instructor.nombre,
-    label: instructor.nombre,
+    key: i,
   }))
-
-  const [inst, setInst] = useState(null)
-
-  const handleChange = (value) => {
-    // console.log('value:', value)
-    setInst(value)
-  }
 
   return (
     <section className="fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen bg-black/50 backdrop-blur-sm backdrop-filter ">
@@ -290,23 +283,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                   <label htmlFor="asig" className="text-[16px] font-normal">
                     Instructor Seguimiento
                   </label>
-                  <Select
-                    value={inst}
-                    searchInputPlaceholder="Ingrese nombre instructor"
-                    options={options}
-                    placeholder="Nombre instructor"
-                    isSearchable
-                    onChange={handleChange}
-                    primaryColor={'pink'}
-                    classNames={{
-                      // menu: 'rounded-md border-gray-600 border-[1px] mt-1',
-                      searchBox: 'rounded-md w-full pl-8 h-8 my-1 focus:outline-none border-[1px] border-gray-600 text-sm',
-                      searchIcon: 'absolute mt-2.5 ml-2 h-5',
-                      list: 'max-h-[9rem] min-h-[2rem] text-sm overflow-y-auto',
-                      closeIcon: 'red-900',
-                      select: 'rounded-md',
-                    }}
-                  />
+                  <Select placeholder="Nombre instructor" isSearch hoverColor="hover:bg-teal-200" hoverTextColor="hover:text-teal-800" placeholderSearch="Ingrese nombre instructor" selectedColor="bg-teal-600 text-white" rounded="rounded-xl" borderColor="border-slate-500" options={option} />
                 </div>
                 <Button value={'Asignar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[4px]" textSize="text-ms" font="font-medium" textColor="text-white" icon={<BsCheck2Circle className="text-xl" />} />
               </form>

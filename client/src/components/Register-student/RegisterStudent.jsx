@@ -151,7 +151,7 @@ export const RegisterStudent = () => {
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" />
-      <section className="flex flex-row min-h-screen">
+      <section className="flex flex-row min-h-screen bg-whitesmoke">
         <Siderbar />
         <section className="relative grid flex-auto w-min grid-rows-3-10-75-15">
           <header className="flex-col mt-5 place-items-center">
