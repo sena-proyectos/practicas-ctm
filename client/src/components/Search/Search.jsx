@@ -31,11 +31,11 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, iconClick
     <section className={` ${searchFilter === true ? 'w-[22rem]' : 'w-1/5'}  flex h-9 items-center justify-center`}>
       {searchFilter && (
         <>
-          <form action="" method="get" className="flex min-w-fit w-full items-center rounded-3xl bg-[#E8E8E8] shadow-md saturate-[100%] backdrop-blur-sm " onChange={handleSearch} onSubmit={evnt}>
-            <Button bg={'bg-transparent'} px="px-3" textColor="text-black" className="absolute right-[6px]" value={<IoSearchOutline />} />
-            <input type="text" placeholder="Busca a un aprendiz" className="flex-1 py-1 bg-transparent outline-none w-fit rounded-3xl" ref={search} name="nombreCompleto" autoComplete="off" />
-            <article className="absolute right-[8px] w-fit">
-              <Button bg={'bg-transparent'} px={'px-3'} textColor="text-black" clickeame={iconClick} value={<LuSettings2 />} />
+          <form action='' method='get' className='flex min-w-fit w-full items-center rounded-3xl bg-[#E8E8E8] shadow-md saturate-[100%] backdrop-blur-sm ' onChange={handleSearch} onSubmit={evnt}>
+            <Button bg={'bg-transparent'} px='px-3' textColor='text-black' className='absolute right-[6px]' value={<IoSearchOutline />} />
+            <input type='text' placeholder='Busca a un aprendiz' className='flex-1 py-1 bg-transparent outline-none w-fit rounded-3xl' ref={search} name='nombreCompleto' autoComplete='off' />
+            <article className='absolute right-[8px] w-fit'>
+              <Button bg={'bg-transparent'} px={'px-3'} textColor='text-black' clickeame={iconClick} value={<LuSettings2 />} />
             </article>
           </form>
         </>
@@ -44,15 +44,15 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, iconClick
         <>
           <Button
             bg={'bg-[#E8E8E8]'}
-            shadow="shadow-md"
-            rounded="rounded-3xl"
-            px="px-5"
+            shadow='shadow-md'
+            rounded='rounded-3xl'
+            px='px-5'
             textColor={'text-black'}
             clickeame={iconClick}
             value={
-              <span className="flex items-center gap-5">
+              <span className='flex items-center gap-5'>
                 <LuSettings2 />
-                <span className="text-sm font-normal">Filtrar</span>
+                <span className='text-sm font-normal'>Filtrar</span>
               </span>
             }
           />

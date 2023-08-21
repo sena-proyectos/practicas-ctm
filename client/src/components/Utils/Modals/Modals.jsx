@@ -11,7 +11,7 @@ import { modalities, instructores } from '../../../import/staticData'
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false }) => {
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false, loadingFile }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const passwordIcons = {
@@ -150,16 +150,11 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                             {filtro.label}
                           </label>
                           <div>
-                            {filtro.type === 'date'
-                              ? (
+                            {filtro.type === 'date' ? (
                               <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none ${stylesFilterVisits === false ? 'w-full' : 'w-full'}`} />
-                                )
-                              : filtro.type === 'text'
-                                ? (
+                            ) : filtro.type === 'text' ? (
                               <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none ${stylesFilterVisits === false ? 'w-full' : 'w-full'}`} />
-                                  )
-                                : filtro.type === 'select'
-                                  ? (
+                            ) : filtro.type === 'select' ? (
                               <select name={filtro.name} className={`border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[2.5px] pl-3 text-base text-black focus:bg-white focus:outline-none ${stylesFilterVisits === false ? 'w-full' : 'w-full'}`} onFocus={toggleDropdown} onChange={handleOptionSelect}>
                                 <option value={''}>Sin seleccionar</option>
                                 {modalities.map((filtro, i) => {
@@ -170,8 +165,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                                   )
                                 })}
                               </select>
-                                    )
-                                  : null}
+                            ) : null}
                           </div>
                         </div>
                       </section>
@@ -296,7 +290,15 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
             </section>
           )}
           {bodyConfirm && (
-            <p className='text-red-500'>No podrás deshacer está acción</p>
+            <section className='my-3'>
+              <p className='text-slate-400/90 text-center'>Archivo a cargar: {loadingFile}</p>
+              <p className='text-red-500 text-center underline font-bold text-lg'>¡No podrás deshacer está acción!</p>
+              <section>
+                <form onSubmit={(e) => e.preventDefault()}>
+                  <Button value={'Aceptar'} bg='bg-green-500' />
+                </form>
+              </section>
+            </section>
           )}
         </section>
       </section>

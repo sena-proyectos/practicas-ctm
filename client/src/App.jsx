@@ -21,26 +21,27 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<User />} />
+      <Route path='/' element={<User />} />
       <Route element={<ProtectedRoute idRol={idRol} />}>
-        <Route path="/home" element={<Home />} />
-        <Route path="/config" element={<Settings />} />
-        <Route path="/seguimiento-aprendices" element={<StudentMonitoring />} />
-        <Route path="/registros" element={<RegisterList />} />
-        <Route path="/registrar-aprendiz" element={<RegisterStudent />} />
-        <Route path="/registro-detalles/:id" element={<RegisterDetails />} />
-        <Route path="/asignar-ficha" element={<AssignClass />} />
-        <Route path="/fichas" element={<Courses />} />
-        <Route path="/aprendices" element={<Students />} />
+        <Route path='/home' element={<Home />} />
+        <Route path='/config' element={<Settings />} />
+        <Route path='/seguimiento-aprendices' element={<StudentMonitoring />} />
+        <Route path='/registros' element={<RegisterList />} />
+        <Route path='/registrar-aprendiz' element={<RegisterStudent />} />
+        <Route path='/registro-detalles/:id' element={<RegisterDetails />} />
+        <Route path='/asignar-ficha' element={<AssignClass />} />
+        <Route path='/fichas' element={<Courses />} />
+        {/* No está bien hecho, deberia ser anidado */}
+        <Route path='/fichas/aprendices' element={<Students />} />
       </Route>
 
-      <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])} redirectTo="/home" />}>
-        <Route path="/instructores" element={<Teachers />} />
+      <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])} redirectTo='/home' />}>
+        <Route path='/instructores' element={<Teachers />} />
       </Route>
 
-      <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[2])} redirectTo="/home" />}>
-        <Route path="/visitas" element={<Visits />} />
-        <Route path="/bitacoras" element={<Bitacoras />} />
+      <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[2])} redirectTo='/home' />}>
+        <Route path='/visitas' element={<Visits />} />
+        <Route path='/bitacoras' element={<Bitacoras />} />
       </Route>
     </Routes>
   )

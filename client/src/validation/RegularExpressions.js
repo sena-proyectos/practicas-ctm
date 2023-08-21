@@ -22,7 +22,7 @@ export const ValidateInputsTypeNumber = (numero_documento_aprendiz_inscripcion, 
       title: '¡Error!',
       text: 'Por favor, ingrese solo números',
       icon: 'error',
-      confirmButtonText: 'Aceptar',
+      confirmButtonText: 'Aceptar'
     })
   }
 
@@ -31,7 +31,7 @@ export const ValidateInputsTypeNumber = (numero_documento_aprendiz_inscripcion, 
       title: '¡Error!',
       text: 'Por favor, ingrese un número de teléfono válido',
       icon: 'error',
-      confirmButtonText: 'Aceptar',
+      confirmButtonText: 'Aceptar'
     })
   }
 }

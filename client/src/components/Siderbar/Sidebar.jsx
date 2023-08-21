@@ -73,21 +73,21 @@ const Siderbar = () => {
 
   return (
     <aside className={`bg-secondary/10 ${open ? 'w-[13rem]' : 'w-[4.5rem]'} sticky left-0 top-0 h-screen rounded-r-3xl shadow-slate-400 shadow-md`}>
-      <nav className="grid h-screen grid-rows-3-10-78-12 md:grid-rows-3-10-78-12">
+      <nav className='grid h-screen grid-rows-3-10-78-12 md:grid-rows-3-10-78-12'>
         <section className={`w-[80%] ${open === true ? 'flex flex-row mx-auto' : 'mx-auto flex flex-col items-center'} my-auto`}>
-          <div className="my-auto w-[2.5rem] rounded-full">
-            <img className="object-cover" src="/user.png" alt="img_user" />
+          <div className='my-auto w-[2.5rem] rounded-full'>
+            <img className='object-cover' src='/user.png' alt='img_user' />
           </div>
           <div className={`w-fit mx-auto ${!open && 'hidden'}`}>
-            <h5 className="text-xs font-light text-center">{dataFullName || <Skeleton width={100} />}</h5>
-            <h6 className="text-sm font-semibold text-center">{rolesNames[idRol] || <Skeleton />}</h6>
+            <h5 className='text-xs font-light text-center'>{dataFullName || <Skeleton width={100} />}</h5>
+            <h6 className='text-sm font-semibold text-center'>{rolesNames[idRol] || <Skeleton />}</h6>
           </div>
         </section>
-        <ul className="flex flex-col w-[80%] mx-auto items-start justify-center cursor-pointer">
-          <section className="mb-auto flex w-full flex-col gap-[3px]">
-            <hr className="w-full my-2 text-white border-[1.4px] rounded-lg" />
+        <ul className='flex flex-col w-[80%] mx-auto items-start justify-center cursor-pointer'>
+          <section className='mb-auto flex w-full flex-col gap-[3px]'>
+            <hr className='w-full my-2 text-white border-[1.4px] rounded-lg' />
             <li>
-              <Link to="/home" className={styles('/home')}>
+              <Link to='/home' className={styles('/home')}>
                 <span className={spanStyle('/home')}>
                   <IoHomeOutline />
                 </span>
@@ -95,7 +95,7 @@ const Siderbar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/seguimiento-aprendices" className={styles('/seguimiento-aprendices')}>
+              <Link to='/seguimiento-aprendices' className={styles('/seguimiento-aprendices')}>
                 <span className={spanStyle('/seguimiento-aprendices')}>
                   <IoPersonOutline />
                 </span>
@@ -103,7 +103,7 @@ const Siderbar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/registros" className={styles('/registros')}>
+              <Link to='/registros' className={styles('/registros')}>
                 <span className={spanStyle('/registros')}>
                   <IoPersonAddOutline />
                 </span>
@@ -112,7 +112,7 @@ const Siderbar = () => {
             </li>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <li>
-                <Link to="/instructores" className={styles('/instructores')}>
+                <Link to='/instructores' className={styles('/instructores')}>
                   <span className={spanStyle('/instructores')}>
                     <IoPeopleOutline />
                   </span>
@@ -121,7 +121,7 @@ const Siderbar = () => {
               </li>
             )}
             <li>
-              <Link to="/fichas" className={styles('/fichas')}>
+              <Link to='/fichas' className={styles('/fichas')}>
                 <span className={spanStyle('/fichas')}>
                   <IoBookOutline />
                 </span>
@@ -148,9 +148,9 @@ const Siderbar = () => {
                 </Link>
               </li>
             )} */}
-            <hr className="w-full my-2 text-white border-[1.4px] rounded-lg" />
+            <hr className='w-full my-2 text-white border-[1.4px] rounded-lg' />
             <li>
-              <Link to="/config" className={styles('/config')}>
+              <Link to='/config' className={styles('/config')}>
                 <span className={spanStyle('/config')}>
                   <IoSettingsOutline />
                 </span>
@@ -158,8 +158,8 @@ const Siderbar = () => {
               </Link>
             </li>
           </section>
-          <section className="w-full mb-0">
-            <li className="relative flex h-10 w-[115%] items-center rounded-s-2xl py-2 pl-10 text-red-700 transition hover:bg-white" onClick={logout}>
+          <section className='w-full mb-0'>
+            <li className='relative flex h-10 w-[115%] items-center rounded-s-2xl py-2 pl-10 text-red-700 transition hover:bg-white' onClick={logout}>
               <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'text-md pl-3' : 'pl-5 text-lg'} text-red-700`}>
                 <IoLogOutOutline />
               </span>

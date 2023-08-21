@@ -81,7 +81,7 @@ export const getInscriptionById = async (id) => {
   return response
 }
 
-//OBTENER DETALLES INSCRIPCION BY ID
+// OBTENER DETALLES INSCRIPCION BY ID
 export const getInscriptionDetails = async (id, limit = 3, offset = 0) => {
   const URL = `${baseUrl}${api}/inscriptionDetails/${id}?limit=${limit}&offset=${offset}`
 
@@ -89,7 +89,7 @@ export const getInscriptionDetails = async (id, limit = 3, offset = 0) => {
   return response
 }
 
-//OBTENER DETALLES INSCRIPCION POR USUARIO
+// OBTENER DETALLES INSCRIPCION POR USUARIO
 export const inscriptionDetailUser = async (id, limit = 3, offset = 0) => {
   const URL = `${baseUrl}${api}/inscriptionDetailsUser/${id}?limit=${limit}&offset=${offset}`
 

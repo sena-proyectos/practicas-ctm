@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+import * as XLSX from 'xlsx'
 
 // icons
 import { BsPatchCheck, BsHourglass, BsXOctagon } from 'react-icons/bs'
@@ -16,8 +17,10 @@ import { Pagination } from '../Utils/Pagination/Pagination'
 
 import { getInscriptions } from '../../api/httpRequest'
 import { keysRoles } from '../../import/staticData'
+import { Modals } from '../Utils/Modals/Modals'
 
 export const RegisterList = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [inscriptions, setInscriptions] = useState([])
   const [pageNumber, setPageNumber] = useState(0)
   const [fileName, setFileName] = useState('Subir Archivo')
@@ -51,29 +54,31 @@ export const RegisterList = () => {
   const handleExcelFile = async () => {
     const { files } = excelRef.current
     if (files.length > 0) {
+      setIsModalOpen(!isModalOpen)
       const file = files[0]
       setFileName(file.name)
       const fileData = new FormData()
       fileData.append('excelFile', file)
       console.log(fileData.get('excelFile'))
-      // const reader = new FileReader()
+      const reader = new FileReader()
 
-      // reader.onload = async (e) => {
-      //   const data = e.target.result
-      //   const workbook = XLSX.read(data, { type: 'binary' })
-      //   const sheetName = workbook.SheetNames[0]
-      //   const worksheet = workbook.Sheets[sheetName]
-      //   const excelData = XLSX.utils.sheet_to_json(worksheet)
+      reader.onload = async (e) => {
+        const data = e.target.result
+        const workbook = XLSX.read(data, { type: 'binary' })
+        const sheetName = workbook.SheetNames[0]
+        const worksheet = workbook.Sheets[sheetName]
+        const excelData = XLSX.utils.sheet_to_json(worksheet)
 
-      // console.log(excelData)
-      // }
+        console.log(excelData)
+      }
 
-      // reader.readAsBinaryString(file)
+      reader.readAsBinaryString(file)
     }
   }
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
+      {isModalOpen && <Modals bodyConfirm title={'¿Está seguro?'} loadingFile={fileName} />}
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
@@ -88,15 +93,14 @@ export const RegisterList = () => {
             <div className='absolute flex flex-row-reverse gap-3 right-12 bottom-16'>
               <Button value={'Agregar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' clickeame={handleRegister} icon={<IoAddCircleOutline className='text-xl' />} />
               <div className='shadow-md rounded-full bg-cyan-600'>
-                    <label htmlFor='upload' className='flex items-center gap-2 text-white cursor-pointer h-full w-full rounded-full px-3 py-2'>
-                      <AiOutlineFileAdd />
-                      <span className='font-medium text-white text-sm select-none'>{fileName}</span>
-                    </label>
-                    <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
-                  </div>
+                <label htmlFor='upload' className='flex items-center gap-2 text-white cursor-pointer h-full w-full rounded-full px-3 py-2'>
+                  <AiOutlineFileAdd />
+                  <span className='font-medium text-white text-sm select-none'>{fileName}</span>
+                </label>
+                <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
+              </div>
             </div>
           )}
-          {/* <Modals title={'Estás seguro?'} bodyConfirm /> */}
         </section>
         <Footer />
       </section>
@@ -122,13 +126,11 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
         </tr>
       </thead>
       <tbody className='grid grid-rows-6'>
-        {inscriptions.length === 0
-          ? (
+        {inscriptions.length === 0 ? (
           <LoadingTableList number={6} />
-            )
-          : (
-              inscriptions.slice(startIndex, endIndex).map((x) => {
-                return (
+        ) : (
+          inscriptions.slice(startIndex, endIndex).map((x) => {
+            return (
               <tr className='grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center' key={x.id_inscripcion}>
                 <td className='max-w-[20ch] font-medium text-center break-words'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</td>
                 <td className='font-light text-center '>{x.modalidad_inscripcion === '1' ? 'Pasantías' : x.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : x.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : x.modalidad_inscripcion === '4' ? 'Monitoría' : x.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</td>
@@ -146,9 +148,9 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
                   <Button value={'Detalles'} rounded='rounded-full' bg='bg-sky-600' px='px-2' py='py-[1px]' textSize='text-sm' font='font-medium' clickeame={() => handleAvales(x.id_inscripcion)} />
                 </td>
               </tr>
-                )
-              })
-            )}
+            )
+          })
+        )}
       </tbody>
     </table>
   )
