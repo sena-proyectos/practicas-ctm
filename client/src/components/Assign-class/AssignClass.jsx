@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 
-//icons
+// icons
 import { HiOutlineUserAdd } from 'react-icons/hi'
 import { BsJournalBookmark } from 'react-icons/bs'
 
-//Componentes
+// Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
@@ -23,34 +23,34 @@ export const AssignClass = () => {
       {
         ficha: 2473196,
         name: 'Fabricación de muebles contemporaneos',
-        etapa: 'Lectiva',
+        etapa: 'Lectiva'
       },
       {
         ficha: 2689476,
         name: 'Analisis y desarrollo de software',
-        etapa: 'Productiva',
+        etapa: 'Productiva'
       },
       {
         ficha: 2869467,
         name: 'Pan y Tomate',
-        etapa: 'Lectiva',
+        etapa: 'Lectiva'
       },
       {
         ficha: 1234567,
         name: 'Fabricación de muebles contemporaneos',
-        etapa: 'Productiva',
+        etapa: 'Productiva'
       },
       {
         ficha: 7654321,
         name: 'Analisis y desarrollo de software',
-        etapa: 'Lectiva',
+        etapa: 'Lectiva'
       },
       {
         ficha: 1234765,
         name: 'Pan y Tomate',
-        etapa: 'Productiva',
-      },
-    ],
+        etapa: 'Productiva'
+      }
+    ]
   }
 
   const coursesPerPage = 6
@@ -79,7 +79,8 @@ export const AssignClass = () => {
           </header>
           <section>
             <section className="grid grid-cols-1 px-10 pt-5 pb-2 gap-x-4 gap-y-6 sm:grid-cols-2 md:grid-cols-3">
-              {loading ? (
+              {loading
+                ? (
                 <>
                   <SkeletonLoading />
                   <SkeletonLoading />
@@ -88,9 +89,10 @@ export const AssignClass = () => {
                   <SkeletonLoading />
                   <SkeletonLoading />
                 </>
-              ) : (
-                courses.data.slice(startIndex, endIndex).map((course, i) => {
-                  return (
+                  )
+                : (
+                    courses.data.slice(startIndex, endIndex).map((course, i) => {
+                      return (
                     <div className=" group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 shadow-lg border-slate-100 border-1" key={i}>
                       <header className="flex flex-row w-fit ">
                         <div className="bg-teal-200 border-2 border-teal-800 rounded-full w-14 h-14">
@@ -108,9 +110,9 @@ export const AssignClass = () => {
                         <Button value={'Asignar'} rounded="rounded-full" bg="bg-slate-200" px="px-3" py="py-[4px]" textSize="text-sm" font="font-medium" clickeame={handleAsign} textColor="text-slate-600" icon={<HiOutlineUserAdd className="text-xl" />} />
                       </div>
                     </div>
-                  )
-                })
-              )}
+                      )
+                    })
+                  )}
             </section>
             <div className="flex justify-center h-[13vh] relative bottom-0">
               <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />

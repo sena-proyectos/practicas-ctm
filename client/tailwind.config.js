@@ -15,7 +15,7 @@ export default {
         aqua: '#B8F1D8',
         rosa: '#DF1E63',
         coffee: '#964B00',
-        lima: '#65AC45',
+        lima: '#65AC45'
       },
       boxShadowColor: {
         shadowPrimary: '#62bb34',
@@ -26,11 +26,11 @@ export default {
         shadowSalmon: '#d69385',
         shadowSeventh: '#ffd458',
         shadowGray: '#687f7b',
-        shadowAqua: '#B8F1D8',
+        shadowAqua: '#B8F1D8'
       },
       boxShadow: {
         '2xl': '4px 4px 18px 0px rgba(0, 0, 0, 0.3)',
-        'inner-custom': 'inset 0 0 25px 20px rgba(0, 0, 0, 0.3)',
+        'inner-custom': 'inset 0 0 25px 20px rgba(0, 0, 0, 0.3)'
       },
       gridTemplateColumns: {
         '2-55-45': '55% 45%',
@@ -40,7 +40,7 @@ export default {
         '2-50-50': '50% 50%',
         '2-90-10': '80% 20%',
         '2-60-40': '60% 40%',
-        '6-columns-table': '2fr 1fr 1fr 1fr 1fr 1fr',
+        '6-columns-table': '2fr 1fr 1fr 1fr 1fr 1fr'
         // '2-20r-80': '18rem auto'
       },
       gridTemplateRows: {
@@ -50,25 +50,25 @@ export default {
         '2-25-75': '10rem auto',
         '2-50-50': '50% 50%',
         '2-90-10': '90% 10%',
-        '2-80-20': '80% 20%',
+        '2-80-20': '80% 20%'
       },
       borderWidth: {
-        1: '1.5px',
+        1: '1.5px'
       },
       animation: {
-        'slide-background': 'slideBackground 5s infinite',
+        'slide-background': 'slideBackground 5s infinite'
       },
       keyframes: {
         slideBackground: {
           '0%': { backgroundPosition: '0% 0%' },
-          '100%': { backgroundPosition: '100% 0%' },
-        },
+          '100%': { backgroundPosition: '100% 0%' }
+        }
       },
       screens: {
         st1: { max: '980px', min: '777px' },
-        st2: { max: '776px', min: '640px' },
-      },
-    },
+        st2: { max: '776px', min: '640px' }
+      }
+    }
   },
-  plugins: [],
+  plugins: []
 }

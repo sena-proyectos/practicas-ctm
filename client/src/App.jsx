@@ -1,4 +1,3 @@
-import React from 'react'
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import { User } from './components/User/User'

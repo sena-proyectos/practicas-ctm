@@ -65,7 +65,7 @@ export const detailInfoStudents = async () => {
   return response
 }
 
-//OBTENER REGISTROS
+// OBTENER REGISTROS
 export const getInscriptions = async () => {
   const URL = `${baseUrl}${api}/inscriptions`
 
@@ -73,7 +73,7 @@ export const getInscriptions = async () => {
   return response
 }
 
-//OBTENER REGISTRO POR ID
+// OBTENER REGISTRO POR ID
 export const getInscriptionById = async (id) => {
   const URL = `${baseUrl}${api}/inscription/${id}`
 
