@@ -3,6 +3,7 @@ import { practicalStageSchema } from '../schemas/practicalStages.schema.js'
 import { type CustomError, DataNotValid, NumberIsNaN } from '../errors/customErrors.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { PracticalStages } from '../interfaces/PracticalStages.interfaces.js'
+
 // Este import da errores con el case
 
 export const checkPracticalStageData: RequestHandler<{}, Response, PracticalStages> = (req: Request<{}>, res: Response, next: NextFunction): void => {

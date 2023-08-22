@@ -23,7 +23,7 @@ export const mapValues = () => {
     'Teléfono de la Empresa o Jefe inmediato': 'telefono_jefe_empresa_inscripcion',
     'Correo electronico de la empresa o jefe inmediato': 'email_jefe_empresa_inscripcion',
     '¿Quién asume el pago de la ARL?': 'arl',
-    Observaciones: 'observaciones',
+    Observaciones: 'observaciones'
   }
 
   return data

@@ -59,7 +59,7 @@ export const RegisterDetails = () => {
     nombre_jefe_empresa_inscripcion: useRef(null),
     cargo_jefe_empresa_inscripcion: useRef(null),
     arl: useRef(null),
-    observaciones: useRef(null),
+    observaciones: useRef(null)
   }
 
   const getInscriptionAprendiz = async (id) => {
@@ -92,33 +92,33 @@ export const RegisterDetails = () => {
     { value: 'Sergio Soto Henao', key: 'Sergio Soto Henao' },
     { value: 'Marianela Henao Atehortúa', key: 'Marianela Henao Atehortúa' },
     { value: 'Jaime León Vergara Areiza', key: 'Jaime León Vergara Areiza' },
-    { value: 'Mauro Isaías Arango Vanegas', key: 'Mauro Isaías Arango Vanegas' },
+    { value: 'Mauro Isaías Arango Vanegas', key: 'Mauro Isaías Arango Vanegas' }
   ]
 
   return (
-    <main className="flex flex-row min-h-screen bg-whitesmoke">
+    <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
-      <section className="relative grid flex-auto w-min grid-rows-3-10-75-15">
-        <header className="grid place-items-center">
-          <h1 className="text-2xl font-bold text-center place-self-center">{showDataAprendiz === true ? 'Datos del aprendiz' : showDataEmpresa === true ? 'Datos de la empresa' : 'Avales'}</h1>
+      <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
+        <header className='grid place-items-center'>
+          <h1 className='text-2xl font-bold text-center place-self-center'>{showDataAprendiz === true ? 'Datos del aprendiz' : showDataEmpresa === true ? 'Datos de la empresa' : 'Avales'}</h1>
         </header>
         <section>
-          <form action="" className="flex flex-col mt-3 gap-y-6">
+          <form action='' className='flex flex-col mt-3 gap-y-6'>
             <div className={showDataAprendiz ? 'visible' : 'hidden'}>
-              <section className="grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
+              <section className='grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
                 {dataInscription.dataAprendiz.map((item, i) => {
                   const inputRef = inputRefs[item.name]
                   const isDisabled = idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[3])
                   return (
-                    <div className="flex flex-col w-full m-auto text-gray-400" key={i}>
-                      <label htmlFor="nombre" className="text-sm font-normal">
-                        {item.label} {item.required && <span className="font-medium text-red-600">*</span>}
+                    <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
+                      <label htmlFor='nombre' className='text-sm font-normal'>
+                        {item.label} {item.required && <span className='font-medium text-red-600'>*</span>}
                       </label>
                       {item.type === 'number' ? (
-                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete="on" placeholder={item.placeholder} disabled={isDisabled} />
+                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
                       ) : item.type === 'select' ? (
-                        <div className="relative">
-                          <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                        <div className='relative'>
+                          <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
                             <LuChevronDown />
                           </span>
                           <select name={item.name} ref={inputRef} className={`border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none ${isDisabled && 'bg-zinc-200 border-zinc-300 text-zinc-500'}`} disabled={isDisabled}>
@@ -167,9 +167,9 @@ export const RegisterDetails = () => {
                           </select>
                         </div>
                       ) : item.type === 'date' ? (
-                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete="on" placeholder={item.placeholder} disabled={isDisabled} />
+                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
                       ) : (
-                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete="on" placeholder={item.placeholder} disabled={isDisabled} />
+                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
                       )}
                     </div>
                   )
@@ -177,31 +177,31 @@ export const RegisterDetails = () => {
               </section>
             </div>
             <div className={showDataEmpresa ? 'visible' : 'hidden'}>
-              <section className="grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
+              <section className='grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
                 {dataInscription.dataEmpresa.map((item, i) => {
                   const inputRef = inputRefs[item.name]
                   const isDisabled = idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[3])
                   return (
-                    <div className="flex flex-col w-full m-auto text-gray-400" key={i}>
-                      <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
-                        {item.label} {item.required && <span className="font-medium text-red-600">*</span>}
+                    <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
+                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
+                        {item.label} {item.required && <span className='font-medium text-red-600'>*</span>}
                       </label>
                       {item.type === 'number' ? (
-                        <div className="relative">
-                          <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete="on" placeholder={item.placeholder} disabled={isDisabled} />
+                        <div className='relative'>
+                          <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
                         </div>
                       ) : item.type === 'file' ? (
-                        <div className="relative">
-                          <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                        <div className='relative'>
+                          <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
                             <AiOutlineCloudUpload />
                           </span>
-                          <div className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2">
-                            <input type={item.type} accept={item.accept} name={item.name} className="w-5/6 text-xs cursor-pointer file:hidden whitespace-break-spaces" disabled={isDisabled} />
+                          <div className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2'>
+                            <input type={item.type} accept={item.accept} name={item.name} className='w-5/6 text-xs cursor-pointer file:hidden whitespace-break-spaces' disabled={isDisabled} />
                           </div>
                         </div>
                       ) : item.type === 'select' ? (
-                        <div className="relative">
-                          <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                        <div className='relative'>
+                          <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
                             <LuChevronDown />
                           </span>
                           <select name={item.name} ref={inputRef} className={`border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none ${isDisabled && 'bg-zinc-200 border-zinc-300 text-zinc-500'}`} disabled={isDisabled}>
@@ -218,12 +218,12 @@ export const RegisterDetails = () => {
                           </select>
                         </div>
                       ) : item.type === 'textarea' ? (
-                        <div className="relative">
-                          <textarea id="editor" rows="3" ref={inputRef} className={`block w-full px-0 max-h-[5.5rem] overflow-y-auto resize-none rounded-md border-[1.2px]  py-[0.9px] pl-3 text-sm focus:outline-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} placeholder={item.placeholder} required disabled={isDisabled} />
+                        <div className='relative'>
+                          <textarea id='editor' rows='3' ref={inputRef} className={`block w-full px-0 max-h-[5.5rem] overflow-y-auto resize-none rounded-md border-[1.2px]  py-[0.9px] pl-3 text-sm focus:outline-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} placeholder={item.placeholder} required disabled={isDisabled} />
                         </div>
                       ) : (
-                        <div className="relative">
-                          <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete="on" placeholder={item.placeholder} disabled={isDisabled} />
+                        <div className='relative'>
+                          <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
                         </div>
                       )}
                     </div>
@@ -232,45 +232,45 @@ export const RegisterDetails = () => {
               </section>
             </div>
             <div className={`w-11/12 mx-auto flex flex-col gap-5 ${showDataAvales ? 'visible' : 'hidden'}`}>
-              <section className="grid gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3">
+              <section className='grid gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
                 {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
                   <>
-                    <div className="flex flex-col w-full m-auto text-gray-400">
-                      <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                    <div className='flex flex-col w-full m-auto text-gray-400'>
+                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
                         Coordinador Responsable
                       </label>
-                      <Select placeholder="Coordinador" rounded="rounded-md" py="py-1" hoverColor="hover:bg-gray" hoverTextColor="hover:text-black" textSize="text-sm" options={option} />
+                      <Select placeholder='Coordinador' rounded='rounded-md' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} />
                     </div>
 
-                    <div className="flex flex-col w-full m-auto text-gray-400">
-                      <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                    <div className='flex flex-col w-full m-auto text-gray-400'>
+                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
                         Instructor de Seguimiento
                       </label>
-                      <div className="relative">
-                        <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                      <div className='relative'>
+                        <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
                           <LuChevronDown />
                         </span>
-                        <select className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
-                          <option value="">Sin seleccionar</option>
-                          <option value="">Instructor 1</option>
-                          <option value="">Instructor 2</option>
-                          <option value="">Instructor 3</option>
+                        <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
+                          <option value=''>Sin seleccionar</option>
+                          <option value=''>Instructor 1</option>
+                          <option value=''>Instructor 2</option>
+                          <option value=''>Instructor 3</option>
                         </select>
                       </div>
                     </div>
-                    <div className="flex flex-col w-full m-auto text-gray-400">
-                      <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                    <div className='flex flex-col w-full m-auto text-gray-400'>
+                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
                         Instructor Líder
                       </label>
-                      <div className="relative">
-                        <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                      <div className='relative'>
+                        <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
                           <LuChevronDown />
                         </span>
-                        <select className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
-                          <option value="">Sin seleccionar</option>
-                          <option value="">Instructor 1</option>
-                          <option value="">Instructor 2</option>
-                          <option value="">Instructor 3</option>
+                        <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
+                          <option value=''>Sin seleccionar</option>
+                          <option value=''>Instructor 1</option>
+                          <option value=''>Instructor 2</option>
+                          <option value=''>Instructor 3</option>
                         </select>
                       </div>
                     </div>
@@ -293,89 +293,89 @@ export const RegisterDetails = () => {
                   </>
                 )}
                 {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-                  <div className="flex flex-col w-full m-auto text-gray-400">
-                    <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                  <div className='flex flex-col w-full m-auto text-gray-400'>
+                    <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
                       Aval Coordinador
                     </label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                    <div className='relative'>
+                      <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
                         <LuChevronDown />
                       </span>
-                      <select className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
+                      <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
                         <option value={''}>Sin seleccionar</option>
-                        <option value="">Si</option>
-                        <option value="">No</option>
+                        <option value=''>Si</option>
+                        <option value=''>No</option>
                       </select>
                     </div>
                   </div>
                 )}
                 {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
-                  <div className="flex flex-col w-full m-auto text-gray-400">
-                    <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                  <div className='flex flex-col w-full m-auto text-gray-400'>
+                    <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
                       Aval Instructor Seguimiento
                     </label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                    <div className='relative'>
+                      <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
                         <LuChevronDown />
                       </span>
-                      <select className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
+                      <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
                         <option value={''}>Sin seleccionar</option>
-                        <option value="">Si</option>
-                        <option value="">No</option>
+                        <option value=''>Si</option>
+                        <option value=''>No</option>
                       </select>
                     </div>
                   </div>
                 )}
                 {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
-                  <div className="flex flex-col w-full m-auto text-gray-400">
-                    <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+                  <div className='flex flex-col w-full m-auto text-gray-400'>
+                    <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
                       Aval Instructor Líder
                     </label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3">
+                    <div className='relative'>
+                      <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
                         <LuChevronDown />
                       </span>
-                      <select className="border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none">
+                      <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
                         <option value={''}>Sin seleccionar</option>
-                        <option value="">Si</option>
-                        <option value="">No</option>
+                        <option value=''>Si</option>
+                        <option value=''>No</option>
                       </select>
                     </div>
                   </div>
                 )}
               </section>
-              <div className="flex flex-col text-gray-400">
-                <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
+              <div className='flex flex-col text-gray-400'>
+                <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
                   Observaciones
                 </label>
-                <div className="relative">
-                  <textarea className="w-full h-16 border-gray-400 min-h-[6rem] resize-none focus:text-gray-900 rounded-md border-[1.2px] bg-white py-1 px-3 text-sm text-black focus:bg-white focus:outline-none" placeholder="Deja aquí cualquier observación..." />
+                <div className='relative'>
+                  <textarea className='w-full h-16 border-gray-400 min-h-[6rem] resize-none focus:text-gray-900 rounded-md border-[1.2px] bg-white py-1 px-3 text-sm text-black focus:bg-white focus:outline-none' placeholder='Deja aquí cualquier observación...' />
                 </div>
               </div>
             </div>
           </form>
-          <div className="flex flex-row justify-center mx-auto">
-            <div className="absolute bottom-20 ">
-              <Button value={'Guardar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[6px]" textSize="text-base" font="font-medium" textColor="text-white" icon={<BsCheck2Circle className="text-xl" />} />
+          <div className='flex flex-row justify-center mx-auto'>
+            <div className='absolute bottom-20 '>
+              <Button value={'Guardar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' icon={<BsCheck2Circle className='text-xl' />} />
             </div>
             {showDataEmpresa && (
               <>
-                <div className="absolute left-12 bottom-20">
-                  <Button value={'Regresar'} rounded="rounded-full" bg="bg-sky-600" px="px-4" py="py-[6px]" textSize="text-base" font="font-medium" textColor="text-white" clickeame={() => handleChangeSection('aprendiz')} icon={<LuArrowLeft className="text-xl" />} />
+                <div className='absolute left-12 bottom-20'>
+                  <Button value={'Regresar'} rounded='rounded-full' bg='bg-sky-600' px='px-4' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('aprendiz')} icon={<LuArrowLeft className='text-xl' />} />
                 </div>
-                <div className="absolute right-12 bottom-20">
-                  <Button value={'Continuar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[6px]" textSize="text-base" font="font-medium" textColor="text-white" clickeame={() => handleChangeSection('avales')} icon={<LuArrowRight className="text-xl" />} />
+                <div className='absolute right-12 bottom-20'>
+                  <Button value={'Continuar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('avales')} icon={<LuArrowRight className='text-xl' />} />
                 </div>
               </>
             )}
             {showDataAprendiz && (
-              <div className="absolute right-12 bottom-20">
-                <Button value={'Continuar'} rounded="rounded-full" bg="bg-green-600" px="px-3" py="py-[6px]" textSize="text-base" font="font-medium" textColor="text-white" clickeame={() => handleChangeSection('empresa')} icon={<LuArrowRight className="text-xl" />} />
+              <div className='absolute right-12 bottom-20'>
+                <Button value={'Continuar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('empresa')} icon={<LuArrowRight className='text-xl' />} />
               </div>
             )}
             {showDataAvales && (
-              <div className="absolute left-12 bottom-20">
-                <Button value={'Regresar'} rounded="rounded-full" bg="bg-sky-600" px="px-4" py="py-[6px]" textSize="text-base" font="font-medium" textColor="text-white" clickeame={() => handleChangeSection('empresa')} icon={<LuArrowLeft className="text-xl" />} />
+              <div className='absolute left-12 bottom-20'>
+                <Button value={'Regresar'} rounded='rounded-full' bg='bg-sky-600' px='px-4' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('empresa')} icon={<LuArrowLeft className='text-xl' />} />
               </div>
             )}
           </div>
