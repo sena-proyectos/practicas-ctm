@@ -17,7 +17,7 @@ import { handleHTTP } from '../errors/errorsHandler.js'
  * usa para pasar a la siguiente función después de que el middleware actual haya completado su tarea.
  */
 export const checkClassData = (req: Request, res: Response, next: NextFunction): void => {
-  const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_lider, id_instructor_seguimiento, id_nivel_formacion } = req.query
+  const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_lider, id_instructor_seguimiento, id_nivel_formacion } = req.body
 
   const classNumber = Number(numero_ficha)
   try {
