@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-//Icons
+// Icons
 import { BsJournalBookmark } from 'react-icons/bs'
 
 export const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/ConanGH-S', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked, transition = 'transition-none', userID, height = 'h-auto', width = 'w-auto', shadowColor }) => {

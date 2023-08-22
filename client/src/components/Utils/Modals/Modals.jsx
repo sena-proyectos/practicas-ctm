@@ -10,8 +10,9 @@ import { IoMdClose } from 'react-icons/io'
 import { modalities, instructores } from '../../../import/staticData'
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
+import { modalOptionList } from '../../Register-list/RegisterList'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false, loadingFile }) => {
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const passwordIcons = {
@@ -43,6 +44,10 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
 
   const handleModal = () => {
     closeModal()
+  }
+
+  const continueLoadFile = () => {
+    setModalOption(modalOptionList.loadingExcelModal)
   }
 
   const option = instructores.map((instructor, i) => ({
@@ -290,17 +295,47 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
             </section>
           )}
           {bodyConfirm && (
-            <section className='my-3'>
-              <p className='text-slate-400/90 text-center'>Archivo a cargar: {loadingFile}</p>
-              <p className='text-red-500 text-center underline font-bold text-lg'>¡No podrás deshacer está acción!</p>
-              <section>
-                <form onSubmit={(e) => e.preventDefault()}>
-                  <Button value={'Aceptar'} bg='bg-green-500' />
-                </form>
+            <>
+              <section className='my-3'>
+                <p className='text-slate-400/90 text-center'>
+                  Archivo a cargar: <span className='text-blue-500'>{loadingFile}</span>
+                </p>
+                <p className='text-red-500 text-center underline font-bold text-lg'>¡No podrás deshacer está acción!</p>
+                <section className='mt-3'>
+                  <div className='flex gap-3 items-center justify-between'>
+                    <Button value={'Continuar'} bg='bg-green-500' hover='hover:bg-green-800' textSize='text-base' px='px-10' clickeame={continueLoadFile} />
+                    <Button value={'Deshacer'} bg='bg-red-500' hover='hover:bg-red-800' textSize='text-base' px='px-10' clickeame={handleModal} />
+                  </div>
+                </section>
               </section>
-            </section>
+            </>
+          )}
+          {bodyAccept && (
+            <>
+              <section className='mx-8 my-6'>
+                <h2 className='text-green-500 text-center font-bold text-lg'>¡Archivo cargado correctamente!</h2>
+                <section className='mt-3'>
+                  <div className='flex gap-3 items-center justify-between'>
+                    <Button value={'Aceptar'} bg='bg-slate-500' hover='hover:bg-slate-700' textSize='text-base' px='px-10' clickeame={handleModal} />
+                  </div>
+                </section>
+              </section>
+            </>
           )}
         </section>
+      </section>
+    </section>
+  )
+}
+
+export const LoadingModal = ({ children, title = 'Cargando' }) => {
+  return (
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen bg-black/50 backdrop-blur-sm backdrop-filter'>
+      <section className='relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce'>
+        <header className='grid pt-5 place-items-center'>
+          <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
+        </header>
+        <section className='mx-auto w-fit'>{children}</section>
       </section>
     </section>
   )

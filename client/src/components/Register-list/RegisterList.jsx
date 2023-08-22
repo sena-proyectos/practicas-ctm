@@ -2,11 +2,13 @@ import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import * as XLSX from 'xlsx'
+import LoadingUI from 'react-loading'
 
 // icons
 import { BsPatchCheck, BsHourglass, BsXOctagon } from 'react-icons/bs'
-import { AiOutlineFileAdd } from 'react-icons/ai'
+import { AiOutlineCloudUpload, AiOutlineFileAdd } from 'react-icons/ai'
 import { IoAddCircleOutline } from 'react-icons/io5'
+import { PiMicrosoftExcelLogoBold } from 'react-icons/pi'
 
 // Componentes
 import { Footer } from '../Footer/Footer'
@@ -17,13 +19,21 @@ import { Pagination } from '../Utils/Pagination/Pagination'
 
 import { getInscriptions } from '../../api/httpRequest'
 import { keysRoles } from '../../import/staticData'
-import { Modals } from '../Utils/Modals/Modals'
+import { LoadingModal, Modals } from '../Utils/Modals/Modals'
+
+export const modalOptionList = {
+  confirmModal: 'confirm',
+  loadingExcelModal: 'read',
+  uploadingExcelModal: 'upload',
+  doneExcelModal: 'done'
+}
 
 export const RegisterList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [inscriptions, setInscriptions] = useState([])
   const [pageNumber, setPageNumber] = useState(0)
-  const [fileName, setFileName] = useState('Subir Archivo')
+  const [fileName, setFileName] = useState(null)
+  const [modalOption, setModalOption] = useState(modalOptionList.confirmModal)
   const excelRef = useRef()
   const navigate = useNavigate()
 
@@ -31,11 +41,37 @@ export const RegisterList = () => {
   const pageCount = Math.ceil(inscriptions.length / inscriptionsPerPage)
   const startIndex = pageNumber * inscriptionsPerPage
   const endIndex = startIndex + inscriptionsPerPage
-
   const idRol = Number(localStorage.getItem('idRol'))
 
   const handleRegister = () => {
     return navigate('/registrar-aprendiz')
+  }
+
+  const handleModalOption = (data) => setModalOption(data)
+
+  useEffect(() => {
+    if (modalOption === 'upload') {
+      setTimeout(() => {
+        setModalOption(modalOptionList.doneExcelModal)
+      }, 3000)
+    }
+    if (modalOption === 'done') {
+      excelRef.current.value = ''
+    }
+  }, [modalOption])
+
+  useEffect(() => {
+    if (isModalOpen === false && modalOption === 'done') setModalOption(modalOptionList.confirmModal)
+  }, [isModalOpen])
+
+  useEffect(() => {
+    if (modalOption === 'read') readExcelFile()
+  }, [modalOption])
+
+  const handleCloseModal = () => {
+    excelRef.current.value = ''
+    setFileName(null)
+    setIsModalOpen(!isModalOpen)
   }
 
   useEffect(() => {
@@ -51,34 +87,50 @@ export const RegisterList = () => {
     getRegistros()
   }, [])
 
-  const handleExcelFile = async () => {
+  const readExcelFile = () => {
     const { files } = excelRef.current
-    if (files.length > 0) {
-      setIsModalOpen(!isModalOpen)
-      const file = files[0]
-      setFileName(file.name)
-      const fileData = new FormData()
-      fileData.append('excelFile', file)
-      console.log(fileData.get('excelFile'))
-      const reader = new FileReader()
+    const file = files[0]
 
-      reader.onload = async (e) => {
-        const data = e.target.result
-        const workbook = XLSX.read(data, { type: 'binary' })
-        const sheetName = workbook.SheetNames[0]
-        const worksheet = workbook.Sheets[sheetName]
-        const excelData = XLSX.utils.sheet_to_json(worksheet)
+    // Info a enviar
+    const fileData = new FormData()
+    fileData.append('excelFile', file)
 
-        console.log(excelData)
-      }
+    // Lo lee
+    const reader = new FileReader()
 
-      reader.readAsBinaryString(file)
+    reader.onload = (e) => {
+      const data = e.target.result
+      const workbook = XLSX.read(data, { type: 'binary' })
+      const sheetName = workbook.SheetNames[0]
+      const worksheet = workbook.Sheets[sheetName]
+      const excelData = XLSX.utils.sheet_to_json(worksheet)
+
+      setTimeout(() => {
+        if (excelData) setModalOption(modalOptionList.uploadingExcelModal)
+      }, 3000)
+
+      console.log(excelData)
     }
+
+    reader.readAsBinaryString(file)
+  }
+
+  const handleExcelFile = () => {
+    const { files } = excelRef.current
+    if (files.length === 0) {
+      //! ...Mostrar error
+    }
+    const { name } = files[0]
+    setFileName(name)
+    setIsModalOpen(!isModalOpen)
   }
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
-      {isModalOpen && <Modals bodyConfirm title={'¿Está seguro?'} loadingFile={fileName} />}
+      {isModalOpen && modalOption === 'confirm' && <Modals setModalOption={handleModalOption} bodyConfirm title={'¿Está seguro?'} loadingFile={fileName} closeModal={handleCloseModal} />}
+      {isModalOpen && modalOption === 'read' && <LoadingExcelFileModal />}
+      {isModalOpen && modalOption === 'upload' && <UploadingExcelFileModal />}
+      {isModalOpen && modalOption === 'done' && <Modals bodyAccept closeModal={handleCloseModal} />}
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
@@ -95,7 +147,7 @@ export const RegisterList = () => {
               <div className='shadow-md rounded-full bg-cyan-600'>
                 <label htmlFor='upload' className='flex items-center gap-2 text-white cursor-pointer h-full w-full rounded-full px-3 py-2'>
                   <AiOutlineFileAdd />
-                  <span className='font-medium text-white text-sm select-none'>{fileName}</span>
+                  <span className='font-medium text-white text-sm select-none'>{fileName === null ? 'Subir arhivo' : fileName}</span>
                 </label>
                 <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
               </div>
@@ -179,3 +231,27 @@ const LoadingTableList = ({ number = 6 }) =>
       </td>
     </tr>
   ))
+
+const LoadingExcelFileModal = () => (
+  <LoadingModal title='Leyendo Excel'>
+    <section className='py-5 flex flex-col gap-3'>
+      <section className='flex flex-col gap-1'>
+        <PiMicrosoftExcelLogoBold className='text-[70px] mx-auto' color='green' />
+        <LoadingUI type='spin' color='green' height={30} width={30} className='mx-auto' />
+      </section>
+      <p className='text-slate-500'>Espere por favor.</p>
+    </section>
+  </LoadingModal>
+)
+
+const UploadingExcelFileModal = () => (
+  <LoadingModal title='Subiendo Excel'>
+    <section className='py-5 flex flex-col gap-3'>
+      <section className='flex flex-col gap-1'>
+        <AiOutlineCloudUpload className='text-[70px] mx-auto' color='green' />
+        <LoadingUI type='spin' color='green' height={30} width={30} className='mx-auto' />
+      </section>
+      <p className='text-slate-500'>Espere por favor.</p>
+    </section>
+  </LoadingModal>
+)
