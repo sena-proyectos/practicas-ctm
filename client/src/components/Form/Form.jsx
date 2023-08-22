@@ -14,12 +14,12 @@ const Form = ({ inputs }) => {
 
   const passwordIcons = {
     openEye: <AiOutlineEye />,
-    closeEye: <AiOutlineEyeInvisible />,
+    closeEye: <AiOutlineEyeInvisible />
   }
 
   const passwordStatus = {
     shown: 'text',
-    hidden: 'password',
+    hidden: 'password'
   }
 
   const [showPassword, setShowPassword] = useState(passwordStatus.hidden)
@@ -47,7 +47,7 @@ const Form = ({ inputs }) => {
       Cookie.set('token', Token, {
         expires: 1,
         sameSite: 'none',
-        secure: true,
+        secure: true
       })
 
       const tokenData = jwtDecode(Token)
@@ -60,7 +60,7 @@ const Form = ({ inputs }) => {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: message,
+        text: message
       })
     }
   }
@@ -71,31 +71,31 @@ const Form = ({ inputs }) => {
       ...formValuesRef.current,
       [index]: {
         ...formValuesRef.current[index],
-        [name]: value,
-      },
+        [name]: value
+      }
     }
   }
 
   return (
-    <form action="" className="flex flex-col justify-center gap-3 my-4 " onSubmit={handleSubmit}>
+    <form action='' className='flex flex-col justify-center gap-3 my-4 ' onSubmit={handleSubmit}>
       {inputs.map((item, i) => {
         return (
-          <div className="relative mx-auto text-grey" key={i}>
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3 ">{item.icon}</span>
+          <div className='relative mx-auto text-grey' key={i}>
+            <span className='absolute inset-y-0 left-0 flex items-center pl-3 '>{item.icon}</span>
             {item.type === 'password' ? (
               <>
-                <span onClick={handlePassword} className="absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer text-slate-600 hover:text-slate-800">
+                <span onClick={handlePassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer text-slate-600 hover:text-slate-800'>
                   {showPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                 </span>
-                <input type={showPassword} name={item.nameInput} className="border-gray-400 focus:text-gray-900 w-72 rounded-md border-1 bg-white py-1.5 pl-10 text-base text-black focus:bg-white focus:outline-none" placeholder={item.placeholder} autoComplete="on" onChange={(e) => handleInputChange(e, i)} />
+                <input type={showPassword} name={item.nameInput} className='border-gray-400 focus:text-gray-900 w-72 rounded-md border-1 bg-white py-1.5 pl-10 text-base text-black focus:bg-white focus:outline-none' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
               </>
             ) : (
-              <input type={item.type} name={item.nameInput} className="border-gray-400 focus:text-gray-900 w-72 rounded-md border-1 bg-white py-1.5 pl-10 text-base text-black focus:bg-white focus:outline-none" placeholder={item.placeholder} autoComplete="on" onChange={(e) => handleInputChange(e, i)} />
+              <input type={item.type} name={item.nameInput} className='border-gray-400 focus:text-gray-900 w-72 rounded-md border-1 bg-white py-1.5 pl-10 text-base text-black focus:bg-white focus:outline-none' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
             )}
           </div>
         )
       })}
-      <hr className="mx-auto my-2 h-[1px] w-4/5 bg-slate-300" />
+      <hr className='mx-auto my-2 h-[1px] w-4/5 bg-slate-300' />
       {inputs.length === 2 ? <Button value={'Iniciar Sesión'} bg={'bg-[#438EF2]'} hover={'transition ease-in delay-75 hover:bg-[#2d61a5] duration-150'} /> : <Button value={'Registrarse'} bg={'bg-[#438EF2]'} hover={'transition ease-in delay-75 hover:bg-[#2d61a5] duration-150'} />}
     </form>
   )

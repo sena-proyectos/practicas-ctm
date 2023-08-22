@@ -8,7 +8,7 @@ export const Select = ({ options, placeholder, placeholderSearch, hoverColor, ho
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="w-full max-h-7">
+    <div className='w-full max-h-7'>
       <div onClick={() => setOpen(!open)} className={`flex items-center justify-between w-full px-2 ${bgContainer} ${rounded} ${border} ${borderColor} ${py} select-none ${textSize} ${open ? 'mb-0' : 'mb-1'}`}>
         {selected ? (selected.length > 45 ? selected.substring(0, 45) + '...' : selected) : placeholder}
         <BiChevronRight className={`text-xl ${open ? 'rotate-90' : 'rotate-0'} transition-all duration-500`} />
@@ -17,7 +17,7 @@ export const Select = ({ options, placeholder, placeholderSearch, hoverColor, ho
         {isSearch && (
           <div className={`sticky top-0 flex items-center px-2 ${bgContainer}`}>
             <AiOutlineSearch size={20} />
-            <input type="text" placeholder={placeholderSearch} className="w-full p-2 font-light outline-none placeholder:text-slate-400" onChange={(e) => setInputValue(e.target.value.toLowerCase())} value={inputValue} />
+            <input type='text' placeholder={placeholderSearch} className='w-full p-2 font-light outline-none placeholder:text-slate-400' onChange={(e) => setInputValue(e.target.value.toLowerCase())} value={inputValue} />
           </div>
         )}
         {options.map((option, i) => (

@@ -4,7 +4,7 @@ export const rolesNames = {
   1: 'Administrador',
   2: 'Coordinador',
   3: 'Instructor de Seguimiento',
-  4: 'Instructor Líder',
+  4: 'Instructor Líder'
 }
 
 export const keysRoles = Object.keys(rolesNames)
@@ -22,7 +22,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-primary',
       sombra: 'shadow-shadowPrimary',
-      link: '/aprendices',
+      link: '/aprendices'
     },
     {
       title: 'Bitácoras incompletas',
@@ -31,7 +31,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
       sombra: 'shadow-shadowSalmon',
-      link: '/bitacoras',
+      link: '/bitacoras'
     },
     {
       title: 'Bitácoras completas',
@@ -40,7 +40,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-seventh',
       sombra: 'shadow-shadowSeventh',
-      link: '/bitacoras',
+      link: '/bitacoras'
     },
     {
       title: 'Aprobaciones',
@@ -49,7 +49,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-[#385C57]',
       sombra: 'shadow-shadowGray',
-      link: '/aprov',
+      link: '/aprov'
     },
     {
       title: 'Visitas',
@@ -58,7 +58,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadow-shadowThird',
-      link: '/visitas',
+      link: '/visitas'
     },
     {
       title: 'Inscribir un aprendiz',
@@ -67,8 +67,8 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-aqua',
       sombra: 'shadow-shadowAqua',
-      link: '/inscribir-aprendiz',
-    },
+      link: '/inscribir-aprendiz'
+    }
   ],
   2: [
     {
@@ -78,7 +78,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-primary',
       sombra: 'shadow-shadowPrimary',
-      link: '/aprendices',
+      link: '/aprendices'
     },
     {
       title: 'Bitácoras incompletas',
@@ -87,7 +87,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
       sombra: 'shadow-shadowSalmon',
-      link: '/bitacoras',
+      link: '/bitacoras'
     },
     {
       title: 'Bitácoras completas',
@@ -96,7 +96,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-seventh',
       sombra: 'shadow-shadowSeventh',
-      link: '/bitacoras',
+      link: '/bitacoras'
     },
     {
       title: 'Aprobaciones',
@@ -105,7 +105,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-[#385C57]',
       sombra: 'shadow-shadowGray',
-      link: '/aprov',
+      link: '/aprov'
     },
     {
       title: 'Visitas',
@@ -114,7 +114,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadow-shadowThird',
-      link: '/visitas',
+      link: '/visitas'
     },
     {
       title: 'Inscribir un aprendiz',
@@ -123,8 +123,8 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-aqua',
       sombra: 'shadow-shadowAqua',
-      link: '/inscribir-aprendiz',
-    },
+      link: '/inscribir-aprendiz'
+    }
   ],
   3: [
     {
@@ -134,7 +134,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-primary',
       sombra: 'shadow-shadowPrimary',
-      link: '/aprendices',
+      link: '/aprendices'
     },
     {
       title: 'Bitácoras incompletas',
@@ -143,7 +143,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
       sombra: 'shadow-shadowSalmon',
-      link: '/bitacoras',
+      link: '/bitacoras'
     },
     {
       title: 'Bitácoras completas',
@@ -152,7 +152,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-seventh',
       sombra: 'shadow-shadowSeventh',
-      link: '/bitacoras',
+      link: '/bitacoras'
     },
     {
       title: 'Aprobaciones',
@@ -161,7 +161,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-[#385C57]',
       sombra: 'shadow-shadowGray',
-      link: '/aprov',
+      link: '/aprov'
     },
     {
       title: 'Visitas',
@@ -170,8 +170,8 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadow-shadowThird',
-      link: '/visitas',
-    },
+      link: '/visitas'
+    }
   ],
   4: [
     {
@@ -181,7 +181,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-aqua',
       sombra: 'shadow-shadowAqua',
-      link: '/aprendices',
+      link: '/aprendices'
     },
     {
       title: 'Aprobaciones',
@@ -190,7 +190,7 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-seventh',
       sombra: 'shadow-shadowSeventh',
-      link: '/aprov',
+      link: '/aprov'
     },
     {
       title: 'Fichas',
@@ -199,9 +199,9 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
       sombra: 'shadow-shadowSalmon',
-      link: '/fichas',
-    },
-  ],
+      link: '/fichas'
+    }
+  ]
 }
 
 /*
@@ -214,169 +214,169 @@ export const dataInscription = {
       name: 'modalidad_inscripcion',
       placeholder: 'Sin seleccionar',
       label: 'Modalidad',
-      required: true,
+      required: true
     },
     {
       type: 'text',
       name: 'apellido_inscripcion',
       placeholder: 'Rodriguez',
       label: 'Apellidos',
-      required: true,
+      required: true
     },
     {
       type: 'text',
       name: 'nombre_inscripcion',
       placeholder: 'Alejandro',
       label: 'Nombres',
-      required: true,
+      required: true
     },
     {
       type: 'select',
       name: 'tipo_documento_inscripcion',
       placeholder: 'sin seleccionar',
       label: 'Tipo documento',
-      required: true,
+      required: true
     },
     {
       type: 'number',
       name: 'documento_inscripcion',
       placeholder: '1023456789',
       label: 'Número documento',
-      required: true,
+      required: true
     },
     {
       type: 'email',
       name: 'email_inscripcion',
       placeholder: 'example@sena.edu.co',
       label: 'Correo electrónico',
-      required: true,
+      required: true
     },
     {
       type: 'number',
       name: 'inscripcion_celular',
       placeholder: '3012345467',
       label: 'Número de celular',
-      required: true,
+      required: true
     },
     {
       type: 'select',
       name: 'etapa_actual_inscripcion',
       placeholder: 'Sin seleccionar',
       label: 'Etapa de formación',
-      required: true,
+      required: true
     },
     {
       type: 'select',
       name: 'nivel_formacion_inscripcion',
       placeholder: 'Sin seleccionar',
       label: 'Nivel de formación',
-      required: true,
+      required: true
     },
     {
       type: 'number',
       name: 'numero_ficha_inscripcion',
       placeholder: '2134567',
       label: 'Número de ficha',
-      required: true,
+      required: true
     },
     {
       type: 'text',
       name: 'nombre_programa_inscripcion',
       placeholder: 'Producción multimedia',
       label: 'Programa formación',
-      required: true,
+      required: true
     },
     {
       type: 'date',
       name: 'fecha_fin_lectiva_inscripcion',
       label: 'Fin etapa lectiva',
-      required: true,
+      required: true
     },
     {
       type: 'text',
       name: 'nombre_instructor_lider_inscripcion',
       placeholder: 'Juan Perez',
-      label: 'Nombre instructor lider',
+      label: 'Nombre instructor lider'
     },
     {
       type: 'email',
       name: 'email_instructor_lider_inscripcion',
       placeholder: 'example@sena.edu.co',
       label: 'Correo instructor lider',
-      required: true,
+      required: true
     },
     {
       type: 'select',
       name: 'apoyo_sostenimiento_inscripcion',
       placeholder: 'Sin seleccionar',
       label: '¿Recibe algún apoyo?',
-      required: true,
-    },
+      required: true
+    }
   ],
   dataEmpresa: [
     {
       type: 'number',
       name: 'nit_empresa_inscripcion',
       placeholder: '899999034-1',
-      label: 'NIT de la empresa',
+      label: 'NIT de la empresa'
     },
     {
       type: 'text',
       name: 'nombre_empresa_inscripción',
       placeholder: 'SENA',
-      label: 'Razón social (Empresa)',
+      label: 'Razón social (Empresa)'
     },
     {
       type: 'text',
       name: 'direccion_empresa_inscripcion',
       placeholder: 'Cra 30 No. 3E 164',
-      label: 'Dirección de empresa',
+      label: 'Dirección de empresa'
     },
     {
       type: 'text',
       name: 'nombre_jefe_empresa_inscripcion',
       placeholder: 'Juan Perez',
-      label: 'Nombre jefe inmediato',
+      label: 'Nombre jefe inmediato'
     },
     {
       type: 'text',
       name: 'cargo_jefe_empresa_inscripcion',
       placeholder: 'Gerente',
-      label: 'Cargo jefe inmediato',
+      label: 'Cargo jefe inmediato'
     },
     {
       type: 'number',
       name: 'telefono_jefe_empresa_inscripcion',
       placeholder: '3012345678',
-      label: 'Teléfono jefe inmediato',
+      label: 'Teléfono jefe inmediato'
     },
     {
       type: 'email',
       name: 'email_jefe_empresa_inscripcion',
       placeholder: 'example@sena.edu.co',
-      label: 'Correo jefe Inmediato',
+      label: 'Correo jefe Inmediato'
     },
     {
       type: 'select',
       name: 'arl',
       placeholder: 'Sin seleccionar',
-      label: '¿Quién asume pago arl?',
+      label: '¿Quién asume pago arl?'
     },
     {
       type: 'file',
       name: 'link_documentos',
       label: 'Documentos',
       required: true,
-      accept: '.pdf',
+      accept: '.pdf'
     },
     {
       type: 'textarea',
       name: 'observaciones',
       placeholder: 'Digite una observación',
       label: '¿Observaciones?',
-      required: true,
-    },
-  ],
+      required: true
+    }
+  ]
 }
 
 /*
@@ -386,7 +386,7 @@ export const idTypes = [
   { value: 'CC', name: 'Cédula de ciudadanía' },
   { value: 'CE', name: 'Cédula de extranjería' },
   { value: 'TI', name: 'Tarjeta de identidad' },
-  { value: 'PEP', name: 'Persona expuesta políticamente' },
+  { value: 'PEP', name: 'Persona expuesta políticamente' }
 ]
 
 /*
@@ -397,7 +397,7 @@ export const modalities = [
   { value: 2, name: 'Contrato de aprendizaje' },
   { value: 3, name: 'Proyecto productivo' },
   { value: 4, name: 'Monitoria' },
-  { value: 5, name: 'Vinculación laboral' },
+  { value: 5, name: 'Vinculación laboral' }
 ]
 
 /*
@@ -405,7 +405,7 @@ export const modalities = [
  */
 export const etapasFormacion = [
   { value: 'lectiva', name: 'Lectiva' },
-  { value: 'practica', name: 'Práctica' },
+  { value: 'practica', name: 'Práctica' }
 ]
 
 /*
@@ -413,7 +413,7 @@ export const etapasFormacion = [
  */
 export const nivelFormacion = [
   { value: 'tecnico', name: 'Técnico' },
-  { value: 'tecnologia', name: 'Tecnología' },
+  { value: 'tecnologia', name: 'Tecnología' }
 ]
 
 /*
@@ -423,7 +423,7 @@ export const apoyoSostenimiento = [
   { value: 'FIC', name: 'FIC' },
   { value: 'jovenes en accion', name: 'Jóvenes en Acción' },
   { value: 'apoyo de sostenimiento sena', name: 'Apoyo de sostenimiento Sena' },
-  { value: 'ninguno', name: 'ninguno' },
+  { value: 'ninguno', name: 'ninguno' }
 ]
 
 /*
@@ -431,7 +431,7 @@ export const apoyoSostenimiento = [
  */
 export const pagoArl = [
   { value: 'empresa', name: 'Empresa' },
-  { value: 'SENA', name: 'SENA' },
+  { value: 'SENA', name: 'SENA' }
 ]
 
 /*
@@ -439,7 +439,7 @@ export const pagoArl = [
  */
 export const passwordStatus = {
   shown: 'text',
-  hidden: 'password',
+  hidden: 'password'
 }
 
 /*
@@ -454,7 +454,7 @@ export const colorIcon = {
   '/instructores': 'text-rosa',
   '/fichas': 'text-coffee',
   '/visitas': 'text-primary',
-  '/config': 'text-fifth',
+  '/config': 'text-fifth'
 }
 
 /*
@@ -462,7 +462,7 @@ export const colorIcon = {
  */
 export const estadoIcons = {
   visitado: <LuCalendarCheck2 />,
-  visitadont: <LuCalendarX2 />,
+  visitadont: <LuCalendarX2 />
 }
 
 /*
@@ -475,67 +475,67 @@ export const filter = {
       type: 'text',
       name: 'ficha',
       placeholder: '2473196',
-      label: 'Fichas:',
+      label: 'Fichas:'
     },
     {
       type: 'text',
       name: 'programaFormacion',
       placeholder: 'ADSO',
-      label: 'Programa de formación:',
+      label: 'Programa de formación:'
     },
     {
       type: 'select',
       name: 'modalitie',
       placeholder: 'Sin seleccionar',
-      label: 'Modalidad:',
-    },
+      label: 'Modalidad:'
+    }
   ],
   filterVisits: [
     {
       type: 'date',
       name: 'fechaInicio',
       placeholder: '2021-01-01',
-      label: 'Fecha inicio',
+      label: 'Fecha inicio'
     },
     {
       type: 'date',
       name: 'fechaFin',
       placeholder: '2021-01-01',
-      label: 'Fecha fin',
+      label: 'Fecha fin'
     },
     {
       type: 'text',
       name: 'ficha',
       placeholder: '2473196',
-      label: 'Ficha',
+      label: 'Ficha'
     },
     {
       type: 'text',
       name: 'empresa',
       placeholder: 'Empresa',
-      label: 'Empresa',
-    },
+      label: 'Empresa'
+    }
   ],
   filterBitacoras: [
     {
       type: 'text',
       name: 'ficha',
       placeholder: '2473196',
-      label: 'Fichas',
+      label: 'Fichas'
     },
     {
       type: 'text',
       name: 'programaFormacion',
       placeholder: 'ADSO',
-      label: 'Programa de formación',
+      label: 'Programa de formación'
     },
     {
       type: 'text',
       name: 'nombreAprendiz',
       placeholder: 'Juan Perez',
-      label: 'Nombre Aprendiz',
-    },
-  ],
+      label: 'Nombre Aprendiz'
+    }
+  ]
 }
 
 /*
@@ -548,142 +548,142 @@ export const testInscriptions = {
       programaFormacion: 'Fabicación de Muebles Contemporaneos y Modulares',
       ficha: '2345678',
       estado: 'Calificado',
-      fecha: '29/06/2023',
+      fecha: '29/06/2023'
     },
     {
       nombreCompleto: 'Stiven Blandón Urrego',
       programaFormacion: 'Analisis y Desarrollo de Software',
       ficha: '2345678',
       estado: 'Calificado',
-      fecha: '29/06/2023',
+      fecha: '29/06/2023'
     },
     {
       nombreCompleto: 'Lorena Quiceno Giraldo',
       programaFormacion: 'Producción y Multimedia',
       ficha: '2345678',
       estado: 'Calificado',
-      fecha: '28/05/2023',
+      fecha: '28/05/2023'
     },
     {
       nombreCompleto: 'Juan Guillermo Gomez Zapata',
       programaFormacion: 'Dibujo arquitectónico',
       ficha: '2456666',
       estado: 'Calificado',
-      fecha: '01/06/2023',
+      fecha: '01/06/2023'
     },
     {
       nombreCompleto: 'Guillermo Stiven Benjumea Morales',
       programaFormacion: 'Fabicación de Muebles Contemporaneos y Modulares',
       ficha: '2345678',
       estado: 'Sin Calificar',
-      fecha: '06/07/2023',
+      fecha: '06/07/2023'
     },
     {
       nombreCompleto: 'Stiven Blandón Urrego',
       programaFormacion: 'Analisis y Desarrollo de Software',
       ficha: '2345678',
       estado: 'Sin Calificar',
-      fecha: '06/07/2023',
+      fecha: '06/07/2023'
     },
     {
       nombreCompleto: 'Lorena Quiceno Giraldo',
       programaFormacion: 'Producción y Multimedia',
       ficha: '2345678',
       estado: 'Sin Calificar',
-      fecha: '06/07/2023',
+      fecha: '06/07/2023'
     },
     {
       nombreCompleto: 'Juan Guillermo Gomez Zapata',
       programaFormacion: 'Dibujo arquitectónico',
       ficha: '2456666',
       estado: 'Sin Calificar',
-      fecha: '06/07/2023',
-    },
-  ],
+      fecha: '06/07/2023'
+    }
+  ]
 }
 
 export const colorsOddRow = [
   {
     hrcolor: 'border-purple-400',
     sidecolor: 'bg-purple-400',
-    linkcolor: 'bg-purple-600',
+    linkcolor: 'bg-purple-600'
   },
   {
     hrcolor: 'border-aqua',
     sidecolor: 'bg-aqua',
-    linkcolor: 'bg-emerald-400',
+    linkcolor: 'bg-emerald-400'
   },
   {
     hrcolor: 'border-salmon/75',
     sidecolor: 'bg-salmon/75',
-    linkcolor: 'bg-salmon',
+    linkcolor: 'bg-salmon'
   },
   {
     hrcolor: 'border-third',
     sidecolor: 'bg-third',
-    linkcolor: 'bg-sky-400',
+    linkcolor: 'bg-sky-400'
   },
   {
     hrcolor: 'border-third',
     sidecolor: 'bg-third',
-    linkcolor: 'bg-sky-400',
+    linkcolor: 'bg-sky-400'
   },
   {
     hrcolor: 'border-salmon/75',
     sidecolor: 'bg-salmon/75',
-    linkcolor: 'bg-salmon',
+    linkcolor: 'bg-salmon'
   },
   {
     hrcolor: 'border-aqua',
     sidecolor: 'bg-aqua',
-    linkcolor: 'bg-emerald-400',
+    linkcolor: 'bg-emerald-400'
   },
   {
     hrcolor: 'border-purple-400',
     sidecolor: 'bg-purple-400',
-    linkcolor: 'bg-purple-600',
-  },
+    linkcolor: 'bg-purple-600'
+  }
 ]
 
 export const instructores = [
   {
     nombre: 'Guillermo Stiven Benjumea Morales',
-    rol: 'Instructor Seguimiento',
+    rol: 'Instructor Seguimiento'
   },
   {
     nombre: 'Stiven Urrego',
-    rol: 'Instructor Líder',
+    rol: 'Instructor Líder'
   },
   {
     nombre: 'Carlos Prasca',
-    rol: 'Instructor Seguimiento',
+    rol: 'Instructor Seguimiento'
   },
   {
     nombre: 'Jairo Elías Redondo',
-    rol: 'Instructor Seguimiento',
+    rol: 'Instructor Seguimiento'
   },
   {
     nombre: 'Juan Guillermo Gomez Zapata',
-    rol: 'Instructor Líder',
+    rol: 'Instructor Líder'
   },
   {
     nombre: 'Kevin Alexis Chica Ruiz',
-    rol: 'Instructor Seguimiento',
+    rol: 'Instructor Seguimiento'
   },
   {
     nombre: 'Cristian Bedoya',
-    rol: 'Instructor Líder',
+    rol: 'Instructor Líder'
   },
   {
     nombre: 'Angie Tatiana Mosquera Arco',
-    rol: 'Instructor Líder',
+    rol: 'Instructor Líder'
   },
   {
     nombre: 'Lorena Quiceno Giraldo',
-    rol: 'Instructor Líder',
+    rol: 'Instructor Líder'
   },
   {
     nombre: 'Guillermo Stiven Benjumea',
-    rol: 'Instructor Seguimiento',
-  },
+    rol: 'Instructor Seguimiento'
+  }
 ]

@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 
-//Icons
+// Icons
 import { AiOutlineEye } from 'react-icons/ai'
 
-//Componentes
+// Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Pagination } from '../Utils/Pagination/Pagination'
@@ -18,21 +18,21 @@ export const Students = () => {
         name: 'Stiven Blandón Urrego',
         email: 'blandon0207s@gmial.com',
         modalitie: 'Monitoría',
-        etapa: 'Lectiva',
+        etapa: 'Lectiva'
       },
       {
         name: 'Angie Tatiana Mosquera',
         email: 'atatianamosquera@gmail.com',
         modalitie: 'Contrato de aprendizaje',
-        etapa: 'Práctica',
+        etapa: 'Práctica'
       },
       {
         name: 'Lorena Quiceno Giraldo',
         email: 'lorenquiceno@gmail.com',
         modalitie: 'Pasantía',
-        etapa: 'Finalizada',
-      },
-    ],
+        etapa: 'Finalizada'
+      }
+    ]
   }
 
   const studentsPerPage = 6
@@ -42,51 +42,51 @@ export const Students = () => {
   const endIndex = startIndex + studentsPerPage
 
   return (
-    <main className="flex flex-row min-h-screen bg-whitesmoke">
+    <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
-      <section className="relative grid flex-auto w-min grid-rows-2-85-15">
-        <section className="w-[95%] h-[95%] m-auto">
-          <div className="relative h-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
-            <div className="flex items-center justify-between h-16 px-3 ">
+      <section className='relative grid flex-auto w-min grid-rows-2-85-15'>
+        <section className='w-[95%] h-[95%] m-auto'>
+          <div className='relative h-full overflow-x-auto bg-white shadow-md sm:rounded-lg'>
+            <div className='flex items-center justify-between h-16 px-3 '>
               <div>
-                <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction" className="inline-flex items-center text-gray-500 border border-gray focus:outline-none hover:bg-[#ffd6a5]/30 focus:ring-4 focus:ring-[#ffd6a5] font-medium rounded-lg text-sm px-3 py-1.5 bg-white" type="button">
-                  <span className="sr-only">Action button</span>
+                <button id='dropdownActionButton' data-dropdown-toggle='dropdownAction' className='inline-flex items-center text-gray-500 border border-gray focus:outline-none hover:bg-[#ffd6a5]/30 focus:ring-4 focus:ring-[#ffd6a5] font-medium rounded-lg text-sm px-3 py-1.5 bg-white' type='button'>
+                  <span className='sr-only'>Action button</span>
                   Filtros
-                  <svg className="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                  <svg className='w-2.5 h-2.5 ml-2.5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 10 6'>
+                    <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='m1 1 4 4 4-4' />
                   </svg>
                 </button>
-                <div id="dropdownAction" className="z-10 hidden divide-y divide-gray-100 rounded-lg shadow w-44 bg-slate-700 dark:divide-gray-600">
-                  <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton">
+                <div id='dropdownAction' className='z-10 hidden divide-y divide-gray-100 rounded-lg shadow w-44 bg-slate-700 dark:divide-gray-600'>
+                  <ul className='py-1 text-sm text-gray-700 dark:text-gray-200' aria-labelledby='dropdownActionButton'>
                     <li>
-                      <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                      <a href='#' className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
                         Reward
                       </a>
                     </li>
                     <li>
-                      <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                      <a href='#' className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
                         Promote
                       </a>
                     </li>
                     <li>
-                      <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                      <a href='#' className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
                         Activate account
                       </a>
                     </li>
                   </ul>
-                  <div className="py-1">
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                  <div className='py-1'>
+                    <a href='#' className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white'>
                       Delete User
                     </a>
                   </div>
                 </div>
               </div>
-              <label htmlFor="table-search" className="sr-only">
+              <label htmlFor='table-search' className='sr-only'>
                 Search
               </label>
-              <div className="flex flex-col items-end text-slate-800">
-                <h2 className="text-base font-normal">Análisis y Desarrollo de Sofware</h2>
-                <h3 className="text-sm font-light">2473196</h3>
+              <div className='flex flex-col items-end text-slate-800'>
+                <h2 className='text-base font-normal'>Análisis y Desarrollo de Sofware</h2>
+                <h3 className='text-sm font-light'>2473196</h3>
               </div>
               {/* <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -97,19 +97,19 @@ export const Students = () => {
                 <input type="text" id="table-search-users" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-slate-700 focus:ring-blue-500 focus:border-blue-500 " placeholder="Search for users" />
               </div> */}
             </div>
-            <table className="w-full text-sm text-left">
-              <thead className="uppercase bg-[#ffd6a5] border-y-[0.5px] border-gray">
-                <tr className="grid w-full grid-cols-4-columns-table justify-items-center text-slate-800">
-                  <th scope="col" className="px-6 py-3">
+            <table className='w-full text-sm text-left'>
+              <thead className='uppercase bg-[#ffd6a5] border-y-[0.5px] border-gray'>
+                <tr className='grid w-full grid-cols-4-columns-table justify-items-center text-slate-800'>
+                  <th scope='col' className='px-6 py-3'>
                     Nombre completo
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope='col' className='px-6 py-3'>
                     Modalidad
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope='col' className='px-6 py-3'>
                     Etapa
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope='col' className='px-6 py-3'>
                     Detalles
                   </th>
                 </tr>
@@ -117,22 +117,22 @@ export const Students = () => {
               <tbody>
                 {studentsCourse.data.slice(startIndex, endIndex).map((student, i) => {
                   return (
-                    <tr className="border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[60px] transition-colors" key={i}>
-                      <th scope="row" className="flex items-center text-slate-200 whitespace-nowrap ">
-                        <div className="text-slate-800">
-                          <div className="text-base font-semibold">{student.name}</div>
-                          <div className="font-light">{student.email}</div>
+                    <tr className='border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[60px] transition-colors' key={i}>
+                      <th scope='row' className='flex items-center text-slate-200 whitespace-nowrap '>
+                        <div className='text-slate-800'>
+                          <div className='text-base font-semibold'>{student.name}</div>
+                          <div className='font-light'>{student.email}</div>
                         </div>
                       </th>
-                      <td className="text-base font-light max-w-[10ch]">{student.modalitie}</td>
-                      <td className="w-full">
-                        <div className="flex flex-row items-center text-base font-light ">
+                      <td className='text-base font-light max-w-[10ch]'>{student.modalitie}</td>
+                      <td className='w-full'>
+                        <div className='flex flex-row items-center text-base font-light '>
                           <div className={`h-2.5 w-2.5 rounded-full ${student.etapa === 'Lectiva' ? 'bg-red-500' : student.etapa === 'Práctica' ? 'bg-yellow-500' : student.etapa === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
                           {student.etapa}
                         </div>
                       </td>
-                      <td className="text-2xl">
-                        <Link to="/fichas">
+                      <td className='text-2xl'>
+                        <Link to='/fichas'>
                           <AiOutlineEye />
                         </Link>
                       </td>
@@ -141,7 +141,7 @@ export const Students = () => {
                 })}
               </tbody>
             </table>
-            <div className="flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0">
+            <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0'>
               <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
             </div>
           </div>

@@ -22,5 +22,5 @@ export const inscriptionValidation = Joi.object({
   link_documentos: Joi.string().required().min(5).max(200),
   observaciones: Joi.string().required().min(1).max(200),
   fecha_creacion_inscripcion: Joi.date().required(),
-  id_usuario_responsable_inscripcion: Joi.number().required().min(1),
+  id_usuario_responsable_inscripcion: Joi.number().required().min(1)
 })
