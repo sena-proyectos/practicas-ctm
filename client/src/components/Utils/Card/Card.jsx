@@ -3,16 +3,15 @@ import { Link } from 'react-router-dom'
 //Icons
 import { BsJournalBookmark } from 'react-icons/bs'
 
-export const Card = ({ title, titleColor, description, buttonText, bgColor, link, scale, img = 'https://unavatar.io/ConanGH-S', subtitle, shadow, lione, litwo, cardUser = false, cardHome = false, cardVisits = false, alt = 'foto user', borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked, transition = 'transition-none', userID, height = 'h-auto', width = 'w-auto', shadowColor }) => {
+export const Card = ({ title, titleColor, description, buttonText, bgColor = 'bg-white', link, scale, subtitle, shadow, cardHome = false, cardVisits = false, borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked, transition = 'transition-none', userID, height = 'h-auto', width = 'w-auto', shadowColor }) => {
   const userInfo = () => {
     modalClicked(userID)
   }
 
   return (
     <div className={`${bgColor} bg-opacity-60 ${shadow} ${shadowColor} flex ${height} flex-col justify-center rounded-2xl px-3 py-2 ${scale && 'scale-90'} ${width}`}>
-      <header className={`${cardUser && 'flex flex-row'}`}>
-        {cardUser && <img className="h-[4.5rem] w-[4.5rem] rounded-full" src={img} alt={alt} />}
-        <div className={`${cardUser && 'flex w-min flex-auto flex-col py-3'}`}>
+      <header>
+        <div>
           <h2 className={`text-${titleColor} mb-1 break-words text-center text-lg font-semibold `}>{title}</h2>
           <h3 className="text-xs font-medium text-center break-all">{subtitle}</h3>
         </div>
@@ -30,18 +29,6 @@ export const Card = ({ title, titleColor, description, buttonText, bgColor, link
           </section>
         )}
         {(cardHome || cardVisits) && <p className="text-sm text-center">{description}</p>}
-        {cardUser && (
-          <>
-            <section className="flex flex-row justify-between pb-1">
-              <span className="font-semibold">Programa de Formación</span>
-              <span>{lione}</span>
-            </section>
-            <section className="flex flex-row justify-between">
-              <span className="font-semibold">Ficha</span>
-              <span>{litwo}</span>
-            </section>
-          </>
-        )}
       </div>
       {link && (
         <Link to={link} className={`${roundedLink} border-1 ${borderColor} mx-auto mt-4 w-fit justify-self-end p-1.5 text-xs font-semibold ${transition}`}>
@@ -57,10 +44,10 @@ export const Card = ({ title, titleColor, description, buttonText, bgColor, link
   )
 }
 
-export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4 }) => {
+export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, onClick }) => {
   return (
-    <div className="[perspective:1000px] group flex flex-col gap-1 rounded-xl md:h-[9.5rem] sm:h-[10rem] h-[8rem]">
-      <div className="relative w-full h-full rounded-xl transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] ">
+    <div className="[perspective:1000px] group flex flex-col gap-1 rounded-xl md:h-[9.5rem] sm:h-[10rem] h-[8rem]" onClick={onClick}>
+      <div className="relative w-full h-full rounded-xl transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] bg-white">
         <div className="absolute flex flex-col w-full h-full gap-3 justify-center p-3 shadow-lg rounded-xl [backface-visibility:hidden] border-slate-100 border-1">
           <header className="flex flex-row w-fit ">
             <div className="border-2 rounded-full w-14 h-14 border-violet-800 bg-violet-200">
@@ -97,5 +84,28 @@ export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4 }) 
         </div>
       </div>
     </div>
+  )
+}
+
+export const CardStudent = ({ nameStudent, emailStudent, programStudent, courseStudent, height, userID, modalClicked }) => {
+  const userInfo = () => {
+    modalClicked(userID)
+  }
+  return (
+    <section className={`${height} rounded-lg shadow-xl w-auto bg-white`}>
+      <header className="h-[40%] rounded-t-lg flex flex-col justify-center px-2" style={{ backgroundImage: `url('https://www.profesionalonline.com/blog/wp-content/uploads/2022/01/que-es-la-programacion-orientada-a-objetos-header.jpg')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <p className="text-xs font-medium text-right text-white">{courseStudent}</p>
+        <h3 className="text-[13px] font-medium text-right text-white">{programStudent}</h3>
+      </header>
+      <section className="flex flex-col items-center h-[60%] rounded-b-lg justify-center gap-y-3">
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-[15px] text-center">{nameStudent}</p>
+          <span className="text-xs font-light">{emailStudent}</span>
+        </div>
+        <button className="px-4 py-[2.5px] mx-auto text-xs font-light text-white bg-blue-950 rounded-lg w-fit" onClick={userInfo}>
+          Más información
+        </button>
+      </section>
+    </section>
   )
 }
