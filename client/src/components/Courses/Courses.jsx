@@ -10,7 +10,7 @@ import Skeleton from 'react-loading-skeleton'
 import { useNavigate } from 'react-router-dom'
 
 export const Courses = () => {
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(-1)
   const [loading, setLoading] = useState(true)
   const Courses = {
     data: [
@@ -73,7 +73,7 @@ export const Courses = () => {
 
   const coursesPerPage = 6
   const pageCount = Math.ceil(Courses.data.length / coursesPerPage)
-  const startIndex = pageNumber * coursesPerPage
+  const startIndex = (pageNumber + 1) * coursesPerPage
   const endIndex = startIndex + coursesPerPage
 
   useEffect(() => {

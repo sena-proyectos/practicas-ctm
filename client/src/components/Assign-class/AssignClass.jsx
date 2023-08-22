@@ -15,7 +15,7 @@ import { Pagination } from '../Utils/Pagination/Pagination'
 
 export const AssignClass = () => {
   const [modalAsign, setModalAsign] = useState(false)
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(-1)
   const [loading, setLoading] = useState(true)
 
   const courses = {
@@ -55,7 +55,7 @@ export const AssignClass = () => {
 
   const coursesPerPage = 6
   const pageCount = Math.ceil(courses.data.length / coursesPerPage)
-  const startIndex = pageNumber * coursesPerPage
+  const startIndex = (pageNumber + 1) * coursesPerPage
   const endIndex = startIndex + coursesPerPage
 
   const handleAsign = () => {

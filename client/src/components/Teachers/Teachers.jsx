@@ -15,7 +15,7 @@ import { colorsOddRow, instructores } from '../../import/staticData'
 import { Button } from '../Utils/Button/Button'
 
 export const Teachers = () => {
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(-1)
   const [loading, setLoading] = useState(true)
 
   const instructoresPerPage = 8
@@ -25,7 +25,7 @@ export const Teachers = () => {
     ...colorsOddRow[index % colorsOddRow.length],
   }))
 
-  const startIndex = pageNumber * instructoresPerPage
+  const startIndex = (pageNumber + 1) * instructoresPerPage
   const endIndex = startIndex + instructoresPerPage
 
   const navigate = useNavigate()

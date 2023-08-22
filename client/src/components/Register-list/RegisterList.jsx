@@ -19,12 +19,12 @@ import { keysRoles } from '../../import/staticData'
 
 export const RegisterList = () => {
   const [inscriptions, setInscriptions] = useState([])
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(-1)
   const navigate = useNavigate()
 
   const inscriptionsPerPage = 6
   const pageCount = Math.ceil(inscriptions.length / inscriptionsPerPage)
-  const startIndex = pageNumber * inscriptionsPerPage
+  const startIndex = (pageNumber + 1) * inscriptionsPerPage
   const endIndex = startIndex + inscriptionsPerPage
 
   const idRol = Number(localStorage.getItem('idRol'))
