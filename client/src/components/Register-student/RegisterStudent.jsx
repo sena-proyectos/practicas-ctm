@@ -3,17 +3,19 @@ import Cookies from 'js-cookie'
 import jwtdecoded from 'jwt-decode'
 import { ToastContainer } from 'react-toastify'
 import Swal from 'sweetalert2'
+import { Link } from 'react-router-dom'
 
 // icons
 import { BsCheck2Circle } from 'react-icons/bs'
-import { LuArrowRight, LuChevronDown, LuArrowLeft } from 'react-icons/lu'
+import { LuArrowRight, LuArrowLeft } from 'react-icons/lu'
 import { AiOutlineCloudUpload } from 'react-icons/ai'
+import { IoReturnDownBack } from 'react-icons/io5'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
-
+import { Select } from '../Utils/Select/Select'
 import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription } from '../../import/staticData'
 import { InscriptionApprentice, GetTeacherByName, GetClassByNumber } from '../../api/httpRequest'
 import { ValidateEmail, ValidateIdentity, ValidateInputsTypeNumber } from '../../validation/RegularExpressions'
@@ -144,65 +146,43 @@ export const RegisterStudent = () => {
               <div className={showDataAprendiz ? 'visible' : 'hidden'}>
                 <section className='grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
                   {dataInscription.dataAprendiz.map((item, i) => {
+                    let option = []
+                    item.name === 'tipo_documento_inscripcion' &&
+                      (option = idTypes.map((item, i) => ({
+                        value: item.name,
+                        key: i
+                      })))
+                    item.name === 'modalidad_inscripcion' &&
+                      (option = modalities.map((item, i) => ({
+                        value: item.name,
+                        key: i
+                      })))
+                    item.name === 'etapa_actual_inscripcion' &&
+                      (option = etapasFormacion.map((item, i) => ({
+                        value: item.name,
+                        key: i
+                      })))
+                    item.name === 'nivel_formacion_inscripcion' &&
+                      (option = nivelFormacion.map((item, i) => ({
+                        value: item.name,
+                        key: i
+                      })))
+                    item.name === 'apoyo_sostenimiento_inscripcion' &&
+                      (option = apoyoSostenimiento.map((item, i) => ({
+                        value: item.name,
+                        key: i
+                      })))
                     return (
                       <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
                         <label htmlFor='nombre' className='text-sm font-normal'>
                           {item.label} {item.required && <span className='font-medium text-red-600'>*</span>}
                         </label>
                         {item.type === 'number' ? (
-                          <input type={item.type} name={item.name} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none' autoComplete='on' placeholder={item.placeholder} />
+                          <input type={item.type} name={item.name} className='focus:text-gray-900 w-full rounded-xl shadow-md py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-600' autoComplete='on' placeholder={item.placeholder} />
                         ) : item.type === 'select' ? (
-                          <div className='relative'>
-                            <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                              <LuChevronDown />
-                            </span>
-                            <select name={item.name} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                              <option value={''}>Sin seleccionar</option>
-                              {item.name === 'tipo_documento_inscripcion'
-                                ? idTypes.map((item, i) => {
-                                    return (
-                                      <option value={item.value} key={i}>
-                                        {item.name}
-                                      </option>
-                                    )
-                                  })
-                                : item.name === 'modalidad_inscripcion'
-                                ? modalities.map((item, i) => {
-                                    return (
-                                      <option value={item.value} key={i}>
-                                        {item.name}
-                                      </option>
-                                    )
-                                  })
-                                : item.name === 'etapa_actual_inscripcion'
-                                ? etapasFormacion.map((item, i) => {
-                                    return (
-                                      <option value={item.value} key={i}>
-                                        {item.name}
-                                      </option>
-                                    )
-                                  })
-                                : item.name === 'nivel_formacion_inscripcion'
-                                ? nivelFormacion.map((item, i) => {
-                                    return (
-                                      <option value={item.value} key={i}>
-                                        {item.name}
-                                      </option>
-                                    )
-                                  })
-                                : item.name === 'apoyo_sostenimiento_inscripcion'
-                                ? apoyoSostenimiento.map((item, i) => {
-                                    return (
-                                      <option value={item.value} key={i}>
-                                        {item.name}
-                                      </option>
-                                    )
-                                  })
-                                : null}
-                            </select>
-                          </div>
+                          <Select placeholder='Selecciona una opcion' rounded='rounded-xl' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' border='none' shadow='shadow-md' options={option} />
                         ) : (
-                          <input type={item.type} name={item.name} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 pr-3 text-sm text-black focus:bg-white focus:outline-none' autoComplete='on' placeholder={item.placeholder} />
+                          <input type={item.type} name={item.name} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-600' autoComplete='on' placeholder={item.placeholder} />
                         )}
                       </div>
                     )
@@ -212,50 +192,36 @@ export const RegisterStudent = () => {
               <div className={showDataEmpresa ? 'visible' : 'hidden'}>
                 <section className='grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
                   {dataInscription.dataEmpresa.map((item, i) => {
+                    let option = []
+                    item.name === 'arl' &&
+                      (option = pagoArl.map((item, i) => ({
+                        value: item.name,
+                        key: i
+                      })))
                     return (
                       <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
                         <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
                           {item.label} {item.required && <span className='font-medium text-red-600'>*</span>}
                         </label>
                         {item.type === 'number' ? (
-                          <div className='relative'>
-                            <input type={item.type} name={item.name} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none' autoComplete='on' placeholder={item.placeholder} />
-                          </div>
+                          <input type={item.type} name={item.name} className='focus:text-gray-900 w-full rounded-xl shadow-md py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-600' autoComplete='on' placeholder={item.placeholder} />
                         ) : item.type === 'file' ? (
                           <div className='relative'>
                             <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
                               <AiOutlineCloudUpload />
                             </span>
-                            <div className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2'>
+                            <div className='w-full py-1 pl-2 bg-white shadow-md focus:text-gray-900 rounded-xl'>
                               <input type={item.type} accept={item.accept} name={item.name} className='w-5/6 text-xs file:hidden whitespace-break-spaces' />
                             </div>
                           </div>
                         ) : item.type === 'select' ? (
-                          <div className='relative'>
-                            <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                              <LuChevronDown />
-                            </span>
-                            <select name={item.name} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                              <option value={''}>Sin seleccionar</option>
-                              {item.name === 'arl'
-                                ? pagoArl.map((item, i) => {
-                                    return (
-                                      <option value={item.value} key={i}>
-                                        {item.name}
-                                      </option>
-                                    )
-                                  })
-                                : null}
-                            </select>
-                          </div>
+                          <Select placeholder='Selecciona una opcion' rounded='rounded-xl' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' border='none' shadow='shadow-md' options={option} />
                         ) : item.type === 'textarea' ? (
                           <div className='relative'>
-                            <textarea id='editor' rows='3' className='block absolute w-full px-0 max-h-[5.5rem] min-h-[2rem] md:max-h-[10rem] overflow-y-auto border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' placeholder={item.placeholder} required></textarea>
+                            <textarea id='editor' rows='3' className='block absolute w-full max-h-[5.5rem] resize-none overflow-y-auto border-gray-400 focus:text-gray-900 rounded-xl shadow-md bg-white py-[0.9px] px-3 text-sm text-black focus:bg-white focus:outline-none placeholder:text-slate-600' placeholder={item.placeholder} required></textarea>
                           </div>
                         ) : (
-                          <div className='relative'>
-                            <input type={item.type} name={item.name} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none' autoComplete='on' placeholder={item.placeholder} />
-                          </div>
+                          <input type={item.type} name={item.name} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-600' autoComplete='on' placeholder={item.placeholder} />
                         )}
                       </div>
                     )
@@ -273,6 +239,12 @@ export const RegisterStudent = () => {
                 )}
               </section>
             </form>
+            <div className='absolute top-7 left-11'>
+              <Link to='/registros' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
+                <IoReturnDownBack />
+                Salir
+              </Link>
+            </div>
             <div className='flex flex-col gap-1 mx-auto mt-3 mb-2 md:flex-row w-fit md:gap-5'>
               <Button value={'Eliminar datos'} bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize='text-md' py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={deleteData} />
               {showDataEmpresa && (
