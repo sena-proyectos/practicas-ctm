@@ -5,10 +5,10 @@ import jwtDecode from 'jwt-decode'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
-//Icons
+// Icons
 import { IoCalendarClearOutline, IoDocumentTextOutline, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoPeopleOutline, IoPersonAddOutline, IoBookOutline } from 'react-icons/io5'
 
-//Componentes
+// Componentes
 import { colorIcon, rolesNames, keysRoles } from '../../import/staticData'
 
 const Siderbar = () => {

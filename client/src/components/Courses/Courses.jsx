@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-//Componentes
+// Componentes
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -82,7 +82,7 @@ export const Courses = () => {
 
   const navigate = useNavigate()
   const handleStudents = () => {
-    return navigate(`/aprendices`)
+    return navigate(`/fichas/aprendices`)
   }
 
   return (

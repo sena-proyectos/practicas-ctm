@@ -1,12 +1,12 @@
-import { React, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 
-//Icons
+// Icons
 import { FaAngleRight } from 'react-icons/fa'
 import { LuBookPlus } from 'react-icons/lu'
 
-//Components
+// Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
