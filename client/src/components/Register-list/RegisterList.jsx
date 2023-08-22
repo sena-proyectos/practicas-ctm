@@ -31,7 +31,7 @@ export const modalOptionList = {
 export const RegisterList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [inscriptions, setInscriptions] = useState([])
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(-1)
   const [fileName, setFileName] = useState(null)
   const [modalOption, setModalOption] = useState(modalOptionList.confirmModal)
   const excelRef = useRef()
@@ -39,7 +39,7 @@ export const RegisterList = () => {
 
   const inscriptionsPerPage = 6
   const pageCount = Math.ceil(inscriptions.length / inscriptionsPerPage)
-  const startIndex = pageNumber * inscriptionsPerPage
+  const startIndex = (pageNumber + 1) * inscriptionsPerPage
   const endIndex = startIndex + inscriptionsPerPage
   const idRol = Number(localStorage.getItem('idRol'))
 
@@ -144,10 +144,10 @@ export const RegisterList = () => {
           {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
             <div className='absolute flex flex-row-reverse gap-3 right-12 bottom-16'>
               <Button value={'Agregar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' clickeame={handleRegister} icon={<IoAddCircleOutline className='text-xl' />} />
-              <div className='shadow-md rounded-full bg-cyan-600'>
-                <label htmlFor='upload' className='flex items-center gap-2 text-white cursor-pointer h-full w-full rounded-full px-3 py-2'>
+              <div className='rounded-full shadow-md bg-cyan-600'>
+                <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
                   <AiOutlineFileAdd />
-                  <span className='font-medium text-white text-sm select-none'>{fileName === null ? 'Subir arhivo' : fileName}</span>
+                  <span className='text-sm font-medium text-white select-none'>{fileName === null ? 'Subir arhivo' : fileName}</span>
                 </label>
                 <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
               </div>
@@ -234,7 +234,7 @@ const LoadingTableList = ({ number = 6 }) =>
 
 const LoadingExcelFileModal = () => (
   <LoadingModal title='Leyendo Excel'>
-    <section className='py-5 flex flex-col gap-3'>
+    <section className='flex flex-col gap-3 py-5'>
       <section className='flex flex-col gap-1'>
         <PiMicrosoftExcelLogoBold className='text-[70px] mx-auto' color='green' />
         <LoadingUI type='spin' color='green' height={30} width={30} className='mx-auto' />
@@ -246,7 +246,7 @@ const LoadingExcelFileModal = () => (
 
 const UploadingExcelFileModal = () => (
   <LoadingModal title='Subiendo Excel'>
-    <section className='py-5 flex flex-col gap-3'>
+    <section className='flex flex-col gap-3 py-5'>
       <section className='flex flex-col gap-1'>
         <AiOutlineCloudUpload className='text-[70px] mx-auto' color='green' />
         <LoadingUI type='spin' color='green' height={30} width={30} className='mx-auto' />

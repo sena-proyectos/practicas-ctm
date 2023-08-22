@@ -1,12 +1,12 @@
-import { React, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 
-//Icons
+// Icons
 import { FaAngleRight } from 'react-icons/fa'
 import { LuBookPlus } from 'react-icons/lu'
 
-//Components
+// Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
@@ -15,7 +15,7 @@ import { colorsOddRow, instructores } from '../../import/staticData'
 import { Button } from '../Utils/Button/Button'
 
 export const Teachers = () => {
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(-1)
   const [loading, setLoading] = useState(true)
 
   const instructoresPerPage = 8
@@ -25,7 +25,7 @@ export const Teachers = () => {
     ...colorsOddRow[index % colorsOddRow.length]
   }))
 
-  const startIndex = pageNumber * instructoresPerPage
+  const startIndex = (pageNumber + 1) * instructoresPerPage
   const endIndex = startIndex + instructoresPerPage
 
   const navigate = useNavigate()

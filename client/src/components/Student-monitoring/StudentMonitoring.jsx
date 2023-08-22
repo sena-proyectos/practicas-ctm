@@ -5,10 +5,11 @@ import 'react-loading-skeleton/dist/skeleton.css'
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
-import { Card } from '../Utils/Card/Card'
+import { CardStudent } from '../Utils/Card/Card'
 import { Modals } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
 import { filter } from '../../import/staticData'
+import { Pagination } from '../Utils/Pagination/Pagination'
 import { GetUserByName, detailInfoStudents, GetStudentsDetailById } from '../../api/httpRequest'
 
 export const StudentMonitoring = () => {
@@ -19,6 +20,7 @@ export const StudentMonitoring = () => {
   const [infoStudent, setInfoStudent] = useState(false)
   const [userInfoById, setInfoUserById] = useState({})
   const [loading, setLoading] = useState(true)
+  const [pageNumber, setPageNumber] = useState(-1)
 
   const handleIconClick = () => {
     setModalFilter(!modalFilter)
@@ -40,7 +42,6 @@ export const StudentMonitoring = () => {
   const getUser = async (userID) => {
     try {
       const response = await GetStudentsDetailById(userID)
-      console.log(response)
       const res = response.data.data[0]
       setInfoUserById(res)
     } catch (error) {
@@ -88,6 +89,12 @@ export const StudentMonitoring = () => {
 
   const filterStudents = filter.filterStudents
 
+  const studentsPerPage = 6
+  const pageCount = Math.ceil(apprentices.length / studentsPerPage)
+
+  const startIndex = (pageNumber + 1) * studentsPerPage
+  const endIndex = startIndex + studentsPerPage
+
   return (
     <>
       {modalFilter && <Modals bodyFilter title={'Filtrar'} view={filterStudents} closeModal={handleModal} />}
@@ -96,18 +103,18 @@ export const StudentMonitoring = () => {
       )}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <Siderbar />
-        <section className='relative grid flex-auto w-min grid-rows-3-10-75-15 '>
+        <section className='relative grid flex-auto w-min grid-rows-3-10-75-15 gap-y-2 '>
           <header className='grid place-items-center '>
             <Search searchFilter iconClick={handleIconClick} searchStudent={searchApprentices} />
           </header>
           {searchedApprentices.length > 0 && !error ? (
-            <div className='grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3'>
-              {searchedApprentices.map((apprentice, i) => (
-                <Card cardUser shadow={'shadow-2xl shadow-sky-600'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_completo}`} subtitle={apprentice.email_aprendiz} lione={apprentice.nombre_programa_formacio} litwo={apprentice.numero_ficha} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} link={'/home'} modalClicked={modalStudent} />
+            <div className='h-[80%] grid grid-cols-1 px-4 gap-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+              {searchedApprentices.slice(startIndex, endIndex).map((apprentice, i) => (
+                <CardStudent key={i} userID={apprentice.id_aprendiz} modalClicked={modalStudent} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
               ))}
             </div>
           ) : (
-            <div className='grid grid-cols-1 gap-1 px-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+            <div className='h-[80%] grid grid-cols-1 px-4 gap-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
               {loading ? (
                 <>
                   <SkeletonLoading />
@@ -115,12 +122,15 @@ export const StudentMonitoring = () => {
               ) : error ? (
                 <h2 className='text-red-500'>{error}</h2>
               ) : (
-                apprentices.map((apprentice, i) => {
-                  return <Card cardUser height={'h-[12.5rem] st2:h-[12.5rem] st1:h-[14rem] md:h-[14rem]'} shadow={'shadow-2xl shadow-purple-300'} marginLink={'mx-auto'} scale={'scale-90'} title={`${apprentice.nombre_completo}`} subtitle={apprentice.email_aprendiz} lione={apprentice.nombre_programa_formacion} litwo={apprentice.numero_ficha} key={i} userID={apprentice.id_aprendiz} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal modalClicked={modalStudent} />
+                apprentices.slice(startIndex, endIndex).map((apprentice, i) => {
+                  return <CardStudent key={i} userID={apprentice.id_aprendiz} modalClicked={modalStudent} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
                 })
               )}
             </div>
           )}
+          <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-[5.5rem]'>
+            <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+          </div>
           <Footer />
         </section>
       </main>
