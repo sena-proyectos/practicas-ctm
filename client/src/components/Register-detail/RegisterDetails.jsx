@@ -6,7 +6,7 @@ import { BsCheck2Circle } from 'react-icons/bs'
 import { LuArrowRight, LuChevronDown, LuArrowLeft } from 'react-icons/lu'
 import { AiOutlineCloudUpload } from 'react-icons/ai'
 
-//Components
+// Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
