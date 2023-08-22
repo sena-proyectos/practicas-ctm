@@ -1,14 +1,46 @@
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 //Icons
 import { AiOutlineEye } from 'react-icons/ai'
 
 //Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
-import { Search } from '../Search/Search'
 import { Footer } from '../Footer/Footer'
+import { Pagination } from '../Utils/Pagination/Pagination'
 
 export const Students = () => {
+  const [pageNumber, setPageNumber] = useState(-1)
+
+  const studentsCourse = {
+    data: [
+      {
+        name: 'Stiven Blandón Urrego',
+        email: 'blandon0207s@gmial.com',
+        modalitie: 'Monitoría',
+        etapa: 'Lectiva',
+      },
+      {
+        name: 'Angie Tatiana Mosquera',
+        email: 'atatianamosquera@gmail.com',
+        modalitie: 'Contrato de aprendizaje',
+        etapa: 'Práctica',
+      },
+      {
+        name: 'Lorena Quiceno Giraldo',
+        email: 'lorenquiceno@gmail.com',
+        modalitie: 'Pasantía',
+        etapa: 'Finalizada',
+      },
+    ],
+  }
+
+  const studentsPerPage = 6
+  const pageCount = Math.ceil(studentsCourse.data.length / studentsPerPage)
+
+  const startIndex = (pageNumber + 1) * studentsPerPage
+  const endIndex = startIndex + studentsPerPage
+
   return (
     <main className="flex flex-row min-h-screen bg-whitesmoke">
       <Siderbar />
@@ -83,65 +115,35 @@ export const Students = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[60px] transition-colors">
-                  <th scope="row" className="flex items-center text-slate-200 whitespace-nowrap ">
-                    <div className="text-slate-800">
-                      <div className="text-base font-semibold">Stiven Blandón Urrego</div>
-                      <div className="font-light">blandon0207s@gmail.com</div>
-                    </div>
-                  </th>
-                  <td className="text-base font-light">Monitorias</td>
-                  <td>
-                    <div className="flex items-center text-base font-light">
-                      <div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Lectiva
-                    </div>
-                  </td>
-                  <td className="text-2xl">
-                    <Link to="/fichas">
-                      <AiOutlineEye />
-                    </Link>
-                  </td>
-                </tr>
-                <tr className="border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[60px] transition-colors">
-                  <th scope="row" className="flex items-center text-slate-200 whitespace-nowrap ">
-                    <div className="text-slate-800">
-                      <div className="text-base font-semibold">Stiven Blandón Urrego</div>
-                      <div className="font-light">blandon0207s@gmail.com</div>
-                    </div>
-                  </th>
-                  <td className="text-base font-light">Monitorias</td>
-                  <td>
-                    <div className="flex items-center text-base font-light">
-                      <div className="h-2.5 w-2.5 rounded-full bg-yellow-500 mr-2"></div> Practica
-                    </div>
-                  </td>
-                  <td className="text-2xl">
-                    <Link to="/fichas">
-                      <AiOutlineEye />
-                    </Link>
-                  </td>
-                </tr>
-                <tr className="border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[60px] transition-colors">
-                  <th scope="row" className="flex items-center text-slate-200 whitespace-nowrap ">
-                    <div className="text-slate-800">
-                      <div className="text-base font-semibold">Stiven Blandón Urrego</div>
-                      <div className="font-light">blandon0207s@gmail.com</div>
-                    </div>
-                  </th>
-                  <td className="text-base font-light">Monitorias</td>
-                  <td>
-                    <div className="flex items-center text-base font-light">
-                      <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> Finalizado
-                    </div>
-                  </td>
-                  <td className="text-2xl">
-                    <Link to="/fichas">
-                      <AiOutlineEye />
-                    </Link>
-                  </td>
-                </tr>
+                {studentsCourse.data.slice(startIndex, endIndex).map((student, i) => {
+                  return (
+                    <tr className="border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[60px] transition-colors" key={i}>
+                      <th scope="row" className="flex items-center text-slate-200 whitespace-nowrap ">
+                        <div className="text-slate-800">
+                          <div className="text-base font-semibold">{student.name}</div>
+                          <div className="font-light">{student.email}</div>
+                        </div>
+                      </th>
+                      <td className="text-base font-light max-w-[10ch]">{student.modalitie}</td>
+                      <td className="w-full">
+                        <div className="flex flex-row items-center text-base font-light ">
+                          <div className={`h-2.5 w-2.5 rounded-full ${student.etapa === 'Lectiva' ? 'bg-red-500' : student.etapa === 'Práctica' ? 'bg-yellow-500' : student.etapa === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
+                          {student.etapa}
+                        </div>
+                      </td>
+                      <td className="text-2xl">
+                        <Link to="/fichas">
+                          <AiOutlineEye />
+                        </Link>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
+            <div className="flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0">
+              <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+            </div>
           </div>
         </section>
         <Footer />
