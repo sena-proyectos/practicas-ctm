@@ -106,3 +106,19 @@ export const readExcel = async (fileData) => {
   })
   return response
 }
+
+// OBTENER FICHAS
+export const getClass = async () => {
+  const URL = `${baseUrl}${api}/classes`
+
+  const response = await axios.get(URL)
+  return response
+}
+
+// OBTENER APRENDICES DE UNA FICHA
+export const getClassById = async (id) => {
+  const URL = `${baseUrl}${api}/class/${id}`
+
+  const response = await axios.get(URL)
+  return response
+}

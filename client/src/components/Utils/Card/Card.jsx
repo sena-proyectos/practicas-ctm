@@ -93,7 +93,7 @@ export const CardStudent = ({ nameStudent, emailStudent, programStudent, courseS
   }
   return (
     <section className={`${height} rounded-lg shadow-xl w-auto bg-white`}>
-      <header className='h-[40%] rounded-t-lg flex flex-col justify-center px-2' style={{ backgroundImage: `url('https://www.profesionalonline.com/blog/wp-content/uploads/2022/01/que-es-la-programacion-orientada-a-objetos-header.jpg')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <header className='h-[40%] rounded-t-lg flex flex-col justify-center px-2 relative z-10 before:absolute before:inset-0 before:w-full before:h-full before:bg-black/50 before:-z-10 before:rounded-t-lg' style={{ backgroundImage: `url('https://www.profesionalonline.com/blog/wp-content/uploads/2022/01/que-es-la-programacion-orientada-a-objetos-header.jpg')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <p className='text-xs font-medium text-right text-white'>{courseStudent}</p>
         <h3 className='text-[13px] font-medium text-right text-white'>{programStudent}</h3>
       </header>
@@ -102,7 +102,7 @@ export const CardStudent = ({ nameStudent, emailStudent, programStudent, courseS
           <p className='text-[15px] text-center'>{nameStudent}</p>
           <span className='text-xs font-light'>{emailStudent}</span>
         </div>
-        <button className='px-4 py-[2.5px] mx-auto text-xs font-light text-white bg-blue-950 rounded-lg w-fit' onClick={userInfo}>
+        <button className='px-4 py-[2.5px] mx-auto text-xs font-light text-white bg-blue-800 rounded-lg w-fit hover:bg-blue-900 transition-colors' onClick={userInfo}>
           Más información
         </button>
       </section>

@@ -93,10 +93,10 @@ export const AssignClass = () => {
                   return (
                     <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 shadow-lg border-slate-100 border-1' key={i}>
                       <header className='flex flex-row w-fit '>
-                        <div className='bg-teal-200 border-2 border-teal-800 rounded-full w-14 h-14'>
+                        <div className='z-10 bg-teal-200 border-2 border-teal-800 rounded-full w-14 h-14'>
                           <BsJournalBookmark className='w-full h-full scale-50' />
                         </div>
-                        <div className='relative w-24 h-5 my-auto text-center bg-teal-200 border-2 border-teal-800 rounded-r-full right-2 -z-10'>
+                        <div className='relative w-24 h-5 my-auto text-center bg-teal-200 border-2 border-teal-800 rounded-r-full right-2'>
                           <p className='text-xs font-medium'>{course.ficha}</p>
                         </div>
                       </header>
