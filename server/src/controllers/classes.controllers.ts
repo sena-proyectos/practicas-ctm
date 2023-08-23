@@ -19,23 +19,10 @@ import { type classes } from '../interfaces/classes.interfaces.js'
  */
 export const getClasses = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const [classes] = await connection.query('SELECT * FROM fichas')
+    const [classes] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" end as estado, CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario) as seguimiento_nombre_completo, CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario) as lider_nombre_completo FROM fichas INNER JOIN usuarios as usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario INNER JOIN usuarios as usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario;')
     if (!Array.isArray(classes) || classes?.length === 0) throw new DbErrorNotFound('No hay fichas registradas.', errorCodes.ERROR_GET_CLASSES)
-    const classesWithState = classes.map((course: any) => {
-      let state = 'Por iniciar'
 
-      const currentDate = new Date()
-
-      if (course.fecha_inicio_lectiva <= currentDate && course.fecha_fin_lectiva >= currentDate) {
-        state = 'Lectiva'
-      } else if (course.fecha_inicio_practica <= currentDate) {
-        state = 'Práctica'
-      }
-
-      return { ...course, estado: state }
-    })
-
-    return res.status(httpStatus.OK).json({ data: classesWithState })
+    return res.status(httpStatus.OK).json({ data: classes })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
