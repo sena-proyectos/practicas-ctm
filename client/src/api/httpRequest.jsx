@@ -28,7 +28,7 @@ export const GetStudentsDetailById = async (userID) => {
 
 /* INSCRIBIR APRENDICES */
 export const InscriptionApprentice = async (data) => {
-  const URL = `${baseUrl}${api}/create-inscription`
+  const URL = `${baseUrl}${api}/create-inscriptions`
 
   const response = await axios.post(URL, data)
   return response
@@ -94,6 +94,16 @@ export const inscriptionDetailUser = async (id, limit = 3, offset = 0) => {
   const URL = `${baseUrl}${api}/inscriptionDetailsUser/${id}?limit=${limit}&offset=${offset}`
 
   const response = await axios.get(URL)
+  return response
+}
+
+export const readExcel = async (fileData) => {
+  const URL = `${baseUrl}${api}/inscription-excel-file`
+  const response = await axios.post(URL, fileData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
   return response
 }
 
