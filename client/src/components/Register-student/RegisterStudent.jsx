@@ -178,11 +178,11 @@ export const RegisterStudent = () => {
                           {item.label} {item.required && <span className='font-medium text-red-600'>*</span>}
                         </label>
                         {item.type === 'number' ? (
-                          <input type={item.type} name={item.name} className='focus:text-gray-900 w-full rounded-xl shadow-md py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-600' autoComplete='on' placeholder={item.placeholder} />
+                          <input type={item.type} name={item.name} className='focus:text-gray-900 w-full rounded-xl shadow-md py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-400' autoComplete='on' placeholder={item.placeholder} />
                         ) : item.type === 'select' ? (
                           <Select placeholder='Selecciona una opcion' rounded='rounded-xl' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' border='none' shadow='shadow-md' options={option} />
                         ) : (
-                          <input type={item.type} name={item.name} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-600' autoComplete='on' placeholder={item.placeholder} />
+                          <input type={item.type} name={item.name} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-400' autoComplete='on' placeholder={item.placeholder} />
                         )}
                       </div>
                     )
@@ -204,7 +204,7 @@ export const RegisterStudent = () => {
                           {item.label} {item.required && <span className='font-medium text-red-600'>*</span>}
                         </label>
                         {item.type === 'number' ? (
-                          <input type={item.type} name={item.name} className='focus:text-gray-900 w-full rounded-xl shadow-md py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-600' autoComplete='on' placeholder={item.placeholder} />
+                          <input type={item.type} name={item.name} className='focus:text-gray-900 w-full rounded-xl shadow-md py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-400' autoComplete='on' placeholder={item.placeholder} />
                         ) : item.type === 'file' ? (
                           <div className='relative'>
                             <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
@@ -218,10 +218,10 @@ export const RegisterStudent = () => {
                           <Select placeholder='Selecciona una opcion' rounded='rounded-xl' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' border='none' shadow='shadow-md' options={option} />
                         ) : item.type === 'textarea' ? (
                           <div className='relative'>
-                            <textarea id='editor' rows='3' className='block absolute w-full max-h-[5.5rem] resize-none overflow-y-auto border-gray-400 focus:text-gray-900 rounded-xl shadow-md bg-white py-[0.9px] px-3 text-sm text-black focus:bg-white focus:outline-none placeholder:text-slate-600' placeholder={item.placeholder} required></textarea>
+                            <textarea id='editor' rows='3' className='block absolute w-full max-h-[5.5rem] resize-none overflow-y-auto border-gray-400 focus:text-gray-900 rounded-xl shadow-md bg-white py-[0.9px] px-3 text-sm text-black focus:bg-white focus:outline-none placeholder:text-slate-400' placeholder={item.placeholder} required></textarea>
                           </div>
                         ) : (
-                          <input type={item.type} name={item.name} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-600' autoComplete='on' placeholder={item.placeholder} />
+                          <input type={item.type} name={item.name} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-400' autoComplete='on' placeholder={item.placeholder} />
                         )}
                       </div>
                     )

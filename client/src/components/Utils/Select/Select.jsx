@@ -9,7 +9,7 @@ export const Select = ({ options, placeholder, placeholderSearch, hoverColor, ho
 
   return (
     <div className='w-full max-h-7'>
-      <div onClick={() => setOpen(!open)} className={`flex items-center justify-between w-full px-2 ${bgContainer} ${rounded} ${border} ${shadow} ${borderColor} ${py} select-none ${textSize} ${open ? 'mb-0' : 'mb-1'} ${selected ? 'text-black' : 'text-slate-600'}`}>
+      <div onClick={() => setOpen(!open)} className={`flex items-center justify-between w-full px-2 ${bgContainer} ${rounded} ${border} ${shadow} ${borderColor} ${py} select-none ${textSize} ${open ? 'mb-0' : 'mb-1'} ${selected ? 'text-black' : 'text-slate-400'}`}>
         {selected ? (selected.length > 45 ? selected.substring(0, 45) + '...' : selected) : placeholder}
         <BiChevronRight className={`text-xl ${open ? 'rotate-90' : 'rotate-0'} transition-all duration-500`} />
       </div>
