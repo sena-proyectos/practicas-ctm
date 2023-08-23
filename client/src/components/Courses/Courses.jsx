@@ -20,6 +20,7 @@ export const Courses = () => {
       try {
         const response = await getClass()
         const { data } = response.data
+        console.log(data)
         setCourses(data)
       } catch (error) {
         throw new Error(error)
@@ -62,7 +63,7 @@ export const Courses = () => {
               </>
             ) : (
               courses.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.id_instructor_seguimiento} item2={course.id_instructor_lider} item3={course.fecha_fin_lectiva.split('T')[0]} item4={course.fecha_inicio_practica.split('T')[0]} onClick={() => handleStudents(course.id_ficha)} />
+                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva.split('T')[0]} item4={course.fecha_inicio_practica.split('T')[0]} onClick={() => handleStudents(course.id_ficha)} />
               })
             )}
           </section>
