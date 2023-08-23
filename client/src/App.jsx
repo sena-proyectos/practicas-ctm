@@ -33,7 +33,7 @@ const App = () => {
           <Route path='/asignar-ficha' element={<AssignClass />} />
           <Route path='/fichas' element={<Courses />} />
           {/* No está bien hecho, deberia ser anidado */}
-          <Route path='/fichas/aprendices' element={<Students />} />
+          <Route path='/fichas/aprendices/:id' element={<Students />} />
         </Route>
 
         <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])} redirectTo='/home' />}>
