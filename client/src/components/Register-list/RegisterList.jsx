@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
-import * as XLSX from 'xlsx'
+import decode from 'jwt-decode'
 import LoadingUI from 'react-loading'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 // icons
 import { BsPatchCheck, BsHourglass, BsXOctagon } from 'react-icons/bs'
@@ -17,15 +19,17 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Button } from '../Utils/Button/Button'
 import { Pagination } from '../Utils/Pagination/Pagination'
 
-import { getInscriptions } from '../../api/httpRequest'
+import { InscriptionApprentice, getInscriptions, readExcel } from '../../api/httpRequest'
 import { keysRoles } from '../../import/staticData'
 import { LoadingModal, Modals } from '../Utils/Modals/Modals'
+import Cookies from 'js-cookie'
+import Swal from 'sweetalert2'
 
 export const modalOptionList = {
   confirmModal: 'confirm',
   loadingExcelModal: 'read',
-  uploadingExcelModal: 'upload',
-  doneExcelModal: 'done'
+  uploadingExcelModal: 'toUpload',
+  doneExcelModal: 'toEnd'
 }
 
 export const RegisterList = () => {
@@ -34,6 +38,7 @@ export const RegisterList = () => {
   const [pageNumber, setPageNumber] = useState(-1)
   const [fileName, setFileName] = useState(null)
   const [modalOption, setModalOption] = useState(modalOptionList.confirmModal)
+  const [username, setUsername] = useState(null)
   const excelRef = useRef()
   const navigate = useNavigate()
 
@@ -47,78 +52,123 @@ export const RegisterList = () => {
     return navigate('/registrar-aprendiz')
   }
 
+  useEffect(() => {
+    const token = Cookies.get('token')
+    const { nombres_usuario, apellidos_usuario } = decode(token).data.user
+    setUsername(`${nombres_usuario} ${apellidos_usuario}`)
+  }, [])
+
   const handleModalOption = (data) => setModalOption(data)
 
-  useEffect(() => {
-    if (modalOption === 'upload') {
-      setTimeout(() => {
-        setModalOption(modalOptionList.doneExcelModal)
-      }, 3000)
-    }
-    if (modalOption === 'done') {
-      excelRef.current.value = ''
-    }
-  }, [modalOption])
-
-  useEffect(() => {
-    if (isModalOpen === false && modalOption === 'done') setModalOption(modalOptionList.confirmModal)
-  }, [isModalOpen])
-
-  useEffect(() => {
-    if (modalOption === 'read') readExcelFile()
-  }, [modalOption])
+  const notify = () => {
+    toast.success('Archivo excel leído correctamente', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: 'colored',
+      className: 'text-sm'
+    })
+  }
 
   const handleCloseModal = () => {
     excelRef.current.value = ''
+    setModalOption(modalOptionList.confirmModal)
     setFileName(null)
     setIsModalOpen(!isModalOpen)
   }
 
-  useEffect(() => {
-    const getRegistros = async () => {
-      try {
-        const response = await getInscriptions()
-        const { data } = response.data
-        setInscriptions(data)
-      } catch (error) {
-        throw new Error(error)
-      }
+  const getRegistros = async () => {
+    try {
+      const response = await getInscriptions()
+      const { data } = response.data
+      setInscriptions(data)
+    } catch (error) {
+      throw new Error(error)
     }
+  }
+
+  useEffect(() => {
     getRegistros()
   }, [])
 
-  const readExcelFile = () => {
+  useEffect(() => {
+    if (modalOption === modalOptionList.loadingExcelModal) readExcelFile()
+  }, [modalOption])
+
+  const readExcelFile = async () => {
     const { files } = excelRef.current
     const file = files[0]
-
-    // Info a enviar
     const fileData = new FormData()
     fileData.append('excelFile', file)
+    const { data, code } = await (await readExcel(fileData)).data
+    const dataToSend = data.map((item) => {
+      return {
+        nombre_inscripcion: item['Nombres completos'],
+        apellido_inscripcion: item['Apellidos completos'],
+        tipo_documento_inscripcion: item['Tipo de Documento de Identidad'],
+        documento_inscripcion: item['Numero de documento del aprendiz'],
+        email_inscripcion: item['Correo electronico del aprendiz'],
+        inscripcion_celular: item['Numero de celular del aprendiz'],
+        etapa_actual_inscripcion: item['Etapa de formacion'],
+        modalidad_inscripcion: item['Modalidad etapa practica'],
+        nombre_programa_inscripcion: item['Nombre del programa'],
+        nivel_formacion_inscripcion: item['Nivel de formacion'],
+        numero_ficha_inscripcion: item['Numero de ficha'],
+        fecha_fin_lectiva_inscripcion: item['Fecha de terminacion de la etapa lectiva'],
+        nombre_instructor_lider_inscripcion: item['Nombre completo del instructor lider'],
+        email_instructor_lider_inscripcion: item['Correo del instructor lider'],
+        apoyo_sostenimiento_inscripcion: item['Apoyos de sostenimiento'],
+        nit_empresa_inscripcion: item['NIT de la empresa'] ?? null,
+        nombre_empresa_inscripcion: item['Nombre de la empresa'] ?? null,
+        direccion_empresa_inscripcion: item['Direccion de la empresa'] ?? null,
+        nombre_jefe_empresa_inscripcion: item['Nombre completo jefe inmediato'] ?? null,
+        cargo_jefe_empresa_inscripcion: item['Cargo contacto jefe inmediato'] ?? null,
+        telefono_jefe_empresa_inscripcion: item['Teléfono de la Empresa o Jefe inmediato'] ?? null,
+        email_jefe_empresa_inscripcion: item['Correo electronico de la empresa o jefe inmediato'] ?? null,
+        arl: item['¿Quién asume el pago de la ARL?'] ?? null,
+        link_documentos: item.Documentos,
+        observaciones: item.Observaciones,
+        responsable_inscripcion: username
+      }
+    })
+    setTimeout(() => {
+      uploadExcelFile(dataToSend, code)
+    }, 1000)
+  }
 
-    // Lo lee
-    const reader = new FileReader()
-
-    reader.onload = (e) => {
-      const data = e.target.result
-      const workbook = XLSX.read(data, { type: 'binary' })
-      const sheetName = workbook.SheetNames[0]
-      const worksheet = workbook.Sheets[sheetName]
-      const excelData = XLSX.utils.sheet_to_json(worksheet)
-
+  const uploadExcelFile = async (payload, code) => {
+    try {
+      await InscriptionApprentice(payload)
+      setModalOption(code)
       setTimeout(() => {
-        if (excelData) setModalOption(modalOptionList.uploadingExcelModal)
-      }, 3000)
-
-      console.log(excelData)
+        handleCloseModal()
+        notify()
+        getRegistros()
+      }, 1000)
+    } catch (error) {
+      const message = error?.response?.data?.error?.info?.message
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: message ?? 'Ha ocurrido un error, intentelo de nuevo'
+      })
+      handleCloseModal()
     }
-
-    reader.readAsBinaryString(file)
   }
 
   const handleExcelFile = () => {
     const { files } = excelRef.current
     if (files.length === 0) {
-      //! ...Mostrar error
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'El archivo ingresado está vacio, corrígelo'
+      })
+      handleCloseModal()
     }
     const { name } = files[0]
     setFileName(name)
@@ -127,10 +177,10 @@ export const RegisterList = () => {
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
-      {isModalOpen && modalOption === 'confirm' && <Modals setModalOption={handleModalOption} bodyConfirm title={'¿Está seguro?'} loadingFile={fileName} closeModal={handleCloseModal} />}
-      {isModalOpen && modalOption === 'read' && <LoadingExcelFileModal />}
-      {isModalOpen && modalOption === 'upload' && <UploadingExcelFileModal />}
-      {isModalOpen && modalOption === 'done' && <Modals bodyAccept closeModal={handleCloseModal} />}
+      <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
+      {isModalOpen && modalOption === modalOptionList.confirmModal && <Modals setModalOption={handleModalOption} bodyConfirm title={'¿Está seguro?'} loadingFile={fileName} closeModal={handleCloseModal} />}
+      {isModalOpen && modalOption === modalOptionList.loadingExcelModal && <LoadingExcelFileModal />}
+      {isModalOpen && modalOption === modalOptionList.uploadingExcelModal && <UploadingExcelFileModal />}
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
@@ -147,7 +197,7 @@ export const RegisterList = () => {
               <div className='rounded-full shadow-md bg-cyan-600'>
                 <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
                   <AiOutlineFileAdd />
-                  <span className='text-sm font-medium text-white select-none'>{fileName === null ? 'Subir arhivo' : fileName}</span>
+                  <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
                 </label>
                 <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
               </div>
@@ -255,3 +305,4 @@ const UploadingExcelFileModal = () => (
     </section>
   </LoadingModal>
 )
+

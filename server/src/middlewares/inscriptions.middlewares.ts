@@ -1,8 +1,11 @@
+import multer from 'multer'
+import XLSX from 'xlsx'
 import { type Request, type NextFunction, type RequestHandler, type Response } from 'express'
 import { type inscripcionDetailData, type inscriptionData } from '../interfaces/inscriptions.interfaces.js'
 import { inscriptionDetailSchema, inscriptionSchema } from '../schemas/inscriptions.schemas.js'
 import { type CustomError, DataNotValid, NumberIsNaN } from '../errors/customErrors.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
+import { connection } from '../config/db.js'
 
 /**
  * @description Middleware para verificar y validar los datos de inscripción.
@@ -33,6 +36,7 @@ export const checkInscriptionData: RequestHandler<{}, Response, inscriptionData>
       const { error } = inscriptionSchema.validate({
         nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion: numberParsed, email_inscripcion, inscripcion_celular: phoneStudentParsed, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion: fichaNumber, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion: nitEmpresaNumber, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion: phoneBossParsed, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
       })
+      // console.log(error)
       if (error !== undefined) throw new DataNotValid(`Los datos ingresados del id ${inscriptionLength} no son válidos, verifícalos.`)
       inscriptionLength += 1
     }
@@ -58,6 +62,50 @@ export const checkInscriptionDetailData: RequestHandler<{ }, Response, inscripci
     if (isNaN(idUserNumber)) throw new NumberIsNaN('El id del usuario no es un número.')
     const { error } = inscriptionDetailSchema.validate({ id_inscripcion, responsable_aval, estado_aval, observaciones })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados no son válidos, verifícalos.')
+    next()
+  } catch (error) {
+    handleHTTP(res, error as CustomError)
+  }
+}
+
+export const configureMulterExcel = (): RequestHandler => {
+  const storage = multer.memoryStorage()
+  const upload = multer({ storage })
+
+  return upload.single('excelFile')
+}
+
+export const readExcelFile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { file } = req
+  try {
+    if (file === undefined) throw new DataNotValid('No se ha encontrado el archivo.')
+    const excelFile = file.buffer
+    const workbook = XLSX.read(excelFile, { type: 'buffer' })
+    const sheetName = workbook.SheetNames[0]
+    const worksheet = workbook.Sheets[sheetName]
+    const excelData = XLSX.utils.sheet_to_json(worksheet, {
+      raw: false,
+      dateNF: 'dd-mm-yyyy'
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const dataToSend = await Promise.all(excelData.map(async (item: any) => {
+      const modalidad = item['Modalidad etapa practica']
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const [result]: any[] = await connection.query('SELECT id_modalidad FROM modalidades where nombre_modalidad like ?', [`%${modalidad as string}%`])
+      const fechaTerminacionLectiva = item['Fecha de terminacion de la etapa lectiva']
+      const parts = fechaTerminacionLectiva.split('-')
+
+      if (parts.length !== 3) throw new DataNotValid('La fecha de terminación de la etapa lectiva no es válida, verifícalo.')
+
+      const dateParsed = new Date(parts[2], parts[1] - 1, parts[0]).toISOString().split('T')[0]
+
+      return {
+        ...item,
+        'Modalidad etapa practica': result[0].id_modalidad,
+        'Fecha de terminacion de la etapa lectiva': dateParsed
+      }
+    }))
+    req.body.excelData = dataToSend
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)

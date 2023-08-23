@@ -1,8 +1,9 @@
 import { type IRouter, Router } from 'express'
-import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser } from '../controllers/inscriptions.controllers.js'
+import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData } from '../controllers/inscriptions.controllers.js'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { checkInscriptionData, checkInscriptionDetailData } from '../middlewares/inscriptions.middlewares.js'
+import { checkInscriptionData, checkInscriptionDetailData, configureMulterExcel, readExcelFile } from '../middlewares/inscriptions.middlewares.js'
 
+const multerFile = configureMulterExcel()
 const inscriptionRoutes: IRouter = Router()
 
 // * GET
@@ -41,6 +42,13 @@ inscriptionRoutes.get('/inscriptionDetailsUser/:id', checkIdReq, getInscriptions
  * @bodyparam inscriptions Datos de las inscripciones a crear.
  */
 inscriptionRoutes.post('/create-inscriptions', checkInscriptionData, createInscriptions)
+
+/**
+ * @description Ruta para leer excel de inscripciones.
+ * @route POST /inscription-excel-file
+ * @fileparam Archivo excel.
+ */
+inscriptionRoutes.post('/inscription-excel-file', multerFile, readExcelFile, returnExcelData)
 
 // * PATCH
 /**
