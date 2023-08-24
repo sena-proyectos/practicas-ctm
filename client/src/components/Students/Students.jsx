@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 
 // Icons
 import { AiOutlineEye } from 'react-icons/ai'
+import { PiCaretRightBold } from 'react-icons/pi'
 
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -19,6 +20,7 @@ export const Students = () => {
   const [dates, setDates] = useState({})
   const [showModalStudent, setShowModalStudent] = useState(null)
   const { id: courseNumber } = useParams()
+  const [showFiltros, setShowFiltros] = useState(false)
 
   const getStudents = async (payload) => {
     try {
@@ -60,11 +62,15 @@ export const Students = () => {
     }
   }
 
-  const studentsPerPage = 6
+  const studentsPerPage = 5
   const pageCount = Math.ceil(studentsCourse.length / studentsPerPage)
 
   const startIndex = (pageNumber + 1) * studentsPerPage
   const endIndex = startIndex + studentsPerPage
+
+  const handleFiltros = () => {
+    setShowFiltros(!showFiltros)
+  }
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
@@ -72,44 +78,32 @@ export const Students = () => {
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-2-85-15'>
         <section className='w-[95%] h-[95%] m-auto'>
-          <div className='relative h-full overflow-x-auto bg-white shadow-md sm:rounded-lg'>
+          <div className='relative h-full bg-white shadow-md sm:rounded-lg'>
             <div className='flex items-center justify-between h-16 px-3 '>
               <div>
-                <button id='dropdownActionButton' data-dropdown-toggle='dropdownAction' className='inline-flex items-center text-gray-500 border border-gray focus:outline-none hover:bg-[#ffd6a5]/30 focus:ring-4 focus:ring-[#ffd6a5] font-medium rounded-lg text-sm px-3 py-1.5 bg-white' type='button'>
-                  <span className='sr-only'>Action button</span>
+                <button className='inline-flex items-center gap-1 text-gray-500 border border-gray focus:outline-none hover:bg-[#ffd6a5]/30 focus:ring-4 focus:ring-[#ffd6a5] font-medium rounded-lg text-sm px-3 py-1.5 bg-white' type='button' onClick={handleFiltros}>
                   Filtros
-                  <svg className='w-2.5 h-2.5 ml-2.5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 10 6'>
-                    <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='m1 1 4 4 4-4' />
-                  </svg>
+                  <PiCaretRightBold className={`text-md mt-[1px] ${showFiltros ? 'rotate-90' : 'rotate-0'} transition-all duration-200 `} />
                 </button>
-                <div id='dropdownAction' className='z-10 hidden divide-y divide-gray-100 rounded-lg shadow w-44 bg-slate-700 dark:divide-gray-600'>
-                  <ul className='py-1 text-sm text-gray-700 dark:text-gray-200' aria-labelledby='dropdownActionButton'>
-                    <li>
-                      <a href='#' className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
-                        Reward
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#' className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
-                        Promote
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#' className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
-                        Activate account
-                      </a>
-                    </li>
-                  </ul>
-                  <div className='py-1'>
-                    <a href='#' className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white'>
-                      Delete User
-                    </a>
-                  </div>
+                <ul className={`flex flex-col w-[5.4rem] text-sm font-light border border-gray mt-2 rounded-lg  ${showFiltros ? 'visible' : 'hidden'} z-10 absolute bg-white p-2`}>
+                  <li>Modalidad</li>
+                  <li>Estado</li>
+                </ul>
+              </div>
+              <div className='flex flex-row gap-3 text-sm font-light '>
+                <div className='flex flex-row items-center'>
+                  <div className='h-2.5 w-2.5 rounded-full bg-red-500 mr-2' />
+                  Lectiva
+                </div>
+                <div className='flex flex-row items-center'>
+                  <div className='h-2.5 w-2.5 rounded-full bg-yellow-500 mr-2' />
+                  Prácticas
+                </div>
+                <div className='flex flex-row items-center'>
+                  <div className='h-2.5 w-2.5 rounded-full bg-green-500 mr-2' />
+                  Finalizada
                 </div>
               </div>
-              <label htmlFor='table-search' className='sr-only'>
-                Search
-              </label>
               {detailCourse.map((item, i) => {
                 return (
                   <div className='flex flex-col items-end text-slate-800' key={i}>
@@ -119,7 +113,7 @@ export const Students = () => {
                 )
               })}
             </div>
-            <table className='w-full text-sm text-left'>
+            <table className='w-full text-sm text-left h-[72%]'>
               <thead className='uppercase bg-[#ffd6a5] border-y-[0.5px] border-gray'>
                 <tr className='grid w-full grid-cols-4-columns-table justify-items-center text-slate-800'>
                   <th scope='col' className='px-6 py-3'>
@@ -129,7 +123,7 @@ export const Students = () => {
                     Modalidad
                   </th>
                   <th scope='col' className='px-6 py-3'>
-                    Etapa
+                    Estado
                   </th>
                   <th scope='col' className='px-6 py-3'>
                     Detalles
@@ -139,21 +133,18 @@ export const Students = () => {
               <tbody>
                 {studentsCourse.slice(startIndex, endIndex).map((student, i) => {
                   return (
-                    <tr className='border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[60px] transition-colors' key={i}>
+                    <tr className='border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[10vh] transition-colors' key={i}>
                       <th scope='row' className='flex items-center text-slate-200 whitespace-nowrap '>
                         <div className='text-slate-800'>
-                          <div className='text-base font-semibold'>{student.nombre_completo}</div>
-                          <div className='font-light'>{student.email_aprendiz}</div>
+                          <div className='text-base font-semibold break-words whitespace-normal max-w-[40ch] text-center'>{student.nombre_completo}</div>
+                          <div className='font-light text-center'>{student.email_aprendiz}</div>
                         </div>
                       </th>
-                      <td className='text-base font-light max-w-[10ch]'>{student.nombre_modalidad}</td>
-                      <td className='w-full'>
-                        <div className='flex flex-row items-center text-base font-light '>
-                          <div className={`h-2.5 w-2.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
-                          {student.estado_aprendiz}
-                        </div>
+                      <td className='text-base font-light text-center max-w-[10ch]'>{student.nombre_modalidad}</td>
+                      <td>
+                        <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
                       </td>
-                      <td className='text-2xl'>
+                      <td className='flex items-center text-2xl'>
                         <button onClick={() => handleDetailInfoStudent(student.id_aprendiz)}>
                           <AiOutlineEye />
                         </button>
@@ -173,4 +164,3 @@ export const Students = () => {
     </main>
   )
 }
-
