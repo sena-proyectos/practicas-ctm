@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
 // Icons
@@ -8,43 +8,36 @@ import { AiOutlineEye } from 'react-icons/ai'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Pagination } from '../Utils/Pagination/Pagination'
-import { getClassById } from '../../api/httpRequest'
+import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById } from '../../api/httpRequest'
+import { Modals } from '../Utils/Modals/Modals'
 
 export const Students = () => {
   const [pageNumber, setPageNumber] = useState(-1)
   const [detailCourse, setDetailCourse] = useState([])
-  const { id } = useParams()
+  const [studentsCourse, setStudentsCourse] = useState([])
+  const [userInfoById, setUserInfoById] = useState([])
+  const [dates, setDates] = useState({})
+  const [showModalStudent, setShowModalStudent] = useState(null)
+  const { id: courseNumber } = useParams()
 
-  useEffect(() => {
-    getCursosById(id)
-  }, [id])
-
-  const studentsCourse = {
-    data: [
-      {
-        name: 'Stiven Blandón Urrego',
-        email: 'blandon0207s@gmial.com',
-        modalitie: 'Monitoría',
-        etapa: 'Lectiva'
-      },
-      {
-        name: 'Angie Tatiana Mosquera',
-        email: 'atatianamosquera@gmail.com',
-        modalitie: 'Contrato de aprendizaje',
-        etapa: 'Práctica'
-      },
-      {
-        name: 'Lorena Quiceno Giraldo',
-        email: 'lorenquiceno@gmail.com',
-        modalitie: 'Pasantía',
-        etapa: 'Finalizada'
-      }
-    ]
+  const getStudents = async (payload) => {
+    try {
+      const response = await GetStudentsByCourse(payload)
+      const { data } = response.data
+      setStudentsCourse(data)
+    } catch (err) {
+      throw new Error(err)
+    }
   }
 
-  const getCursosById = async (id) => {
+  useEffect(() => {
+    getStudents(courseNumber)
+    getCourseData(courseNumber)
+  }, [])
+
+  const getCourseData = async (payload) => {
     try {
-      const response = await getClassById(id)
+      const response = await GetClassByNumber(payload)
       const { data } = response.data
       setDetailCourse(data)
     } catch (error) {
@@ -52,14 +45,30 @@ export const Students = () => {
     }
   }
 
+  const handleStateModal = () => setShowModalStudent(false)
+
+  const handleDetailInfoStudent = async (id) => {
+    try {
+      setShowModalStudent(true)
+      const response = await GetStudentsDetailById(id)
+      const { data } = response.data
+      const { fecha_fin_lectiva, fecha_inicio_practica } = data[0]
+      setDates({ fin_lectiva: fecha_fin_lectiva.split('T')[0], inicio_practicas: fecha_inicio_practica.split('T')[0] })
+      setUserInfoById(data[0])
+    } catch (err) {
+      throw new Error(err)
+    }
+  }
+
   const studentsPerPage = 6
-  const pageCount = Math.ceil(studentsCourse.data.length / studentsPerPage)
+  const pageCount = Math.ceil(studentsCourse.length / studentsPerPage)
 
   const startIndex = (pageNumber + 1) * studentsPerPage
   const endIndex = startIndex + studentsPerPage
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
+      {showModalStudent && <Modals closeModal={handleStateModal} bodyStudent title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} celStudent={userInfoById.celular_aprendiz} trainingProgram={userInfoById.nombre_programa_formacion} ficha={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} trainingStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} finLectiva={dates.fin_lectiva} inicioProductiva={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} workstation={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />}
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-2-85-15'>
         <section className='w-[95%] h-[95%] m-auto'>
@@ -128,26 +137,26 @@ export const Students = () => {
                 </tr>
               </thead>
               <tbody>
-                {studentsCourse.data.slice(startIndex, endIndex).map((student, i) => {
+                {studentsCourse.slice(startIndex, endIndex).map((student, i) => {
                   return (
                     <tr className='border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[60px] transition-colors' key={i}>
                       <th scope='row' className='flex items-center text-slate-200 whitespace-nowrap '>
                         <div className='text-slate-800'>
-                          <div className='text-base font-semibold'>{student.name}</div>
-                          <div className='font-light'>{student.email}</div>
+                          <div className='text-base font-semibold'>{student.nombre_completo}</div>
+                          <div className='font-light'>{student.email_aprendiz}</div>
                         </div>
                       </th>
-                      <td className='text-base font-light max-w-[10ch]'>{student.modalitie}</td>
+                      <td className='text-base font-light max-w-[10ch]'>{student.nombre_modalidad}</td>
                       <td className='w-full'>
                         <div className='flex flex-row items-center text-base font-light '>
-                          <div className={`h-2.5 w-2.5 rounded-full ${student.etapa === 'Lectiva' ? 'bg-red-500' : student.etapa === 'Práctica' ? 'bg-yellow-500' : student.etapa === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
-                          {student.etapa}
+                          <div className={`h-2.5 w-2.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
+                          {student.estado_aprendiz}
                         </div>
                       </td>
                       <td className='text-2xl'>
-                        <Link to='/fichas'>
+                        <button onClick={() => handleDetailInfoStudent(student.id_aprendiz)}>
                           <AiOutlineEye />
-                        </Link>
+                        </button>
                       </td>
                     </tr>
                   )
@@ -164,3 +173,4 @@ export const Students = () => {
     </main>
   )
 }
+

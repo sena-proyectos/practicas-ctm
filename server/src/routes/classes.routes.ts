@@ -1,6 +1,6 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { getClasses, getClassById, getClassByClassNumber, createClass, editClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates } from '../controllers/classes.controllers.js'
+import { getClasses, getClassById, getClassByClassNumber, createClass, editClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber } from '../controllers/classes.controllers.js'
 import { checkClassData, checkClassDate, checkClassNumber, checkPracticalTeacherId } from '../middlewares/classes.middlewares.js'
 
 const classRoutes: IRouter = Router()
@@ -35,6 +35,12 @@ GET para el punto final '/classNumber'. Cuando se realiza una solicitud GET a es
 ejecutará el middleware `checkClassNumber` seguido de la función de controlador
 `getClassByClassNumber`. */
 classRoutes.get('/classNumber', checkClassNumber, getClassByClassNumber)
+
+/* La línea `classRoutes.get('/classStudents', checkClassNumber, getStudentsClassByClassNumber)` define
+una ruta GET para el punto final '/classStudents'. Cuando se realiza una solicitud GET a este punto
+final, ejecutará la función de middleware `checkClassNumber` seguida de la función de controlador
+`getStudentsClassByClassNumber`. */
+classRoutes.get('/classStudents', checkClassNumber, getStudentsClassByClassNumber)
 
 // * POST
 /* `classRoutes.post('/class', checkClassData, createClass)` está definiendo una ruta para el método

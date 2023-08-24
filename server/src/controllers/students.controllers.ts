@@ -42,7 +42,7 @@ export const getStudentsById: RequestHandler<{ id: string }, Response, unknown> 
 export const getStudentByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
   const { nombreCompleto } = req.query
   try {
-    const [student] = await connection.query('SELECT * FROM aprendices WHERE CONCAT(nombre_aprendiz, " ", apellido_aprendiz) LIKE ?', [`%${nombreCompleto as string}%`])
+    const [student] = await connection.query('SELECT CONCAT(aprendices.nombre_aprendiz, " ", aprendices.apellido_aprendiz) AS nombre_completo, aprendices.email_aprendiz, aprendices.id_aprendiz, fichas.nombre_programa_formacion, fichas.numero_ficha FROM aprendices INNER JOIN detalle_fichas_aprendices ON aprendices.id_aprendiz = detalle_fichas_aprendices.id_aprendiz INNER JOIN fichas ON detalle_fichas_aprendices.id_ficha = fichas.id_ficha WHERE CONCAT(nombre_aprendiz, " ", apellido_aprendiz) LIKE ?', [`%${nombreCompleto as string}%`])
     if (!Array.isArray(student) || student?.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)
     return res.status(httpStatus.OK).json({ data: student })
   } catch (error) {

@@ -1,5 +1,5 @@
 import multer from 'multer'
-import XLSX from 'xlsx'
+import * as XLSX from 'xlsx'
 import { type Request, type NextFunction, type RequestHandler, type Response } from 'express'
 import { type inscripcionDetailData, type inscriptionData } from '../interfaces/inscriptions.interfaces.js'
 import { inscriptionDetailSchema, inscriptionSchema } from '../schemas/inscriptions.schemas.js'
