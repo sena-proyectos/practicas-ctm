@@ -122,3 +122,4 @@ export const getClassById = async (id) => {
   const response = await axios.get(URL)
   return response
 }
+
