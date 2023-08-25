@@ -1,5 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 // Icons
 import { AiOutlineEye } from 'react-icons/ai'
@@ -12,6 +14,7 @@ import { Footer } from '../Footer/Footer'
 import { Pagination } from '../Utils/Pagination/Pagination'
 import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById } from '../../api/httpRequest'
 import { Modals } from '../Utils/Modals/Modals'
+import { BiSad } from 'react-icons/bi'
 
 export const Students = () => {
   const [pageNumber, setPageNumber] = useState(-1)
@@ -25,13 +28,16 @@ export const Students = () => {
   const [showFiltros, setShowFiltros] = useState(false)
   const [filtersButtons, setFiltersButtons] = useState({ modalidad: false, etapa: false })
   const [activeFilter, setActiveFilter] = useState(false)
+  const [loadingData, setLoadingData] = useState({ course: true, students: true })
 
   const getStudents = async (payload) => {
     try {
       const response = await GetStudentsByCourse(payload)
       const { data } = response.data
-      setStudentsCourse(data)
-      setStudentsCourseOriginal(data)
+      setTimeout(() => {
+        setStudentsCourse(data)
+        setStudentsCourseOriginal(data)
+      }, 3000)
     } catch (err) {
       throw new Error(err)
     }
@@ -46,7 +52,10 @@ export const Students = () => {
     try {
       const response = await GetClassByNumber(payload)
       const { data } = response.data
-      setDetailCourse(data)
+      setTimeout(() => {
+        setDetailCourse(data[0])
+        setLoadingData({ course: false })
+      }, 3000)
     } catch (error) {
       throw new Error(error)
     }
@@ -192,14 +201,19 @@ export const Students = () => {
                   Finalizada
                 </div>
               </div>
-              {detailCourse.map((item, i) => {
-                return (
-                  <div className='flex flex-col items-end text-slate-800' key={i}>
-                    <h2 className='text-base font-normal'>{item.nombre_programa_formacion}</h2>
-                    <h3 className='text-sm font-light'>{item.numero_ficha}</h3>
-                  </div>
-                )
-              })}
+              <div className='flex flex-col items-end text-slate-800'>
+                {loadingData.course ? (
+                  <>
+                    <Skeleton width={55} height={20} />
+                    <Skeleton width={55} height={15} />
+                  </>
+                ) : (
+                  <>
+                    <h2 className='text-base font-normal'>{detailCourse.nombre_programa_formacion}</h2>
+                    <h3 className='text-sm font-light'>{detailCourse.numero_ficha}</h3>
+                  </>
+                )}
+              </div>
             </div>
             <table className='w-full text-sm text-left h-[72%]'>
               <thead className='uppercase bg-[#ffd6a5] border-y-[0.5px] border-gray'>
@@ -219,27 +233,38 @@ export const Students = () => {
                 </tr>
               </thead>
               <tbody>
-                {studentsCourse.slice(startIndex, endIndex).map((student, i) => {
-                  return (
-                    <tr className='border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[10vh] transition-colors' key={i}>
-                      <th scope='row' className='flex items-center text-slate-200 whitespace-nowrap '>
-                        <div className='text-slate-800'>
-                          <div className='text-base font-semibold break-words whitespace-normal max-w-[40ch] text-center'>{student.nombre_completo}</div>
-                          <div className='font-light text-center'>{student.email_aprendiz}</div>
-                        </div>
-                      </th>
-                      <td className='text-base font-light text-center max-w-[10ch]'>{student.nombre_modalidad}</td>
-                      <td>
-                        <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
-                      </td>
-                      <td className='flex items-center text-2xl'>
-                        <button onClick={() => handleDetailInfoStudent(student.id_aprendiz)}>
-                          <AiOutlineEye />
-                        </button>
-                      </td>
-                    </tr>
-                  )
-                })}
+                {studentsCourse.length > 0 ? (
+                  studentsCourse.slice(startIndex, endIndex).map((student, i) => {
+                    return (
+                      <tr className='border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[10vh] transition-colors' key={i}>
+                        <th scope='row' className='flex items-center text-slate-200 whitespace-nowrap '>
+                          <div className='text-slate-800'>
+                            <div className='text-base font-semibold break-words whitespace-normal max-w-[40ch] text-center'>{student.nombre_completo}</div>
+                            <div className='font-light text-center'>{student.email_aprendiz}</div>
+                          </div>
+                        </th>
+                        <td className='text-base font-light text-center max-w-[10ch]'>{student.nombre_modalidad}</td>
+                        <td>
+                          <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
+                        </td>
+                        <td className='flex items-center text-2xl'>
+                          <button onClick={() => handleDetailInfoStudent(student.id_aprendiz)}>
+                            <AiOutlineEye />
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })
+                ) : loadingData.course ? (
+                  <LoadingDataStudents number={5} />
+                ) : (
+                  <tr className='grid place-content-center h-full'>
+                    <th scope='row' className='text-red-500 text-xl flex items-center gap-1'>
+                      <p>¡Oops! No hay ningún aprendiz con este filtro.</p>
+                      <BiSad className='text-2xl' />
+                    </th>
+                  </tr>
+                )}
               </tbody>
             </table>
             <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0'>
@@ -252,4 +277,29 @@ export const Students = () => {
     </main>
   )
 }
+
+const LoadingDataStudents = ({ number = 6 }) =>
+  [...Array(number)].map((_, i) => (
+    <tr className='border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[10vh] transition-colors' key={i}>
+      <th scope='row' className='flex items-center text-slate-200 whitespace-nowrap '>
+        <div className='text-slate-800'>
+          <div className='text-base font-semibold break-words whitespace-normal max-w-[40ch] text-center'>
+            <Skeleton width={'12rem'} height={15} />
+          </div>
+          <div className='font-light text-center'>
+            <Skeleton width={'10rem'} height={10} />
+          </div>
+        </div>
+      </th>
+      <td className='text-base font-light text-center max-w-[10ch]'>
+        <Skeleton width={'6rem'} height={15} />
+      </td>
+      <td>
+        <Skeleton width={30} height={15} />
+      </td>
+      <td className='flex items-center text-2xl'>
+        <Skeleton width={30} height={15} />
+      </td>
+    </tr>
+  ))
 
