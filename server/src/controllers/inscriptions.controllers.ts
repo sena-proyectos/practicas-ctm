@@ -39,7 +39,6 @@ export const getInscriptionsDetailsByUser: RequestHandler<{ id: string }, Respon
     const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE responsable_aval = ? LIMIT ? OFFSET ?', [idNumber, limitNumber, offsetNumber])
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (err) {
-    console.log(err)
     return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
   }
 }
@@ -61,7 +60,6 @@ export const getInscriptionsDetailsByInscription: RequestHandler<{ id: string },
     const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE id_inscripcion = ? LIMIT ? OFFSET ?', [idNumber, limitNumber, offsetNumber])
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (err) {
-    console.log(err)
     return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
   }
 }
@@ -128,7 +126,6 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
     }
     return res.status(httpStatus.CREATED).json({ data: { infoInscription: `Added ${i}`, msg: 'Inscripciones creados', code: 'toEnd' } })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
@@ -193,7 +190,6 @@ export const returnExcelData = async (req: Request, res: Response): Promise<Resp
       throw new DataNotValid('Excel no válido')
     }
   } catch (error) {
-    console.log({ msg: error })
     return handleHTTP(res, error as CustomError)
   }
 }

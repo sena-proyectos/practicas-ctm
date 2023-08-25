@@ -56,7 +56,8 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
   }))
 
   return (
-    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen bg-black/50 backdrop-blur-sm backdrop-filter '>
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+      <aside className='absolute inset-0 h-full w-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
       <section className={`relative flex h-auto w-11/12 ${bodyStudent ? 'md:w-1/2' : ' md:w-2/5'} flex-col rounded-2xl bg-white bounce`}>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
