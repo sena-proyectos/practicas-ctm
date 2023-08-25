@@ -10,12 +10,15 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
+import { keysRoles } from '../../import/staticData'
 import { getInscriptionById } from '../../api/httpRequest' // getInscriptionDetails } from '../../api/httpRequest'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
   const [selectedTab, setSelectedTab] = useState('infoAprendiz')
   const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
+
+  const idRol = Number(localStorage.getItem('idRol'))
 
   useEffect(() => {
     getInscriptionAprendiz(id)
@@ -54,15 +57,21 @@ export const RegisterDetails = () => {
             <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'infoEmpresa' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoEmpresa')}>
               Info. Empresa
             </li>
-            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('coordinador')}>
-              Coordinador
-            </li>
-            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
-              Documentos
-            </li>
-            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('raps')}>
-              RAPS
-            </li>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('coordinador')}>
+                Coordinador
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
+                Documentos
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('raps')}>
+                RAPS
+              </li>
+            )}
           </ul>
         </header>
         <section>
@@ -73,13 +82,13 @@ export const RegisterDetails = () => {
             <InfoEmpresa inscriptionAprendiz={inscriptionAprendiz} />
           </div>
           <div className={`${selectedTab === 'coordinador' ? 'visible' : 'hidden'}`}>
-            <Coordinador />
+            <Coordinador idRol={idRol} />
           </div>
           <div className={`${selectedTab === 'documentos' ? 'visible h-full' : 'hidden'}`}>
-            <Documentos />
+            <Documentos idRol={idRol} />
           </div>
           <div className={`${selectedTab === 'raps' ? 'visible' : 'hidden'}`}>
-            <RAPS />
+            <RAPS idRol={idRol} />
           </div>
 
           <div className='absolute top-4 left-8'>
@@ -205,7 +214,7 @@ const InfoEmpresa = ({ inscriptionAprendiz }) => {
   )
 }
 
-const Coordinador = () => {
+const Coordinador = ({ idRol }) => {
   const option = [
     { value: 'Sergio Soto Henao', key: 'Sergio Soto Henao' },
     { value: 'Marianela Henao Atehortúa', key: 'Marianela Henao Atehortúa' },
@@ -222,10 +231,14 @@ const Coordinador = () => {
             </label>
             <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} />
           </div>
-          <div className='flex flex-row gap-7 place-self-center'>
-            <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-            <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-          </div>
+          {idRol === Number(keysRoles[1]) ? (
+            <div className='flex flex-row gap-7 place-self-center'>
+              <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+              <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+            </div>
+          ) : (
+            <h5 className='text-sm font-light text-center'>La solicitud esta siendo procesada por el coordinador</h5>
+          )}
           <div>
             <label htmlFor='' className='text-sm font-light'>
               Observaciones
@@ -239,62 +252,76 @@ const Coordinador = () => {
   )
 }
 
-const Documentos = () => {
+const Documentos = ({ idRol }) => {
   return (
     <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
       <section>Documentación</section>
       <section className='flex flex-col items-center gap-3'>
-        <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
-          <div className='w-[95%] mx-auto h-full'>
-            <form action='' className='flex flex-col gap-3'>
-              <div className='flex flex-col gap-1'>
-                <label htmlFor='' className='text-sm font-light'>
-                  Instructor Líder
-                </label>
-                <input type='text' className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
-              </div>
-              <div className='flex flex-row gap-7 place-self-center'>
-                <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-              </div>
-              <div>
-                <label htmlFor='' className='text-sm font-light'>
-                  Observaciones
-                </label>
-                <textarea id='editor' rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
-              </div>
-            </form>
-          </div>
-        </section>
-        <hr className='w-3/4 border border-slate-500' />
-        <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
-          <div className='w-[95%] mx-auto h-full'>
-            <form action='' className='flex flex-col gap-3'>
-              <div className='flex flex-col gap-1'>
-                <label htmlFor='' className='text-sm font-light'>
-                  Instructor de Seguimiento
-                </label>
-                <input type='text' className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
-              </div>
-              <div className='flex flex-row gap-7 place-self-center'>
-                <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-              </div>
-              <div>
-                <label htmlFor='' className='text-sm font-light'>
-                  Observaciones
-                </label>
-                <textarea id='editor' rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
-              </div>
-            </form>
-          </div>
-        </section>
+        {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+          <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
+            <div className='w-[95%] mx-auto h-full'>
+              <form action='' className='flex flex-col gap-3'>
+                <div className='flex flex-col gap-1'>
+                  <label htmlFor='' className='text-sm font-light'>
+                    Líder Prácticas
+                  </label>
+                  <input type='text' className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
+                </div>
+                {idRol === Number(keysRoles[0]) ? (
+                  <div className='flex flex-row gap-7 place-self-center'>
+                    <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  </div>
+                ) : (
+                  <h5 className='text-sm font-light text-center'>Actualmente la documentación se encuentra en revisión</h5>
+                )}
+                <div>
+                  <label htmlFor='' className='text-sm font-light'>
+                    Observaciones
+                  </label>
+                  <textarea id='editor' rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                </div>
+                {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
+              </form>
+            </div>
+          </section>
+        )}
+        {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && <hr className='w-3/4 border border-slate-500' />}
+        {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
+          <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
+            <div className='w-[95%] mx-auto h-full'>
+              <form action='' className='flex flex-col gap-3'>
+                <div className='flex flex-col gap-1'>
+                  <label htmlFor='' className='text-sm font-light'>
+                    Instructor de Seguimiento
+                  </label>
+                  <input type='text' className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
+                </div>
+                {idRol === Number(keysRoles[2]) ? (
+                  <div className='flex flex-row gap-7 place-self-center'>
+                    <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  </div>
+                ) : (
+                  <h5 className='text-sm font-light text-center'>Actualmente la carta inicial se encuentra en revisión</h5>
+                )}
+                <div>
+                  <label htmlFor='' className='text-sm font-light'>
+                    Observaciones
+                  </label>
+                  <textarea id='editor' rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                </div>
+                {idRol === Number(keysRoles[2]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
+              </form>
+            </div>
+          </section>
+        )}
       </section>
     </section>
   )
 }
 
-const RAPS = () => {
+const RAPS = ({ idRol }) => {
   return (
     <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
       <section>RAPS</section>
@@ -307,17 +334,21 @@ const RAPS = () => {
               </label>
               <input type='text' className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
             </div>
-            <div className='flex flex-row gap-7 place-self-center'>
-              <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-              <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-            </div>
+            {idRol === Number(keysRoles[3]) ? (
+              <div className='flex flex-row gap-7 place-self-center'>
+                <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+              </div>
+            ) : (
+              <h5 className='text-sm font-light text-center'>Actualmente los RAPS se encuentran en revisión</h5>
+            )}
             <div>
               <label htmlFor='' className='text-sm font-light'>
                 Observaciones
               </label>
               <textarea id='editor' rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
             </div>
-            <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />
+            {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
           </form>
         </div>
       </section>
