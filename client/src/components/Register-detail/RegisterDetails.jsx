@@ -1,10 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 
 // icons
-// import { BsCheck2Circle } from 'react-icons/bs'
 import { LuSave } from 'react-icons/lu'
-// import { AiOutlineCloudUpload } from 'react-icons/ai'
 import { IoReturnDownBack } from 'react-icons/io5'
 
 // Components
@@ -12,56 +10,23 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
-// import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, keysRoles } from '../../import/staticData'
 import { getInscriptionById } from '../../api/httpRequest' // getInscriptionDetails } from '../../api/httpRequest'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
   const [selectedTab, setSelectedTab] = useState('infoAprendiz')
-
-  // const idRol = Number(localStorage.getItem('idRol'))
+  const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
 
   useEffect(() => {
     getInscriptionAprendiz(id)
     // getDetallesInscripcion(id)
   }, [id])
 
-  const inputRefs = {
-    apellido_inscripcion: useRef(null),
-    nombre_inscripcion: useRef(null),
-    documento_inscripcion: useRef(null),
-    email_inscripcion: useRef(null),
-    inscripcion_celular: useRef(null),
-    numero_ficha_inscripcion: useRef(null),
-    nombre_programa_inscripcion: useRef(null),
-    nombre_instructor_lider_inscripcion: useRef(null),
-    email_instructor_lider_inscripcion: useRef(null),
-    tipo_documento_inscripcion: useRef(null),
-    modalidad_inscripcion: useRef(null),
-    fecha_fin_lectiva_inscripcion: useRef(null),
-    apoyo_sostenimiento_inscripcion: useRef(null),
-    etapa_actual_inscripcion: useRef(null),
-    nivel_formacion_inscripcion: useRef(null),
-    nit_empresa_inscripcion: useRef(null),
-    telefono_jefe_empresa_inscripcion: useRef(null),
-    email_jefe_empresa_inscripcion: useRef(null),
-    nombre_empresa_inscripcion: useRef(null),
-    direccion_empresa_inscripcion: useRef(null),
-    nombre_jefe_empresa_inscripcion: useRef(null),
-    cargo_jefe_empresa_inscripcion: useRef(null),
-    arl: useRef(null),
-    observaciones: useRef(null)
-  }
-
   const getInscriptionAprendiz = async (id) => {
     try {
       const response = await getInscriptionById(id)
-      const res = response.data.data[0]
-      Object.keys(res).forEach((fieldName) => {
-        if (inputRefs[fieldName] && inputRefs[fieldName].current) {
-          inputRefs[fieldName].current.value = res[fieldName]
-        }
-      })
+      const res = response.data.data
+      setInscriptionAprendiz(res)
     } catch (error) {
       console.log('Ha ocurrido un error al mostrar los datos del usuario')
     }
@@ -70,16 +35,12 @@ export const RegisterDetails = () => {
   // const getDetallesInscripcion = async (id) => {
   //   try {
   //     const response = await getInscriptionDetails(id)
-  //     // id === Cookies.id => habilitado ? desha
+  // id === Cookies.id => habilitado ? desha
   //     console.log(response)
   //   } catch (error) {
   //     console.log(error)
   //   }
   // }
-
-  // const [isSectionOpen, setIsSectionOpen] = useState(true)
-
-  //
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
@@ -106,10 +67,10 @@ export const RegisterDetails = () => {
         </header>
         <section>
           <div className={`${selectedTab === 'infoAprendiz' ? 'visible' : 'hidden'}`}>
-            <InfoAprendiz inputRefs={inputRefs} />
+            <InfoAprendiz inscriptionAprendiz={inscriptionAprendiz} />
           </div>
           <div className={`${selectedTab === 'infoEmpresa' ? 'visible' : 'hidden'}`}>
-            <InfoEmpresa inputRefs={inputRefs} />
+            <InfoEmpresa inscriptionAprendiz={inscriptionAprendiz} />
           </div>
           <div className={`${selectedTab === 'coordinador' ? 'visible' : 'hidden'}`}>
             <Coordinador />
@@ -134,166 +95,112 @@ export const RegisterDetails = () => {
   )
 }
 
-const InfoAprendiz = ({ inputRefs }) => {
-  const dataAprendiz = [
-    {
-      type: 'select',
-      name: 'modalidad_inscripcion',
-      placeholder: 'Sin seleccionar',
-      label: 'Modalidad'
-    },
-    {
-      type: 'text',
-      name: 'nombre_inscripcion',
-      placeholder: 'Alejandro',
-      label: 'Nombres'
-    },
-    {
-      type: 'text',
-      name: 'apellido_inscripcion',
-      placeholder: 'Rodriguez',
-      label: 'Apellidos'
-    },
-    {
-      type: 'select',
-      name: 'tipo_documento_inscripcion',
-      placeholder: 'sin seleccionar',
-      label: 'Tipo documento'
-    },
-    {
-      type: 'number',
-      name: 'documento_inscripcion',
-      placeholder: '1023456789',
-      label: 'Número documento'
-    },
-    {
-      type: 'email',
-      name: 'email_inscripcion',
-      placeholder: 'example@sena.edu.co',
-      label: 'Correo electrónico'
-    },
-    {
-      type: 'number',
-      name: 'inscripcion_celular',
-      placeholder: '3012345467',
-      label: 'Número de celular'
-    },
-    {
-      type: 'select',
-      name: 'etapa_actual_inscripcion',
-      placeholder: 'Sin seleccionar',
-      label: 'Etapa de formación'
-    },
-    {
-      type: 'select',
-      name: 'nivel_formacion_inscripcion',
-      placeholder: 'Sin seleccionar',
-      label: 'Nivel de formación'
-    },
-    {
-      type: 'number',
-      name: 'numero_ficha_inscripcion',
-      placeholder: '2134567',
-      label: 'Número de ficha'
-    },
-    {
-      type: 'text',
-      name: 'nombre_programa_inscripcion',
-      placeholder: 'Producción multimedia',
-      label: 'Programa formación'
-    },
-    {
-      type: 'date',
-      name: 'fecha_fin_lectiva_inscripcion',
-      label: 'Fin etapa lectiva'
-    }
-  ]
-
+const InfoAprendiz = ({ inscriptionAprendiz }) => {
   return (
-    <section className={`flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2 bg-violet-200 border-1 rounded-xl h-52`}>
-      <h3>Información del aprendiz</h3>
-      <div>
-        <section className='grid gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
-          {dataAprendiz.map((item, i) => {
-            const inputRef = inputRefs[item.name]
-            return (
-              <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
-                {item.type === 'number' ? <input type={item.type} name={item.name} ref={inputRef} className='focus:text-gray-900 w-full rounded-xl shadow-lg py-1 pl-2 text-sm text-black bg-white focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-400' disabled autoComplete='on' /> : <input type={item.type} name={item.name} ref={inputRef} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-lg focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none' autoComplete='on' disabled />}
+    <section className={`w-[85%] p-2 mx-auto`}>
+      {inscriptionAprendiz.map((x) => {
+        return (
+          <section className='flex flex-col gap-4' key={x.id_inscripcion}>
+            <div>
+              <h2 className='text-lg font-semibold text-center uppercase'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</h2>
+              <h5 className='font-light text-center'>{x.email_inscripcion}</h5>
+              <h5 className='font-light text-center'>{`${x.tipo_documento_inscripcion} ${x.documento_inscripcion}`}</h5>
+              <p className='font-light text-center'>{x.inscripcion_celular}</p>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Información Acádemica</h2>
+            <div className='grid grid-cols-2 gap-2'>
+              <div className='flex flex-col gap-2'>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Tipo Modalidad:</h4>
+                  <p>{x.modalidad_inscripcion === '1' ? 'Pasantías' : x.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : x.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : x.modalidad_inscripcion === '4' ? 'Monitoría' : x.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</p>
+                </article>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Fin Lectiva:</h4>
+                  <p>{x.fecha_fin_lectiva_inscripcion}</p>
+                </article>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Etapa Formación:</h4>
+                  <p>{x.etapa_actual_inscripcion}</p>
+                </article>
               </div>
-            )
-          })}
-        </section>
-      </div>
+              <div className='flex flex-col gap-2'>
+                <p className='text-right'>{x.numero_ficha_inscripcion}</p>
+                <p className='text-right'>{x.nivel_formacion_inscripcion}</p>
+                <p className='text-right'>{x.nombre_programa_inscripcion}</p>
+              </div>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Responsable de la Inscripción</h2>
+            <div className='flex flex-row justify-around gap-9'>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Fecha Creación:</h4>
+                <p>{x.fecha_creacion.split('T')[0]}</p>
+              </article>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Encargado:</h4>
+                <p>{x.responsable_inscripcion}</p>
+              </article>
+            </div>
+          </section>
+        )
+      })}
     </section>
   )
 }
 
-const InfoEmpresa = ({ inputRefs }) => {
-  const dataEmpresa = [
-    {
-      type: 'number',
-      name: 'nit_empresa_inscripcion',
-      placeholder: '899999034-1',
-      label: 'NIT de la empresa'
-    },
-    {
-      type: 'text',
-      name: 'nombre_empresa_inscripcion',
-      placeholder: 'SENA',
-      label: 'Razón social (Empresa)'
-    },
-    {
-      type: 'text',
-      name: 'direccion_empresa_inscripcion',
-      placeholder: 'Cra 30 No. 3E 164',
-      label: 'Dirección de empresa'
-    },
-    {
-      type: 'text',
-      name: 'nombre_jefe_empresa_inscripcion',
-      placeholder: 'Juan Perez',
-      label: 'Nombre jefe inmediato'
-    },
-    {
-      type: 'text',
-      name: 'cargo_jefe_empresa_inscripcion',
-      placeholder: 'Gerente',
-      label: 'Cargo jefe inmediato'
-    },
-    {
-      type: 'number',
-      name: 'telefono_jefe_empresa_inscripcion',
-      placeholder: '3012345678',
-      label: 'Teléfono jefe inmediato'
-    },
-    {
-      type: 'email',
-      name: 'email_jefe_empresa_inscripcion',
-      placeholder: 'example@sena.edu.co',
-      label: 'Correo jefe Inmediato'
-    },
-    {
-      type: 'select',
-      name: 'arl',
-      placeholder: 'Sin seleccionar',
-      label: '¿Quién asume pago arl?'
-    }
-  ]
+const InfoEmpresa = ({ inscriptionAprendiz }) => {
+  console.log(inscriptionAprendiz)
   return (
-    <section className={`flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2 bg-violet-200 border-1 rounded-xl h-44`}>
-      <h3>Información del aprendiz</h3>
-      <div>
-        <section className='grid gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-4'>
-          {dataEmpresa.map((item, i) => {
-            const inputRef = inputRefs[item.name]
-            return (
-              <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
-                {item.type === 'number' ? <input type={item.type} name={item.name} ref={inputRef} className='focus:text-gray-900 w-full rounded-xl shadow-lg py-1 pl-2 text-sm text-black bg-white focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-400' disabled autoComplete='on' /> : <input type={item.type} name={item.name} ref={inputRef} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-lg focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none' autoComplete='on' disabled />}
+    <section className={`w-[85%] p-2 mx-auto`}>
+      {inscriptionAprendiz.map((x) => {
+        return (
+          <section className='flex flex-col gap-3' key={x.id_inscripcion}>
+            <div>
+              <h2 className='text-lg font-semibold text-center uppercase'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</h2>
+              <h5 className='font-light text-center'>{x.email_inscripcion}</h5>
+              <h5 className='font-light text-center'>{`${x.tipo_documento_inscripcion} ${x.documento_inscripcion}`}</h5>
+              <p className='font-light text-center'>{x.inscripcion_celular}</p>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Información Empresa</h2>
+            <div className={`${!x.nit_empresa_inscripcion ? 'flex flex-col' : 'grid grid-cols-2 gap-2'}`}>
+              <div className={`flex ${!x.nit_empresa_inscripcion ? 'flex-row justify-between' : ' flex-col gap-3'}`}>
+                <div className={`${!x.nit_empresa_inscripcion ? 'hidden' : 'flex flex-row justify-start gap-5'}`}>
+                  <p className='text-left'>{x.nit_empresa_inscripcion}</p>
+                  <p className='text-left'>{x.nombre_empresa_inscripcion}</p>
+                </div>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>¿Quién asume el ARL?</h4>
+                  <p>{x.arl}</p>
+                </article>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Observaciones</h4>
+                  <p>{x.observaciones}</p>
+                </article>
               </div>
-            )
-          })}
-        </section>
-      </div>
+              <div className='flex flex-col gap-1'>
+                <p className='text-right'>{x.nombre_jefe_empresa_inscripcion}</p>
+                <p className='text-right'>{x.cargo_jefe_empresa_inscripcion}</p>
+                <p className='text-right'>{x.telefono_jefe_empresa_inscripcion}</p>
+                <p className='text-right'>{x.email_jefe_empresa_inscripcion}</p>
+              </div>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Responsable de la Inscripción</h2>
+            <div className='flex flex-row justify-around gap-9'>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Fecha Creación:</h4>
+                <p>{x.fecha_creacion.split('T')[0]}</p>
+              </article>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Encargado:</h4>
+                <p>{x.responsable_inscripcion}</p>
+              </article>
+            </div>
+          </section>
+        )
+      })}
     </section>
   )
 }
@@ -313,7 +220,7 @@ const Coordinador = () => {
             <label htmlFor='' className='text-sm font-light'>
               Coordinador Asignado
             </label>
-            <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} shadow={'shadow-md shadow-slate-400'} border='none' />
+            <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} />
           </div>
           <div className='flex flex-row gap-7 place-self-center'>
             <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
@@ -354,7 +261,7 @@ const Documentos = () => {
                 <label htmlFor='' className='text-sm font-light'>
                   Observaciones
                 </label>
-                <textarea id='editor' rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                <textarea id='editor' rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
               </div>
             </form>
           </div>
@@ -377,7 +284,7 @@ const Documentos = () => {
                 <label htmlFor='' className='text-sm font-light'>
                   Observaciones
                 </label>
-                <textarea id='editor' rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                <textarea id='editor' rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
               </div>
             </form>
           </div>
