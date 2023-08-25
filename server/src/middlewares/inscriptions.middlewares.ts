@@ -1,5 +1,5 @@
 import multer from 'multer'
-import XLSX from 'xlsx'
+import * as XLSX from 'xlsx'
 import { type Request, type NextFunction, type RequestHandler, type Response } from 'express'
 import { type inscripcionDetailData, type inscriptionData } from '../interfaces/inscriptions.interfaces.js'
 import { inscriptionDetailSchema, inscriptionSchema } from '../schemas/inscriptions.schemas.js'
@@ -36,7 +36,6 @@ export const checkInscriptionData: RequestHandler<{}, Response, inscriptionData>
       const { error } = inscriptionSchema.validate({
         nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion: numberParsed, email_inscripcion, inscripcion_celular: phoneStudentParsed, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion: fichaNumber, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion: nitEmpresaNumber, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion: phoneBossParsed, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
       })
-      // console.log(error)
       if (error !== undefined) throw new DataNotValid(`Los datos ingresados del id ${inscriptionLength} no son válidos, verifícalos.`)
       inscriptionLength += 1
     }

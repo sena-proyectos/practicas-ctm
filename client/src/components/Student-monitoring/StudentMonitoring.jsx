@@ -69,9 +69,9 @@ export const StudentMonitoring = () => {
         setSearchedApprentices(data)
       }
     } catch (error) {
-      const message = error.response.data.error.info.message
+      const message = error?.response?.data?.error?.info?.message
 
-      setError(message)
+      setError(message ?? 'Usuario no existente')
       setSearchedApprentices([])
     }
   }
@@ -146,3 +146,4 @@ const SkeletonLoading = ({ number = 6 }) =>
       <Skeleton height={'14rem'} className='scale-90 rounded-2xl' />
     </div>
   ))
+

@@ -41,6 +41,12 @@ export const GetUserByName = async (searchQuery) => {
 
   return response
 }
+/* BUSCAR APRENDICES DE UNA FICHA */
+export const GetStudentsByCourse = async (data) => {
+  const URL = `${baseUrl}${api}/classStudents?numero_ficha=${data}`
+  const response = await axios.get(URL)
+  return response
+}
 
 /* BUSCAR INSTRUCTOR POR NOMBRE */
 export const GetTeacherByName = async (data) => {
@@ -122,3 +128,4 @@ export const getClassById = async (id) => {
   const response = await axios.get(URL)
   return response
 }
+

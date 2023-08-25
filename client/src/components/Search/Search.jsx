@@ -33,7 +33,7 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, iconClick
         <>
           <form action='' method='get' className='flex min-w-fit w-full items-center rounded-3xl bg-[#E8E8E8] shadow-md saturate-[100%] backdrop-blur-sm ' onChange={handleSearch} onSubmit={evnt}>
             <Button bg={'bg-transparent'} px='px-3' textColor='text-black' className='absolute right-[6px]' value={<IoSearchOutline />} />
-            <input type='text' placeholder='Busca a un aprendiz' className='flex-1 py-1 bg-transparent outline-none w-fit rounded-3xl' ref={search} name='nombreCompleto' autoComplete='off' />
+            <input type='text' placeholder='Busca a un aprendiz' className='flex-1 py-1 bg-transparent outline-none w-fit rounded-3xl focus:placeholder-transparent' ref={search} name='nombreCompleto' autoComplete='off' />
             <article className='absolute right-[8px] w-fit'>
               <Button bg={'bg-transparent'} px={'px-3'} textColor='text-black' clickeame={iconClick} value={<LuSettings2 />} />
             </article>

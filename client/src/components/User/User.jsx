@@ -5,9 +5,26 @@ import { BiLockAlt } from 'react-icons/bi'
 import { IoPersonOutline } from 'react-icons/io5'
 
 import { Form } from '../Form/Form'
+import { useNavigate } from 'react-router-dom'
+import Cookies from 'js-cookie'
 
 const User = () => {
+  const goto = useNavigate()
+  const idRol = Number(localStorage.getItem('idRol'))
+  const cookie = Cookies.get('token')
+
+  const earlyReturn = async () => {
+    if (idRol && cookie) goto('/home', { replace: true })
+  }
+
+  useEffect(() => {
+    earlyReturn()
+  }, [])
+
+  if (idRol && cookie) return null
+
   const divRef = useRef(null)
+
   const loginForm = [
     {
       icon: <AiOutlineIdcard />,

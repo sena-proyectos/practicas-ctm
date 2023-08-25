@@ -115,6 +115,18 @@ export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Res
   }
 }
 
+export const getStudentsClassByClassNumber: RequestHandler<{numero_ficha: string}, Response, classes> = async (req: Request, res: Response) => {
+  const { numero_ficha } = req.query
+  const classNumber = Number(numero_ficha)
+  try {
+    const [classQuery] = await connection.query('SELECT aprendices.id_aprendiz, CONCAT(aprendices.nombre_aprendiz, " ", aprendices.apellido_aprendiz) AS nombre_completo, aprendices.email_aprendiz, modalidades.nombre_modalidad, aprendices.estado_aprendiz FROM aprendices INNER JOIN modalidades ON aprendices.id_modalidad = modalidades.id_modalidad INNER JOIN detalle_fichas_aprendices ON aprendices.id_aprendiz = detalle_fichas_aprendices.id_aprendiz INNER JOIN fichas ON fichas.id_ficha = detalle_fichas_aprendices.id_ficha WHERE fichas.numero_ficha = ?', [classNumber])
+    if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se encontró la información de los estudiantes.', errorCodes.ERROR_GET_CLASS)
+    return res.status(httpStatus.OK).json({ data: classQuery })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 /**
  * Esta función de TypeScript crea un registro de clase en una tabla de base de datos.
  * @param req - El parámetro `req` es el objeto de solicitud que contiene información sobre la
