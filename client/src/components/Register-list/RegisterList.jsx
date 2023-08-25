@@ -24,6 +24,7 @@ import { keysRoles } from '../../import/staticData'
 import { LoadingModal, Modals } from '../Utils/Modals/Modals'
 import Cookies from 'js-cookie'
 import Swal from 'sweetalert2'
+import { BiSad } from 'react-icons/bi'
 
 export const modalOptionList = {
   confirmModal: 'confirm',
@@ -39,6 +40,7 @@ export const RegisterList = () => {
   const [fileName, setFileName] = useState(null)
   const [modalOption, setModalOption] = useState(modalOptionList.confirmModal)
   const [username, setUsername] = useState(null)
+  const [loadingData, setLoadingData] = useState(true)
   const excelRef = useRef()
   const navigate = useNavigate()
 
@@ -86,6 +88,7 @@ export const RegisterList = () => {
       const response = await getInscriptions()
       const { data } = response.data
       setInscriptions(data)
+      setLoadingData(false)
     } catch (error) {
       throw new Error(error)
     }
@@ -187,7 +190,7 @@ export const RegisterList = () => {
           <Search filter />
         </header>
         <section className='flex flex-col w-11/12 gap-3 mx-auto mt-2'>
-          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} />
+          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} />
           <div className='flex justify-center h-[13vh] relative bottom-0'>
             <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
@@ -210,7 +213,7 @@ export const RegisterList = () => {
   )
 }
 
-const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
+const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData }) => {
   const navigate = useNavigate()
   const handleAvales = (id) => {
     return navigate(`/registro-detalles/${id}`)
@@ -228,9 +231,7 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
         </tr>
       </thead>
       <tbody className='grid grid-rows-6'>
-        {inscriptions.length === 0 ? (
-          <LoadingTableList number={6} />
-        ) : (
+        {inscriptions.length > 0 ? (
           inscriptions.slice(startIndex, endIndex).map((x) => {
             return (
               <tr className='grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center' key={x.id_inscripcion}>
@@ -252,6 +253,15 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6 }) => {
               </tr>
             )
           })
+        ) : loadingData ? (
+          <LoadingTableList number={6} />
+        ) : (
+          <tr className='grid place-content-center h-full mt-10'>
+            <th scope='row' className='text-red-500 text-xl flex items-center gap-1'>
+              <p>¡Oops! No hay ningún aprendiz con este filtro.</p>
+              <BiSad className='text-2xl' />
+            </th>
+          </tr>
         )}
       </tbody>
     </table>
