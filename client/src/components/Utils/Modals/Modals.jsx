@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
@@ -7,10 +7,11 @@ import { BsCheck2Circle } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
 
 // componentes
-import { modalities, instructores } from '../../../import/staticData'
+import { modalities } from '../../../import/staticData'
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
+import { getTeachers } from '../../../api/httpRequest'
 
 const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -50,14 +51,30 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
     setModalOption(modalOptionList.loadingExcelModal)
   }
 
-  const option = instructores.map((instructor, i) => ({
-    value: instructor.nombre,
-    key: i
+  const [teachers, setTeacher] = useState([])
+
+  const getInstructores = async () => {
+    try {
+      const response = await getTeachers()
+      const { data } = response.data
+      setTeacher(data)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  useEffect(() => {
+    getInstructores()
+  }, [])
+
+  const option = teachers.map((teacher) => ({
+    value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario,
+    key: teacher.id_usuario
   }))
 
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
-      <aside className='absolute inset-0 h-full w-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
       <section className={`relative flex h-auto w-11/12 ${bodyStudent ? 'md:w-1/2' : ' md:w-2/5'} flex-col rounded-2xl bg-white bounce`}>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
@@ -298,12 +315,12 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
           {bodyConfirm && (
             <>
               <section className='my-3'>
-                <p className='text-slate-400/90 text-center'>
+                <p className='text-center text-slate-400/90'>
                   Archivo a cargar: <span className='text-blue-500'>{loadingFile}</span>
                 </p>
-                <p className='text-red-500 text-center underline font-bold text-lg'>¡No podrás deshacer está acción!</p>
+                <p className='text-lg font-bold text-center text-red-500 underline'>¡No podrás deshacer está acción!</p>
                 <section className='mt-3'>
-                  <div className='flex gap-3 items-center justify-between'>
+                  <div className='flex items-center justify-between gap-3'>
                     <Button value={'Continuar'} bg='bg-green-500' hover='hover:bg-green-800' textSize='text-base' px='px-10' clickeame={continueLoadFile} />
                     <Button value={'Deshacer'} bg='bg-red-500' hover='hover:bg-red-800' textSize='text-base' px='px-10' clickeame={handleModal} />
                   </div>
@@ -314,9 +331,9 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
           {bodyAccept && (
             <>
               <section className='mx-8 my-6'>
-                <h2 className='text-green-500 text-center font-bold text-lg'>¡Archivo cargado correctamente!</h2>
+                <h2 className='text-lg font-bold text-center text-green-500'>¡Archivo cargado correctamente!</h2>
                 <section className='mt-3'>
-                  <div className='flex gap-3 items-center justify-between'>
+                  <div className='flex items-center justify-between gap-3'>
                     <Button value={'Aceptar'} bg='bg-slate-500' hover='hover:bg-slate-700' textSize='text-base' px='px-10' clickeame={handleModal} />
                   </div>
                 </section>
@@ -332,7 +349,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
 export const LoadingModal = ({ children, title = 'Cargando' }) => {
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen bg-black/50 backdrop-blur-sm backdrop-filter'>
-      <section className='relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce'>
+      <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-2/5 rounded-2xl bounce'>
         <header className='grid pt-5 place-items-center'>
           <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
         </header>
