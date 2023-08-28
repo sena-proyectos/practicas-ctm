@@ -1,10 +1,8 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 
 // icons
-import { BsCheck2Circle } from 'react-icons/bs'
-import { LuArrowRight, LuChevronDown, LuArrowLeft } from 'react-icons/lu'
-import { AiOutlineCloudUpload } from 'react-icons/ai'
+import { LuSave } from 'react-icons/lu'
 import { IoReturnDownBack } from 'react-icons/io5'
 
 // Components
@@ -12,68 +10,28 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
-import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription, keysRoles } from '../../import/staticData'
+import { keysRoles } from '../../import/staticData'
 import { getInscriptionById, getInscriptionDetails } from '../../api/httpRequest'
 
 export const RegisterDetails = () => {
-  const [showDataEmpresa, setShowDataEmpresa] = useState(false)
-  const [showDataAprendiz, setShowDataAprendiz] = useState(true)
-  const [showDataAvales, setShowDataAvales] = useState(false)
-  const [inscriptionById, setInscriptionById] = useState()
-  const [inscriptionDetails, setInscriptionDetails] = useState()
   const { id } = useParams()
-
   const idRol = Number(localStorage.getItem('idRol'))
+  const [selectedTab, setSelectedTab] = useState('infoAprendiz')
+  const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
+  const [avalCoordinador, setAvalCoordinador] = useState([])
+  const [liderAval, setLiderAval] = useState([])
+  const [seguimientoAval, setSeguimientoAval] = useState([])
 
   useEffect(() => {
     getInscriptionAprendiz(id)
     getDetallesInscripcion(id)
   }, [id])
 
-  const handleChangeSection = (section) => {
-    setShowDataEmpresa(section === 'empresa')
-    setShowDataAprendiz(section === 'aprendiz')
-    setShowDataAvales(section === 'avales')
-  }
-
-  const inputRefs = {
-    apellido_inscripcion: useRef(null),
-    nombre_inscripcion: useRef(null),
-    documento_inscripcion: useRef(null),
-    email_inscripcion: useRef(null),
-    inscripcion_celular: useRef(null),
-    numero_ficha_inscripcion: useRef(null),
-    nombre_programa_inscripcion: useRef(null),
-    nombre_instructor_lider_inscripcion: useRef(null),
-    email_instructor_lider_inscripcion: useRef(null),
-    tipo_documento_inscripcion: useRef(null),
-    modalidad_inscripcion: useRef(null),
-    fecha_fin_lectiva_inscripcion: useRef(null),
-    apoyo_sostenimiento_inscripcion: useRef(null),
-    etapa_actual_inscripcion: useRef(null),
-    nivel_formacion_inscripcion: useRef(null),
-    nit_empresa_inscripcion: useRef(null),
-    telefono_jefe_empresa_inscripcion: useRef(null),
-    email_jefe_empresa_inscripcion: useRef(null),
-    nombre_empresa_inscripcion: useRef(null),
-    direccion_empresa_inscripcion: useRef(null),
-    nombre_jefe_empresa_inscripcion: useRef(null),
-    cargo_jefe_empresa_inscripcion: useRef(null),
-    arl: useRef(null),
-    observaciones: useRef(null)
-  }
-
   const getInscriptionAprendiz = async (id) => {
     try {
       const response = await getInscriptionById(id)
-      const res = response.data.data[0]
-      setInscriptionById(res)
-
-      Object.keys(res).forEach((fieldName) => {
-        if (inputRefs[fieldName] && inputRefs[fieldName].current) {
-          inputRefs[fieldName].current.value = res[fieldName]
-        }
-      })
+      const res = response.data.data
+      setInscriptionAprendiz(res)
     } catch (error) {
       console.log('Ha ocurrido un error al mostrar los datos del usuario')
     }
@@ -82,313 +40,342 @@ export const RegisterDetails = () => {
   const getDetallesInscripcion = async (id) => {
     try {
       const response = await getInscriptionDetails(id)
+      const res = response.data.data
       // id === Cookies.id => habilitado ? desha
-      setInscriptionDetails(response)
+      const coordinador = res.filter((detail) => detail.rol_responsable === 2)
+      const instSeguimiento = res.filter((detail) => detail.rol_responsable === 3)
+      const instLider = res.filter((detail) => detail.rol_responsable === 4)
+
+      setAvalCoordinador(coordinador)
+      setSeguimientoAval(instSeguimiento)
+      setLiderAval(instLider)
     } catch (error) {
       console.log(error)
     }
   }
 
+  return (
+    <main className='flex flex-row min-h-screen bg-whitesmoke'>
+      <Siderbar />
+      <section className='relative grid flex-auto gap-2 w-min grid-rows-3-10-75-15'>
+        <header className='border-b-1 w-[70%] mx-auto border-b-zinc-300 h-[9vh]'>
+          <ul className='flex flex-row items-center justify-around h-full'>
+            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'infoAprendiz' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoAprendiz')}>
+              Info. Aprendiz
+            </li>
+            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'infoEmpresa' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoEmpresa')}>
+              Info. Empresa
+            </li>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('coordinador')}>
+                Coordinador
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
+                Documentos
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('raps')}>
+                RAPS
+              </li>
+            )}
+          </ul>
+        </header>
+        <section>
+          <div className={`${selectedTab === 'infoAprendiz' ? 'visible' : 'hidden'}`}>
+            <InfoAprendiz inscriptionAprendiz={inscriptionAprendiz} />
+          </div>
+          <div className={`${selectedTab === 'infoEmpresa' ? 'visible' : 'hidden'}`}>
+            <InfoEmpresa inscriptionAprendiz={inscriptionAprendiz} />
+          </div>
+          <div className={`${selectedTab === 'coordinador' ? 'visible' : 'hidden'}`}>
+            <Coordinador idRol={idRol} avalCoordinador={avalCoordinador} />
+          </div>
+          <div className={`${selectedTab === 'documentos' ? 'visible h-full' : 'hidden'}`}>
+            <Documentos idRol={idRol} avalLider={liderAval} avalSeguimiento={seguimientoAval} />
+          </div>
+          <div className={`${selectedTab === 'raps' ? 'visible' : 'hidden'}`}>
+            <RAPS idRol={idRol} liderAval={liderAval} />
+          </div>
+
+          <div className='absolute top-4 left-8'>
+            <Link to='/registros' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
+              <IoReturnDownBack />
+              Salir
+            </Link>
+          </div>
+        </section>
+        <Footer />
+      </section>
+    </main>
+  )
+}
+
+const InfoAprendiz = ({ inscriptionAprendiz }) => {
+  return (
+    <section className={`w-[85%] p-2 mx-auto`}>
+      {inscriptionAprendiz.map((x) => {
+        return (
+          <section className='flex flex-col gap-4' key={x.id_inscripcion}>
+            <div>
+              <h2 className='text-lg font-semibold text-center uppercase'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</h2>
+              <h5 className='font-light text-center'>{x.email_inscripcion}</h5>
+              <h5 className='font-light text-center'>{`${x.tipo_documento_inscripcion} ${x.documento_inscripcion}`}</h5>
+              <p className='font-light text-center'>{x.inscripcion_celular}</p>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Información Acádemica</h2>
+            <div className='grid grid-cols-2 gap-2'>
+              <div className='flex flex-col gap-2'>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Tipo Modalidad:</h4>
+                  <p>{x.modalidad_inscripcion === '1' ? 'Pasantías' : x.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : x.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : x.modalidad_inscripcion === '4' ? 'Monitoría' : x.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</p>
+                </article>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Fin Lectiva:</h4>
+                  <p>{x.fecha_fin_lectiva_inscripcion}</p>
+                </article>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Etapa Formación:</h4>
+                  <p>{x.etapa_actual_inscripcion}</p>
+                </article>
+              </div>
+              <div className='flex flex-col gap-2'>
+                <p className='text-right'>{x.numero_ficha_inscripcion}</p>
+                <p className='text-right'>{x.nivel_formacion_inscripcion}</p>
+                <p className='text-right'>{x.nombre_programa_inscripcion}</p>
+              </div>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Responsable de la Inscripción</h2>
+            <div className='flex flex-row justify-around gap-9'>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Fecha Creación:</h4>
+                <p>{x.fecha_creacion.split('T')[0]}</p>
+              </article>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Encargado:</h4>
+                <p>{x.responsable_inscripcion}</p>
+              </article>
+            </div>
+          </section>
+        )
+      })}
+    </section>
+  )
+}
+
+const InfoEmpresa = ({ inscriptionAprendiz }) => {
+  return (
+    <section className={`w-[85%] p-2 mx-auto`}>
+      {inscriptionAprendiz.map((x) => {
+        return (
+          <section className='flex flex-col gap-3' key={x.id_inscripcion}>
+            <div>
+              <h2 className='text-lg font-semibold text-center uppercase'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</h2>
+              <h5 className='font-light text-center'>{x.email_inscripcion}</h5>
+              <h5 className='font-light text-center'>{`${x.tipo_documento_inscripcion} ${x.documento_inscripcion}`}</h5>
+              <p className='font-light text-center'>{x.inscripcion_celular}</p>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Información Empresa</h2>
+            <div className={`${!x.nit_empresa_inscripcion ? 'flex flex-col' : 'grid grid-cols-2 gap-2'}`}>
+              <div className={`flex ${!x.nit_empresa_inscripcion ? 'flex-row justify-between' : ' flex-col gap-3'}`}>
+                <div className={`${!x.nit_empresa_inscripcion ? 'hidden' : 'flex flex-row justify-start gap-5'}`}>
+                  <p className='text-left'>{x.nit_empresa_inscripcion}</p>
+                  <p className='text-left'>{x.nombre_empresa_inscripcion}</p>
+                </div>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>¿Quién asume el ARL?</h4>
+                  <p>{x.arl}</p>
+                </article>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Observaciones</h4>
+                  <p>{x.observaciones}</p>
+                </article>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <p className='text-right'>{x.nombre_jefe_empresa_inscripcion}</p>
+                <p className='text-right'>{x.cargo_jefe_empresa_inscripcion}</p>
+                <p className='text-right'>{x.telefono_jefe_empresa_inscripcion}</p>
+                <p className='text-right'>{x.email_jefe_empresa_inscripcion}</p>
+              </div>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Responsable de la Inscripción</h2>
+            <div className='flex flex-row justify-around gap-9'>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Fecha Creación:</h4>
+                <p>{x.fecha_creacion.split('T')[0]}</p>
+              </article>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Encargado:</h4>
+                <p>{x.responsable_inscripcion}</p>
+              </article>
+            </div>
+          </section>
+        )
+      })}
+    </section>
+  )
+}
+
+const Coordinador = ({ idRol, avalCoordinador }) => {
   const option = [
     { value: 'Sergio Soto Henao', key: 'Sergio Soto Henao' },
     { value: 'Marianela Henao Atehortúa', key: 'Marianela Henao Atehortúa' },
     { value: 'Jaime León Vergara Areiza', key: 'Jaime León Vergara Areiza' },
     { value: 'Mauro Isaías Arango Vanegas', key: 'Mauro Isaías Arango Vanegas' }
   ]
-
   return (
-    <main className='flex flex-row min-h-screen bg-whitesmoke'>
-      <Siderbar />
-      <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
-        <header className='grid place-items-center'>
-          <h1 className='text-2xl font-bold text-center place-self-center'>{showDataAprendiz === true ? 'Datos del aprendiz' : showDataEmpresa === true ? 'Datos de la empresa' : 'Avales'}</h1>
-        </header>
-        <section>
-          <form action='' className='flex flex-col mt-3 gap-y-6'>
-            <div className={showDataAprendiz ? 'visible' : 'hidden'}>
-              <section className='grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
-                {dataInscription.dataAprendiz.map((item, i) => {
-                  const inputRef = inputRefs[item.name]
-                  const isDisabled = idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[3])
-                  return (
-                    <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
-                      <label htmlFor='nombre' className='text-sm font-normal'>
-                        {item.label} {item.required && <span className='font-medium text-red-600'>*</span>}
-                      </label>
-                      {item.type === 'number' ? (
-                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
-                      ) : item.type === 'select' ? (
-                        <div className='relative'>
-                          <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                            <LuChevronDown />
-                          </span>
-                          <select name={item.name} ref={inputRef} className={`border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none ${isDisabled && 'bg-zinc-200 border-zinc-300 text-zinc-500'}`} disabled={isDisabled}>
-                            <option value={''}>Sin seleccionar</option>
-                            {item.name === 'tipo_documento_inscripcion'
-                              ? idTypes.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : item.name === 'modalidad_inscripcion'
-                              ? modalities.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : item.name === 'etapa_actual_inscripcion'
-                              ? etapasFormacion.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : item.name === 'nivel_formacion_inscripcion'
-                              ? nivelFormacion.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : item.name === 'apoyo_sostenimiento_inscripcion'
-                              ? apoyoSostenimiento.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : null}
-                          </select>
-                        </div>
-                      ) : item.type === 'date' ? (
-                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
-                      ) : (
-                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
-                      )}
-                    </div>
-                  )
-                })}
-              </section>
-            </div>
-            <div className={showDataEmpresa ? 'visible' : 'hidden'}>
-              <section className='grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
-                {dataInscription.dataEmpresa.map((item, i) => {
-                  const inputRef = inputRefs[item.name]
-                  const isDisabled = idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[3])
-                  return (
-                    <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
-                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                        {item.label} {item.required && <span className='font-medium text-red-600'>*</span>}
-                      </label>
-                      {item.type === 'number' ? (
-                        <div className='relative'>
-                          <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
-                        </div>
-                      ) : item.type === 'file' ? (
-                        <div className='relative'>
-                          <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                            <AiOutlineCloudUpload />
-                          </span>
-                          <div className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2'>
-                            <input type={item.type} accept={item.accept} name={item.name} className='w-5/6 text-xs cursor-pointer file:hidden whitespace-break-spaces' disabled={isDisabled} />
-                          </div>
-                        </div>
-                      ) : item.type === 'select' ? (
-                        <div className='relative'>
-                          <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                            <LuChevronDown />
-                          </span>
-                          <select name={item.name} ref={inputRef} className={`border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none ${isDisabled && 'bg-zinc-200 border-zinc-300 text-zinc-500'}`} disabled={isDisabled}>
-                            <option value={''}>Sin seleccionar</option>
-                            {item.name === 'arl'
-                              ? pagoArl.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : null}
-                          </select>
-                        </div>
-                      ) : item.type === 'textarea' ? (
-                        <div className='relative'>
-                          <textarea id='editor' rows='3' ref={inputRef} className={`block w-full px-0 max-h-[5.5rem] overflow-y-auto resize-none rounded-md border-[1.2px]  py-[0.9px] pl-3 text-sm focus:outline-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} placeholder={item.placeholder} required disabled={isDisabled} />
-                        </div>
-                      ) : (
-                        <div className='relative'>
-                          <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </section>
-            </div>
-            <div className={`w-11/12 mx-auto flex flex-col gap-5 ${showDataAvales ? 'visible' : 'hidden'}`}>
-              <section className='grid gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
-                {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-                  <>
-                    <div className='flex flex-col w-full m-auto text-gray-400'>
-                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                        Coordinador Responsable
-                      </label>
-                      <Select placeholder='Coordinador' rounded='rounded-md' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} />
-                    </div>
-
-                    <div className='flex flex-col w-full m-auto text-gray-400'>
-                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                        Instructor de Seguimiento
-                      </label>
-                      <div className='relative'>
-                        <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                          <LuChevronDown />
-                        </span>
-                        <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                          <option value=''>Sin seleccionar</option>
-                          <option value=''>Instructor 1</option>
-                          <option value=''>Instructor 2</option>
-                          <option value=''>Instructor 3</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className='flex flex-col w-full m-auto text-gray-400'>
-                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                        Instructor Líder
-                      </label>
-                      <div className='relative'>
-                        <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                          <LuChevronDown />
-                        </span>
-                        <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                          <option value=''>Sin seleccionar</option>
-                          <option value=''>Instructor 1</option>
-                          <option value=''>Instructor 2</option>
-                          <option value=''>Instructor 3</option>
-                        </select>
-                      </div>
-                    </div>
-                    {/* <div className="flex flex-col w-full m-auto text-gray-400">
-                      <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
-                        Instructor de Seguimiento
-                      </label>
-                      <div className="relative">
-                        <input type="text" className="w-full rounded-md border-[1.2px] bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2] py-1 pl-2 text-sm  focus:outline-none" autoComplete="on" disabled />
-                      </div>
-                    </div>
-                    <div className="flex flex-col w-full m-auto text-gray-400">
-                      <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
-                        Instructor Líder
-                      </label>
-                      <div className="relative">
-                        <input type="text" className="w-full rounded-md border-[1.2px] bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2] py-1 pl-2 text-sm  focus:outline-none" autoComplete="on" disabled />
-                      </div>
-                    </div> */}
-                  </>
-                )}
-                {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-                  <div className='flex flex-col w-full m-auto text-gray-400'>
-                    <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                      Aval Coordinador
-                    </label>
-                    <div className='relative'>
-                      <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                        <LuChevronDown />
-                      </span>
-                      <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                        <option value={''}>Sin seleccionar</option>
-                        <option value=''>Si</option>
-                        <option value=''>No</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-                {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
-                  <div className='flex flex-col w-full m-auto text-gray-400'>
-                    <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                      Aval Instructor Seguimiento
-                    </label>
-                    <div className='relative'>
-                      <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                        <LuChevronDown />
-                      </span>
-                      <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                        <option value={''}>Sin seleccionar</option>
-                        <option value=''>Si</option>
-                        <option value=''>No</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-                {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
-                  <div className='flex flex-col w-full m-auto text-gray-400'>
-                    <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                      Aval Instructor Líder
-                    </label>
-                    <div className='relative'>
-                      <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                        <LuChevronDown />
-                      </span>
-                      <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                        <option value={''}>Sin seleccionar</option>
-                        <option value=''>Si</option>
-                        <option value=''>No</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-              </section>
-              <div className='flex flex-col text-gray-400'>
-                <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
+    <section className={`flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
+      <div className={` w-[95%] mx-auto`}>
+        {avalCoordinador.map((aval) => {
+          return (
+            <form action='' className='flex flex-col gap-4 ' key={aval.id_detalle_inscripcion}>
+              <div>
+                <label htmlFor='' className='text-sm font-light'>
+                  Coordinador Asignado
+                </label>
+                <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} />
+              </div>
+              {idRol === Number(keysRoles[1]) ? (
+                <div className='flex flex-row gap-7 place-self-center'>
+                  <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                </div>
+              ) : (
+                <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'La solicitud esta siendo procesada por el coordinador' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
+              )}
+              <div>
+                <label htmlFor='' className='text-sm font-light'>
                   Observaciones
                 </label>
-                <div className='relative'>
-                  <textarea className='w-full h-16 border-gray-400 min-h-[6rem] resize-none focus:text-gray-900 rounded-md border-[1.2px] bg-white py-1 px-3 text-sm text-black focus:bg-white focus:outline-none' placeholder='Deja aquí cualquier observación...' />
-                </div>
+                <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
               </div>
+              <Button value={'Guardar'} bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />
+            </form>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+const Documentos = ({ idRol, avalLider, avalSeguimiento }) => {
+  return (
+    <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
+      <section>Documentación</section>
+      <section className='flex flex-col items-center gap-3'>
+        {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+          <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
+            <div className='w-[95%] mx-auto h-full'>
+              {avalLider.map((aval) => {
+                return (
+                  <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
+                    <div className='flex flex-col gap-1'>
+                      <label htmlFor='' className='text-sm font-light'>
+                        Líder Prácticas
+                      </label>
+                      <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
+                    </div>
+                    {idRol === Number(keysRoles[0]) ? (
+                      <div className='flex flex-row gap-7 place-self-center'>
+                        <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                        <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                      </div>
+                    ) : (
+                      <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la documentación se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
+                    )}
+                    <div>
+                      <label htmlFor='' className='text-sm font-light'>
+                        Observaciones
+                      </label>
+                      <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
+                    </div>
+                    {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
+                  </form>
+                )
+              })}
             </div>
-          </form>
-          <div className='absolute top-7 left-11'>
-            <Link to='/registros' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
-              <IoReturnDownBack />
-              Salir
-            </Link>
-          </div>
-          <div className='flex flex-row justify-center mx-auto'>
-            <div className='absolute bottom-20 '>
-              <Button value={'Guardar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' icon={<BsCheck2Circle className='text-xl' />} />
+          </section>
+        )}
+        {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && <hr className='w-3/4 border border-slate-500' />}
+        {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
+          <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
+            <div className='w-[95%] mx-auto h-full'>
+              {avalSeguimiento.map((aval) => {
+                return (
+                  <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
+                    <div className='flex flex-col gap-1'>
+                      <label htmlFor='' className='text-sm font-light'>
+                        Instructor de Seguimiento
+                      </label>
+                      <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
+                    </div>
+                    {idRol === Number(keysRoles[2]) ? (
+                      <div className='flex flex-row gap-7 place-self-center'>
+                        <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                        <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                      </div>
+                    ) : (
+                      <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la carta inicial se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
+                    )}
+                    <div>
+                      <label htmlFor='' className='text-sm font-light'>
+                        Observaciones
+                      </label>
+                      <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
+                    </div>
+                    {idRol === Number(keysRoles[2]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
+                  </form>
+                )
+              })}
             </div>
-            {showDataEmpresa && (
-              <>
-                <div className='absolute left-12 bottom-20'>
-                  <Button value={'Regresar'} rounded='rounded-full' bg='bg-sky-600' px='px-4' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('aprendiz')} icon={<LuArrowLeft className='text-xl' />} />
-                </div>
-                <div className='absolute right-12 bottom-20'>
-                  <Button value={'Continuar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('avales')} icon={<LuArrowRight className='text-xl' />} />
-                </div>
-              </>
-            )}
-            {showDataAprendiz && (
-              <div className='absolute right-12 bottom-20'>
-                <Button value={'Continuar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('empresa')} icon={<LuArrowRight className='text-xl' />} />
-              </div>
-            )}
-            {showDataAvales && (
-              <div className='absolute left-12 bottom-20'>
-                <Button value={'Regresar'} rounded='rounded-full' bg='bg-sky-600' px='px-4' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('empresa')} icon={<LuArrowLeft className='text-xl' />} />
-              </div>
-            )}
-          </div>
-        </section>
-        <Footer />
+          </section>
+        )}
       </section>
-    </main>
+    </section>
+  )
+}
+
+const RAPS = ({ idRol, liderAval }) => {
+  return (
+    <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
+      <section>RAPS</section>
+      <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2'>
+        <div className='w-[95%] mx-auto h-full'>
+          {liderAval.map((aval) => {
+            return (
+              <form action='' className='flex flex-col gap-4' key={aval.id_detalle_inscripcion}>
+                <div className='flex flex-col gap-1'>
+                  <label htmlFor='' className='text-sm font-light'>
+                    Instructor Líder
+                  </label>
+                  <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
+                </div>
+                {idRol === Number(keysRoles[3]) ? (
+                  <div className='flex flex-row gap-7 place-self-center'>
+                    <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  </div>
+                ) : (
+                  <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente los RAPS se encuentran en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
+                )}
+                <div>
+                  <label htmlFor='' className='text-sm font-light'>
+                    Observaciones
+                  </label>
+                  <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
+                </div>
+                {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
+              </form>
+            )
+          })}
+        </div>
+      </section>
+    </section>
   )
 }

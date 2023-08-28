@@ -15,7 +15,7 @@ import { Pagination } from '../Utils/Pagination/Pagination'
 
 export const AssignClass = () => {
   const [modalAsign, setModalAsign] = useState(false)
-  const [pageNumber, setPageNumber] = useState(-1)
+  const [pageNumber, setPageNumber] = useState(0)
   const [loading, setLoading] = useState(true)
 
   const courses = {
@@ -113,7 +113,7 @@ export const AssignClass = () => {
               )}
             </section>
             <div className='flex justify-center h-[13vh] relative bottom-0'>
-              <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+              <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
             </div>
           </section>
           <Footer />

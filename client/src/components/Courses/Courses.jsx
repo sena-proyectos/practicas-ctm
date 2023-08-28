@@ -11,7 +11,7 @@ import { Pagination } from '../Utils/Pagination/Pagination'
 import { getClass } from '../../api/httpRequest'
 
 export const Courses = () => {
-  const [pageNumber, setPageNumber] = useState(-1)
+  const [pageNumber, setPageNumber] = useState(0)
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
 
@@ -31,7 +31,7 @@ export const Courses = () => {
 
   const coursesPerPage = 6
   const pageCount = Math.ceil(courses.length / coursesPerPage)
-  const startIndex = (pageNumber + 1) * coursesPerPage
+  const startIndex = pageNumber * coursesPerPage
   const endIndex = startIndex + coursesPerPage
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export const Courses = () => {
             )}
           </section>
           <div className='flex justify-center h-[13vh] relative bottom-0'>
-            <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+            <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
         </section>
         <Footer />
@@ -73,4 +73,3 @@ export const Courses = () => {
 }
 
 const SkeletonLoading = ({ number = 6 }) => [...Array(number)].map((_, i) => <Card3D header={<Skeleton />} title={<Skeleton />} subtitle={<Skeleton />} item1={<Skeleton />} item2={<Skeleton />} item3={<Skeleton />} item4={<Skeleton />} key={i} />)
-

@@ -17,7 +17,7 @@ import { Modals } from '../Utils/Modals/Modals'
 import { BiSad } from 'react-icons/bi'
 
 export const Students = () => {
-  const [pageNumber, setPageNumber] = useState(-1)
+  const [pageNumber, setPageNumber] = useState(0)
   const [detailCourse, setDetailCourse] = useState([])
   const [studentsCourse, setStudentsCourse] = useState([])
   const [studentsCourseOriginal, setStudentsCourseOriginal] = useState([])
@@ -76,7 +76,7 @@ export const Students = () => {
   const studentsPerPage = 5
   const pageCount = Math.ceil(studentsCourse.length / studentsPerPage)
 
-  const startIndex = (pageNumber + 1) * studentsPerPage
+  const startIndex = pageNumber * studentsPerPage
   const endIndex = startIndex + studentsPerPage
 
   const disableShowFiltros = () => {
@@ -265,7 +265,7 @@ export const Students = () => {
               </tbody>
             </table>
             <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0'>
-              <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+              <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
             </div>
           </div>
         </section>
@@ -299,4 +299,3 @@ const LoadingDataStudents = ({ number = 6 }) =>
       </td>
     </tr>
   ))
-
