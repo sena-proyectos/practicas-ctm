@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "3.14.0",
+  "version": "3.14.1",
   "type": "module",
   "description": "Back-end para el proyecto de practicas en el sena",
   "main": "./src/index.js",
@@ -49,6 +49,6 @@
     "eslint-plugin-promise": "^6.1.1",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
-    "typescript": "^5.0.4"
+    "typescript": "^5.2.2"
   }
 }

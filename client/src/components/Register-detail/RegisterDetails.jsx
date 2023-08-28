@@ -60,24 +60,24 @@ export const RegisterDetails = () => {
       <section className='relative grid flex-auto gap-2 w-min grid-rows-3-10-75-15'>
         <header className='border-b-1 w-[70%] mx-auto border-b-zinc-300 h-[9vh]'>
           <ul className='flex flex-row items-center justify-around h-full'>
-            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'infoAprendiz' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoAprendiz')}>
+            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoAprendiz' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoAprendiz')}>
               Info. Aprendiz
             </li>
-            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'infoEmpresa' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoEmpresa')}>
+            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoEmpresa' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoEmpresa')}>
               Info. Empresa
             </li>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('coordinador')}>
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('coordinador')}>
                 Coordinador
               </li>
             )}
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
                 Documentos
               </li>
             )}
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 hover:scale-110 hover:font-medium ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('raps')}>
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('raps')}>
                 RAPS
               </li>
             )}
@@ -379,3 +379,4 @@ const RAPS = ({ idRol, liderAval }) => {
     </section>
   )
 }
+

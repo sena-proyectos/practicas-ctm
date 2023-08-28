@@ -34,10 +34,9 @@ export const Students = () => {
     try {
       const response = await GetStudentsByCourse(payload)
       const { data } = response.data
-      setTimeout(() => {
-        setStudentsCourse(data)
-        setStudentsCourseOriginal(data)
-      }, 3000)
+      console.log(data)
+      setStudentsCourse(data)
+      setStudentsCourseOriginal(data)
     } catch (err) {
       throw new Error(err)
     }
@@ -52,10 +51,8 @@ export const Students = () => {
     try {
       const response = await GetClassByNumber(payload)
       const { data } = response.data
-      setTimeout(() => {
-        setDetailCourse(data[0])
-        setLoadingData({ course: false })
-      }, 3000)
+      setDetailCourse(data[0])
+      setLoadingData({ course: false })
     } catch (error) {
       throw new Error(error)
     }
