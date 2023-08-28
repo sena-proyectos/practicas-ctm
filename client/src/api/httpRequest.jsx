@@ -129,3 +129,18 @@ export const getClassById = async (id) => {
   return response
 }
 
+// OBTENER INSTRUCTORES
+export const getTeachers = async () => {
+  const URL = `${baseUrl}${api}/teachers`
+
+  const response = await axios.get(URL)
+  return response
+}
+
+// OBTENER FICHAS POR ID INSTRUCTOR
+export const getClassByTeacherId = async (id) => {
+  const URL = `${baseUrl}${api}/teacherClasses/${id}`
+
+  const response = await axios.get(URL)
+  return response
+}
