@@ -20,7 +20,7 @@ export const StudentMonitoring = () => {
   const [infoStudent, setInfoStudent] = useState(false)
   const [userInfoById, setInfoUserById] = useState({})
   const [loading, setLoading] = useState(true)
-  const [pageNumber, setPageNumber] = useState(-1)
+  const [pageNumber, setPageNumber] = useState(0)
   const [dates, setDates] = useState({})
 
   const handleIconClick = () => {
@@ -96,7 +96,7 @@ export const StudentMonitoring = () => {
   const studentsPerPage = 6
   const pageCount = Math.ceil(apprentices.length / studentsPerPage)
 
-  const startIndex = (pageNumber + 1) * studentsPerPage
+  const startIndex = pageNumber * studentsPerPage
   const endIndex = startIndex + studentsPerPage
 
   return (
@@ -131,7 +131,7 @@ export const StudentMonitoring = () => {
             </div>
           )}
           <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-[5.5rem]'>
-            <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+            <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
           <Footer />
         </section>
@@ -146,4 +146,3 @@ const SkeletonLoading = ({ number = 6 }) =>
       <Skeleton height={'14rem'} className='scale-90 rounded-2xl' />
     </div>
   ))
-

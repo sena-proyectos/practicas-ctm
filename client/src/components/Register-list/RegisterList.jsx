@@ -35,7 +35,7 @@ export const modalOptionList = {
 export const RegisterList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [inscriptions, setInscriptions] = useState([])
-  const [pageNumber, setPageNumber] = useState(-1)
+  const [pageNumber, setPageNumber] = useState(0)
   const [fileName, setFileName] = useState(null)
   const [modalOption, setModalOption] = useState(modalOptionList.confirmModal)
   const [username, setUsername] = useState(null)
@@ -44,7 +44,7 @@ export const RegisterList = () => {
 
   const inscriptionsPerPage = 6
   const pageCount = Math.ceil(inscriptions.length / inscriptionsPerPage)
-  const startIndex = (pageNumber + 1) * inscriptionsPerPage
+  const startIndex = pageNumber * inscriptionsPerPage
   const endIndex = startIndex + inscriptionsPerPage
   const idRol = Number(localStorage.getItem('idRol'))
 
@@ -189,7 +189,7 @@ export const RegisterList = () => {
         <section className='flex flex-col w-11/12 gap-3 mx-auto mt-2'>
           <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} />
           <div className='flex justify-center h-[13vh] relative bottom-0'>
-            <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+            <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
           {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
             <div className='absolute flex flex-row-reverse gap-3 right-12 bottom-16'>
@@ -305,4 +305,3 @@ const UploadingExcelFileModal = () => (
     </section>
   </LoadingModal>
 )
-
