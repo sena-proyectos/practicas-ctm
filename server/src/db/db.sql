@@ -56,7 +56,7 @@ CREATE TABLE `aprendices` (
 
 LOCK TABLES `aprendices` WRITE;
 /*!40000 ALTER TABLE `aprendices` DISABLE KEYS */;
-INSERT INTO `aprendices` VALUES (1,'Lorena','Quiceno Giraldo','CC','1028882894','lorenquiceno@gmail.com','3245887367','2023-11-02','practicas',1,1,1,1),(2,'Stiven','Benjumea','CC','1028882444','stevenbenjumea9@gmail.com','3245880123','2023-11-02','practicas',1,1,1,1),(3,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','2023-11-02','practicas',1,1,1,1),(5,'Juan Guillermo','Gomez Zapata','CC','1027800913','juanlestar0408@gmail.com','3006953395','2023-10-05','Practicas',1,1,1,1);
+INSERT INTO `aprendices` VALUES (1,'Lorena','Quiceno Giraldo','CC','1028882894','lorenquiceno@gmail.com','3245887367','2023-11-02','Prácticas',1,1,1,1),(2,'Stiven','Benjumea','CC','1028882444','stevenbenjumea9@gmail.com','3245880123','2023-11-02','Prácticas',1,2,1,1),(3,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','2023-11-02','Prácticas',1,3,1,1),(4,'Juan Guillermo','Gomez Zapata','CC','1027800913','juanlestar0408@gmail.com','3006953395','2023-10-05','Prácticas',1,4,1,1),(5,'Eyson','Quiceno Giraldo','CC','1092925678','eysonquiceno@gmail.com','3135189268','2024-12-06','Lectiva',1,5,1,1);
 /*!40000 ALTER TABLE `aprendices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -162,7 +162,7 @@ CREATE TABLE `detalle_fichas_aprendices` (
 
 LOCK TABLES `detalle_fichas_aprendices` WRITE;
 /*!40000 ALTER TABLE `detalle_fichas_aprendices` DISABLE KEYS */;
-INSERT INTO `detalle_fichas_aprendices` VALUES (1,1),(1,2);
+INSERT INTO `detalle_fichas_aprendices` VALUES (1,1),(1,2),(1,3),(1,4),(2,5);
 /*!40000 ALTER TABLE `detalle_fichas_aprendices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,6 +179,7 @@ CREATE TABLE `detalles_inscripciones` (
   `estado_aval` varchar(100) NOT NULL,
   `observaciones` varchar(500) DEFAULT NULL,
   `id_inscripcion` int NOT NULL,
+  `rol_responsable` int NOT NULL,
   PRIMARY KEY (`id_detalle_inscripcion`),
   KEY `id_inscripcion` (`id_inscripcion`),
   CONSTRAINT `detalles_inscripciones_ibfk_1` FOREIGN KEY (`id_inscripcion`) REFERENCES `inscripciones` (`id_inscripcion`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -191,7 +192,7 @@ CREATE TABLE `detalles_inscripciones` (
 
 LOCK TABLES `detalles_inscripciones` WRITE;
 /*!40000 ALTER TABLE `detalles_inscripciones` DISABLE KEYS */;
-INSERT INTO `detalles_inscripciones` VALUES (1,'3','Rechazado',NULL,1),(2,'4','Pendiente',NULL,1),(3,'2','Pendiente',NULL,1),(4,'3','Pendiente',NULL,2),(5,'4','Pendiente',NULL,2),(6,'2','Pendiente',NULL,2),(7,'3','Aprobado',NULL,3),(8,'4','Aprobado',NULL,3),(9,'2','Aprobado',NULL,3),(10,'3','Pendiente',NULL,4),(11,'4','Pendiente',NULL,4),(12,'2','Pendiente',NULL,4),(13,'3','Pendiente',NULL,5),(14,'4','Pendiente',NULL,5),(15,'2','Pendiente',NULL,5);
+INSERT INTO `detalles_inscripciones` VALUES (1,'3','Rechazado','',1,4),(2,'4','Pendiente','',1,3),(3,'2','Pendiente','',1,2),(4,'3','Pendiente',NULL,2,4),(5,'4','Pendiente',NULL,2,3),(6,'2','Pendiente',NULL,2,2),(7,'3','Aprobado',NULL,3,0),(8,'4','Aprobado',NULL,3,0),(9,'2','Aprobado',NULL,3,0),(10,'3','Pendiente',NULL,4,4),(11,'4','Pendiente',NULL,4,3),(12,'2','Pendiente',NULL,4,2),(13,'3','Pendiente',NULL,5,4),(14,'4','Pendiente',NULL,5,3),(15,'2','Pendiente',NULL,5,2);
 /*!40000 ALTER TABLE `detalles_inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -342,7 +343,7 @@ CREATE TABLE `fichas` (
   CONSTRAINT `fichas_ibfk_1` FOREIGN KEY (`id_nivel_formacion`) REFERENCES `niveles_formacion` (`id_nivel_formacion`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_fichas_1` FOREIGN KEY (`id_instructor_seguimiento`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_fichas_2` FOREIGN KEY (`id_instructor_lider`) REFERENCES `usuarios` (`id_usuario`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -351,7 +352,7 @@ CREATE TABLE `fichas` (
 
 LOCK TABLES `fichas` WRITE;
 /*!40000 ALTER TABLE `fichas` DISABLE KEYS */;
-INSERT INTO `fichas` VALUES (1,'2473196','ADSO','2022-02-01','2023-04-30','2023-05-01',3,4,2);
+INSERT INTO `fichas` VALUES (1,'2473196','Análisis y Desarrollo de Software','2022-02-01','2023-04-30','2023-05-01',3,4,2),(2,'2586917','Producción Multimedia','2023-06-02','2024-08-01','2024-11-02',3,2,1);
 /*!40000 ALTER TABLE `fichas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -402,7 +403,7 @@ CREATE TABLE `inscripciones` (
 
 LOCK TABLES `inscripciones` WRITE;
 /*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
-INSERT INTO `inscripciones` VALUES (1,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','lectiva','1','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','ninguno',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'empresa','pdf.pdf','N/A','Rechazado','2023-07-27 16:34:43','Admin Admin'),(2,'Lorena','Quiceno Giraldo','CC','1082882294','lorenquiceno@gmail.com','3245887367','practica','2','Análisis y Desarrollo de Software','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','FIC','9003238537','Teleperformance','Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','empresa','pdf(1).pdf','N/A','Pendiente','2023-07-27 17:16:00','Admin Admin'),(3,'Juan Guillermo','Gomez Zapata','CC','1027800913','juanlestar0408@gmail.com','3006953395','practica','2','ADSO','tecnologia','2473196','2023-04-05','Adelaida','acanom@sena.edu.co','jovenes en accion','9003238537','Teleperformance','Cra 40 #43b-33','Jessica Martinez','HHRR','3233459687','jessicalamejor@teleformance.co','empresa','pdf(1)(1).pdf','Ninguna','Aprobado','2023-07-28 16:23:38','Admin Admin'),(4,'Angie Tatiana','Mosquera','CC','1027150354','atatianmosquera@gmail.com','3012491058','lectiva','5','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','apoyo de sostenimiento sena','9003238537','Teleperformance','Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','empresa','pdf(3).pdf','N/A','Pendiente','2023-08-18 15:30:13','Admin Admin'),(5,'Angie Tatiana','Mosquera','CC','1027150354','atatianmosquera@gmail.com','3012491058','lectiva','5','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','apoyo de sostenimiento sena','9003238537',NULL,'Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','empresa','pdf(3).pdf','N/A','Pendiente','2023-08-18 16:05:15','Admin Admin');
+INSERT INTO `inscripciones` VALUES (1,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','Lectiva','1','Análisis y Desarrollo de Software','Tecnología','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','ninguno',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Empresa','pdf.pdf','N/A','Rechazado','2023-07-27 16:34:43','Admin Admin'),(2,'Lorena','Quiceno Giraldo','CC','1082882294','lorenquiceno@gmail.com','3245887367','Práctica','2','Análisis y Desarrollo de Software','Tecnología','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','FIC','9003238537','Teleperformance','Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','Empresa','pdf(1).pdf','N/A','Pendiente','2023-07-27 17:16:00','Admin Admin'),(3,'Juan Guillermo','Gomez Zapata','CC','1027800913','juanlestar0408@gmail.com','3006953395','Práctica','2','Análisis y Desarrollo de Software','Tecnología','2473196','2023-04-05','Adelaida','acanom@sena.edu.co','jovenes en accion','9003238537','Teleperformance','Cra 40 #43b-33','Jessica Martinez','HHRR','3233459687','jessicalamejor@teleformance.co','Empresa','pdf(1)(1).pdf','Ninguna','Aprobado','2023-07-28 16:23:38','Admin Admin'),(4,'Angie Tatiana','Mosquera','CC','1027150354','atatianmosquera@gmail.com','3012491058','Lectiva','5','Análisis y Desarrollo de Software','Tecnología','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','apoyo de sostenimiento sena','9003238537','Teleperformance','Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','Empresa','pdf(3).pdf','N/A','Pendiente','2023-08-18 15:30:13','Admin Admin'),(5,'Angie Tatiana','Mosquera','CC','1027150354','atatianmosquera@gmail.com','3012491058','Lectiva','5','Análisis y Desarrollo de Software','Tecnología','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','apoyo de sostenimiento sena','9003238537',NULL,'Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','Empresa','pdf(3).pdf','N/A','Pendiente','2023-08-18 16:05:15','Admin Admin');
 /*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -625,7 +626,7 @@ CREATE TABLE `usuarios` (
   PRIMARY KEY (`id_usuario`),
   KEY `id_rol` (`id_rol`),
   CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -634,7 +635,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanlestar12@gmail.com','3195810996','$2b$10$G/qBWAkBBWWYv168liiN4.yNHoflbKb9y6nUEFZvtVomsVCNQhmo6',1),(2,'Stiven','Blandón','CC','1017924888','blandon0207s@gmail.com','3183577499','$2b$10$GWUNM.FJKmU81l5dW0pDBOuc5EGYTeYjJxa9ENNNaioKoWM3QR.aq',2),(3,'Adelaida','Benavidez','CC','1017923453','adelaida@misena.edu.co','3183575433','$2b$10$wskcGpv.zlFyAp1gWLZSpunAe5uqGcgJ2yAhpzOQyRWdlpp./jUkG',4),(4,'Juan','Esteban','CC','1064973453','juanEsteban45@misena.edu.co','3133675433','$2b$10$SAeF4T/nxMHjfl5LhHzqjOI920j/dS9CU8NCpDecLicv.kSxegV/m',3);
+INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanlestar12@gmail.com','3195810996','$2b$10$G/qBWAkBBWWYv168liiN4.yNHoflbKb9y6nUEFZvtVomsVCNQhmo6',1),(2,'Stiven','Blandón','CC','1017924888','blandon0207s@gmail.com','3183577499','$2b$10$GWUNM.FJKmU81l5dW0pDBOuc5EGYTeYjJxa9ENNNaioKoWM3QR.aq',2),(3,'Adelaida','Benavidez','CC','1017923453','adelaida@misena.edu.co','3183575433','$2b$10$wskcGpv.zlFyAp1gWLZSpunAe5uqGcgJ2yAhpzOQyRWdlpp./jUkG',4),(4,'Juan','Esteban','CC','1064973453','juanEsteban45@misena.edu.co','3133675433','$2b$10$SAeF4T/nxMHjfl5LhHzqjOI920j/dS9CU8NCpDecLicv.kSxegV/m',3),(5,'Líder','Líder','CC','1234567809','Liderlider@gmail.com','3195810996','$2b$10$dfg1Lu3pt3y169EKQZPKeOHPu/dcqpEOfPbwFgtkhAnegXbMFBAyS',4),(6,'Coordi','Coordi','CC','1234567098','Coordicoordi@gmail.com','3195810996','$2b$10$qN1T5s1.6iHJhiyayLFl5u8MK7YeKpaIz7U8ATCJilojcFl3a3kvG',2),(7,'Seguim','Seguim','CC','1234560987','Seguimseguim@gmail.com','3195810996','$2b$10$AWKbnyNkMJ9MlVOuBlTk4.0R8Kx.e5appDM5E.1bw4QoYyQaQ85zq',3);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -683,4 +684,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-18 11:08:21
+-- Dump completed on 2023-08-28 14:21:50
