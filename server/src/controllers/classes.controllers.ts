@@ -114,7 +114,7 @@ export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Res
   }
 }
 
-export const getStudentsClassByClassNumber: RequestHandler<{numero_ficha: string}, Response, classes> = async (req: Request, res: Response) => {
+export const getStudentsClassByClassNumber: RequestHandler<{ numero_ficha: string }, Response, classes> = async (req: Request, res: Response) => {
   const { numero_ficha } = req.query
   const classNumber = Number(numero_ficha)
   try {

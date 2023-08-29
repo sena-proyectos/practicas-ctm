@@ -256,8 +256,8 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData }) 
         ) : loadingData ? (
           <LoadingTableList number={6} />
         ) : (
-          <tr className='grid place-content-center h-full mt-10'>
-            <th scope='row' className='text-red-500 text-xl flex items-center gap-1'>
+          <tr className='grid h-full mt-10 place-content-center'>
+            <th scope='row' className='flex items-center gap-1 text-xl text-red-500'>
               <p>¡Oops! No hay ningún aprendiz con este filtro.</p>
               <BiSad className='text-2xl' />
             </th>
@@ -315,3 +315,4 @@ const UploadingExcelFileModal = () => (
     </section>
   </LoadingModal>
 )
+
