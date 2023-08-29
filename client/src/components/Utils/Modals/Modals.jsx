@@ -13,7 +13,7 @@ import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
 import { getTeachers } from '../../../api/httpRequest'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption }) => {
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption, numero_ficha, programa_formacion }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const passwordIcons = {
@@ -298,8 +298,8 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
           {bodyAsign && (
             <section className='flex flex-col gap-3 my-5'>
               <header>
-                <h3 className='text-[16px] font-medium text-right'>2473196</h3>
-                <h3 className='text-[16px] font-light text-right'>Análisis y Desarrollo de Software</h3>
+                <h3 className='text-[16px] font-medium text-right'>{numero_ficha}</h3>
+                <h3 className='text-[16px] font-light text-right'>{programa_formacion}</h3>
               </header>
               <form action='' className='flex flex-col gap-6'>
                 <div>
