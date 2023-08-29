@@ -49,7 +49,7 @@ export const Teachers = () => {
   }, [])
 
   const handleCourse = (id) => {
-    return navigate(`fichas/${id}`)
+    return navigate(`/fichas-instructor/${id}`)
   }
 
   return (
