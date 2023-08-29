@@ -32,8 +32,6 @@ export const AssignClass = () => {
     }
   }
 
-  console.log(courses)
-
   useEffect(() => {
     getCursos()
   }, [])
