@@ -57,8 +57,8 @@ export const Courses = () => {
         <header className='grid place-items-center'>
           <Search searchFilter />
         </header>
-        <section className='grid content-center'>
-          <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 sm:grid-cols-2 md:grid-cols-3'>
+        <section className='flex flex-col h-full gap-3'>
+          <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>
             {loading ? (
               <>
                 <SkeletonLoading number={6} />
