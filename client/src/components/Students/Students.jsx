@@ -232,23 +232,25 @@ export const Students = () => {
                 {studentsCourse.length > 0 ? (
                   studentsCourse.slice(startIndex, endIndex).map((student, i) => {
                     return (
-                      <tr className='border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[10vh] transition-colors' key={i}>
-                        <th scope='row' className='flex items-center text-slate-200 whitespace-nowrap '>
-                          <div className='text-slate-800'>
-                            <div className='text-base font-semibold break-words whitespace-normal max-w-[40ch] text-center'>{student.nombre_completo}</div>
-                            <div className='font-light text-center'>{student.email_aprendiz}</div>
-                          </div>
-                        </th>
-                        <td className='text-base font-light text-center max-w-[10ch]'>{student.nombre_modalidad}</td>
-                        <td>
-                          <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
-                        </td>
-                        <td className='flex items-center text-2xl'>
-                          <button onClick={() => handleDetailInfoStudent(student.id_aprendiz)}>
-                            <AiOutlineEye />
-                          </button>
-                        </td>
-                      </tr>
+                      <>
+                        <tr className='border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[10vh] transition-colors' key={i}>
+                          <th scope='row' className='flex items-center text-slate-200 whitespace-nowrap '>
+                            <div className='text-slate-800'>
+                              <div className='text-base font-semibold break-words whitespace-normal max-w-[40ch] text-center'>{student.nombre_completo}</div>
+                              <div className='font-light text-center'>{student.email_aprendiz}</div>
+                            </div>
+                          </th>
+                          <td className='text-base font-light text-center max-w-[10ch]'>{student.nombre_modalidad}</td>
+                          <td>
+                            <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
+                          </td>
+                          <td className='flex items-center text-2xl'>
+                            <button onClick={() => handleDetailInfoStudent(student.id_aprendiz)}>
+                              <AiOutlineEye />
+                            </button>
+                          </td>
+                        </tr>
+                      </>
                     )
                   })
                 ) : loadingData.course ? (
@@ -298,3 +300,4 @@ const LoadingDataStudents = ({ number = 6 }) =>
       </td>
     </tr>
   ))
+

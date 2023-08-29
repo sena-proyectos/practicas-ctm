@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `sena_practicas` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `sena_practicas`;
--- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.32, for Linux (x86_64)
 --
 -- Host: localhost    Database: sena_practicas
 -- ------------------------------------------------------
--- Server version	8.0.33
+-- Server version	8.0.34
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -162,7 +162,6 @@ CREATE TABLE `detalle_fichas_aprendices` (
 
 LOCK TABLES `detalle_fichas_aprendices` WRITE;
 /*!40000 ALTER TABLE `detalle_fichas_aprendices` DISABLE KEYS */;
-INSERT INTO `detalle_fichas_aprendices` VALUES (1,1),(1,2),(1,3),(1,4),(2,5);
 /*!40000 ALTER TABLE `detalle_fichas_aprendices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -333,8 +332,8 @@ CREATE TABLE `fichas` (
   `fecha_inicio_lectiva` date NOT NULL,
   `fecha_fin_lectiva` date NOT NULL,
   `fecha_inicio_practica` date NOT NULL,
-  `id_instructor_seguimiento` int NOT NULL,
-  `id_instructor_lider` int NOT NULL,
+  `id_instructor_seguimiento` int DEFAULT NULL,
+  `id_instructor_lider` int DEFAULT NULL,
   `id_nivel_formacion` int NOT NULL,
   PRIMARY KEY (`id_ficha`),
   KEY `fk_fichas_1` (`id_instructor_seguimiento`),
@@ -342,8 +341,8 @@ CREATE TABLE `fichas` (
   KEY `fk_fichas_2` (`id_instructor_lider`) /*!80000 INVISIBLE */,
   CONSTRAINT `fichas_ibfk_1` FOREIGN KEY (`id_nivel_formacion`) REFERENCES `niveles_formacion` (`id_nivel_formacion`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_fichas_1` FOREIGN KEY (`id_instructor_seguimiento`) REFERENCES `usuarios` (`id_usuario`),
-  CONSTRAINT `fk_fichas_2` FOREIGN KEY (`id_instructor_lider`) REFERENCES `usuarios` (`id_usuario`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `fk_fichas_2` FOREIGN KEY (`id_instructor_lider`) REFERENCES `usuarios` (`id_usuario`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -352,7 +351,7 @@ CREATE TABLE `fichas` (
 
 LOCK TABLES `fichas` WRITE;
 /*!40000 ALTER TABLE `fichas` DISABLE KEYS */;
-INSERT INTO `fichas` VALUES (1,'2473196','Análisis y Desarrollo de Software','2022-02-01','2023-04-30','2023-05-01',3,4,2),(2,'2586917','Producción Multimedia','2023-06-02','2024-08-01','2024-11-02',3,2,1);
+INSERT INTO `fichas` VALUES (3,'2473196','Análisis y Desarrollo de Software','2022-02-01','2023-02-10','2023-04-01',NULL,NULL,2);
 /*!40000 ALTER TABLE `fichas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -684,4 +683,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-28 14:21:50
+-- Dump completed on 2023-08-29  8:30:27
