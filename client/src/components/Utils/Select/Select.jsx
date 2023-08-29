@@ -20,7 +20,7 @@ export const Select = ({ options, placeholder, placeholderSearch, hoverColor, ho
             <input type='text' placeholder={placeholderSearch} className='w-full p-2 font-light outline-none placeholder:text-slate-400' onChange={(e) => setInputValue(e.target.value.toLowerCase())} value={inputValue} />
           </div>
         )}
-        {options.map((option, i) => (
+        {options.map((option) => (
           <li
             key={option.key}
             className={`px-1.5 py-1 my-1 text-sm ${hoverColor} ${hoverTextColor} rounded-md cursor-pointer select-none
