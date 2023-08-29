@@ -121,7 +121,7 @@ export const getClass = async () => {
   return response
 }
 
-// OBTENER APRENDICES DE UNA FICHA
+// OBTENER FICHAS POR ID
 export const getClassById = async (id) => {
   const URL = `${baseUrl}${api}/class/${id}`
 

@@ -7,6 +7,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { AiOutlineEye } from 'react-icons/ai'
 import { PiCaretRightBold } from 'react-icons/pi'
 import { TiDelete } from 'react-icons/ti'
+import { BiSad } from 'react-icons/bi'
 
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -14,7 +15,6 @@ import { Footer } from '../Footer/Footer'
 import { Pagination } from '../Utils/Pagination/Pagination'
 import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById } from '../../api/httpRequest'
 import { Modals } from '../Utils/Modals/Modals'
-import { BiSad } from 'react-icons/bi'
 
 export const Students = () => {
   const [pageNumber, setPageNumber] = useState(0)
@@ -34,7 +34,6 @@ export const Students = () => {
     try {
       const response = await GetStudentsByCourse(payload)
       const { data } = response.data
-      console.log(data)
       setStudentsCourse(data)
       setStudentsCourseOriginal(data)
     } catch (err) {
