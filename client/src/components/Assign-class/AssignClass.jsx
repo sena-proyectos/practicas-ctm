@@ -12,65 +12,54 @@ import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
 import { Modals } from '../Utils/Modals/Modals'
 import { Pagination } from '../Utils/Pagination/Pagination'
+import { getClass, GetClassByNumber } from '../../api/httpRequest'
 
 export const AssignClass = () => {
   const [modalAsign, setModalAsign] = useState(false)
   const [pageNumber, setPageNumber] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [courses, setCourses] = useState([])
+  const [detailCourse, setDetailCourse] = useState([])
 
-  const courses = {
-    data: [
-      {
-        ficha: 2473196,
-        name: 'Fabricación de muebles contemporaneos',
-        etapa: 'Lectiva'
-      },
-      {
-        ficha: 2689476,
-        name: 'Analisis y desarrollo de software',
-        etapa: 'Productiva'
-      },
-      {
-        ficha: 2869467,
-        name: 'Pan y Tomate',
-        etapa: 'Lectiva'
-      },
-      {
-        ficha: 1234567,
-        name: 'Fabricación de muebles contemporaneos',
-        etapa: 'Productiva'
-      },
-      {
-        ficha: 7654321,
-        name: 'Analisis y desarrollo de software',
-        etapa: 'Lectiva'
-      },
-      {
-        ficha: 1234765,
-        name: 'Pan y Tomate',
-        etapa: 'Productiva'
-      }
-    ]
-  }
-
-  const coursesPerPage = 6
-  const pageCount = Math.ceil(courses.data.length / coursesPerPage)
-  const startIndex = pageNumber * coursesPerPage
-  const endIndex = startIndex + coursesPerPage
-
-  const handleAsign = () => {
-    setModalAsign(!modalAsign)
+  const getCursos = async () => {
+    try {
+      const response = await getClass()
+      const { data } = response.data
+      setCourses(data)
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    }, 2000)
+    getCursos()
+  }, [])
+
+  const handleModal = () => setModalAsign(false)
+
+  const handleDetailCourse = async (numero_ficha) => {
+    try {
+      setModalAsign(true)
+      const response = await GetClassByNumber(numero_ficha)
+      const { data } = response.data
+      setDetailCourse(data[0])
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const coursesPerPage = 6
+  const pageCount = Math.ceil(courses.length / coursesPerPage)
+  const startIndex = pageNumber * coursesPerPage
+  const endIndex = startIndex + coursesPerPage
+
+  useEffect(() => {
+    setLoading(false)
   }, [])
 
   return (
     <>
-      {modalAsign && <Modals bodyAsign title={'Asignar Instructor'} closeModal={handleAsign} />}
+      {modalAsign && <Modals bodyAsign title={'Asignar Instructor'} numero_ficha={detailCourse.numero_ficha} programa_formacion={detailCourse.nombre_programa_formacion} closeModal={handleModal} />}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
@@ -89,7 +78,7 @@ export const AssignClass = () => {
                   <SkeletonLoading />
                 </>
               ) : (
-                courses.data.slice(startIndex, endIndex).map((course, i) => {
+                courses.slice(startIndex, endIndex).map((course, i) => {
                   return (
                     <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 shadow-lg border-slate-100 border-1' key={i}>
                       <header className='flex flex-row w-fit '>
@@ -97,15 +86,15 @@ export const AssignClass = () => {
                           <BsJournalBookmark className='w-full h-full scale-50' />
                         </div>
                         <div className='relative w-24 h-5 my-auto text-center bg-teal-200 border-2 border-teal-800 rounded-r-full right-2'>
-                          <p className='text-xs font-medium'>{course.ficha}</p>
+                          <p className='text-xs font-medium'>{course.numero_ficha}</p>
                         </div>
                       </header>
                       <section>
-                        <p className='text-sm font-medium'>{course.name}</p>
-                        <span className='text-xs font-light'>{course.etapa}</span>
+                        <p className='text-sm font-medium'>{course.nombre_programa_formacion}</p>
+                        <span className='text-xs font-light'>{course.estado}</span>
                       </section>
                       <div className='relative ml-auto bottom-2 w-fit'>
-                        <Button value={'Asignar'} rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' clickeame={handleAsign} textColor='text-slate-600' icon={<HiOutlineUserAdd className='text-xl' />} />
+                        <Button value={'Asignar'} rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' clickeame={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' icon={<HiOutlineUserAdd className='text-xl' />} />
                       </div>
                     </div>
                   )
