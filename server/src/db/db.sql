@@ -147,13 +147,16 @@ DROP TABLE IF EXISTS `detalle_fichas_aprendices`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `detalle_fichas_aprendices` (
+  `id_detalle_ficha_aprendiz` int NOT NULL AUTO_INCREMENT,
   `id_ficha` int NOT NULL,
   `id_aprendiz` int NOT NULL,
+  PRIMARY KEY (`id_detalle_ficha_aprendiz`),
+  UNIQUE KEY `id_detalle_ficha_aprendiz_UNIQUE` (`id_detalle_ficha_aprendiz`),
   KEY `id_ficha` (`id_ficha`),
   KEY `id_aprendiz` (`id_aprendiz`),
   CONSTRAINT `detalle_fichas_aprendices_ibfk_1` FOREIGN KEY (`id_ficha`) REFERENCES `fichas` (`id_ficha`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `detalle_fichas_aprendices_ibfk_2` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,6 +165,7 @@ CREATE TABLE `detalle_fichas_aprendices` (
 
 LOCK TABLES `detalle_fichas_aprendices` WRITE;
 /*!40000 ALTER TABLE `detalle_fichas_aprendices` DISABLE KEYS */;
+INSERT INTO `detalle_fichas_aprendices` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,1,5);
 /*!40000 ALTER TABLE `detalle_fichas_aprendices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -342,7 +346,7 @@ CREATE TABLE `fichas` (
   CONSTRAINT `fichas_ibfk_1` FOREIGN KEY (`id_nivel_formacion`) REFERENCES `niveles_formacion` (`id_nivel_formacion`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_fichas_1` FOREIGN KEY (`id_instructor_seguimiento`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_fichas_2` FOREIGN KEY (`id_instructor_lider`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -351,7 +355,7 @@ CREATE TABLE `fichas` (
 
 LOCK TABLES `fichas` WRITE;
 /*!40000 ALTER TABLE `fichas` DISABLE KEYS */;
-INSERT INTO `fichas` VALUES (3,'2473196','Análisis y Desarrollo de Software','2022-02-01','2023-02-10','2023-04-01',NULL,NULL,2);
+INSERT INTO `fichas` VALUES (1,'2473196','Análisis y Desarrollo de Software','2022-02-01','2023-02-10','2023-04-01',NULL,NULL,2);
 /*!40000 ALTER TABLE `fichas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -393,7 +397,7 @@ CREATE TABLE `inscripciones` (
   `fecha_creacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `responsable_inscripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id_inscripcion`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -683,4 +687,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-29  8:30:27
+-- Dump completed on 2023-08-29 10:16:36
