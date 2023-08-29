@@ -27,6 +27,16 @@ export const getClasses = async (_req: Request, res: Response): Promise<Response
   }
 }
 
+export const getClassesFree = async (_req: Request, res: Response): Promise<Response> => {
+  try {
+    const [classes] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica,  fichas.id_instructor_lider, fichas.id_instructor_seguimiento, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario WHERE id_instructor_seguimiento IS NULL OR id_instructor_lider IS NULL')
+    if (!Array.isArray(classes) || classes?.length === 0) throw new DbErrorNotFound('No hay fichas sin instructores.', errorCodes.ERROR_GET_CLASSES)
+    return res.status(httpStatus.OK).json({ data: classes })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 /**
  * Esta función de TypeScript recupera los detalles de la clase en función de un parámetro
  * "numero_ficha" determinado.
@@ -84,7 +94,7 @@ export const getClassByPracticalInstructorId: RequestHandler<{ id: string }, Res
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [classData] = await connection.query('SELECT * FROM fichas WHERE id_instructor_seguimiento = ?', [idNumber])
+    const [classData] = await connection.query('SELECT *, CONCAT(usuarios.nombres_usuario, " ", usuarios.apellidos_usuario) as seguimiento_nombre_completo FROM fichas INNER JOIN usuarios ON fichas.id_instructor_seguimiento = usuarios.id_usuario WHERE id_instructor_seguimiento = ?', [idNumber])
     if (!Array.isArray(classData) || classData?.length === 0) throw new DbErrorNotFound('No se encontraron clases del instructor de seguimiento.', errorCodes.ERROR_GET_CLASS)
     return res.status(httpStatus.OK).json({ data: classData })
   } catch (error) {
@@ -114,7 +124,7 @@ export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Res
   }
 }
 
-export const getStudentsClassByClassNumber: RequestHandler<{numero_ficha: string}, Response, classes> = async (req: Request, res: Response) => {
+export const getStudentsClassByClassNumber: RequestHandler<{ numero_ficha: string }, Response, classes> = async (req: Request, res: Response) => {
   const { numero_ficha } = req.query
   const classNumber = Number(numero_ficha)
   try {

@@ -144,3 +144,11 @@ export const getClassByTeacherId = async (id) => {
   const response = await axios.get(URL)
   return response
 }
+
+// OBTENER FICHAS SIN INSTRUCTOR LIDER O SEGUIMIENTO
+export const getClassFree = async () => {
+  const URL = `${baseUrl}${api}/classesFree`
+
+  const response = await axios.get(URL)
+  return response
+}
