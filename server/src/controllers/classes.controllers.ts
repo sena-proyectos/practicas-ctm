@@ -19,9 +19,8 @@ import { type classes } from '../interfaces/classes.interfaces.js'
  */
 export const getClasses = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const [classes] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" end as estado, CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario) as seguimiento_nombre_completo, CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario) as lider_nombre_completo FROM fichas INNER JOIN usuarios as usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario INNER JOIN usuarios as usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario;')
+    const [classes] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario')
     if (!Array.isArray(classes) || classes?.length === 0) throw new DbErrorNotFound('No hay fichas registradas.', errorCodes.ERROR_GET_CLASSES)
-
     return res.status(httpStatus.OK).json({ data: classes })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
