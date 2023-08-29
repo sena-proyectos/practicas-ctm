@@ -12,7 +12,7 @@ import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
 import { Modals } from '../Utils/Modals/Modals'
 import { Pagination } from '../Utils/Pagination/Pagination'
-import { getClass, GetClassByNumber } from '../../api/httpRequest'
+import { getClassFree, GetClassByNumber } from '../../api/httpRequest'
 
 export const AssignClass = () => {
   const [modalAsign, setModalAsign] = useState(false)
@@ -23,13 +23,16 @@ export const AssignClass = () => {
 
   const getCursos = async () => {
     try {
-      const response = await getClass()
+      const response = await getClassFree()
       const { data } = response.data
+
       setCourses(data)
     } catch (error) {
       throw new Error(error)
     }
   }
+
+  console.log(courses)
 
   useEffect(() => {
     getCursos()
@@ -80,7 +83,7 @@ export const AssignClass = () => {
               ) : (
                 courses.slice(startIndex, endIndex).map((course, i) => {
                   return (
-                    <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 shadow-lg border-slate-100 border-1' key={i}>
+                    <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 bg-white shadow-lg border-slate-100 border-1' key={i}>
                       <header className='flex flex-row w-fit '>
                         <div className='z-10 bg-teal-200 border-2 border-teal-800 rounded-full w-14 h-14'>
                           <BsJournalBookmark className='w-full h-full scale-50' />
