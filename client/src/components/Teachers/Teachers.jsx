@@ -4,7 +4,6 @@ import Skeleton from 'react-loading-skeleton'
 
 // Icons
 import { FaAngleRight } from 'react-icons/fa'
-import { LuBookPlus } from 'react-icons/lu'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -12,7 +11,6 @@ import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Pagination } from '../Utils/Pagination/Pagination'
 import { colorsOddRow } from '../../import/staticData'
-import { Button } from '../Utils/Button/Button'
 import { getTeachers } from '../../api/httpRequest'
 
 export const Teachers = () => {
@@ -45,9 +43,6 @@ export const Teachers = () => {
   const endIndex = startIndex + instructoresPerPage
 
   const navigate = useNavigate()
-  const handleAsign = () => {
-    return navigate('/asignar-ficha')
-  }
 
   useEffect(() => {
     setLoading(false)
@@ -93,9 +88,6 @@ export const Teachers = () => {
           </section>
           <div className='flex justify-center h-[13vh] relative st1:bottom-[-1.5rem] st2:bottom-[-3rem] bottom-[-4rem] md:bottom-0'>
             <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
-          </div>
-          <div className='absolute right-12 bottom-20'>
-            <Button value={'Agregar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' clickeame={handleAsign} icon={<LuBookPlus className='text-xl' />} />
           </div>
         </section>
         <Footer />

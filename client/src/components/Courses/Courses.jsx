@@ -2,9 +2,13 @@ import { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useNavigate } from 'react-router-dom'
 
+// Icons
+import { LuBookPlus } from 'react-icons/lu'
+
 // Componentes
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
+import { Button } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
 import { Pagination } from '../Utils/Pagination/Pagination'
@@ -42,6 +46,9 @@ export const Courses = () => {
   const handleStudents = (ficha) => {
     return navigate(`/fichas/aprendices/${ficha}`)
   }
+  const handleAsign = () => {
+    return navigate('/asignar-ficha')
+  }
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
@@ -64,6 +71,9 @@ export const Courses = () => {
           </section>
           <div className='flex justify-center h-[13vh] relative bottom-0'>
             <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+          </div>
+          <div className='absolute right-12 bottom-20'>
+            <Button value={'Agregar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' clickeame={handleAsign} icon={<LuBookPlus className='text-xl' />} />
           </div>
         </section>
         <Footer />
