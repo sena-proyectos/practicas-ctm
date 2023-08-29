@@ -37,17 +37,7 @@ export const editUser: RequestHandler<{}, Response, userForm> = async (req: Requ
   const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
   const idNumber = Number(id)
   try {
-    const [user] = await connection.query('UPDATE usuarios SET nombres_usuario = IFNULL(?, nombres_usuario), apellidos_usuario = IFNULL(?, apellidos_usuario), tipo_documento_usuario = IFNULL(?, tipo_documento_usuario), numero_documento_usuario = IFNULL(?, numero_documento_usuario), email_usuario = IFNULL(?, email_usuario), numero_celular_usuario = IFNULL(?, numero_celular_usuario), id_rol = IFNULL(?, id_rol), contrasena_usuario = IFNULL(?, contrasena_usuario) WHERE id_usuario = ?', [
-      nombre,
-      apellido,
-      tipo_documento,
-      num_documento,
-      correo_electronico,
-      num_celular,
-      id_rol,
-      contrasena,
-      idNumber
-    ])
+    const [user] = await connection.query('UPDATE usuarios SET nombres_usuario = IFNULL(?, nombres_usuario), apellidos_usuario = IFNULL(?, apellidos_usuario), tipo_documento_usuario = IFNULL(?, tipo_documento_usuario), numero_documento_usuario = IFNULL(?, numero_documento_usuario), email_usuario = IFNULL(?, email_usuario), numero_celular_usuario = IFNULL(?, numero_celular_usuario), id_rol = IFNULL(?, id_rol), contrasena_usuario = IFNULL(?, contrasena_usuario) WHERE id_usuario = ?', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena, idNumber])
     if (!Array.isArray(user) && user?.affectedRows === 0) throw new DbErrorNotFound('No se pudo actualizar el usuario.')
     return res.status(httpStatus.OK).json({ message: 'Usuario actualizado exitosamente.' })
   } catch (error) {
@@ -61,7 +51,7 @@ export const getTeachers = async (req: Request, res: Response): Promise<Response
     const limit = !Number.isNaN(parseInt(req.query.limit as string)) || 10
     const offset = (Number(page) - 1) * Number(limit)
 
-    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 LIMIT ? OFFSET ?', [limit, offset])
+    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 OR id_rol = 4 LIMIT ? OFFSET ?', [limit, offset])
     if (!Array.isArray(teachers) || teachers.length === 0) throw new DbErrorNotFound('No hay instructores registrados.', errorCodes.ERROR_GET_TEACHER)
 
     const [total] = (await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3')) as unknown as Array<{ count: number }>
@@ -77,7 +67,7 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND id_usuario = ?', [idNumber])
+    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 OR id_rol = 4 AND id_usuario = ?', [idNumber])
     if (!Array.isArray(teacher) || teacher.length === 0) throw new DbErrorNotFound('No se encontró el profesor.', errorCodes.ERROR_GET_TEACHER)
     return res.status(httpStatus.OK).json({ data: teacher })
   } catch (error) {
@@ -88,7 +78,7 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
 export const getTeacherByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
   const { nombreCompleto } = req.query
   try {
-    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 AND CONCAT(nombres_usuario, " ", apellidos_usuario) LIKE ?', [`%${nombreCompleto as string}%`])
+    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 OR id_rol = 4 AND CONCAT(nombres_usuario, " ", apellidos_usuario) LIKE ?', [`%${nombreCompleto as string}%`])
     if (!Array.isArray(teacher) || teacher?.length === 0) throw new DbErrorNotFound('No se encontró el instructor.', errorCodes.ERROR_GET_TEACHER)
     return res.status(httpStatus.OK).json({ data: teacher })
   } catch (error) {
