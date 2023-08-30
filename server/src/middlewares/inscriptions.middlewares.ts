@@ -31,11 +31,38 @@ export const checkInscriptionData: RequestHandler<{}, Response, inscriptionData>
       if (isNaN(phoneBossParsed)) throw new NumberIsNaN('El número de celular del jefe inmediato no es un número.')
 
       const { error } = inscriptionSchema.validate({
-        nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion: numberParsed, email_inscripcion, inscripcion_celular: phoneStudentParsed, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion: fichaNumber, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion: nitEmpresaNumber, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion: phoneBossParsed, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
+        nombre_inscripcion,
+        apellido_inscripcion,
+        tipo_documento_inscripcion,
+        documento_inscripcion: numberParsed,
+        email_inscripcion,
+        inscripcion_celular: phoneStudentParsed,
+        etapa_actual_inscripcion,
+        modalidad_inscripcion,
+        nombre_programa_inscripcion,
+        nivel_formacion_inscripcion,
+        numero_ficha_inscripcion: fichaNumber,
+        fecha_fin_lectiva_inscripcion,
+        nombre_instructor_lider_inscripcion,
+        email_instructor_lider_inscripcion,
+        apoyo_sostenimiento_inscripcion,
+        nit_empresa_inscripcion: nitEmpresaNumber,
+        nombre_empresa_inscripcion,
+        direccion_empresa_inscripcion,
+        nombre_jefe_empresa_inscripcion,
+        cargo_jefe_empresa_inscripcion,
+        telefono_jefe_empresa_inscripcion: phoneBossParsed,
+        email_jefe_empresa_inscripcion,
+        arl,
+        link_documentos,
+        observaciones,
+        responsable_inscripcion
       })
+      console.log(error)
       if (error !== undefined) throw new DataNotValid(`Los datos ingresados del id ${inscriptionLength} no son válidos, verifícalos.`)
       inscriptionLength += 1
     }
+    console.log('Bueno')
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)
@@ -48,7 +75,7 @@ export const checkInscriptionData: RequestHandler<{}, Response, inscriptionData>
  * @param res La respuesta HTTP.
  * @param next Función para pasar al siguiente middleware.
  */
-export const checkInscriptionDetailData: RequestHandler<{ }, Response, inscripcionDetailData> = (req: Request, res: Response, next: NextFunction): void => {
+export const checkInscriptionDetailData: RequestHandler<{}, Response, inscripcionDetailData> = (req: Request, res: Response, next: NextFunction): void => {
   const { responsable_aval } = req.params
   const { estado_aval, observaciones, id_inscripcion } = req.body
   try {

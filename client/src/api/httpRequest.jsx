@@ -28,7 +28,7 @@ export const GetStudentsDetailById = async (userID) => {
 
 /* INSCRIBIR APRENDICES */
 export const InscriptionApprentice = async (data) => {
-  const URL = `${baseUrl}${api}/create-inscription`
+  const URL = `${baseUrl}${api}/create-inscriptions`
 
   const response = await axios.post(URL, data)
   return response
