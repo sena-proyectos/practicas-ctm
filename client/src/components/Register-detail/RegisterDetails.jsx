@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css'
 // icons
 import { LuSave } from 'react-icons/lu'
 import { IoReturnDownBack } from 'react-icons/io5'
+import { PiCheckCircleBold, PiXCircleBold } from 'react-icons/pi'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -13,7 +14,7 @@ import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { keysRoles } from '../../import/staticData'
-import { getInscriptionById, getInscriptionDetails, getAvalById } from '../../api/httpRequest'
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById } from '../../api/httpRequest'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
@@ -271,9 +272,9 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                 <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} />
               </div>
               {idRol === Number(keysRoles[1]) ? (
-                <div className='flex flex-row gap-7 place-self-center'>
-                  <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                  <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                <div className='flex flex-row gap-2 place-self-center'>
+                  <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+                  <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
                 </div>
               ) : (
                 <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'La solicitud esta siendo procesada por el coordinador' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -295,9 +296,15 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
 
 const Documentos = ({ idRol, avalDocumentos }) => {
   const [avalInfo, setAvalInfo] = useState([])
+  const [nameResponsable, setNameResponsable] = useState('')
+
   const fetchRaps = async () => {
     const res = await getAvalById(avalDocumentos)
     const { data } = res.data
+    const response = await getUserById(data[0].responsable_aval)
+    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
+    const fullName = `${nombres_usuario} ${apellidos_usuario}`
+    setNameResponsable(fullName)
     setAvalInfo(data)
   }
 
@@ -311,17 +318,17 @@ const Documentos = ({ idRol, avalDocumentos }) => {
         <div className='w-[95%] mx-auto h-full'>
           {avalInfo.map((aval) => {
             return (
-              <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
+              <form action='' className='flex flex-col gap-7' key={aval.id_detalle_inscripcion}>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor='' className='text-sm font-light'>
                     Líder Prácticas
                   </label>
-                  <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
+                  <input type='text' defaultValue={nameResponsable} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
                 </div>
                 {idRol === Number(keysRoles[0]) ? (
-                  <div className='flex flex-row gap-7 place-self-center'>
-                    <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                    <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  <div className='flex flex-row gap-2 place-self-center'>
+                    <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+                    <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
                   </div>
                 ) : (
                   <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la documentación se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -344,9 +351,15 @@ const Documentos = ({ idRol, avalDocumentos }) => {
 
 const Funciones = ({ idRol, avalFunciones }) => {
   const [avalInfo, setAvalInfo] = useState([])
+  const [nameResponsable, setNameResponsable] = useState('')
+
   const fetchRaps = async () => {
     const res = await getAvalById(avalFunciones)
     const { data } = res.data
+    const response = await getUserById(data[0].responsable_aval)
+    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
+    const fullName = `${nombres_usuario} ${apellidos_usuario}`
+    setNameResponsable(fullName)
     setAvalInfo(data)
   }
 
@@ -362,17 +375,17 @@ const Funciones = ({ idRol, avalFunciones }) => {
             <div className='w-[95%] mx-auto h-full'>
               {avalInfo.map((aval) => {
                 return (
-                  <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
+                  <form action='' className='flex flex-col gap-7' key={aval.id_detalle_inscripcion}>
                     <div className='flex flex-col gap-1'>
                       <label htmlFor='' className='text-sm font-light'>
                         Instructor de Seguimiento
                       </label>
-                      <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
+                      <input type='text' value={nameResponsable} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
                     </div>
                     {idRol === Number(keysRoles[2]) ? (
-                      <div className='flex flex-row gap-7 place-self-center'>
-                        <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                        <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                      <div className='flex flex-row gap-2 place-self-center'>
+                        <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+                        <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
                       </div>
                     ) : (
                       <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la carta inicial se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -397,15 +410,22 @@ const Funciones = ({ idRol, avalFunciones }) => {
 
 const RAPS = ({ idRol, avalRaps }) => {
   const [avalInfo, setAvalInfo] = useState([])
+  const [nameResponsable, setNameResponsable] = useState('')
+
   const fetchRaps = async () => {
     const res = await getAvalById(avalRaps)
     const { data } = res.data
+    const response = await getUserById(data[0].responsable_aval)
+    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
+    const fullName = `${nombres_usuario} ${apellidos_usuario}`
+    setNameResponsable(fullName)
     setAvalInfo(data)
   }
 
   useEffect(() => {
     if (avalRaps) fetchRaps()
   }, [avalRaps])
+
   return (
     <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
       <section>RAPS</section>
@@ -413,17 +433,17 @@ const RAPS = ({ idRol, avalRaps }) => {
         <div className='w-[95%] mx-auto h-full'>
           {avalInfo.map((aval) => {
             return (
-              <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
+              <form action='' className='flex flex-col gap-7' key={aval.id_detalle_inscripcion}>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor='' className='text-sm font-light'>
                     Líder Prácticas
                   </label>
-                  <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
+                  <input type='text' defaultValue={nameResponsable} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
                 </div>
                 {idRol === Number(keysRoles[0]) ? (
-                  <div className='flex flex-row gap-7 place-self-center'>
-                    <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                    <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  <div className='flex flex-row gap-2 place-self-center'>
+                    <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+                    <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
                   </div>
                 ) : (
                   <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente los RAPS se encuentran en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -432,7 +452,7 @@ const RAPS = ({ idRol, avalRaps }) => {
                   <label htmlFor='' className='text-sm font-light'>
                     Observaciones
                   </label>
-                  <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
+                  <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
                 </div>
                 {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
               </form>
