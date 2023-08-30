@@ -306,7 +306,20 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                   <label htmlFor='asig' className='text-[16px] font-normal'>
                     Instructor Seguimiento
                   </label>
-                  <Select placeholder='Nombre instructor' isSearch hoverColor='hover:bg-teal-200' hoverTextColor='hover:text-teal-800' placeholderSearch='Ingrese nombre instructor' selectedColor='bg-teal-600 text-white' rounded='rounded-xl' borderColor='border-slate-500' options={option} />
+                  <Select
+                    placeholder='Nombre instructor'
+                    isSearch
+                    hoverColor='hover:bg-teal-200'
+                    hoverTextColor='hover:text-teal-800'
+                    placeholderSearch='Ingrese nombre instructor'
+                    selectedColor='bg-teal-600 text-white'
+                    rounded='rounded-xl'
+                    borderColor='border-slate-500'
+                    options={option}
+                    onSelect={(selectedValue) => {
+                      console.log(selectedValue)
+                    }}
+                  />
                 </div>
                 <Button value={'Asignar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-ms' font='font-medium' textColor='text-white' icon={<BsCheck2Circle className='text-xl' />} />
               </form>

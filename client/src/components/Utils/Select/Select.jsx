@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { BiChevronRight } from 'react-icons/bi'
 import { AiOutlineSearch } from 'react-icons/ai'
 
-export const Select = ({ options, placeholder, placeholderSearch, hoverColor, hoverTextColor, py = 'py-1', rounded, border = 'border-[0.5px]', borderColor, isSearch = false, bgContainer = 'bg-white', selectedColor, textSize, shadow }) => {
+export const Select = ({ options, placeholder, placeholderSearch, hoverColor, hoverTextColor, py = 'py-1', rounded, border = 'border-[0.5px]', borderColor, isSearch = false, bgContainer = 'bg-white', selectedColor, textSize, shadow, onSelect }) => {
   const [inputValue, setInputValue] = useState('')
   const [selected, setSelected] = useState('')
   const [open, setOpen] = useState(false)
@@ -30,6 +30,7 @@ export const Select = ({ options, placeholder, placeholderSearch, hoverColor, ho
               if (option.value.toLowerCase() !== selected.toLowerCase()) {
                 setSelected(option.value)
                 setOpen(false)
+                onSelect(option.key)
               }
             }}
           >
