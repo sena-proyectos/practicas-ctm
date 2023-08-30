@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 // icons
 import { LuSave } from 'react-icons/lu'
 import { IoReturnDownBack } from 'react-icons/io5'
+import { PiCheckCircleBold, PiXCircleBold } from 'react-icons/pi'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -11,9 +14,8 @@ import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { keysRoles } from '../../import/staticData'
-import { getInscriptionById, getInscriptionDetails, getAvalById } from '../../api/httpRequest'
 import { DenyModal } from '../Utils/Modals/Modals'
-import { ToastContainer, toast } from 'react-toastify'
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById } from '../../api/httpRequest'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
@@ -21,6 +23,7 @@ export const RegisterDetails = () => {
   const [selectedTab, setSelectedTab] = useState('infoAprendiz')
   const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
   const [details, setDetails] = useState({})
+  const [stateDetails, setStateDetails] = useState({})
 
   useEffect(() => {
     getInscriptionAprendiz(id)
@@ -41,81 +44,92 @@ export const RegisterDetails = () => {
     try {
       const response = await getInscriptionDetails(id)
       const res = response.data.data
-      // setDetails({ raps: Array(res[0]), ...res })
       setDetails({ documentosId: res[0].id_detalle_inscripcion, rapsId: res[1].id_detalle_inscripcion, funcionesId: res[2].id_detalle_inscripcion, avalId: res[3].id_detalle_inscripcion })
-      // console.log(res[1])
-      // id === Cookies.id => habilitado ? desha
+      setStateDetails({ documentos: res[0].estado_aval, raps: res[1].estado_aval, funciones: res[2].estado_aval, aval: res[3].estado_aval })
     } catch (error) {
       console.log(error)
     }
   }
 
-  return (
-    <>
-      <main className='flex flex-row min-h-screen bg-whitesmoke'>
-        <Siderbar />
-        <section className='relative grid flex-auto gap-2 w-min grid-rows-3-10-75-15'>
-          <header className='border-b-1 w-[70%] mx-auto border-b-zinc-300 h-[9vh]'>
-            <ul className='flex flex-row items-center justify-around h-full'>
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoAprendiz' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoAprendiz')}>
-                Info. Aprendiz
-              </li>
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoEmpresa' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoEmpresa')}>
-                Info. Empresa
-              </li>
-              {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-                <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
-                  Documentos
-                </li>
-              )}
-              {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
-                <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('raps')}>
-                  RAPS
-                </li>
-              )}
-              {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
-                <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'funciones' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('funciones')}>
-                  Funciones
-                </li>
-              )}
-              {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-                <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('coordinador')}>
-                  Coordinador
-                </li>
-              )}
-            </ul>
-          </header>
-          <section>
-            <div className={`${selectedTab === 'infoAprendiz' ? 'visible' : 'hidden'}`}>
-              <InfoAprendiz inscriptionAprendiz={inscriptionAprendiz} />
-            </div>
-            <div className={`${selectedTab === 'infoEmpresa' ? 'visible' : 'hidden'}`}>
-              <InfoEmpresa inscriptionAprendiz={inscriptionAprendiz} />
-            </div>
-            <div className={`${selectedTab === 'documentos' ? 'visible h-full' : 'hidden'}`}>
-              <Documentos idRol={idRol} avalDocumentos={details.documentosId} />
-            </div>
-            <div className={`${selectedTab === 'raps' ? 'visible' : 'hidden'}`}>
-              <RAPS idRol={idRol} avalRaps={details.rapsId} />
-            </div>
-            <div className={`${selectedTab === 'funciones' ? 'visible h-full' : 'hidden'}`}>
-              <Funciones idRol={idRol} avalFunciones={details.funcionesId} />
-            </div>
-            <div className={`${selectedTab === 'coordinador' ? 'visible' : 'hidden'}`}>
-              <Coordinador idRol={idRol} avalCoordinador={details.avalId} />
-            </div>
+  const notify = () => {
+    toast.error('Aún no puedes acceder', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: 'colored',
+      className: 'text-sm'
+    })
+  }
 
-            <div className='absolute top-4 left-8'>
-              <Link to='/registros' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
-                <IoReturnDownBack />
-                Salir
-              </Link>
-            </div>
-          </section>
-          <Footer />
+  return (
+    <main className='flex flex-row min-h-screen bg-whitesmoke'>
+      <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
+      <Siderbar />
+      <section className='relative grid flex-auto gap-2 w-min grid-rows-3-10-75-15'>
+        <header className='border-b-1 w-[70%] mx-auto border-b-zinc-300 h-[9vh]'>
+          <ul className='flex flex-row items-center justify-around h-full'>
+            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoAprendiz' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoAprendiz')}>
+              Info. Aprendiz
+            </li>
+            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoEmpresa' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoEmpresa')}>
+              Info. Empresa
+            </li>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
+                Documentos
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
+              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''} ${stateDetails.documentos === 'Pendiente' ? 'text-black hover:text-black line-through' : 'hover:text-purple-800'}`} onClick={() => (stateDetails.documentos === 'Pendiente' ? notify() : setSelectedTab('raps'))}>
+                RAPS
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
+              <li className={`text-sm font-light cursor-pointer  ${selectedTab === 'funciones' ? 'font-medium text-purple-800' : ''} ${stateDetails.raps === 'Pendiente' ? 'text-black hover:text-black line-through' : 'hover:text-purple-800'}`} onClick={() => (stateDetails.raps === 'Pendiente' ? notify() : setSelectedTab('funciones'))}>
+                Funciones
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''} ${stateDetails.funciones === 'Pendiente' ? 'text-black hover:text-black line-through' : 'hover:text-purple-800'}`} onClick={() => (stateDetails.funciones === 'Pendiente' ? notify() : setSelectedTab('coordinador'))}>
+                Coordinador
+              </li>
+            )}
+          </ul>
+        </header>
+        <section>
+          <div className={`${selectedTab === 'infoAprendiz' ? 'visible' : 'hidden'}`}>
+            <InfoAprendiz inscriptionAprendiz={inscriptionAprendiz} />
+          </div>
+          <div className={`${selectedTab === 'infoEmpresa' ? 'visible' : 'hidden'}`}>
+            <InfoEmpresa inscriptionAprendiz={inscriptionAprendiz} />
+          </div>
+          <div className={`${selectedTab === 'documentos' ? 'visible h-full' : 'hidden'}`}>
+            <Documentos idRol={idRol} avalDocumentos={details.documentosId} />
+          </div>
+          <div className={`${selectedTab === 'raps' ? 'visible' : 'hidden'}`}>
+            <RAPS idRol={idRol} avalRaps={details.rapsId} />
+          </div>
+          <div className={`${selectedTab === 'funciones' ? 'visible h-full' : 'hidden'}`}>
+            <Funciones idRol={idRol} avalFunciones={details.funcionesId} />
+          </div>
+          <div className={`${selectedTab === 'coordinador' ? 'visible' : 'hidden'}`}>
+            <Coordinador idRol={idRol} avalCoordinador={details.avalId} />
+          </div>
+
+          <div className='absolute top-4 left-8'>
+            <Link to='/registros' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
+              <IoReturnDownBack />
+              Salir
+            </Link>
+          </div>
         </section>
-      </main>
-    </>
+        <Footer />
+      </section>
+    </main>
   )
 }
 
@@ -259,9 +273,9 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                 <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} />
               </div>
               {idRol === Number(keysRoles[1]) ? (
-                <div className='flex flex-row gap-7 place-self-center'>
-                  <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                  <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                <div className='flex flex-row gap-2 place-self-center'>
+                  <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+                  <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
                 </div>
               ) : (
                 <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'La solicitud esta siendo procesada por el coordinador' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -283,6 +297,8 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
 
 const Documentos = ({ idRol, avalDocumentos }) => {
   const [avalInfo, setAvalInfo] = useState([])
+  const [nameResponsable, setNameResponsable] = useState('')
+
   const [showModal, setShowModal] = useState(false)
   const [notify, setNotify] = useState(false)
 
@@ -315,6 +331,10 @@ const Documentos = ({ idRol, avalDocumentos }) => {
   const fetchData = async () => {
     const res = await getAvalById(avalDocumentos)
     const { data } = res.data
+    const response = await getUserById(data[0].responsable_aval)
+    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
+    const fullName = `${nombres_usuario} ${apellidos_usuario}`
+    setNameResponsable(fullName)
     setAvalInfo(data)
   }
 
@@ -332,17 +352,17 @@ const Documentos = ({ idRol, avalDocumentos }) => {
           <div className='w-[95%] mx-auto h-full'>
             {avalInfo.map((aval) => {
               return (
-                <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
+                <form action='' className='flex flex-col gap-7' key={aval.id_detalle_inscripcion}>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor='' className='text-sm font-light'>
                       Líder Prácticas
                     </label>
-                    <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
+                    <input type='text' defaultValue={nameResponsable} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
                   </div>
                   {idRol === Number(keysRoles[0]) ? (
-                    <div className='flex flex-row gap-7 place-self-center'>
-                      <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                      <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowModal} />
+                    <div className='flex flex-row gap-2 place-self-center'>
+                      <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+                      <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} clickeame={handleShowModal} />
                     </div>
                   ) : (
                     <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la documentación se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -366,9 +386,15 @@ const Documentos = ({ idRol, avalDocumentos }) => {
 
 const Funciones = ({ idRol, avalFunciones }) => {
   const [avalInfo, setAvalInfo] = useState([])
+  const [nameResponsable, setNameResponsable] = useState('')
+
   const fetchRaps = async () => {
     const res = await getAvalById(avalFunciones)
     const { data } = res.data
+    const response = await getUserById(data[0].responsable_aval)
+    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
+    const fullName = `${nombres_usuario} ${apellidos_usuario}`
+    setNameResponsable(fullName)
     setAvalInfo(data)
   }
 
@@ -384,17 +410,17 @@ const Funciones = ({ idRol, avalFunciones }) => {
             <div className='w-[95%] mx-auto h-full'>
               {avalInfo.map((aval) => {
                 return (
-                  <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
+                  <form action='' className='flex flex-col gap-7' key={aval.id_detalle_inscripcion}>
                     <div className='flex flex-col gap-1'>
                       <label htmlFor='' className='text-sm font-light'>
                         Instructor de Seguimiento
                       </label>
-                      <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
+                      <input type='text' value={nameResponsable} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
                     </div>
                     {idRol === Number(keysRoles[2]) ? (
-                      <div className='flex flex-row gap-7 place-self-center'>
-                        <Button type='button' value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                        <Button type='button' value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                      <div className='flex flex-row gap-2 place-self-center'>
+                        <Button type='button' value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+                        <Button type='button' value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
                       </div>
                     ) : (
                       <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la carta inicial se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -419,15 +445,22 @@ const Funciones = ({ idRol, avalFunciones }) => {
 
 const RAPS = ({ idRol, avalRaps }) => {
   const [avalInfo, setAvalInfo] = useState([])
+  const [nameResponsable, setNameResponsable] = useState('')
+
   const fetchRaps = async () => {
     const res = await getAvalById(avalRaps)
     const { data } = res.data
+    const response = await getUserById(data[0].responsable_aval)
+    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
+    const fullName = `${nombres_usuario} ${apellidos_usuario}`
+    setNameResponsable(fullName)
     setAvalInfo(data)
   }
 
   useEffect(() => {
     if (avalRaps) fetchRaps()
   }, [avalRaps])
+
   return (
     <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
       <section>RAPS</section>
@@ -435,17 +468,17 @@ const RAPS = ({ idRol, avalRaps }) => {
         <div className='w-[95%] mx-auto h-full'>
           {avalInfo.map((aval) => {
             return (
-              <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
+              <form action='' className='flex flex-col gap-7' key={aval.id_detalle_inscripcion}>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor='' className='text-sm font-light'>
                     Líder Prácticas
                   </label>
-                  <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
+                  <input type='text' defaultValue={nameResponsable} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
                 </div>
                 {idRol === Number(keysRoles[0]) ? (
-                  <div className='flex flex-row gap-7 place-self-center'>
-                    <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                    <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  <div className='flex flex-row gap-2 place-self-center'>
+                    <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+                    <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
                   </div>
                 ) : (
                   <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente los RAPS se encuentran en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -454,7 +487,7 @@ const RAPS = ({ idRol, avalRaps }) => {
                   <label htmlFor='' className='text-sm font-light'>
                     Observaciones
                   </label>
-                  <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
+                  <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
                 </div>
                 {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
               </form>
@@ -465,4 +498,3 @@ const RAPS = ({ idRol, avalRaps }) => {
     </section>
   )
 }
-
