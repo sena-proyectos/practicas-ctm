@@ -39,8 +39,6 @@ export const TeacherClass = () => {
   const startIndex = pageNumber * coursesPerPage
   const endIndex = startIndex + coursesPerPage
 
-  console.log(teacherClass)
-
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
