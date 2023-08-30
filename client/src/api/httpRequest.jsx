@@ -88,7 +88,7 @@ export const getInscriptionById = async (id) => {
 }
 
 // OBTENER DETALLES INSCRIPCION BY ID
-export const getInscriptionDetails = async (id, limit = 3, offset = 0) => {
+export const getInscriptionDetails = async (id, limit = 4, offset = 0) => {
   const URL = `${baseUrl}${api}/inscriptionDetails/${id}?limit=${limit}&offset=${offset}`
 
   const response = await axios.get(URL)

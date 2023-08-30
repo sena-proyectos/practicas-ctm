@@ -6,7 +6,7 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 // Icons
-import { IoCalendarClearOutline, IoDocumentTextOutline, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoPeopleOutline, IoPersonAddOutline, IoBookOutline } from 'react-icons/io5'
+import { IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoPeopleOutline, IoPersonAddOutline, IoBookOutline } from 'react-icons/io5'
 
 // Componentes
 import { colorIcon, rolesNames, keysRoles } from '../../import/staticData'
@@ -173,3 +173,4 @@ const Siderbar = () => {
 }
 
 export { Siderbar }
+
