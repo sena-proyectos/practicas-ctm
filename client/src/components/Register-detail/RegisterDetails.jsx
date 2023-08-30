@@ -14,6 +14,7 @@ import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { keysRoles } from '../../import/staticData'
+import { DenyModal } from '../Utils/Modals/Modals'
 import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById } from '../../api/httpRequest'
 
 export const RegisterDetails = () => {
