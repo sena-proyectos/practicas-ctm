@@ -302,6 +302,7 @@ const Documentos = ({ idRol, avalDocumentos }) => {
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
+        pauseOnFocusLoss: false,
         draggable: true,
         progress: undefined,
         theme: 'colored',
