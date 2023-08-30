@@ -52,14 +52,10 @@ export const checkInscriptionData: RequestHandler<{}, Response, inscriptionData>
  * @param next Función para pasar al siguiente middleware.
  */
 export const checkInscriptionDetailData: RequestHandler<{ }, Response, inscripcionDetailData> = (req: Request, res: Response, next: NextFunction): void => {
-  const { responsable_aval } = req.params
-  const { estado_aval, observaciones, id_inscripcion } = req.body
+  const { id } = req.params
+  const { estado_aval, observaciones, responsable_aval } = req.body
   try {
-    const idUserNumber = Number(responsable_aval)
-    const idInscriptionNumber = Number(id_inscripcion)
-    if (isNaN(idInscriptionNumber)) throw new NumberIsNaN('El id del usuario no es un nÃ®mero.')
-    if (isNaN(idUserNumber)) throw new NumberIsNaN('El id del usuario no es un número.')
-    const { error } = inscriptionDetailSchema.validate({ id_inscripcion, responsable_aval, estado_aval, observaciones })
+    const { error } = inscriptionDetailSchema.validate({ id, responsable_aval, estado_aval, observaciones })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados no son válidos, verifícalos.')
     next()
   } catch (error) {

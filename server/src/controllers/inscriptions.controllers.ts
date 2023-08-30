@@ -149,10 +149,11 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
  * @returns Respuesta JSON con mensaje de éxito o un error.
  */
 export const editInscriptionDetail: RequestHandler<{}, Response, inscripcionDetailData> = async (req: Request, res: Response) => {
-  const { responsable_aval } = req.params
-  const { estado_aval, observaciones, id_inscripcion } = req.body
+  const { id } = req.params
+  const { estado_aval, observaciones, responsable_aval } = req.body
+  console.log(estado_aval, observaciones, responsable_aval, id)
   try {
-    const [result] = await connection.query('UPDATE detalles_inscripciones SET estado_aval = ?, observaciones = ? WHERE id_inscripcion = ? AND responsable_aval = ?', [estado_aval, observaciones, id_inscripcion, responsable_aval])
+    const [result] = await connection.query('UPDATE detalles_inscripciones SET estado_aval = IFNULL(?, estado_aval), observaciones = IFNULL(?, observaciones), responsable_aval = IFNULL(?, responsable_aval) WHERE id_detalle_inscripcion = ?', [estado_aval, observaciones, responsable_aval, id])
     if (!Array.isArray(result) && result?.affectedRows === 0) throw new DbError('No se pudo actualizar la modalidad de etapa práctica')
     return res.status(httpStatus.OK).json({ message: 'Modalidad de etapa práctica actualizada con éxito' })
   } catch (error) {

@@ -61,7 +61,7 @@ inscriptionRoutes.post('/inscription-excel-file', multerFile, readExcelFile, ret
  * @bodyparam estado_aval El estado de aval a actualizar.
  * @bodyparam observaciones Las observaciones a actualizar.
  */
-inscriptionRoutes.patch('/update-inscription-detail/:responsable_aval', checkInscriptionDetailData, editInscriptionDetail)
+inscriptionRoutes.patch('/update-inscription-detail/:id', checkInscriptionDetailData, editInscriptionDetail)
 
 /**
  * @description Ruta para actualizar una inscripción por su ID.

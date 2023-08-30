@@ -12,6 +12,8 @@ import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { keysRoles } from '../../import/staticData'
 import { getInscriptionById, getInscriptionDetails, getAvalById } from '../../api/httpRequest'
+import { DenyModal } from '../Utils/Modals/Modals'
+import { ToastContainer, toast } from 'react-toastify'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
@@ -49,69 +51,71 @@ export const RegisterDetails = () => {
   }
 
   return (
-    <main className='flex flex-row min-h-screen bg-whitesmoke'>
-      <Siderbar />
-      <section className='relative grid flex-auto gap-2 w-min grid-rows-3-10-75-15'>
-        <header className='border-b-1 w-[70%] mx-auto border-b-zinc-300 h-[9vh]'>
-          <ul className='flex flex-row items-center justify-around h-full'>
-            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoAprendiz' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoAprendiz')}>
-              Info. Aprendiz
-            </li>
-            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoEmpresa' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoEmpresa')}>
-              Info. Empresa
-            </li>
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
-                Documentos
+    <>
+      <main className='flex flex-row min-h-screen bg-whitesmoke'>
+        <Siderbar />
+        <section className='relative grid flex-auto gap-2 w-min grid-rows-3-10-75-15'>
+          <header className='border-b-1 w-[70%] mx-auto border-b-zinc-300 h-[9vh]'>
+            <ul className='flex flex-row items-center justify-around h-full'>
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoAprendiz' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoAprendiz')}>
+                Info. Aprendiz
               </li>
-            )}
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('raps')}>
-                RAPS
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoEmpresa' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoEmpresa')}>
+                Info. Empresa
               </li>
-            )}
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'funciones' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('funciones')}>
-                Funciones
-              </li>
-            )}
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('coordinador')}>
-                Coordinador
-              </li>
-            )}
-          </ul>
-        </header>
-        <section>
-          <div className={`${selectedTab === 'infoAprendiz' ? 'visible' : 'hidden'}`}>
-            <InfoAprendiz inscriptionAprendiz={inscriptionAprendiz} />
-          </div>
-          <div className={`${selectedTab === 'infoEmpresa' ? 'visible' : 'hidden'}`}>
-            <InfoEmpresa inscriptionAprendiz={inscriptionAprendiz} />
-          </div>
-          <div className={`${selectedTab === 'documentos' ? 'visible h-full' : 'hidden'}`}>
-            <Documentos idRol={idRol} avalDocumentos={details.documentosId} />
-          </div>
-          <div className={`${selectedTab === 'raps' ? 'visible' : 'hidden'}`}>
-            <RAPS idRol={idRol} avalRaps={details.rapsId} />
-          </div>
-          <div className={`${selectedTab === 'funciones' ? 'visible h-full' : 'hidden'}`}>
-            <Funciones idRol={idRol} avalFunciones={details.funcionesId} />
-          </div>
-          <div className={`${selectedTab === 'coordinador' ? 'visible' : 'hidden'}`}>
-            <Coordinador idRol={idRol} avalCoordinador={details.avalId} />
-          </div>
+              {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+                <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
+                  Documentos
+                </li>
+              )}
+              {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
+                <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('raps')}>
+                  RAPS
+                </li>
+              )}
+              {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
+                <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'funciones' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('funciones')}>
+                  Funciones
+                </li>
+              )}
+              {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+                <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('coordinador')}>
+                  Coordinador
+                </li>
+              )}
+            </ul>
+          </header>
+          <section>
+            <div className={`${selectedTab === 'infoAprendiz' ? 'visible' : 'hidden'}`}>
+              <InfoAprendiz inscriptionAprendiz={inscriptionAprendiz} />
+            </div>
+            <div className={`${selectedTab === 'infoEmpresa' ? 'visible' : 'hidden'}`}>
+              <InfoEmpresa inscriptionAprendiz={inscriptionAprendiz} />
+            </div>
+            <div className={`${selectedTab === 'documentos' ? 'visible h-full' : 'hidden'}`}>
+              <Documentos idRol={idRol} avalDocumentos={details.documentosId} />
+            </div>
+            <div className={`${selectedTab === 'raps' ? 'visible' : 'hidden'}`}>
+              <RAPS idRol={idRol} avalRaps={details.rapsId} />
+            </div>
+            <div className={`${selectedTab === 'funciones' ? 'visible h-full' : 'hidden'}`}>
+              <Funciones idRol={idRol} avalFunciones={details.funcionesId} />
+            </div>
+            <div className={`${selectedTab === 'coordinador' ? 'visible' : 'hidden'}`}>
+              <Coordinador idRol={idRol} avalCoordinador={details.avalId} />
+            </div>
 
-          <div className='absolute top-4 left-8'>
-            <Link to='/registros' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
-              <IoReturnDownBack />
-              Salir
-            </Link>
-          </div>
+            <div className='absolute top-4 left-8'>
+              <Link to='/registros' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
+                <IoReturnDownBack />
+                Salir
+              </Link>
+            </div>
+          </section>
+          <Footer />
         </section>
-        <Footer />
-      </section>
-    </main>
+      </main>
+    </>
   )
 }
 
@@ -279,50 +283,83 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
 
 const Documentos = ({ idRol, avalDocumentos }) => {
   const [avalInfo, setAvalInfo] = useState([])
-  const fetchRaps = async () => {
+  const [showModal, setShowModal] = useState(false)
+  const [notify, setNotify] = useState(false)
+
+  const handleShowModal = () => {
+    setShowModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false)
+  }
+
+  useEffect(() => {
+    if (notify) {
+      toast.success('Se ha rechazado correctamente', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        className: 'text-sm'
+      })
+    }
+    setNotify(false)
+  }, [notify])
+
+  const fetchData = async () => {
     const res = await getAvalById(avalDocumentos)
     const { data } = res.data
     setAvalInfo(data)
   }
 
   useEffect(() => {
-    if (avalDocumentos) fetchRaps()
+    if (avalDocumentos) fetchData()
   }, [avalDocumentos])
+
   return (
-    <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
-      <section>Documentación</section>
-      <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
-        <div className='w-[95%] mx-auto h-full'>
-          {avalInfo.map((aval) => {
-            return (
-              <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
-                <div className='flex flex-col gap-1'>
-                  <label htmlFor='' className='text-sm font-light'>
-                    Líder Prácticas
-                  </label>
-                  <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
-                </div>
-                {idRol === Number(keysRoles[0]) ? (
-                  <div className='flex flex-row gap-7 place-self-center'>
-                    <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                    <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+    <>
+      <ToastContainer />
+      {showModal && <DenyModal setNotify={setNotify} id={avalDocumentos} closeModal={handleCloseModal} title={'Escribe la razón del rechazo'} />}
+      <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
+        <section>Documentación</section>
+        <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
+          <div className='w-[95%] mx-auto h-full'>
+            {avalInfo.map((aval) => {
+              return (
+                <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
+                  <div className='flex flex-col gap-1'>
+                    <label htmlFor='' className='text-sm font-light'>
+                      Líder Prácticas
+                    </label>
+                    <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
                   </div>
-                ) : (
-                  <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la documentación se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
-                )}
-                <div>
-                  <label htmlFor='' className='text-sm font-light'>
-                    Observaciones
-                  </label>
-                  <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
-                </div>
-                {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
-              </form>
-            )
-          })}
-        </div>
+                  {idRol === Number(keysRoles[0]) ? (
+                    <div className='flex flex-row gap-7 place-self-center'>
+                      <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                      <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={handleShowModal} />
+                    </div>
+                  ) : (
+                    <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la documentación se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
+                  )}
+                  <div>
+                    <label htmlFor='' className='text-sm font-light'>
+                      Observaciones
+                    </label>
+                    <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                  </div>
+                  {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
+                </form>
+              )
+            })}
+          </div>
+        </section>
       </section>
-    </section>
+    </>
   )
 }
 
@@ -355,17 +392,17 @@ const Funciones = ({ idRol, avalFunciones }) => {
                     </div>
                     {idRol === Number(keysRoles[2]) ? (
                       <div className='flex flex-row gap-7 place-self-center'>
-                        <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                        <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                        <Button type='button' value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                        <Button type='button' value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
                       </div>
                     ) : (
                       <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la carta inicial se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
                     )}
                     <div>
-                      <label htmlFor='' className='text-sm font-light'>
+                      <label htmlFor='observations' className='text-sm font-light'>
                         Observaciones
                       </label>
-                      <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
+                      <textarea name='observations' id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
                     </div>
                     {idRol === Number(keysRoles[2]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
                   </form>
@@ -427,3 +464,4 @@ const RAPS = ({ idRol, avalRaps }) => {
     </section>
   )
 }
+
