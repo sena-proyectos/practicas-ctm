@@ -3,9 +3,8 @@ import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Modals } from '../Utils/Modals/Modals'
-import { dataInscription, filter, testInscriptions } from '../../import/staticData'
+import { filter, testInscriptions } from '../../import/staticData'
 import { AiOutlineEye } from 'react-icons/ai'
-import { HiOutlinePencil } from 'react-icons/hi'
 import { Button } from '../Utils/Button/Button'
 
 const Bitacoras = () => {
@@ -132,3 +131,4 @@ const Bitacoras = () => {
 }
 
 export { Bitacoras }
+

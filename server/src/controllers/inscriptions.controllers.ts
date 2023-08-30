@@ -64,6 +64,18 @@ export const getInscriptionsDetailsByInscription: RequestHandler<{ id: string },
   }
 }
 
+export const getInscriptionsDetailsById: RequestHandler<{ id: string }, Response, unknown> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id: id_inscripcion } = req.params
+  const idNumber = Number(id_inscripcion)
+
+  try {
+    const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE id_detalle_inscripcion = ?', [idNumber])
+    return res.status(httpStatus.OK).json({ data: inscriptions })
+  } catch (err) {
+    return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
+  }
+}
+
 /**
  * @description Obtiene una inscripción por su ID.
  * @param req La solicitud HTTP con el parámetro de ID.

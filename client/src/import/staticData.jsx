@@ -1,7 +1,7 @@
 import { LuCalendarCheck2, LuCalendarX2 } from 'react-icons/lu'
 
 export const rolesNames = {
-  1: 'Instructor líder de prácticas',
+  1: 'Líder prácticas',
   2: 'Coordinador',
   3: 'Instructor de Seguimiento',
   4: 'Instructor Líder'
