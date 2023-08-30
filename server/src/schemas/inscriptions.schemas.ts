@@ -100,15 +100,15 @@ export const inscriptionSchema = Joi.object({
 })
 
 export const inscriptionDetailSchema = Joi.object({
-  id_inscripcion: Joi
+  id: Joi
     .number()
     .required(),
   responsable_aval: Joi
     .number()
-    .required(),
+    .allow(null),
   estado_aval: Joi
     .string()
-    .required(),
+    .allow(null),
   observaciones: Joi
     .string()
     .allow(null)

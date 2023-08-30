@@ -103,6 +103,14 @@ export const inscriptionDetailUser = async (id, limit = 3, offset = 0) => {
   return response
 }
 
+// MODIFICAR DETALLES DE LA INSCRIPCION
+export const inscriptionDetailsUpdate = async (id, payload) => {
+  const URL = `${baseUrl}${api}/update-inscription-detail/${id}`
+
+  const response = await axios.patch(URL, payload)
+  return response
+}
+
 export const readExcel = async (fileData) => {
   const URL = `${baseUrl}${api}/inscription-excel-file`
   const response = await axios.post(URL, fileData, {

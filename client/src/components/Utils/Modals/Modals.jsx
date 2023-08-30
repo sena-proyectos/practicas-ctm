@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 // icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
@@ -11,9 +11,9 @@ import { modalities } from '../../../import/staticData'
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
-import { getTeachers } from '../../../api/httpRequest'
+import { getTeachers, inscriptionDetailsUpdate } from '../../../api/httpRequest'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption, numero_ficha, programa_formacion }) => {
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption, numero_ficha, programa_formacion, denyRegister = false, handleForm }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const passwordIcons = {
@@ -159,7 +159,6 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
               </section>
             </>
           )}
-
           {/* modalFiltro */}
           {bodyFilter && (
             <>
@@ -353,13 +352,75 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
               </section>
             </>
           )}
+          {denyRegister && (
+            <>
+              <section className='p-4'>
+                <form className='flex flex-col justify-center gap-4' onSubmit={handleForm}>
+                  <div>
+                    <label htmlFor='observations' className='text-sm font-light'>
+                      Observaciones
+                    </label>
+                    <textarea name='observations' id='editor' rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                  </div>
+                  <Button value={'Enviar'} bg='bg-primary' hover='hover:bg-green-800' textSize='text-base' px='px-10' type={'submit'} />
+                </form>
+              </section>
+            </>
+          )}
         </section>
       </section>
     </section>
   )
 }
 
-export const LoadingModal = ({ children, title = 'Cargando' }) => {
+const DenyModal = ({ closeModal, title, id, setNotify }) => {
+  const formRef = useRef()
+
+  const handleModal = () => {
+    closeModal()
+  }
+
+  const handleForm = async (e) => {
+    e.preventDefault()
+    const formData = new FormData(formRef.current)
+    const dataTextArea = formData.get('observaciones')
+    const estado_aval = 'Rechazado'
+    try {
+      await inscriptionDetailsUpdate(id, { observaciones: dataTextArea, estado_aval })
+      setNotify(true)
+      closeModal()
+    } catch (error) {
+      closeModal()
+    }
+  }
+
+  return (
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
+      <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+        <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
+        <header className='grid pt-5 place-items-center '>
+          <h2 className={`text-xl font-medium text-center w-fit 'border-b-1' border-primary`}>{title ?? 'Confirmar'}</h2>
+        </header>
+        <section className='flex justify-center'>
+          <section className='w-11/12 p-4'>
+            <form className='flex flex-col justify-center gap-4' ref={formRef} onSubmit={handleForm}>
+              <section>
+                <label htmlFor='observaciones' className='text-sm font-light'>
+                  Observaciones
+                </label>
+                <textarea name='observaciones' id='editor' rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+              </section>
+              <Button value={'Enviar'} bg='bg-primary' hover='hover:bg-green-800' textSize='text-base' px='px-10' type={'submit'} />
+            </form>
+          </section>
+        </section>
+      </section>
+    </section>
+  )
+}
+
+const LoadingModal = ({ children, title = 'Cargando' }) => {
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen bg-black/50 backdrop-blur-sm backdrop-filter'>
       <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-2/5 rounded-2xl bounce'>
@@ -372,4 +433,5 @@ export const LoadingModal = ({ children, title = 'Cargando' }) => {
   )
 }
 
-export { Modals }
+export { Modals, DenyModal, LoadingModal }
+
