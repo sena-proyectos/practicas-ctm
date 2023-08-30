@@ -1,5 +1,5 @@
 import { type IRouter, Router } from 'express'
-import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData } from '../controllers/inscriptions.controllers.js'
+import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsById, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData } from '../controllers/inscriptions.controllers.js'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
 import { checkInscriptionData, checkInscriptionDetailData, configureMulterExcel, readExcelFile } from '../middlewares/inscriptions.middlewares.js'
 
@@ -34,6 +34,8 @@ inscriptionRoutes.get('/inscriptionDetails/:id', checkIdReq, getInscriptionsDeta
  * @param id El ID del usuario responsable.
  */
 inscriptionRoutes.get('/inscriptionDetailsUser/:id', checkIdReq, getInscriptionsDetailsByUser)
+
+inscriptionRoutes.get('/inscriptionDetail/:id', checkIdReq, getInscriptionsDetailsById)
 
 // * POST
 /**

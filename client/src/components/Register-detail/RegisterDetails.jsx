@@ -11,16 +11,14 @@ import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { keysRoles } from '../../import/staticData'
-import { getInscriptionById, getInscriptionDetails } from '../../api/httpRequest'
+import { getInscriptionById, getInscriptionDetails, getAvalById } from '../../api/httpRequest'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
   const idRol = Number(localStorage.getItem('idRol'))
   const [selectedTab, setSelectedTab] = useState('infoAprendiz')
   const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
-  const [avalCoordinador, setAvalCoordinador] = useState([])
-  const [liderAval, setLiderAval] = useState([])
-  const [seguimientoAval, setSeguimientoAval] = useState([])
+  const [details, setDetails] = useState({})
 
   useEffect(() => {
     getInscriptionAprendiz(id)
@@ -41,14 +39,10 @@ export const RegisterDetails = () => {
     try {
       const response = await getInscriptionDetails(id)
       const res = response.data.data
+      // setDetails({ raps: Array(res[0]), ...res })
+      setDetails({ documentosId: res[0].id_detalle_inscripcion, rapsId: res[1].id_detalle_inscripcion, funcionesId: res[2].id_detalle_inscripcion, avalId: res[3].id_detalle_inscripcion })
+      // console.log(res[1])
       // id === Cookies.id => habilitado ? desha
-      const coordinador = res.filter((detail) => detail.rol_responsable === 2)
-      const instSeguimiento = res.filter((detail) => detail.rol_responsable === 3)
-      const instLider = res.filter((detail) => detail.rol_responsable === 4)
-
-      setAvalCoordinador(coordinador)
-      setSeguimientoAval(instSeguimiento)
-      setLiderAval(instLider)
     } catch (error) {
       console.log(error)
     }
@@ -67,11 +61,6 @@ export const RegisterDetails = () => {
               Info. Empresa
             </li>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('coordinador')}>
-                Coordinador
-              </li>
-            )}
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
               <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
                 Documentos
               </li>
@@ -79,6 +68,16 @@ export const RegisterDetails = () => {
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
               <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('raps')}>
                 RAPS
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'funciones' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('funciones')}>
+                Funciones
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('coordinador')}>
+                Coordinador
               </li>
             )}
           </ul>
@@ -90,14 +89,17 @@ export const RegisterDetails = () => {
           <div className={`${selectedTab === 'infoEmpresa' ? 'visible' : 'hidden'}`}>
             <InfoEmpresa inscriptionAprendiz={inscriptionAprendiz} />
           </div>
-          <div className={`${selectedTab === 'coordinador' ? 'visible' : 'hidden'}`}>
-            <Coordinador idRol={idRol} avalCoordinador={avalCoordinador} />
-          </div>
           <div className={`${selectedTab === 'documentos' ? 'visible h-full' : 'hidden'}`}>
-            <Documentos idRol={idRol} avalLider={liderAval} avalSeguimiento={seguimientoAval} />
+            <Documentos idRol={idRol} avalDocumentos={details.documentosId} />
           </div>
           <div className={`${selectedTab === 'raps' ? 'visible' : 'hidden'}`}>
-            <RAPS idRol={idRol} liderAval={liderAval} />
+            <RAPS idRol={idRol} avalRaps={details.rapsId} />
+          </div>
+          <div className={`${selectedTab === 'funciones' ? 'visible h-full' : 'hidden'}`}>
+            <Funciones idRol={idRol} avalFunciones={details.funcionesId} />
+          </div>
+          <div className={`${selectedTab === 'coordinador' ? 'visible' : 'hidden'}`}>
+            <Coordinador idRol={idRol} avalCoordinador={details.avalId} />
           </div>
 
           <div className='absolute top-4 left-8'>
@@ -223,6 +225,17 @@ const InfoEmpresa = ({ inscriptionAprendiz }) => {
 }
 
 const Coordinador = ({ idRol, avalCoordinador }) => {
+  const [avalInfo, setAvalInfo] = useState([])
+  const fetchRaps = async () => {
+    const res = await getAvalById(avalCoordinador)
+    const { data } = res.data
+    setAvalInfo(data)
+  }
+
+  useEffect(() => {
+    if (avalCoordinador) fetchRaps()
+  }, [avalCoordinador])
+
   const option = [
     { value: 'Sergio Soto Henao', key: 'Sergio Soto Henao' },
     { value: 'Marianela Henao Atehortúa', key: 'Marianela Henao Atehortúa' },
@@ -232,7 +245,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   return (
     <section className={`flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
       <div className={` w-[95%] mx-auto`}>
-        {avalCoordinador.map((aval) => {
+        {avalInfo.map((aval) => {
           return (
             <form action='' className='flex flex-col gap-4 ' key={aval.id_detalle_inscripcion}>
               <div>
@@ -264,49 +277,74 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   )
 }
 
-const Documentos = ({ idRol, avalLider, avalSeguimiento }) => {
+const Documentos = ({ idRol, avalDocumentos }) => {
+  const [avalInfo, setAvalInfo] = useState([])
+  const fetchRaps = async () => {
+    const res = await getAvalById(avalDocumentos)
+    const { data } = res.data
+    setAvalInfo(data)
+  }
+
+  useEffect(() => {
+    if (avalDocumentos) fetchRaps()
+  }, [avalDocumentos])
+  return (
+    <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
+      <section>Documentación</section>
+      <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
+        <div className='w-[95%] mx-auto h-full'>
+          {avalInfo.map((aval) => {
+            return (
+              <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
+                <div className='flex flex-col gap-1'>
+                  <label htmlFor='' className='text-sm font-light'>
+                    Líder Prácticas
+                  </label>
+                  <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
+                </div>
+                {idRol === Number(keysRoles[0]) ? (
+                  <div className='flex flex-row gap-7 place-self-center'>
+                    <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  </div>
+                ) : (
+                  <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la documentación se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
+                )}
+                <div>
+                  <label htmlFor='' className='text-sm font-light'>
+                    Observaciones
+                  </label>
+                  <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
+                </div>
+                {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
+              </form>
+            )
+          })}
+        </div>
+      </section>
+    </section>
+  )
+}
+
+const Funciones = ({ idRol, avalFunciones }) => {
+  const [avalInfo, setAvalInfo] = useState([])
+  const fetchRaps = async () => {
+    const res = await getAvalById(avalFunciones)
+    const { data } = res.data
+    setAvalInfo(data)
+  }
+
+  useEffect(() => {
+    if (avalFunciones) fetchRaps()
+  }, [avalFunciones])
   return (
     <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
       <section>Documentación</section>
       <section className='flex flex-col items-center gap-3'>
-        {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-          <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
-            <div className='w-[95%] mx-auto h-full'>
-              {avalLider.map((aval) => {
-                return (
-                  <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
-                    <div className='flex flex-col gap-1'>
-                      <label htmlFor='' className='text-sm font-light'>
-                        Líder Prácticas
-                      </label>
-                      <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
-                    </div>
-                    {idRol === Number(keysRoles[0]) ? (
-                      <div className='flex flex-row gap-7 place-self-center'>
-                        <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                        <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
-                      </div>
-                    ) : (
-                      <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la documentación se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
-                    )}
-                    <div>
-                      <label htmlFor='' className='text-sm font-light'>
-                        Observaciones
-                      </label>
-                      <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
-                    </div>
-                    {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
-                  </form>
-                )
-              })}
-            </div>
-          </section>
-        )}
-        {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && <hr className='w-3/4 border border-slate-500' />}
         {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
           <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
             <div className='w-[95%] mx-auto h-full'>
-              {avalSeguimiento.map((aval) => {
+              {avalInfo.map((aval) => {
                 return (
                   <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
                     <div className='flex flex-col gap-1'>
@@ -327,7 +365,7 @@ const Documentos = ({ idRol, avalLider, avalSeguimiento }) => {
                       <label htmlFor='' className='text-sm font-light'>
                         Observaciones
                       </label>
-                      <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
+                      <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
                     </div>
                     {idRol === Number(keysRoles[2]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
                   </form>
@@ -341,22 +379,32 @@ const Documentos = ({ idRol, avalLider, avalSeguimiento }) => {
   )
 }
 
-const RAPS = ({ idRol, liderAval }) => {
+const RAPS = ({ idRol, avalRaps }) => {
+  const [avalInfo, setAvalInfo] = useState([])
+  const fetchRaps = async () => {
+    const res = await getAvalById(avalRaps)
+    const { data } = res.data
+    setAvalInfo(data)
+  }
+
+  useEffect(() => {
+    if (avalRaps) fetchRaps()
+  }, [avalRaps])
   return (
     <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
       <section>RAPS</section>
-      <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2'>
+      <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>
-          {liderAval.map((aval) => {
+          {avalInfo.map((aval) => {
             return (
-              <form action='' className='flex flex-col gap-4' key={aval.id_detalle_inscripcion}>
+              <form action='' className='flex flex-col gap-3' key={aval.id_detalle_inscripcion}>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor='' className='text-sm font-light'>
-                    Instructor Líder
+                    Líder Prácticas
                   </label>
                   <input type='text' value={aval.responsable_aval} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
                 </div>
-                {idRol === Number(keysRoles[3]) ? (
+                {idRol === Number(keysRoles[0]) ? (
                   <div className='flex flex-row gap-7 place-self-center'>
                     <Button value={'Aceptar'} bg={'bg-primary'} px={'px-4'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
                     <Button value={'Rechazar'} bg={'bg-red-500'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
@@ -379,4 +427,3 @@ const RAPS = ({ idRol, liderAval }) => {
     </section>
   )
 }
-

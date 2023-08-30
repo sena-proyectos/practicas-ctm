@@ -88,7 +88,7 @@ export const getInscriptionById = async (id) => {
 }
 
 // OBTENER DETALLES INSCRIPCION BY ID
-export const getInscriptionDetails = async (id, limit = 3, offset = 0) => {
+export const getInscriptionDetails = async (id, limit = 4, offset = 0) => {
   const URL = `${baseUrl}${api}/inscriptionDetails/${id}?limit=${limit}&offset=${offset}`
 
   const response = await axios.get(URL)
@@ -148,6 +148,14 @@ export const getClassByTeacherId = async (id) => {
 // OBTENER FICHAS SIN INSTRUCTOR LIDER O SEGUIMIENTO
 export const getClassFree = async () => {
   const URL = `${baseUrl}${api}/classesFree`
+
+  const response = await axios.get(URL)
+  return response
+}
+
+// OBTENER AVAL POR ID
+export const getAvalById = async (id) => {
+  const URL = `${baseUrl}${api}/inscriptionDetail/${id}`
 
   const response = await axios.get(URL)
   return response

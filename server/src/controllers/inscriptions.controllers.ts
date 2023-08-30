@@ -119,7 +119,7 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
         arl,
         link_documentos,
         observaciones,
-        responsable_inscripcion
+        responsable_inscripcion,
       ])
       if ((result as RowDataPacket[]).length === 0) throw new DbErrorNotFound(`No se pudo crear la inscripcion número ${i}.`, errorCodes.ERROR_CREATE_STUDENT)
       i += 1
@@ -191,5 +191,18 @@ export const returnExcelData = async (req: Request, res: Response): Promise<Resp
     }
   } catch (error) {
     return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const getInscriptionsDetailsById: RequestHandler<{ id: string }, Response, unknown> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id: id_inscripcion } = req.params
+  const idNumber = Number(id_inscripcion)
+
+  try {
+    // ! El limit y el offset son obligatorios, de esta forma evitar tantos datos en una busqueda grande.
+    const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE id_detalle_inscripcion = ?', [idNumber])
+    return res.status(httpStatus.OK).json({ data: inscriptions })
+  } catch (err) {
+    return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
   }
 }
