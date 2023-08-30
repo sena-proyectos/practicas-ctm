@@ -160,3 +160,11 @@ export const getAvalById = async (id) => {
   const response = await axios.get(URL)
   return response
 }
+
+// OBTENER USERS BY ID
+export const getUserById = async (id) => {
+  const URL = `${baseUrl}${api}/user/${id}`
+
+  const response = await axios.get(URL)
+  return response
+}
