@@ -373,8 +373,7 @@ export const dataInscription = {
       type: 'textarea',
       name: 'observaciones',
       placeholder: 'Digite una observación',
-      label: '¿Observaciones?',
-      required: true
+      label: '¿Observaciones?'
     }
   ]
 }
