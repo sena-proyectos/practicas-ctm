@@ -73,7 +73,7 @@ export const Courses = () => {
             <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
           <div className='absolute right-12 bottom-20'>
-            <Button value={'Agregar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' clickeame={handleAsign} icon={<LuBookPlus className='text-xl' />} />
+            <Button value={'Agregar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} icon={<LuBookPlus className='text-xl' />} />
           </div>
         </section>
         <Footer />
@@ -83,3 +83,4 @@ export const Courses = () => {
 }
 
 const SkeletonLoading = ({ number = 6 }) => [...Array(number)].map((_, i) => <Card3D header={<Skeleton />} title={<Skeleton />} subtitle={<Skeleton />} item1={<Skeleton />} item2={<Skeleton />} item3={<Skeleton />} item4={<Skeleton />} key={i} />)
+

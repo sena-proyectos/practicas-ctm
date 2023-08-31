@@ -100,9 +100,10 @@ const Form = ({ inputs }) => {
         )
       })}
       <hr className='mx-auto my-2 h-[1px] w-4/5 bg-slate-300' />
-      {inputs.length === 2 ? loadingBtn ? <Button isDisabled={true} icon={<LoadingUI className='mx-[3px]' width={25} height={25} type='spin' />} value={'Cargando'} bg={'bg-[#2864b5]'} /> : <Button value={'Iniciar Sesión'} bg={'bg-[#438EF2]'} hover={'transition ease-in delay-75 hover:bg-[#2d61a5] duration-150'} /> : <Button value={'Registrarse'} bg={'bg-[#438EF2]'} hover={'transition ease-in delay-75 hover:bg-[#2d61a5] duration-150'} />}
+      {inputs.length === 2 ? loadingBtn ? <Button isDisabled={true} type={'submit'} icon={<LoadingUI className='mx-[3px]' width={25} height={25} type='spin' />} value={'Cargando'} bg={'bg-[#2864b5]'} /> : <Button value={'Iniciar Sesión'} bg={'bg-[#438EF2]'} type={'submit'} hover={'transition ease-in delay-75 hover:bg-[#2d61a5] duration-150'} /> : <Button value={'Registrarse'} bg={'bg-[#438EF2]'} type={'submit'} hover={'transition ease-in delay-75 hover:bg-[#2d61a5] duration-150'} />}
     </form>
   )
 }
 
 export { Form }
+

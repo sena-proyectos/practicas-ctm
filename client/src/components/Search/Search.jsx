@@ -35,7 +35,7 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, iconClick
             <Button bg={'bg-transparent'} px='px-3' textColor='text-black' className='absolute right-[6px]' value={<IoSearchOutline />} />
             <input type='text' placeholder='Busca a un aprendiz' className='flex-1 py-1 bg-transparent outline-none w-fit rounded-3xl focus:placeholder-transparent' ref={search} name='nombreCompleto' autoComplete='off' />
             <article className='absolute right-[8px] w-fit'>
-              <Button bg={'bg-transparent'} px={'px-3'} textColor='text-black' clickeame={iconClick} value={<LuSettings2 />} />
+              <Button bg={'bg-transparent'} px={'px-3'} textColor='text-black' onClick={iconClick} value={<LuSettings2 />} />
             </article>
           </form>
         </>
@@ -48,7 +48,7 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, iconClick
             rounded='rounded-3xl'
             px='px-5'
             textColor={'text-black'}
-            clickeame={iconClick}
+            onClick={iconClick}
             value={
               <span className='flex items-center gap-5'>
                 <LuSettings2 />
@@ -63,3 +63,4 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, iconClick
 }
 
 export { Search }
+
