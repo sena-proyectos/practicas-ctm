@@ -23,7 +23,6 @@ export const RegisterDetails = () => {
   const idRol = Number(localStorage.getItem('idRol'))
   const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
   const [details, setDetails] = useState({})
-  const [stateDetails, setStateDetails] = useState({})
 
   useEffect(() => {
     getInscriptionAprendiz(id)
@@ -58,24 +57,9 @@ export const RegisterDetails = () => {
       const response = await getInscriptionDetails(id)
       const res = response.data.data
       setDetails({ documentosId: res[0].id_detalle_inscripcion, rapsId: res[1].id_detalle_inscripcion, funcionesId: res[2].id_detalle_inscripcion, avalId: res[3].id_detalle_inscripcion })
-      setStateDetails({ documentos: res[0].estado_aval, raps: res[1].estado_aval, funciones: res[2].estado_aval, aval: res[3].estado_aval })
     } catch (error) {
       console.log(error)
     }
-  }
-
-  const notify = () => {
-    toast.error('Aún no puedes acceder', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'colored',
-      className: 'text-sm'
-    })
   }
 
   return (
@@ -92,7 +76,7 @@ export const RegisterDetails = () => {
               Info. Empresa
             </li>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
-              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''} ${stateDetails.documentos === 'Pendiente' ? 'text-black hover:text-black line-through' : 'hover:text-purple-800'}`} onClick={() => (stateDetails.documentos === 'Pendiente' ? notify() : setSelectedTab('raps'))}>
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('raps')}>
                 RAPS
               </li>
             )}
@@ -102,7 +86,7 @@ export const RegisterDetails = () => {
               </li>
             )}
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''} ${stateDetails.funciones === 'Pendiente' ? 'text-black hover:text-black line-through' : 'hover:text-purple-800'}`} onClick={() => (stateDetails.funciones === 'Pendiente' ? notify() : setSelectedTab('coordinador'))}>
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''} `} onClick={() => setSelectedTab('coordinador')}>
                 Coordinador
               </li>
             )}

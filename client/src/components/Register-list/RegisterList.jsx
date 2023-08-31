@@ -189,7 +189,7 @@ export const RegisterList = () => {
         <header className='grid place-items-center'>
           <Search filter />
         </header>
-        <section className='flex flex-col w-11/12 gap-3 mx-auto mt-2'>
+        <section className='flex flex-col w-11/12 gap-3 mx-auto'>
           <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} />
           <div className='flex justify-center h-[13vh] relative bottom-0'>
             <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
