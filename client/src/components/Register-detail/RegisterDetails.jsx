@@ -23,6 +23,7 @@ export const RegisterDetails = () => {
   const idRol = Number(localStorage.getItem('idRol'))
   const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
   const [details, setDetails] = useState({})
+  const [stateDetails, setStateDetails] = useState({})
 
   useEffect(() => {
     getInscriptionAprendiz(id)
@@ -57,9 +58,24 @@ export const RegisterDetails = () => {
       const response = await getInscriptionDetails(id)
       const res = response.data.data
       setDetails({ documentosId: res[0].id_detalle_inscripcion, rapsId: res[1].id_detalle_inscripcion, funcionesId: res[2].id_detalle_inscripcion, avalId: res[3].id_detalle_inscripcion })
+      setStateDetails({ documentos: res[0].estado_aval, raps: res[1].estado_aval, funciones: res[2].estado_aval, aval: res[3].estado_aval })
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const notify = () => {
+    toast.error('Aún no puedes acceder', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: 'colored',
+      className: 'text-sm'
+    })
   }
 
   return (
@@ -76,7 +92,7 @@ export const RegisterDetails = () => {
               Info. Empresa
             </li>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('raps')}>
+              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''} ${stateDetails.documentos === 'Pendiente' ? 'text-black hover:text-black line-through' : 'hover:text-purple-800'}`} onClick={() => (stateDetails.documentos === 'Pendiente' ? notify() : setSelectedTab('raps'))}>
                 RAPS
               </li>
             )}
@@ -86,7 +102,7 @@ export const RegisterDetails = () => {
               </li>
             )}
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''} `} onClick={() => setSelectedTab('coordinador')}>
+              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''} ${stateDetails.funciones === 'Pendiente' ? 'text-black hover:text-black line-through' : 'hover:text-purple-800'}`} onClick={() => (stateDetails.funciones === 'Pendiente' ? notify() : setSelectedTab('coordinador'))}>
                 Coordinador
               </li>
             )}
@@ -299,7 +315,6 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
 
   const [showModal, setShowModal] = useState(false)
   const [notify, setNotify] = useState(false)
-  // eslint-disable-next-line no-unused-vars
   const [disableSubmitButton, setDisableSubmitButton] = useState(true)
 
   const handleUseState = (setState, value) => setState(value)
@@ -386,7 +401,7 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
                     <label htmlFor='' className='text-sm font-light'>
                       Observaciones
                     </label>
-                    <textarea id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleTextArea} />
+                    <textarea id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleTextArea} ref={descriptionRef} />
                   </div>
                   <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
                     {idRol === Number(keysRoles[0]) ? (
@@ -401,12 +416,18 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
                     ) : (
                       <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval}</h5>
                     )}
-                    {idRol === Number(keysRoles[0]) && (
-                      <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
-                        <LuSave />
-                        Guardar
-                      </Button>
-                    )}
+                    {idRol === Number(keysRoles[0]) &&
+                      (disableSubmitButton ? (
+                        <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                          <LuSave />
+                          Guardar
+                        </Button>
+                      ) : (
+                        <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                          <LuSave />
+                          Guardar
+                        </Button>
+                      ))}
                   </div>
                 </form>
               )
