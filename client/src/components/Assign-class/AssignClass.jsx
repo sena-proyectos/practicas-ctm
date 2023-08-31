@@ -68,7 +68,7 @@ export const AssignClass = () => {
             <Search searchFilter />
           </header>
           <section>
-            <section className='grid grid-cols-1 px-10 pt-5 pb-2 gap-x-4 gap-y-6 sm:grid-cols-2 md:grid-cols-3'>
+            <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>
               {loading ? (
                 <>
                   <SkeletonLoading />
@@ -140,4 +140,3 @@ const SkeletonLoading = () => {
     </div>
   )
 }
-
