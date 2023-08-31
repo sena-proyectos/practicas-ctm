@@ -23,7 +23,6 @@ export const RegisterDetails = () => {
   const idRol = Number(localStorage.getItem('idRol'))
   const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
   const [details, setDetails] = useState({})
-  const [stateDetails, setStateDetails] = useState({})
 
   useEffect(() => {
     getInscriptionAprendiz(id)
@@ -58,7 +57,6 @@ export const RegisterDetails = () => {
       const response = await getInscriptionDetails(id)
       const res = response.data.data
       setDetails({ documentosId: res[0].id_detalle_inscripcion, rapsId: res[1].id_detalle_inscripcion, funcionesId: res[2].id_detalle_inscripcion, avalId: res[3].id_detalle_inscripcion })
-      setStateDetails({ documentos: res[0].estado_aval, raps: res[1].estado_aval, funciones: res[2].estado_aval, aval: res[3].estado_aval })
     } catch (error) {
       console.log(error)
     }
