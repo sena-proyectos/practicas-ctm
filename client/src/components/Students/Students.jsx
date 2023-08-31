@@ -122,7 +122,7 @@ export const Students = () => {
           <div className='relative h-full bg-white shadow-md sm:rounded-lg'>
             <div className='grid items-center justify-between h-16 grid-cols-3 px-3'>
               <div className='relative flex items-center w-full'>
-                <button className='flex items-center justify-between gap-1 text-gray-500 border border-gray focus:outline-none  font-medium rounded-lg text-sm px-3 py-1.5 w-36 bg-white relative text-slate-800 hover:bg-[#ffd6a5]/30' onClick={handleShowFiltros} type='button'>
+                <button className='flex items-center justify-between gap-1 border border-gray focus:outline-none  font-medium rounded-lg text-sm px-3 py-1.5 w-36 bg-white relative text-slate-800 hover:bg-[#ffd6a5]/30' onClick={handleShowFiltros} type='button'>
                   Filtros
                   <PiCaretRightBold className={`text-md mt-[1px] ${showFiltros ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
                 </button>

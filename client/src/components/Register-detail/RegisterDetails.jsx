@@ -21,7 +21,6 @@ import { DenyModal } from '../Utils/Modals/Modals'
 export const RegisterDetails = () => {
   const { id } = useParams()
   const idRol = Number(localStorage.getItem('idRol'))
-  const [selectedTab, setSelectedTab] = useState('infoAprendiz')
   const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
   const [details, setDetails] = useState({})
   const [stateDetails, setStateDetails] = useState({})
@@ -30,6 +29,19 @@ export const RegisterDetails = () => {
     getInscriptionAprendiz(id)
     getDetallesInscripcion(id)
   }, [id])
+
+  const getSelectedTab = () => {
+    const savedTab = JSON.parse(sessionStorage.getItem('currentDetailTab'))
+    if (savedTab.paramLink !== id) return 'infoAprendiz'
+    return savedTab.lastTab
+  }
+
+  const [selectedTab, setSelectedTab] = useState(getSelectedTab)
+
+  useEffect(() => {
+    const payload = JSON.stringify({ lastTab: selectedTab, paramLink: id })
+    sessionStorage.setItem('currentDetailTab', payload)
+  }, [selectedTab])
 
   const getInscriptionAprendiz = async (id) => {
     try {
@@ -364,7 +376,12 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
     <>
       {showModal && <DenyModal setNotify={setNotify} id={avalDocumentos} closeModal={() => handleUseState(setShowModal, false)} title={'Escribe la razón del rechazo'} />}
       <section className='grid grid-cols-2 w-[95%] h-full gap-3 mx-auto'>
-        <section>Documentación</section>
+        <section className='flex flex-col gap-3'>
+          <h2 className='text-center'>Documentación</h2>
+          <section className='h-5/6'>
+            <iframe src='/home/conanghs/Descargas/Acta_29_de_Agosto_2023.pdf'></iframe>
+          </section>
+        </section>
         <section className='flex flex-col w-[95%] gap-6 mx-auto'>
           <div className='w-[95%] mx-auto'>
             {avalInfoDocumentos.map((aval) => {
@@ -385,18 +402,27 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
                     <label htmlFor='' className='text-sm font-light'>
                       Observaciones
                     </label>
-                    <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleTextArea} />
+                    <textarea id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleTextArea} />
                   </div>
                   <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
                     {idRol === Number(keysRoles[0]) ? (
                       <div className='flex flex-row gap-2 place-self-center'>
-                        <Button value={'Sí'} type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-green-800' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
-                        <Button value={'No'} type='button' bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' icon={<PiXCircleBold className='text-xl' />} onClick={() => handleUseState(setShowModal, true)} />
+                        <Button type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-green-800' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
+                          <PiCheckCircleBold className='text-xl' /> Sí
+                        </Button>
+                        <Button type='button' bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => handleUseState(setShowModal, true)}>
+                          <PiXCircleBold className='text-xl' /> No
+                        </Button>
                       </div>
                     ) : (
                       <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval}</h5>
                     )}
-                    {idRol === Number(keysRoles[0]) && <Button value={'Guardar'} bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} icon={<LuSave />} isDisabled />}
+                    {idRol === Number(keysRoles[0]) && (
+                      <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                        <LuSave />
+                        Guardar
+                      </Button>
+                    )}
                   </div>
                 </form>
               )
@@ -422,7 +448,7 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
                     <label htmlFor='observations' className='text-sm font-light'>
                       Observaciones
                     </label>
-                    <textarea name='observations' id='editor' value={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                    <textarea name='observations' id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
                   </div>
                   <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
                     {idRol === Number(keysRoles[2]) ? (
@@ -484,7 +510,7 @@ const RAPS = ({ idRol, avalRaps }) => {
                   <label htmlFor='' className='text-sm font-light'>
                     Observaciones
                   </label>
-                  <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                  <textarea id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
                 </div>
                 <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
                   {idRol === Number(keysRoles[0]) ? (
