@@ -9,19 +9,11 @@ export const sendEmail = async (req: Request, res: Response): Promise<Response> 
   try {
     const mensaje = { from, to, subject, text }
     const transporte = nodemailer.createTransport(emailConfig)
-    transporte.verify(function (error, success) {
-      if (error != null) {
-        console.log(error)
-      } else {
-        console.log(success)
-      }
-    })
-    console.log(emailConfig.auth)
     const sendData = await transporte.sendMail(mensaje)
     console.log(sendData)
     return res.status(200).json({ msg: 'Correo enviado correctamente' })
   } catch (error) {
-    // console.log(error)
+    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }

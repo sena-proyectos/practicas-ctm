@@ -12,8 +12,8 @@ const MAIL_USER = process.env.MAIL_USER ?? 'null'
 const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? 'null'
 
 const emailConfig = {
-  host: 'smtp-relay.gmail.com',
-  port: 25,
+  host: 'smtp.gmail.com',
+  port: 465,
   secure: true,
   auth: {
     user: MAIL_USER,

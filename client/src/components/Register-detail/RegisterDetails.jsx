@@ -14,8 +14,9 @@ import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { keysRoles } from '../../import/staticData'
-import { DenyModal } from '../Utils/Modals/Modals'
+
 import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById } from '../../api/httpRequest'
+import { DenyModal } from '../Utils/Modals/Modals'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
@@ -103,7 +104,7 @@ export const RegisterDetails = () => {
             <InfoEmpresa inscriptionAprendiz={inscriptionAprendiz} />
           </div>
           <div className={`${selectedTab === 'documentos' ? 'visible h-full' : 'hidden'}`}>
-            <Documentos idRol={idRol} avalDocumentos={details.documentosId} avalFunciones={details.funcionesId} />
+            <Docs idRol={idRol} avalDocumentos={details.documentosId} avalFunciones={details.funcionesId} />
           </div>
           <div className={`${selectedTab === 'raps' ? 'visible' : 'hidden'}`}>
             <RAPS idRol={idRol} avalRaps={details.rapsId} />
@@ -287,7 +288,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   )
 }
 
-const Documentos = ({ idRol, avalDocumentos, avalFunciones }) => {
+const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
   const [avalInfoDocumentos, setAvalInfoDocumentos] = useState([])
   const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
   const [nameResponsableDocumentos, setNameResponsableDocumentos] = useState('')
@@ -312,6 +313,7 @@ const Documentos = ({ idRol, avalDocumentos, avalFunciones }) => {
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
+        pauseOnFocusLoss: false,
         draggable: true,
         progress: undefined,
         theme: 'colored',
@@ -348,7 +350,6 @@ const Documentos = ({ idRol, avalDocumentos, avalFunciones }) => {
 
   return (
     <>
-      <ToastContainer />
       {showModal && <DenyModal setNotify={setNotify} id={avalDocumentos} closeModal={handleCloseModal} title={'Escribe la razón del rechazo'} />}
       <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
         <section>Documentación</section>
@@ -375,14 +376,14 @@ const Documentos = ({ idRol, avalDocumentos, avalFunciones }) => {
                     </div>
                     {idRol === Number(keysRoles[0]) ? (
                       <div className='flex flex-row gap-2 place-self-center'>
-                        <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
-                        <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} clickeame={handleShowModal} />
+                        <Button value={'Sí'} type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-green-800' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+                        <Button value={'No'} type='button' bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' icon={<PiXCircleBold className='text-xl' />} onClick={handleShowModal} />
                       </div>
                     ) : (
                       <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval}</h5>
                     )}
                   </div>
-                  {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
+                  {idRol === Number(keysRoles[0]) && <Button value={'Guardar'} bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} icon={<LuSave />} isDisabled />}
                 </form>
               )
             })}
