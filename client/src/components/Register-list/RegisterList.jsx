@@ -196,7 +196,9 @@ export const RegisterList = () => {
           </div>
           {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
             <div className='absolute flex flex-row-reverse gap-3 right-12 bottom-16'>
-              <Button value={'Agregar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} icon={<IoAddCircleOutline className='text-xl' />} />
+              <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline>
+                <IoAddCircleOutline className='text-xl' /> Agregar
+              </Button>
               <div className='rounded-full shadow-md bg-cyan-600'>
                 <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
                   <AiOutlineFileAdd />
@@ -248,7 +250,9 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData }) 
                   </div>
                 </td>
                 <td className='text-center'>
-                  <Button value={'Detalles'} rounded='rounded-full' bg='bg-sky-600' px='px-2' py='py-[1px]' textSize='text-sm' font='font-medium' onClick={() => handleAvales(x.id_inscripcion)} />
+                  <Button rounded='rounded-full' bg='bg-sky-600' px='px-2' py='py-[1px]' textSize='text-sm' font='font-medium' onClick={() => handleAvales(x.id_inscripcion)}>
+                    Detalles
+                  </Button>
                 </td>
               </tr>
             )

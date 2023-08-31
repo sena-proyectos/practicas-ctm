@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -275,8 +275,12 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
               </div>
               {idRol === Number(keysRoles[1]) ? (
                 <div className='flex flex-row gap-2 place-self-center'>
-                  <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
-                  <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
+                  <Button bg='bg-primary' px='px-2' font='font-medium' textSize='text-sm' py='py-1' rounded='rounded-xl' inline>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button bg='bg-red-500' px='px-2' font='font-medium' textSize='text-sm' py='py-1' rounded='rounded-xl' inline>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
                 </div>
               ) : (
                 <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'La solicitud esta siendo procesada por el coordinador' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -285,9 +289,11 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                 <label htmlFor='' className='text-sm font-light'>
                   Observaciones
                 </label>
-                <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
+                <textarea id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
               </div>
-              <Button value={'Guardar'} bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />
+              <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} inline>
+                <LuSave /> Guardar
+              </Button>
             </form>
           )
         })}
@@ -297,19 +303,15 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
 }
 
 const Docs = ({ idRol, avalDocumentos }) => {
+  const descriptionRef = useRef()
   const [avalInfo, setAvalInfo] = useState([])
   const [nameResponsable, setNameResponsable] = useState('')
 
   const [showModal, setShowModal] = useState(false)
   const [notify, setNotify] = useState(false)
+  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
 
-  const handleShowModal = () => {
-    setShowModal(true)
-  }
-
-  const handleCloseModal = () => {
-    setShowModal(false)
-  }
+  const handleUseState = (setState, value) => setState(value)
 
   useEffect(() => {
     if (notify) {
@@ -339,20 +341,29 @@ const Docs = ({ idRol, avalDocumentos }) => {
     setAvalInfo(data)
   }
 
+  const handleTextArea = () => {
+    if (descriptionRef.current.value.length > 1) return
+    if (descriptionRef.current.value.length === 0) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
   useEffect(() => {
     if (avalDocumentos) fetchData()
   }, [avalDocumentos])
 
   return (
     <>
-      {showModal && <DenyModal setNotify={setNotify} id={avalDocumentos} closeModal={handleCloseModal} title={'Escribe la razón del rechazo'} />}
+      {showModal && <DenyModal setNotify={setNotify} id={avalDocumentos} closeModal={() => handleUseState(setShowModal, false)} title={'Escribe la razón del rechazo'} />}
       <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
         <section>Documentación</section>
         <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
           <div className='w-[95%] mx-auto h-full'>
             {avalInfo.map((aval) => {
               return (
-                <form action='' className='flex flex-col gap-7' key={aval.id_detalle_inscripcion}>
+                <form className='flex flex-col gap-7' key={aval.id_detalle_inscripcion}>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor='' className='text-sm font-light'>
                       Líder Prácticas
@@ -361,8 +372,12 @@ const Docs = ({ idRol, avalDocumentos }) => {
                   </div>
                   {idRol === Number(keysRoles[0]) ? (
                     <div className='flex flex-row gap-2 place-self-center'>
-                      <Button value={'Sí'} type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-green-800' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
-                      <Button value={'No'} type='button' bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' icon={<PiXCircleBold className='text-xl' />} onClick={handleShowModal} />
+                      <Button type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-green-800' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button type='button' bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => handleUseState(setShowModal, true)} inline>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
                     </div>
                   ) : (
                     <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la documentación se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -371,9 +386,17 @@ const Docs = ({ idRol, avalDocumentos }) => {
                     <label htmlFor='' className='text-sm font-light'>
                       Observaciones
                     </label>
-                    <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                    <textarea id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleTextArea} ref={descriptionRef} />
                   </div>
-                  {idRol === Number(keysRoles[0]) && <Button value={'Guardar'} bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} icon={<LuSave />} isDisabled />}
+                  {idRol === Number(keysRoles[0]) && disableSubmitButton ? (
+                    <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} inline py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled>
+                      <LuSave /> Guardar
+                    </Button>
+                  ) : (
+                    <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} icon={<LuSave />}>
+                      Guardar
+                    </Button>
+                  )}
                 </form>
               )
             })}
@@ -419,8 +442,12 @@ const Funciones = ({ idRol, avalFunciones }) => {
                     </div>
                     {idRol === Number(keysRoles[2]) ? (
                       <div className='flex flex-row gap-2 place-self-center'>
-                        <Button type='button' value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
-                        <Button type='button' value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
+                        <Button type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-green-800' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
+                          <PiCheckCircleBold className='text-xl' /> Sí
+                        </Button>
+                        <Button type='button' bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline>
+                          <PiXCircleBold className='text-xl' /> No
+                        </Button>
                       </div>
                     ) : (
                       <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente la carta inicial se encuentra en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -429,9 +456,13 @@ const Funciones = ({ idRol, avalFunciones }) => {
                       <label htmlFor='observations' className='text-sm font-light'>
                         Observaciones
                       </label>
-                      <textarea name='observations' id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                      <textarea name='observations' id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
                     </div>
-                    {idRol === Number(keysRoles[2]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
+                    {idRol === Number(keysRoles[2]) && (
+                      <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} inline py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled>
+                        <LuSave /> Guardar
+                      </Button>
+                    )}
                   </form>
                 )
               })}
@@ -477,8 +508,12 @@ const RAPS = ({ idRol, avalRaps }) => {
                 </div>
                 {idRol === Number(keysRoles[0]) ? (
                   <div className='flex flex-row gap-2 place-self-center'>
-                    <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
-                    <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
+                    <Button type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-green-800' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
+                      <PiCheckCircleBold className='text-xl' /> Sí
+                    </Button>
+                    <Button type='button' bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline>
+                      <PiXCircleBold className='text-xl' /> No
+                    </Button>
                   </div>
                 ) : (
                   <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente los RAPS se encuentran en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
@@ -487,7 +522,7 @@ const RAPS = ({ idRol, avalRaps }) => {
                   <label htmlFor='' className='text-sm font-light'>
                     Observaciones
                   </label>
-                  <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                  <textarea id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
                 </div>
                 {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
               </form>

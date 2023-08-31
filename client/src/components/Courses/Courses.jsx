@@ -73,7 +73,9 @@ export const Courses = () => {
             <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
           <div className='absolute right-12 bottom-20'>
-            <Button value={'Agregar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} icon={<LuBookPlus className='text-xl' />} />
+            <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
+              <LuBookPlus className='text-xl' /> Agregar
+            </Button>
           </div>
         </section>
         <Footer />
