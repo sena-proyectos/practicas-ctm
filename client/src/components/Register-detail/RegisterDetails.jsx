@@ -64,20 +64,6 @@ export const RegisterDetails = () => {
     }
   }
 
-  const notify = () => {
-    toast.error('Aún no puedes acceder', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'colored',
-      className: 'text-sm'
-    })
-  }
-
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
@@ -92,7 +78,7 @@ export const RegisterDetails = () => {
               Info. Empresa
             </li>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
-              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''} ${stateDetails.documentos === 'Pendiente' ? 'text-black hover:text-black line-through' : 'hover:text-purple-800'}`} onClick={() => (stateDetails.documentos === 'Pendiente' ? notify() : setSelectedTab('raps'))}>
+              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''} hover:text-purple-800`} onClick={() => setSelectedTab('raps')}>
                 RAPS
               </li>
             )}
@@ -102,7 +88,7 @@ export const RegisterDetails = () => {
               </li>
             )}
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''} ${stateDetails.funciones === 'Pendiente' ? 'text-black hover:text-black line-through' : 'hover:text-purple-800'}`} onClick={() => (stateDetails.funciones === 'Pendiente' ? notify() : setSelectedTab('coordinador'))}>
+              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''} hover:text-purple-800`} onClick={() => setSelectedTab('coordinador')}>
                 Coordinador
               </li>
             )}
