@@ -333,8 +333,8 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                 <p className='text-lg font-bold text-center text-red-500 underline'>¡No podrás deshacer está acción!</p>
                 <section className='mt-3'>
                   <div className='flex items-center justify-between gap-3'>
-                    <Button value={'Continuar'} bg='bg-green-500' hover='hover:bg-green-800' textSize='text-base' px='px-10' clickeame={continueLoadFile} />
-                    <Button value={'Deshacer'} bg='bg-red-500' hover='hover:bg-red-800' textSize='text-base' px='px-10' clickeame={handleModal} />
+                    <Button value={'Continuar'} bg='bg-green-500' hover='hover:bg-green-800' textSize='text-base' px='px-10' onClick={continueLoadFile} />
+                    <Button value={'Deshacer'} bg='bg-red-500' hover='hover:bg-red-800' textSize='text-base' px='px-10' onClick={handleModal} />
                   </div>
                 </section>
               </section>
@@ -346,7 +346,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                 <h2 className='text-lg font-bold text-center text-green-500'>¡Archivo cargado correctamente!</h2>
                 <section className='mt-3'>
                   <div className='flex items-center justify-between gap-3'>
-                    <Button value={'Aceptar'} bg='bg-slate-500' hover='hover:bg-slate-700' textSize='text-base' px='px-10' clickeame={handleModal} />
+                    <Button value={'Aceptar'} bg='bg-slate-500' hover='hover:bg-slate-700' textSize='text-base' px='px-10' onClick={handleModal} />
                   </div>
                 </section>
               </section>

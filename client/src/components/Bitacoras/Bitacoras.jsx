@@ -47,8 +47,8 @@ const Bitacoras = () => {
           <div>
             <section className='w-11/12 mx-auto'>
               <div className='flex gap-5 mx-auto w-fit'>
-                <Button bg='bg-secondary/10' value={'BITÁCORAS CALIFICADAS'} textColor='text-black' font='font-normal' px='px-2' rounded='rounded-t-lg' textSize='text-sm' clickeame={() => filterEstado('Calificado')} />
-                <Button bg='bg-secondary/10' value={'BITÁCORAS SIN CALIFICAR'} textColor='text-black' font='font-normal' px='px-2' rounded='rounded-t-lg' textSize='text-sm' clickeame={() => filterEstado('Sin Calificar')} />
+                <Button bg='bg-secondary/10' value={'BITÁCORAS CALIFICADAS'} textColor='text-black' font='font-normal' px='px-2' rounded='rounded-t-lg' textSize='text-sm' onClick={() => filterEstado('Calificado')} />
+                <Button bg='bg-secondary/10' value={'BITÁCORAS SIN CALIFICAR'} textColor='text-black' font='font-normal' px='px-2' rounded='rounded-t-lg' textSize='text-sm' onClick={() => filterEstado('Sin Calificar')} />
               </div>
               <table className='w-full table-auto'>
                 <thead>

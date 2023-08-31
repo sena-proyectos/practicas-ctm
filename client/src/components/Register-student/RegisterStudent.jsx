@@ -246,13 +246,13 @@ export const RegisterStudent = () => {
               </Link>
             </div>
             <div className='flex flex-col gap-1 mx-auto mt-3 mb-2 md:flex-row w-fit md:gap-5'>
-              <Button value={'Eliminar datos'} bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize='text-md' py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={deleteData} />
+              <Button value={'Eliminar datos'} bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize='text-md' py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} onClick={deleteData} />
               {showDataEmpresa && (
                 <div className='relative mx-auto w-fit'>
                   <span className='absolute inset-y-0 flex items-center text-white pointer-events-none left-3'>
                     <LuArrowLeft />
                   </span>
-                  <Button value={'Regresar'} bg={'bg-sky-700'} px={'pr-6 pl-10'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={() => handleChangeSection('aprendiz')} />
+                  <Button value={'Regresar'} bg={'bg-sky-700'} px={'pr-6 pl-10'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} onClick={() => handleChangeSection('aprendiz')} />
                 </div>
               )}
               {showDataAprendiz && (
@@ -260,7 +260,7 @@ export const RegisterStudent = () => {
                   <span className='absolute inset-y-0 flex items-center text-white pointer-events-none right-2'>
                     <LuArrowRight />
                   </span>
-                  <Button value={'Continuar'} bg={'bg-primary'} px={'pr-8 pl-5'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} clickeame={() => handleChangeSection('empresa')} />
+                  <Button value={'Continuar'} bg={'bg-primary'} px={'pr-8 pl-5'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} onClick={() => handleChangeSection('empresa')} />
                 </div>
               )}
             </div>
