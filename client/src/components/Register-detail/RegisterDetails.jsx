@@ -351,19 +351,24 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
   return (
     <>
       {showModal && <DenyModal setNotify={setNotify} id={avalDocumentos} closeModal={handleCloseModal} title={'Escribe la razón del rechazo'} />}
-      <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
+      <section className='grid grid-cols-2 w-[95%] h-full gap-3 mx-auto'>
         <section>Documentación</section>
         <section className='flex flex-col w-[95%] gap-6 mx-auto'>
           <div className='w-[95%] mx-auto'>
             {avalInfoDocumentos.map((aval) => {
               return (
                 <form action='' className='flex flex-col gap-2' key={aval.id_detalle_inscripcion}>
-                  <div className='flex flex-col'>
-                    <span className='text-sm font-semibold'>
-                      Líder Prácticas <span className='text-red-800'>(Documentos)</span>
-                    </span>
-                    <span className='text-sm font-light'>31 Agosto 23</span>
-                  </div>
+                  <section className='grid items-center grid-cols-2 gap-2'>
+                    <section className='flex flex-col'>
+                      <span className='text-sm font-semibold'>
+                        Líder Prácticas <span className='text-red-800'>(Documentos)</span>
+                      </span>
+                      <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
+                    </section>
+                    <div className='flex py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+                      <h3 className='px-2 text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
+                    </div>
+                  </section>
                   <div>
                     <label htmlFor='' className='text-sm font-light'>
                       Observaciones
@@ -371,9 +376,6 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
                     <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
                   </div>
                   <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
-                    <div className='flex py-1 rounded-lg w-fit bg-gray place-self-center'>
-                      <h3 className='px-2 text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
-                    </div>
                     {idRol === Number(keysRoles[0]) ? (
                       <div className='flex flex-row gap-2 place-self-center'>
                         <Button value={'Sí'} type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-green-800' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
@@ -382,22 +384,33 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
                     ) : (
                       <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval}</h5>
                     )}
+                    {idRol === Number(keysRoles[0]) && <Button value={'Guardar'} bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} icon={<LuSave />} isDisabled />}
                   </div>
-                  {idRol === Number(keysRoles[0]) && <Button value={'Guardar'} bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} icon={<LuSave />} isDisabled />}
                 </form>
               )
             })}
           </div>
-          {/* <hr className='w-3/4 mx-auto border-[1px] text-neutral-400' /> */}
+          <hr className='w-3/4 mx-auto border-[1px] text-neutral-400' />
           <div className='w-[95%] mx-auto'>
             {avalInfoFunciones.map((aval) => {
               return (
                 <form action='' className='flex flex-col gap-2' key={aval.id_detalle_inscripcion}>
-                  <div className='flex flex-col gap-1'>
-                    <label htmlFor='' className='text-sm font-light'>
-                      Encargado <span className='text-red-800'>(Funciones)</span>
+                  <section className='grid items-center grid-cols-2 gap-2'>
+                    <section className='flex flex-col gap-1'>
+                      <span className='text-sm font-semibold'>
+                        Encargado <span className='text-red-800'>(Funciones)</span>
+                      </span>
+                      <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
+                    </section>
+                    <section>
+                      <input type='text' defaultValue={nameResponsableFunciones} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
+                    </section>
+                  </section>
+                  <div>
+                    <label htmlFor='observations' className='text-sm font-light'>
+                      Observaciones
                     </label>
-                    <input type='text' defaultValue={nameResponsableFunciones} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
+                    <textarea name='observations' id='editor' value={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
                   </div>
                   <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
                     {idRol === Number(keysRoles[2]) ? (
@@ -408,15 +421,8 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
                     ) : (
                       <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval}</h5>
                     )}
-                    <input type='date' className='py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md w-fit focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400' />
+                    {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} isDisabled />}
                   </div>
-                  <div>
-                    <label htmlFor='observations' className='text-sm font-light'>
-                      Observaciones
-                    </label>
-                    <textarea name='observations' id='editor' value={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
-                  </div>
-                  {idRol === Number(keysRoles[2]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
                 </form>
               )
             })}
@@ -446,34 +452,39 @@ const RAPS = ({ idRol, avalRaps }) => {
   }, [avalRaps])
 
   return (
-    <section className='grid grid-cols-2 w-[95%] h-full gap-2 mx-auto'>
+    <section className='grid grid-cols-2 w-[95%] h-full gap-3 mx-auto'>
       <section>RAPS</section>
-      <section className='flex flex-col w-[95%] gap-2 p-2 mx-auto'>
+      <section className='flex flex-col w-[95%] gap-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>
           {avalInfo.map((aval) => {
             return (
-              <form action='' className='flex flex-col gap-7' key={aval.id_detalle_inscripcion}>
-                <div className='flex flex-col gap-1'>
-                  <label htmlFor='' className='text-sm font-light'>
-                    Líder Prácticas
-                  </label>
-                  <input type='text' defaultValue={nameResponsable} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' disabled />
-                </div>
-                {idRol === Number(keysRoles[0]) ? (
-                  <div className='flex flex-row gap-2 place-self-center'>
-                    <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
-                    <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
+              <form action='' className='flex flex-col gap-2' key={aval.id_detalle_inscripcion}>
+                <section className='grid items-center grid-cols-2 gap-2'>
+                  <section className='flex flex-col'>
+                    <span className='text-sm font-semibold'>Líder Prácticas</span>
+                    <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
+                  </section>
+                  <div className='flex py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+                    <h3 className='px-2 text-sm whitespace-nowrap'>{nameResponsable}</h3>
                   </div>
-                ) : (
-                  <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'Actualmente los RAPS se encuentran en revisión' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
-                )}
+                </section>
                 <div>
                   <label htmlFor='' className='text-sm font-light'>
                     Observaciones
                   </label>
-                  <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                  <textarea id='editor' value={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
                 </div>
-                {idRol === Number(keysRoles[3]) && <Button value={'Guardar'} bg={'bg-slate-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} icon={<LuSave />} />}
+                <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
+                  {idRol === Number(keysRoles[0]) ? (
+                    <div className='flex flex-row gap-2 place-self-center'>
+                      <Button value={'Sí'} type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-green-800' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+                      <Button value={'No'} type='button' bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' icon={<PiXCircleBold className='text-xl' />} />
+                    </div>
+                  ) : (
+                    <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval}</h5>
+                  )}
+                  {idRol === Number(keysRoles[0]) && <Button value={'Guardar'} bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} icon={<LuSave />} isDisabled />}
+                </div>
               </form>
             )
           })}
