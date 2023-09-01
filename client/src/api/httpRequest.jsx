@@ -176,3 +176,11 @@ export const getUserById = async (id) => {
   const response = await axios.get(URL)
   return response
 }
+
+// MODIFICAR INSTRUCTOR SEGUIMIENTO DE UNA FICHA
+export const updateTeacherSeguimiento = async (numero_ficha, payload) => {
+  const URL = `${baseUrl}${api}/teacherClass?numero_ficha=${numero_ficha}`
+
+  const response = await axios.patch(URL, payload)
+  return response
+}

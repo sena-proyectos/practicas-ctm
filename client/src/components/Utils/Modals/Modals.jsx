@@ -11,10 +11,10 @@ import { modalities } from '../../../import/staticData'
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
-import { getTeachers, inscriptionDetailsUpdate } from '../../../api/httpRequest'
+import { getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento } from '../../../api/httpRequest'
 
 const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption, numero_ficha, programa_formacion, denyRegister = false, handleForm }) => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
 
   const passwordIcons = {
     openEye: <AiOutlineEye />,
@@ -71,6 +71,17 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
     value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario,
     key: teacher.id_usuario
   }))
+
+  const updateTeacher = async (numero_ficha, value) => {
+    try {
+      const response = await updateTeacherSeguimiento(numero_ficha, value)
+      console.log(response)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const [value, setValue] = useState()
 
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
@@ -316,11 +327,11 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                     borderColor='border-slate-500'
                     options={option}
                     onSelect={(selectedValue) => {
-                      console.log(selectedValue)
+                      setValue(selectedValue)
                     }}
                   />
                 </div>
-                <Button value={'Asignar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-ms' font='font-medium' textColor='text-white' icon={<BsCheck2Circle className='text-xl' />} />
+                <Button value={'Asignar'} type='submit' rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-ms' font='font-medium' textColor='text-white' icon={<BsCheck2Circle className='text-xl' />} onClick={() => updateTeacher(numero_ficha, value)} />
               </form>
             </section>
           )}
@@ -434,4 +445,3 @@ const LoadingModal = ({ children, title = 'Cargando' }) => {
 }
 
 export { Modals, DenyModal, LoadingModal }
-
