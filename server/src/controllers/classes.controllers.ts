@@ -94,7 +94,7 @@ export const getClassByPracticalInstructorId: RequestHandler<{ id: string }, Res
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [classData] = await connection.query('SELECT *, CONCAT(usuarios.nombres_usuario, " ", usuarios.apellidos_usuario) as seguimiento_nombre_completo FROM fichas INNER JOIN usuarios ON fichas.id_instructor_seguimiento = usuarios.id_usuario WHERE id_instructor_seguimiento = ?', [idNumber])
+    const [classData] = await connection.query('SELECT fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica,  fichas.id_instructor_lider, fichas.id_instructor_seguimiento, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario WHERE id_instructor_seguimiento = ?', [idNumber])
     if (!Array.isArray(classData) || classData?.length === 0) throw new DbErrorNotFound('No se encontraron clases del instructor de seguimiento.', errorCodes.ERROR_GET_CLASS)
     return res.status(httpStatus.OK).json({ data: classData })
   } catch (error) {
@@ -106,7 +106,7 @@ export const getClassByInstructorId: RequestHandler<{ id: string }, Response, id
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [classData] = await connection.query('SELECT *, CONCAT(usuarios.nombres_usuario, " ", usuarios.apellidos_usuario) as nombre_instructor_lider FROM fichas INNER JOIN usuarios ON fichas.id_instructor_lider = usuarios.id_usuario WHERE id_instructor_lider = ?', [idNumber])
+    const [classData] = await connection.query('SELECT fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica,  fichas.id_instructor_lider, fichas.id_instructor_seguimiento, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario WHERE id_instructor_lider = ?', [idNumber])
     if (!Array.isArray(classData) || classData?.length === 0) throw new DbErrorNotFound('No se encontraron clases del instructor de seguimiento.', errorCodes.ERROR_GET_CLASS)
     return res.status(httpStatus.OK).json({ data: classData })
   } catch (error) {
