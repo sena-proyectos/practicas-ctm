@@ -184,3 +184,11 @@ export const updateTeacherSeguimiento = async (numero_ficha, payload) => {
   const response = await axios.patch(URL, payload)
   return response
 }
+
+// OBTENER FICHAS POR ID INSTRUCTOR
+export const getClassByLiderTeacherId = async (id) => {
+  const URL = `${baseUrl}${api}/teacherLiderClasses/${id}`
+
+  const response = await axios.get(URL)
+  return response
+}

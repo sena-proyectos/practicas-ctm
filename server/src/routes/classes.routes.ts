@@ -1,6 +1,6 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { getClasses, getClassById, getClassByClassNumber, createClass, editClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber, getClassesFree } from '../controllers/classes.controllers.js'
+import { getClasses, getClassById, getClassByClassNumber, createClass, editClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber, getClassesFree, getClassByInstructorId } from '../controllers/classes.controllers.js'
 import { checkClassData, checkClassDate, checkClassNumber, checkPracticalTeacherId } from '../middlewares/classes.middlewares.js'
 
 const classRoutes: IRouter = Router()
@@ -32,6 +32,8 @@ GET para el punto final '/teacherClasses/:id'. Cuando se realiza una solicitud G
 final, ejecutará la función de middleware `checkIdReq` seguida de la función del controlador
 `getClassByTeacherId`. */
 classRoutes.get('/teacherClasses/:id', checkIdReq, getClassByPracticalInstructorId)
+
+classRoutes.get('/teacherLiderClasses/:id', checkIdReq, getClassByInstructorId)
 
 /* `classRoutes.get('/classNumber', checkClassNumber, getClassByClassNumber)` está definiendo una ruta
 GET para el punto final '/classNumber'. Cuando se realiza una solicitud GET a este punto final,

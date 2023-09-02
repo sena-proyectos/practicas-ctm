@@ -102,6 +102,18 @@ export const getClassByPracticalInstructorId: RequestHandler<{ id: string }, Res
   }
 }
 
+export const getClassByInstructorId: RequestHandler<{ id: string }, Response, id> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id } = req.params
+  const idNumber = Number(id)
+  try {
+    const [classData] = await connection.query('SELECT *, CONCAT(usuarios.nombres_usuario, " ", usuarios.apellidos_usuario) as nombre_instructor_lider FROM fichas INNER JOIN usuarios ON fichas.id_instructor_lider = usuarios.id_usuario WHERE id_instructor_lider = ?', [idNumber])
+    if (!Array.isArray(classData) || classData?.length === 0) throw new DbErrorNotFound('No se encontraron clases del instructor de seguimiento.', errorCodes.ERROR_GET_CLASS)
+    return res.status(httpStatus.OK).json({ data: classData })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 /**
  * Esta función de TypeScript recupera una clase de una base de datos en función de su número de clase
  * y devuelve el resultado como una respuesta JSON.

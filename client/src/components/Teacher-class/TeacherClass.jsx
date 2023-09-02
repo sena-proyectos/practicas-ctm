@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 
 // Components
-import { getClassByTeacherId } from '../../api/httpRequest'
+import { getClassByTeacherId, getClassByLiderTeacherId, getUserById } from '../../api/httpRequest'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -15,19 +15,42 @@ export const TeacherClass = () => {
   const [loading, setLoading] = useState(true)
   const [teacherClass, setTeacherClass] = useState([])
   const [pageNumber, setPageNumber] = useState(0)
+  const [rol, setRol] = useState('')
 
   useEffect(() => {
-    getTeacherClass(id)
+    getUser(id)
   }, [id])
 
-  const getTeacherClass = async (id) => {
+  const getUser = async (id) => {
     try {
-      const response = await getClassByTeacherId(id)
-      const { data } = response.data
-      setTeacherClass(data)
+      const response = await getUserById(id)
+      const { id_rol } = response.data.data[0]
+      setRol(id_rol)
     } catch (error) {
       throw new Error(error)
     }
+  }
+
+  useEffect(() => {
+    if (rol && (rol === 3 || rol === 4)) {
+      const apiRoute = rol === 3 ? 'getClassByTeacherId' : 'getClassByLiderTeacherId'
+
+      const fetchData = async () => {
+        try {
+          const response = await getClassData(id, apiRoute)
+          const { data } = response.data
+          setTeacherClass(data)
+        } catch (error) {
+          throw new Error(error)
+        }
+      }
+
+      fetchData()
+    }
+  }, [rol, id])
+
+  const getClassData = async (id, apiRoute) => {
+    return (await apiRoute) === 'getClassByTeacherId' ? getClassByTeacherId(id) : getClassByLiderTeacherId(id)
   }
 
   useEffect(() => {
