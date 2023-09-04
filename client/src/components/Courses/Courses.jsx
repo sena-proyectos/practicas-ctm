@@ -74,7 +74,7 @@ export const Courses = () => {
           </div>
           <div className='absolute right-12 bottom-20'>
             <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
-              <LuBookPlus className='text-xl' /> Agregar
+              <LuBookPlus className='text-xl' /> Asignar
             </Button>
           </div>
         </section>
@@ -85,4 +85,3 @@ export const Courses = () => {
 }
 
 const SkeletonLoading = ({ number = 6 }) => [...Array(number)].map((_, i) => <Card3D header={<Skeleton />} title={<Skeleton />} subtitle={<Skeleton />} item1={<Skeleton />} item2={<Skeleton />} item3={<Skeleton />} item4={<Skeleton />} key={i} />)
-

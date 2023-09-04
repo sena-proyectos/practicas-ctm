@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 // icons
 import { HiOutlineUserAdd } from 'react-icons/hi'
 import { BsJournalBookmark } from 'react-icons/bs'
+import { IoReturnDownBack } from 'react-icons/io5'
 
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
-import { Modals } from '../Utils/Modals/Modals'
+import { AsignTeacherModal } from '../Utils/Modals/Modals'
 import { Pagination } from '../Utils/Pagination/Pagination'
 import { getClassFree, GetClassByNumber } from '../../api/httpRequest'
 
@@ -20,6 +24,8 @@ export const AssignClass = () => {
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
   const [detailCourse, setDetailCourse] = useState([])
+  const [isEmptyLeader, setIsEmptyLeader] = useState()
+  const [isEmptyPractical, setIsEmptyPractical] = useState()
 
   const getCursos = async () => {
     try {
@@ -44,6 +50,10 @@ export const AssignClass = () => {
       const response = await GetClassByNumber(numero_ficha)
       const { data } = response.data
       setDetailCourse(data[0])
+      const emptyPractical = !data[0].id_instructor_seguimiento
+      const emptyLeader = !data[0].id_instructor_lider
+      setIsEmptyPractical(emptyPractical)
+      setIsEmptyLeader(emptyLeader)
     } catch (error) {
       throw new Error(error)
     }
@@ -58,10 +68,32 @@ export const AssignClass = () => {
     setLoading(false)
   }, [])
 
+  const [notify, setNotify] = useState(false)
+
+  useEffect(() => {
+    if (notify) {
+      toast.success('Se ha asignado el instructor', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        className: 'text-sm'
+      })
+    }
+    setNotify(false)
+    getCursos()
+  }, [notify])
+
   return (
     <>
-      {modalAsign && <Modals bodyAsign title={'Asignar Instructor'} numero_ficha={detailCourse.numero_ficha} programa_formacion={detailCourse.nombre_programa_formacion} closeModal={handleModal} />}
+      {modalAsign && <AsignTeacherModal title={'Asignar Instructor'} numero_ficha={detailCourse.numero_ficha} emptyLeader={isEmptyLeader} emptyPractical={isEmptyPractical} programa_formacion={detailCourse.nombre_programa_formacion} setNotify={setNotify} closeModal={handleModal} />}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
+        <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
           <header className='grid place-items-center'>
@@ -104,6 +136,12 @@ export const AssignClass = () => {
                 })
               )}
             </section>
+            <div className='absolute top-4 left-8'>
+              <Link to='/fichas' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
+                <IoReturnDownBack />
+                Regresar
+              </Link>
+            </div>
             <div className='flex justify-center h-[13vh] relative bottom-0'>
               <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
             </div>

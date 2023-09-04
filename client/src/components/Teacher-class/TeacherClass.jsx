@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 
+// Icons
+import { IoReturnDownBack } from 'react-icons/io5'
+
 // Components
-import { getClassByTeacherId } from '../../api/httpRequest'
+import { getClassByTeacherId, getClassByLiderTeacherId, getUserById } from '../../api/httpRequest'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -15,19 +18,42 @@ export const TeacherClass = () => {
   const [loading, setLoading] = useState(true)
   const [teacherClass, setTeacherClass] = useState([])
   const [pageNumber, setPageNumber] = useState(0)
+  const [rol, setRol] = useState('')
 
   useEffect(() => {
-    getTeacherClass(id)
+    getUser(id)
   }, [id])
 
-  const getTeacherClass = async (id) => {
+  const getUser = async (id) => {
     try {
-      const response = await getClassByTeacherId(id)
-      const { data } = response.data
-      setTeacherClass(data)
+      const response = await getUserById(id)
+      const { id_rol } = response.data.data[0]
+      setRol(id_rol)
     } catch (error) {
       throw new Error(error)
     }
+  }
+
+  useEffect(() => {
+    if (rol && (rol === 3 || rol === 4)) {
+      const apiRoute = rol === 3 ? 'getClassByTeacherId' : 'getClassByLiderTeacherId'
+
+      const fetchData = async () => {
+        try {
+          const response = await getClassData(id, apiRoute)
+          const { data } = response.data
+          setTeacherClass(data)
+        } catch (error) {
+          throw new Error(error)
+        }
+      }
+
+      fetchData()
+    }
+  }, [rol, id])
+
+  const getClassData = async (id, apiRoute) => {
+    return (await apiRoute) === 'getClassByTeacherId' ? getClassByTeacherId(id) : getClassByLiderTeacherId(id)
   }
 
   useEffect(() => {
@@ -58,6 +84,12 @@ export const TeacherClass = () => {
               })
             )}
           </section>
+          <div className='absolute top-4 left-8'>
+            <Link to='/instructores' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
+              <IoReturnDownBack />
+              Regresar
+            </Link>
+          </div>
           <div className='flex justify-center h-[13vh] relative bottom-0'>
             <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
