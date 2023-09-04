@@ -72,7 +72,9 @@ const Settings = () => {
                   <span className='absolute inset-y-0 flex items-center text-white left-2'>
                     <BsCheck2Circle />
                   </span>
-                  <Button value={'Guardar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                    Guardar
+                  </Button>
                 </div>
               </form>
             </div>
@@ -85,3 +87,4 @@ const Settings = () => {
 }
 
 export { Settings }
+

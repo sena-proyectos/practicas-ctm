@@ -95,7 +95,9 @@ export const AssignClass = () => {
                         <span className='text-xs font-light'>{course.estado}</span>
                       </section>
                       <div className='relative ml-auto bottom-2 w-fit'>
-                        <Button value={'Asignar'} rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' icon={<HiOutlineUserAdd className='text-xl' />} />
+                        <Button rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' inline>
+                          <HiOutlineUserAdd className='text-xl' /> Asignar
+                        </Button>
                       </div>
                     </div>
                   )

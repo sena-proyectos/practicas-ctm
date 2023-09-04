@@ -206,12 +206,16 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                   })}
                 </section>
                 <div className={`grid w-fit grid-cols-2 ${isOpen === true ? 'mx-4 my-12 gap-2' : 'mx-auto my-5 gap-5'} `}>
-                  <Button value={'Limpiar'} bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  <Button bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                    Limpiar
+                  </Button>
                   <div className='relative mx-auto'>
                     <span className='absolute inset-y-0 flex items-center text-white left-2'>
                       <IoSearchOutline />
                     </span>
-                    <Button value={'Buscar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                      Buscar
+                    </Button>
                   </div>
                 </div>
               </form>
@@ -260,7 +264,9 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                   <span className='absolute inset-y-0 flex items-center text-white left-2'>
                     <BsCheck2Circle />
                   </span>
-                  <Button value={'Guardar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                    Guardar
+                  </Button>
                 </div>
               </form>
             </>
@@ -293,13 +299,17 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
 
                 <div className='flex flex-row my-5'>
                   <div className='relative mr-auto'>
-                    <Button value={'Editar'} bg={'bg-coffee/75'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button bg={'bg-coffee/75'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                      Editar
+                    </Button>
                   </div>
                   <div className='relative ml-auto'>
                     <span className='absolute inset-y-0 flex items-center text-white left-2'>
                       <IoSearchOutline />
                     </span>
-                    <Button value={'Buscar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                      Buscar
+                    </Button>
                   </div>
                 </div>
               </form>
@@ -344,8 +354,12 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                 <p className='text-lg font-bold text-center text-red-500 underline'>¡No podrás deshacer está acción!</p>
                 <section className='mt-3'>
                   <div className='flex items-center justify-between gap-3'>
-                    <Button value={'Continuar'} bg='bg-green-500' hover='hover:bg-green-800' textSize='text-base' px='px-10' onClick={continueLoadFile} />
-                    <Button value={'Deshacer'} bg='bg-red-500' hover='hover:bg-red-800' textSize='text-base' px='px-10' onClick={handleModal} />
+                    <Button bg='bg-green-500' hover='bg-green-800' textSize='text-base' px='px-10' onClick={continueLoadFile}>
+                      Continuar
+                    </Button>
+                    <Button bg='bg-red-500' hover='bg-red-800' textSize='text-base' px='px-10' onClick={handleModal}>
+                      Deshacer
+                    </Button>
                   </div>
                 </section>
               </section>
@@ -357,7 +371,9 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                 <h2 className='text-lg font-bold text-center text-green-500'>¡Archivo cargado correctamente!</h2>
                 <section className='mt-3'>
                   <div className='flex items-center justify-between gap-3'>
-                    <Button value={'Aceptar'} bg='bg-slate-500' hover='hover:bg-slate-700' textSize='text-base' px='px-10' onClick={handleModal} />
+                    <Button bg='bg-slate-500' hover='bg-slate-700' textSize='text-base' px='px-10' onClick={handleModal}>
+                      Aceptar
+                    </Button>
                   </div>
                 </section>
               </section>
@@ -373,7 +389,9 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                     </label>
                     <textarea name='observations' id='editor' rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
                   </div>
-                  <Button value={'Enviar'} bg='bg-primary' hover='hover:bg-green-800' textSize='text-base' px='px-10' type={'submit'} />
+                  <Button bg='bg-primary' hover='bg-green-800' textSize='text-base' px='px-10' type={'submit'}>
+                    Enviar
+                  </Button>
                 </form>
               </section>
             </>
@@ -422,7 +440,9 @@ const DenyModal = ({ closeModal, title, id, setNotify }) => {
                 </label>
                 <textarea name='observaciones' id='editor' rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
               </section>
-              <Button value={'Enviar'} bg='bg-primary' hover='hover:bg-green-800' textSize='text-base' px='px-10' type={'submit'} />
+              <Button bg='bg-primary' hover='bg-green-800' textSize='text-base' px='px-10' type={'submit'}>
+                Enviar
+              </Button>
             </form>
           </section>
         </section>
