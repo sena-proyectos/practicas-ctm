@@ -245,3 +245,17 @@ export const editPracticalInstructorClass: RequestHandler<{}, Response, classes>
     return handleHTTP(res, error as CustomError)
   }
 }
+
+export const editLiderInstructorClass: RequestHandler<{}, Response, classes> = async (req: Request, res: Response): Promise<Response> => {
+  const { numero_ficha } = req.query
+  const { id_instructor_lider } = req.body
+  const idNumber = Number(id_instructor_lider)
+  const classNumberNumber = Number(numero_ficha)
+  try {
+    const [classQuery]: [ResultSetHeader, unknown] = await connection.query('UPDATE fichas SET id_instructor_lider = IFNULL(?, id_instructor_lider) WHERE numero_ficha = ?', [idNumber, classNumberNumber])
+    if (Object.keys(classQuery).length === 0 && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo editar el instructor líder de la ficha.', errorCodes.ERROR_EDIT_CLASS)
+    return res.status(httpStatus.OK).json({ data: classQuery })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
