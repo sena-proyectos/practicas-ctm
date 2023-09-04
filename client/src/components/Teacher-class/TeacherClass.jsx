@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+
+// Icons
+import { IoReturnDownBack } from 'react-icons/io5'
 
 // Components
 import { getClassByTeacherId, getClassByLiderTeacherId, getUserById } from '../../api/httpRequest'
@@ -81,6 +84,12 @@ export const TeacherClass = () => {
               })
             )}
           </section>
+          <div className='absolute top-4 left-8'>
+            <Link to='/instructores' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
+              <IoReturnDownBack />
+              Regresar
+            </Link>
+          </div>
           <div className='flex justify-center h-[13vh] relative bottom-0'>
             <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
