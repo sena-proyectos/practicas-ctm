@@ -345,10 +345,10 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                 <p className='text-lg font-bold text-center text-red-500 underline'>¡No podrás deshacer está acción!</p>
                 <section className='mt-3'>
                   <div className='flex items-center justify-between gap-3'>
-                    <Button bg='bg-green-500' hover='bg-green-800' textSize='text-base' px='px-10' onClick={continueLoadFile}>
+                    <Button bg='bg-green-500' rounded='rounded-md' py='py-1.5' hover='bg-green-800' textSize='text-base' px='px-10' onClick={continueLoadFile}>
                       Continuar
                     </Button>
-                    <Button bg='bg-red-500' hover='bg-red-800' textSize='text-base' px='px-10' onClick={handleModal}>
+                    <Button bg='bg-red-500' rounded='rounded-md' py='py-1.5' hover='bg-red-800' textSize='text-base' px='px-10' onClick={handleModal}>
                       Deshacer
                     </Button>
                   </div>

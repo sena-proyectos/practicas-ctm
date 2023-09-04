@@ -154,7 +154,7 @@ export const editInscriptionDetail: RequestHandler<{}, Response, inscripcionDeta
   try {
     const [result] = await connection.query('UPDATE detalles_inscripciones SET estado_aval = IFNULL(?, estado_aval), observaciones = IFNULL(?, observaciones), responsable_aval = IFNULL(?, responsable_aval) WHERE id_detalle_inscripcion = ?', [estado_aval, observaciones, responsable_aval, id])
     if (!Array.isArray(result) && result?.affectedRows === 0) throw new DbError('No se pudo actualizar la modalidad de etapa práctica')
-    return res.status(httpStatus.OK).json({ message: 'Modalidad de etapa práctica actualizada con éxito' })
+    return res.status(httpStatus.OK).json({ message: 'Aval de inscripción actualizada con éxito' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
