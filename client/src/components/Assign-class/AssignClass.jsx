@@ -22,6 +22,7 @@ export const AssignClass = () => {
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
   const [detailCourse, setDetailCourse] = useState([])
+  const [isEmpty, setIsEmpty] = useState()
 
   const getCursos = async () => {
     try {
@@ -46,6 +47,8 @@ export const AssignClass = () => {
       const response = await GetClassByNumber(numero_ficha)
       const { data } = response.data
       setDetailCourse(data[0])
+      const Empty = !data[0].id_instructor_seguimiento
+      setIsEmpty(Empty)
     } catch (error) {
       throw new Error(error)
     }
@@ -82,7 +85,7 @@ export const AssignClass = () => {
 
   return (
     <>
-      {modalAsign && <AsignTeacherModal title={'Asignar Instructor'} numero_ficha={detailCourse.numero_ficha} programa_formacion={detailCourse.nombre_programa_formacion} setNotify={setNotify} closeModal={handleModal} />}
+      {modalAsign && <AsignTeacherModal title={'Asignar Instructor'} numero_ficha={detailCourse.numero_ficha} isEmpty={isEmpty} programa_formacion={detailCourse.nombre_programa_formacion} setNotify={setNotify} closeModal={handleModal} />}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
         <Siderbar />

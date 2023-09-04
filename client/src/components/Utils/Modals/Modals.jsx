@@ -11,7 +11,7 @@ import { modalities } from '../../../import/staticData'
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
-import { getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento } from '../../../api/httpRequest'
+import { getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento, updateTeacherLider } from '../../../api/httpRequest'
 
 const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption, denyRegister = false, handleForm }) => {
   const [isOpen, setIsOpen] = useState(true)
@@ -340,7 +340,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
   )
 }
 
-export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion, setNotify }) => {
+export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion, setNotify, isEmpty }) => {
   const handleModal = () => {
     closeModal()
   }
@@ -362,7 +362,7 @@ export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_fo
   }, [])
 
   const option = teachers.map((teacher) => ({
-    value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario,
+    value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario + ' - ' + (teacher.id_rol === 3 ? 'Seguimiento' : 'Lider'),
     key: teacher.id_usuario
   }))
 
@@ -370,10 +370,14 @@ export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_fo
 
   const updateTeacher = async (e) => {
     e.preventDefault()
-    const instructor_seguimiento = valor
+    const id_instructor = valor
     const num_ficha = numero_ficha
     try {
-      await updateTeacherSeguimiento(num_ficha, instructor_seguimiento)
+      if (isEmpty) {
+        await updateTeacherSeguimiento(num_ficha, id_instructor)
+      } else {
+        await updateTeacherLider(num_ficha, id_instructor)
+      }
       setNotify(true)
       closeModal()
     } catch (error) {
@@ -381,6 +385,7 @@ export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_fo
       throw new Error(error)
     }
   }
+
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
@@ -398,7 +403,7 @@ export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_fo
             <form action='' onSubmit={updateTeacher} className='flex flex-col gap-6'>
               <div>
                 <label htmlFor='asig' className='text-[16px] font-normal'>
-                  Instructor Seguimiento
+                  {isEmpty ? 'Instructor Seguimiento' : 'Instructor Lider'}
                 </label>
                 <Select
                   placeholder='Nombre instructor'
