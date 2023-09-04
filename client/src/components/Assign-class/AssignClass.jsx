@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 // icons
 import { HiOutlineUserAdd } from 'react-icons/hi'
@@ -10,7 +12,7 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
-import { Modals } from '../Utils/Modals/Modals'
+import { AsignTeacherModal } from '../Utils/Modals/Modals'
 import { Pagination } from '../Utils/Pagination/Pagination'
 import { getClassFree, GetClassByNumber } from '../../api/httpRequest'
 
@@ -58,10 +60,31 @@ export const AssignClass = () => {
     setLoading(false)
   }, [])
 
+  const [notify, setNotify] = useState(false)
+
+  useEffect(() => {
+    if (notify) {
+      toast.success('Se ha asignado el instructor', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        className: 'text-sm'
+      })
+    }
+    setNotify(false)
+  }, [notify])
+
   return (
     <>
-      {modalAsign && <Modals bodyAsign title={'Asignar Instructor'} numero_ficha={detailCourse.numero_ficha} programa_formacion={detailCourse.nombre_programa_formacion} closeModal={handleModal} />}
+      {modalAsign && <AsignTeacherModal title={'Asignar Instructor'} numero_ficha={detailCourse.numero_ficha} programa_formacion={detailCourse.nombre_programa_formacion} setNotify={setNotify} closeModal={handleModal} />}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
+        <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
           <header className='grid place-items-center'>
