@@ -227,7 +227,6 @@ export const editPracticalInstructorClass: RequestHandler<{}, Response, classes>
   const classNumberNumber = Number(numero_ficha)
   try {
     const [classQuery]: [ResultSetHeader, unknown] = await connection.query('UPDATE fichas SET id_instructor_seguimiento = IFNULL(?, id_instructor_seguimiento) WHERE numero_ficha = ?', [idNumber, classNumberNumber])
-    console.log(classQuery, typeof classQuery)
     if (Object.keys(classQuery).length === 0 && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo editar el instructor de prácticas de la ficha.', errorCodes.ERROR_EDIT_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
