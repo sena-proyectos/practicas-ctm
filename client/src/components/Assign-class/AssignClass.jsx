@@ -68,7 +68,7 @@ export const AssignClass = () => {
             <Search searchFilter />
           </header>
           <section>
-            <section className='grid grid-cols-1 px-10 pt-5 pb-2 gap-x-4 gap-y-6 sm:grid-cols-2 md:grid-cols-3'>
+            <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>
               {loading ? (
                 <>
                   <SkeletonLoading />
@@ -95,7 +95,9 @@ export const AssignClass = () => {
                         <span className='text-xs font-light'>{course.estado}</span>
                       </section>
                       <div className='relative ml-auto bottom-2 w-fit'>
-                        <Button value={'Asignar'} rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' icon={<HiOutlineUserAdd className='text-xl' />} />
+                        <Button rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' inline>
+                          <HiOutlineUserAdd className='text-xl' /> Asignar
+                        </Button>
                       </div>
                     </div>
                   )
@@ -140,4 +142,3 @@ const SkeletonLoading = () => {
     </div>
   )
 }
-

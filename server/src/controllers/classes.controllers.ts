@@ -6,6 +6,7 @@ import { handleHTTP } from '../errors/errorsHandler.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { type id } from '../interfaces/users.interfaces.js'
 import { type classes } from '../interfaces/classes.interfaces.js'
+import { type ResultSetHeader } from 'mysql2'
 
 /**
  * La función `getClasses` recupera una lista de clases de una base de datos y las devuelve como una
@@ -225,8 +226,8 @@ export const editPracticalInstructorClass: RequestHandler<{}, Response, classes>
   const idNumber = Number(id_instructor_seguimiento)
   const classNumberNumber = Number(numero_ficha)
   try {
-    const [classQuery] = await connection.query('UPDATE fichas SET id_instructor_seguimiento = ? WHERE numero_ficha LIKE ?', [idNumber, classNumberNumber])
-    if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se pudo editar el instructor de prácticas de la ficha.', errorCodes.ERROR_EDIT_CLASS)
+    const [classQuery]: [ResultSetHeader, unknown] = await connection.query('UPDATE fichas SET id_instructor_seguimiento = IFNULL(?, id_instructor_seguimiento) WHERE numero_ficha = ?', [idNumber, classNumberNumber])
+    if (Object.keys(classQuery).length === 0 && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo editar el instructor de prácticas de la ficha.', errorCodes.ERROR_EDIT_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
     return handleHTTP(res, error as CustomError)

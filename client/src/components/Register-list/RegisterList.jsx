@@ -189,14 +189,16 @@ export const RegisterList = () => {
         <header className='grid place-items-center'>
           <Search filter />
         </header>
-        <section className='flex flex-col w-11/12 gap-3 mx-auto mt-2'>
+        <section className='flex flex-col w-11/12 gap-3 mx-auto'>
           <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} />
           <div className='flex justify-center h-[13vh] relative bottom-0'>
             <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
           {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
             <div className='absolute flex flex-row-reverse gap-3 right-12 bottom-16'>
-              <Button value={'Agregar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} icon={<IoAddCircleOutline className='text-xl' />} />
+              <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline>
+                <IoAddCircleOutline className='text-xl' /> Agregar
+              </Button>
               <div className='rounded-full shadow-md bg-cyan-600'>
                 <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
                   <AiOutlineFileAdd />
@@ -239,7 +241,7 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData }) 
                 <td className='font-light text-center '>{x.modalidad_inscripcion === '1' ? 'Pasantías' : x.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : x.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : x.modalidad_inscripcion === '4' ? 'Monitoría' : x.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</td>
                 <td className='font-light text-center '>{x.fecha_creacion.split('T')[0]}</td>
                 <td className='text-sm font-light text-center '>
-                  <div className='w-10 mx-auto rounded-full select-none bg-gray'>{x.estado_general_inscripcion === 'Rechazado' ? 'N/A' : `${x.avales_aprobados} | 4`}</div>
+                  <div className='w-10 mx-auto rounded-full select-none bg-grayPrimary'>{x.estado_general_inscripcion === 'Rechazado' ? 'N/A' : `${x.avales_aprobados} | 4`}</div>
                 </td>
                 <td className='text-sm font-normal text-center whitespace-nowrap'>
                   <div className={`px-2 py-[1px] ${x.estado_general_inscripcion === 'Aprobado' ? 'bg-green-200 text-emerald-700' : x.estado_general_inscripcion === 'Pendiente' ? 'bg-slate-200 text-slate-600' : x.estado_general_inscripcion === 'Rechazado' ? 'bg-red-200 text-red-700' : ''} rounded-full flex flex-row gap-1 items-center justify-center select-none`}>
@@ -248,7 +250,9 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData }) 
                   </div>
                 </td>
                 <td className='text-center'>
-                  <Button value={'Detalles'} rounded='rounded-full' bg='bg-sky-600' px='px-2' py='py-[1px]' textSize='text-sm' font='font-medium' onClick={() => handleAvales(x.id_inscripcion)} />
+                  <Button rounded='rounded-full' bg='bg-sky-600' px='px-2' py='py-[1px]' textSize='text-sm' font='font-medium' onClick={() => handleAvales(x.id_inscripcion)}>
+                    Detalles
+                  </Button>
                 </td>
               </tr>
             )
@@ -315,3 +319,4 @@ const UploadingExcelFileModal = () => (
     </section>
   </LoadingModal>
 )
+

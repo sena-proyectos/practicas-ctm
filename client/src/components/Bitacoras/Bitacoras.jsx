@@ -47,8 +47,12 @@ const Bitacoras = () => {
           <div>
             <section className='w-11/12 mx-auto'>
               <div className='flex gap-5 mx-auto w-fit'>
-                <Button bg='bg-secondary/10' value={'BITÁCORAS CALIFICADAS'} textColor='text-black' font='font-normal' px='px-2' rounded='rounded-t-lg' textSize='text-sm' onClick={() => filterEstado('Calificado')} />
-                <Button bg='bg-secondary/10' value={'BITÁCORAS SIN CALIFICAR'} textColor='text-black' font='font-normal' px='px-2' rounded='rounded-t-lg' textSize='text-sm' onClick={() => filterEstado('Sin Calificar')} />
+                <Button bg='bg-secondary/10' textColor='text-black' font='font-normal' px='px-2' rounded='rounded-t-lg' textSize='text-sm' onClick={() => filterEstado('Calificado')}>
+                  BITÁCORAS CALIFICADAS
+                </Button>
+                <Button bg='bg-secondary/10' textColor='text-black' font='font-normal' px='px-2' rounded='rounded-t-lg' textSize='text-sm' onClick={() => filterEstado('Sin Calificar')}>
+                  BITÁCORAS SIN CALIFICAR
+                </Button>
               </div>
               <table className='w-full table-auto'>
                 <thead>
@@ -77,7 +81,9 @@ const Bitacoras = () => {
                             </div>
                           </td>
                           <td className='px-6 py-3 text-center whitespace-nowrap'>
-                            <Button bg={x.estado === 'Sin Calificar' ? 'bg-red-200' : 'bg-green-200'} px={x.estado === 'Sin Calificar' ? 'px-3' : 'px-4'} py={'py-1'} textSize={'text-xs'} font={'font-medium'} rounded={'rounded-full'} textColor={x.estado === 'Sin Calificar' ? 'text-red-600' : 'text-green-600'} value={x.estado} />
+                            <Button bg={x.estado === 'Sin Calificar' ? 'bg-red-200' : 'bg-green-200'} px={x.estado === 'Sin Calificar' ? 'px-3' : 'px-4'} py={'py-1'} textSize={'text-xs'} font={'font-medium'} rounded={'rounded-full'} textColor={x.estado === 'Sin Calificar' ? 'text-red-600' : 'text-green-600'}>
+                              {x.estado}
+                            </Button>
                           </td>
                           <td className='px-6 py-3 text-center'>
                             <div className='flex items-center justify-center'>
@@ -105,7 +111,9 @@ const Bitacoras = () => {
                             </div>
                           </td>
                           <td className='px-6 py-3 text-center whitespace-nowrap'>
-                            <Button bg={x.estado === 'Sin Calificar' ? 'bg-red-200' : 'bg-green-200'} px={x.estado === 'Sin Calificar' ? 'px-3' : 'px-4'} py={'py-1'} textSize={'text-xs'} font={'font-medium'} rounded={'rounded-full'} textColor={x.estado === 'Sin Calificar' ? 'text-red-600' : 'text-green-600'} value={x.estado} />
+                            <Button bg={x.estado === 'Sin Calificar' ? 'bg-red-200' : 'bg-green-200'} px={x.estado === 'Sin Calificar' ? 'px-3' : 'px-4'} py={'py-1'} textSize={'text-xs'} font={'font-medium'} rounded={'rounded-full'} textColor={x.estado === 'Sin Calificar' ? 'text-red-600' : 'text-green-600'}>
+                              {x.estado}
+                            </Button>
                           </td>
                           <td className='px-6 py-3 text-center'>
                             <div className='flex items-center justify-center'>
