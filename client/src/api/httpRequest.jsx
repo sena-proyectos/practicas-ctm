@@ -181,7 +181,15 @@ export const getUserById = async (id) => {
 export const updateTeacherSeguimiento = async (numero_ficha, payload) => {
   const URL = `${baseUrl}${api}/teacherClass?numero_ficha=${numero_ficha}`
 
-  const response = await axios.patch(URL, payload)
+  const response = await axios.patch(URL, { id_instructor_seguimiento: payload })
+  return response
+}
+
+// MODIFICAR INSTRUCTOR LIDER DE UNA FICHA
+export const updateTeacherLider = async (numero_ficha, payload) => {
+  const URL = `${baseUrl}${api}/teacherLiderClass?numero_ficha=${numero_ficha}`
+
+  const response = await axios.patch(URL, { id_instructor_lider: payload })
   return response
 }
 
