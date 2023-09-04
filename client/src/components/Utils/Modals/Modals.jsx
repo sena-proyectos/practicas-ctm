@@ -13,7 +13,7 @@ import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
 import { getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento } from '../../../api/httpRequest'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption, numero_ficha, programa_formacion, denyRegister = false, handleForm }) => {
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption, denyRegister = false, handleForm }) => {
   const [isOpen, setIsOpen] = useState(true)
 
   const passwordIcons = {
@@ -50,38 +50,6 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
   const continueLoadFile = () => {
     setModalOption(modalOptionList.loadingExcelModal)
   }
-
-  const [teachers, setTeacher] = useState([])
-
-  const getInstructores = async () => {
-    try {
-      const response = await getTeachers()
-      const { data } = response.data
-      setTeacher(data)
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-
-  useEffect(() => {
-    getInstructores()
-  }, [])
-
-  const option = teachers.map((teacher) => ({
-    value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario,
-    key: teacher.id_usuario
-  }))
-
-  const updateTeacher = async (numero_ficha, value) => {
-    try {
-      const response = await updateTeacherSeguimiento(numero_ficha, value)
-      console.log(response)
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-
-  const [value, setValue] = useState()
 
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
@@ -315,36 +283,6 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
               </form>
             </>
           )}
-          {bodyAsign && (
-            <section className='flex flex-col gap-3 my-5'>
-              <header>
-                <h3 className='text-[16px] font-medium text-right'>{numero_ficha}</h3>
-                <h3 className='text-[16px] font-light text-right'>{programa_formacion}</h3>
-              </header>
-              <form action='' className='flex flex-col gap-6'>
-                <div>
-                  <label htmlFor='asig' className='text-[16px] font-normal'>
-                    Instructor Seguimiento
-                  </label>
-                  <Select
-                    placeholder='Nombre instructor'
-                    isSearch
-                    hoverColor='hover:bg-teal-200'
-                    hoverTextColor='hover:text-teal-800'
-                    placeholderSearch='Ingrese nombre instructor'
-                    selectedColor='bg-teal-600 text-white'
-                    rounded='rounded-xl'
-                    borderColor='border-slate-500'
-                    options={option}
-                    onSelect={(selectedValue) => {
-                      setValue(selectedValue)
-                    }}
-                  />
-                </div>
-                <Button value={'Asignar'} type='submit' rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-ms' font='font-medium' textColor='text-white' icon={<BsCheck2Circle className='text-xl' />} onClick={() => updateTeacher(numero_ficha, value)} />
-              </form>
-            </section>
-          )}
           {bodyConfirm && (
             <>
               <section className='my-3'>
@@ -396,6 +334,92 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
               </section>
             </>
           )}
+        </section>
+      </section>
+    </section>
+  )
+}
+
+export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion, setNotify }) => {
+  const handleModal = () => {
+    closeModal()
+  }
+
+  const [teachers, setTeacher] = useState([])
+
+  const getInstructores = async () => {
+    try {
+      const response = await getTeachers()
+      const { data } = response.data
+      setTeacher(data)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  useEffect(() => {
+    getInstructores()
+  }, [])
+
+  const option = teachers.map((teacher) => ({
+    value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario,
+    key: teacher.id_usuario
+  }))
+
+  const [valor, setValor] = useState()
+
+  const updateTeacher = async (e) => {
+    e.preventDefault()
+    const instructor_seguimiento = valor
+    const num_ficha = numero_ficha
+    try {
+      await updateTeacherSeguimiento(num_ficha, instructor_seguimiento)
+      setNotify(true)
+      closeModal()
+    } catch (error) {
+      closeModal()
+      throw new Error(error)
+    }
+  }
+  return (
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
+      <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+        <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer' onClick={handleModal} />
+        <header className='grid pt-5 place-items-center '>
+          <h2 className={`text-xl font-medium text-center w-fit border-primary`}>{title}</h2>
+        </header>
+        <section className='flex justify-center'>
+          <section className='flex flex-col w-11/12 gap-3 my-5'>
+            <header>
+              <h3 className='text-[16px] font-medium text-right'>{numero_ficha}</h3>
+              <h3 className='text-[16px] font-light text-right'>{programa_formacion}</h3>
+            </header>
+            <form action='' onSubmit={updateTeacher} className='flex flex-col gap-6'>
+              <div>
+                <label htmlFor='asig' className='text-[16px] font-normal'>
+                  Instructor Seguimiento
+                </label>
+                <Select
+                  placeholder='Nombre instructor'
+                  isSearch
+                  hoverColor='hover:bg-teal-200'
+                  hoverTextColor='hover:text-teal-800'
+                  placeholderSearch='Ingrese nombre instructor'
+                  selectedColor='bg-teal-600 text-white'
+                  rounded='rounded-xl'
+                  borderColor='border-slate-500'
+                  options={option}
+                  onSelect={(selectedValue) => {
+                    setValor(selectedValue)
+                  }}
+                />
+              </div>
+              <Button type='submit' rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-ms' font='font-medium' textColor='text-white' inline>
+                <BsCheck2Circle className='text-xl' /> Asignar
+              </Button>
+            </form>
+          </section>
         </section>
       </section>
     </section>
