@@ -59,4 +59,3 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, iconClick
 }
 
 export { Search }
-

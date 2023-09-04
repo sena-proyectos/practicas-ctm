@@ -340,7 +340,7 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
   )
 }
 
-export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion, setNotify, isEmpty }) => {
+export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion, setNotify, emptyLeader, emptyPractical }) => {
   const handleModal = () => {
     closeModal()
   }
@@ -367,16 +367,26 @@ export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_fo
   }))
 
   const [valor, setValor] = useState()
+  const [value, setValue] = useState()
 
   const updateTeacher = async (e) => {
     e.preventDefault()
     const id_instructor = valor
+    const id_instructor_lider = value
     const num_ficha = numero_ficha
     try {
-      if (isEmpty) {
+      if (emptyPractical && emptyLeader) {
         await updateTeacherSeguimiento(num_ficha, id_instructor)
-      } else {
+        await updateTeacherLider(num_ficha, id_instructor_lider)
+        setNotify(true)
+        closeModal()
+        return
+      }
+
+      if (emptyLeader) {
         await updateTeacherLider(num_ficha, id_instructor)
+      } else {
+        await updateTeacherSeguimiento(num_ficha, id_instructor)
       }
       setNotify(true)
       closeModal()
@@ -401,25 +411,68 @@ export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_fo
               <h3 className='text-[16px] font-light text-right'>{programa_formacion}</h3>
             </header>
             <form action='' onSubmit={updateTeacher} className='flex flex-col gap-6'>
-              <div>
-                <label htmlFor='asig' className='text-[16px] font-normal'>
-                  {isEmpty ? 'Instructor Seguimiento' : 'Instructor Lider'}
-                </label>
-                <Select
-                  placeholder='Nombre instructor'
-                  isSearch
-                  hoverColor='hover:bg-teal-200'
-                  hoverTextColor='hover:text-teal-800'
-                  placeholderSearch='Ingrese nombre instructor'
-                  selectedColor='bg-teal-600 text-white'
-                  rounded='rounded-xl'
-                  borderColor='border-slate-500'
-                  options={option}
-                  onSelect={(selectedValue) => {
-                    setValor(selectedValue)
-                  }}
-                />
-              </div>
+              {emptyLeader && emptyPractical ? (
+                <>
+                  <div>
+                    <label htmlFor='asig' className='text-[16px] font-normal'>
+                      Instructor Seguimiento
+                    </label>
+                    <Select
+                      placeholder='Nombre instructor'
+                      isSearch
+                      hoverColor='hover:bg-teal-200'
+                      hoverTextColor='hover:text-teal-800'
+                      placeholderSearch='Ingrese nombre instructor'
+                      selectedColor='bg-teal-600 text-white'
+                      rounded='rounded-xl'
+                      borderColor='border-slate-500'
+                      options={option}
+                      onSelect={(selectedValue) => {
+                        setValor(selectedValue)
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor='asignar' className='text-[16px] font-normal'>
+                      Instructor Lider
+                    </label>
+                    <Select
+                      placeholder='Nombre instructor'
+                      isSearch
+                      hoverColor='hover:bg-teal-200'
+                      hoverTextColor='hover:text-teal-800'
+                      placeholderSearch='Ingrese nombre instructor'
+                      selectedColor='bg-teal-600 text-white'
+                      rounded='rounded-xl'
+                      borderColor='border-slate-500'
+                      options={option}
+                      onSelect={(selectedValue) => {
+                        setValue(selectedValue)
+                      }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div>
+                  <label htmlFor='asig' className='text-[16px] font-normal'>
+                    {emptyPractical ? 'Instructor Seguimiento' : emptyLeader ? 'Instructor Lider' : null}
+                  </label>
+                  <Select
+                    placeholder='Nombre instructor'
+                    isSearch
+                    hoverColor='hover:bg-teal-200'
+                    hoverTextColor='hover:text-teal-800'
+                    placeholderSearch='Ingrese nombre instructor'
+                    selectedColor='bg-teal-600 text-white'
+                    rounded='rounded-xl'
+                    borderColor='border-slate-500'
+                    options={option}
+                    onSelect={(selectedValue) => {
+                      setValor(selectedValue)
+                    }}
+                  />
+                </div>
+              )}
               <Button type='submit' rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-ms' font='font-medium' textColor='text-white' inline>
                 <BsCheck2Circle className='text-xl' /> Asignar
               </Button>
