@@ -4,38 +4,53 @@ import Skeleton from 'react-loading-skeleton'
 
 // Icons
 import { FaAngleRight } from 'react-icons/fa'
-import { LuBookPlus } from 'react-icons/lu'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Pagination } from '../Utils/Pagination/Pagination'
-import { colorsOddRow, instructores } from '../../import/staticData'
-import { Button } from '../Utils/Button/Button'
+import { colorsOddRow } from '../../import/staticData'
+import { getTeachers } from '../../api/httpRequest'
 
 export const Teachers = () => {
-  const [pageNumber, setPageNumber] = useState(-1)
+  const [pageNumber, setPageNumber] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [teacher, setTeacher] = useState([])
+
+  const getInstructores = async () => {
+    try {
+      const response = await getTeachers()
+      const { data } = response.data
+      setTeacher(data)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  useEffect(() => {
+    getInstructores()
+  }, [])
 
   const instructoresPerPage = 8
-  const pageCount = Math.ceil(instructores.length / instructoresPerPage)
+  const pageCount = Math.ceil(teacher.length / instructoresPerPage)
 
-  const allColors = instructores.map((_, index) => ({
+  const allColors = teacher.map((_, index) => ({
     ...colorsOddRow[index % colorsOddRow.length]
   }))
 
-  const startIndex = (pageNumber + 1) * instructoresPerPage
+  const startIndex = pageNumber * instructoresPerPage
   const endIndex = startIndex + instructoresPerPage
 
   const navigate = useNavigate()
-  const handleAsign = () => {
-    return navigate('/asignar-ficha')
-  }
 
   useEffect(() => {
     setLoading(false)
   }, [])
+
+  const handleCourse = (id) => {
+    return navigate(`/fichas-instructor/${id}`)
+  }
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
@@ -52,18 +67,18 @@ export const Teachers = () => {
               </>
             ) : (
               allColors.slice(startIndex, endIndex).map((color, index) =>
-                instructores[startIndex + index] ? (
+                teacher[startIndex + index] ? (
                   <div className='rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[9rem] bg-white' key={index} {...color}>
                     <div className='flex flex-col w-4/5 gap-2 mx-auto my-auto'>
-                      <h6 className='font-medium text-center text-[0.9rem]'>{instructores[startIndex + index].nombre}</h6>
+                      <h6 className='font-medium text-center text-[0.9rem]'>{`${teacher[startIndex + index].nombres_usuario} ${teacher[startIndex + index].apellidos_usuario}`}</h6>
                       <hr className={`font-bold ${color.hrcolor} border-1`} />
-                      <p className='text-[0.8rem] font-light text-center'>{instructores[startIndex + index].rol}</p>
+                      <p className='text-[0.8rem] font-light text-center'>{teacher[startIndex + index].id_rol === 3 ? 'Instructor Seguimiento' : teacher[startIndex + index].id_rol === 4 ? 'Instructor Líder' : ''}</p>
                     </div>
                     <div className={`w-full h-full rounded-r-[2rem] ${color.sidecolor}`}>
                       <div className={`w-full h-[3rem] rounded-tr-[2rem] text-white text-xl ${color.linkcolor}`}>
-                        <Link to='/fichas'>
+                        <button className='w-full h-full' onClick={() => handleCourse(teacher[startIndex + index].id_usuario)}>
                           <FaAngleRight className='h-full py-3 mx-auto' />
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -72,10 +87,7 @@ export const Teachers = () => {
             )}
           </section>
           <div className='flex justify-center h-[13vh] relative st1:bottom-[-1.5rem] st2:bottom-[-3rem] bottom-[-4rem] md:bottom-0'>
-            <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
-          </div>
-          <div className='absolute right-12 bottom-20'>
-            <Button value={'Agregar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' clickeame={handleAsign} icon={<LuBookPlus className='text-xl' />} />
+            <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
         </section>
         <Footer />

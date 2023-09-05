@@ -1,5 +1,5 @@
 import { type IRouter, Router } from 'express'
-import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData } from '../controllers/inscriptions.controllers.js'
+import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsById, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData } from '../controllers/inscriptions.controllers.js'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
 import { checkInscriptionData, checkInscriptionDetailData, configureMulterExcel, readExcelFile } from '../middlewares/inscriptions.middlewares.js'
 
@@ -35,6 +35,8 @@ inscriptionRoutes.get('/inscriptionDetails/:id', checkIdReq, getInscriptionsDeta
  */
 inscriptionRoutes.get('/inscriptionDetailsUser/:id', checkIdReq, getInscriptionsDetailsByUser)
 
+inscriptionRoutes.get('/inscriptionDetail/:id', checkIdReq, getInscriptionsDetailsById)
+
 // * POST
 /**
  * @description Ruta para crear inscripciones.
@@ -59,7 +61,7 @@ inscriptionRoutes.post('/inscription-excel-file', multerFile, readExcelFile, ret
  * @bodyparam estado_aval El estado de aval a actualizar.
  * @bodyparam observaciones Las observaciones a actualizar.
  */
-inscriptionRoutes.patch('/update-inscription-detail/:responsable_aval', checkInscriptionDetailData, editInscriptionDetail)
+inscriptionRoutes.patch('/update-inscription-detail/:id', checkInscriptionDetailData, editInscriptionDetail)
 
 /**
  * @description Ruta para actualizar una inscripción por su ID.

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { BiChevronRight } from 'react-icons/bi'
 import { AiOutlineSearch } from 'react-icons/ai'
 
-export const Select = ({ options, placeholder, placeholderSearch, hoverColor, hoverTextColor, py = 'py-1', rounded, border = 'border-[0.5px]', borderColor, isSearch = false, bgContainer = 'bg-white', selectedColor, textSize, shadow }) => {
+export const Select = ({ options, placeholder, placeholderSearch, hoverColor, hoverTextColor, py = 'py-1', rounded, border = 'border-[0.5px]', borderColor, isSearch = false, bgContainer = 'bg-white', selectedColor, textSize, shadow, onSelect }) => {
   const [inputValue, setInputValue] = useState('')
   const [selected, setSelected] = useState('')
   const [open, setOpen] = useState(false)
@@ -20,7 +20,7 @@ export const Select = ({ options, placeholder, placeholderSearch, hoverColor, ho
             <input type='text' placeholder={placeholderSearch} className='w-full p-2 font-light outline-none placeholder:text-slate-400' onChange={(e) => setInputValue(e.target.value.toLowerCase())} value={inputValue} />
           </div>
         )}
-        {options.map((option, i) => (
+        {options.map((option) => (
           <li
             key={option.key}
             className={`px-1.5 py-1 my-1 text-sm ${hoverColor} ${hoverTextColor} rounded-md cursor-pointer select-none
@@ -30,6 +30,7 @@ export const Select = ({ options, placeholder, placeholderSearch, hoverColor, ho
               if (option.value.toLowerCase() !== selected.toLowerCase()) {
                 setSelected(option.value)
                 setOpen(false)
+                onSelect(option.key)
               }
             }}
           >

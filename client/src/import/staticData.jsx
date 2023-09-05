@@ -1,7 +1,7 @@
 import { LuCalendarCheck2, LuCalendarX2 } from 'react-icons/lu'
 
 export const rolesNames = {
-  1: 'Administrador',
+  1: 'Líder prácticas',
   2: 'Coordinador',
   3: 'Instructor de Seguimiento',
   4: 'Instructor Líder'
@@ -373,8 +373,7 @@ export const dataInscription = {
       type: 'textarea',
       name: 'observaciones',
       placeholder: 'Digite una observación',
-      label: '¿Observaciones?',
-      required: true
+      label: '¿Observaciones?'
     }
   ]
 }
@@ -468,7 +467,6 @@ export const estadoIcons = {
 /*
  * src: src\components\Utils\Modals\Modals.jsx
  */
-
 export const filter = {
   filterStudents: [
     {
@@ -642,48 +640,5 @@ export const colorsOddRow = [
     hrcolor: 'border-purple-400',
     sidecolor: 'bg-purple-400',
     linkcolor: 'bg-purple-600'
-  }
-]
-
-export const instructores = [
-  {
-    nombre: 'Guillermo Stiven Benjumea Morales',
-    rol: 'Instructor Seguimiento'
-  },
-  {
-    nombre: 'Stiven Urrego',
-    rol: 'Instructor Líder'
-  },
-  {
-    nombre: 'Carlos Prasca',
-    rol: 'Instructor Seguimiento'
-  },
-  {
-    nombre: 'Jairo Elías Redondo',
-    rol: 'Instructor Seguimiento'
-  },
-  {
-    nombre: 'Juan Guillermo Gomez Zapata',
-    rol: 'Instructor Líder'
-  },
-  {
-    nombre: 'Kevin Alexis Chica Ruiz',
-    rol: 'Instructor Seguimiento'
-  },
-  {
-    nombre: 'Cristian Bedoya',
-    rol: 'Instructor Líder'
-  },
-  {
-    nombre: 'Angie Tatiana Mosquera Arco',
-    rol: 'Instructor Líder'
-  },
-  {
-    nombre: 'Lorena Quiceno Giraldo',
-    rol: 'Instructor Líder'
-  },
-  {
-    nombre: 'Guillermo Stiven Benjumea',
-    rol: 'Instructor Seguimiento'
   }
 ]

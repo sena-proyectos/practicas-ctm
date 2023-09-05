@@ -11,10 +11,14 @@
     "ecmaVersion": "latest",
     "sourceType": "module",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "project": "./server/tsconfig.json"
 =======
     "project": ["./*/tsconfig.json"]
 >>>>>>> origin/master
+=======
+    "project": ["./server/tsconfig.json"]
+>>>>>>> origin/inscriptions
   },
   "rules": {
     "@typescript-eslint/naming-convention": "off",

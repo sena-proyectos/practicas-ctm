@@ -55,6 +55,17 @@ export const checkPracticalTeacherId = (req: Request, res: Response, next: NextF
   }
 }
 
+export const checkLiderTeacherId = (req: Request, res: Response, next: NextFunction): void => {
+  const { id_instructor_lider } = req.body
+  const idTeacherLider = parseInt(id_instructor_lider as string, 10)
+  try {
+    if (isNaN(idTeacherLider)) throw new NumberIsNaN('el id del instructor lider no es un número.')
+    next()
+  } catch (error) {
+    handleHTTP(res, error as CustomError)
+  }
+}
+
 /**
  * La función `checkClassNumber` comprueba si el número de clase proporcionado es un número válido y
  * arroja un error si no lo es.

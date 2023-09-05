@@ -15,7 +15,7 @@ import { errorCodes } from '../models/errorCodes.enums.js'
  */
 export const getInscriptions = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const [inscriptions] = await connection.query('SELECT i.*, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" GROUP BY i.id_inscripcion')
+    const [inscriptions] = await connection.query('SELECT i.*, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END')
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -58,6 +58,18 @@ export const getInscriptionsDetailsByInscription: RequestHandler<{ id: string },
   try {
     // ! El limit y el offset son obligatorios, de esta forma evitar tantos datos en una busqueda grande.
     const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE id_inscripcion = ? LIMIT ? OFFSET ?', [idNumber, limitNumber, offsetNumber])
+    return res.status(httpStatus.OK).json({ data: inscriptions })
+  } catch (err) {
+    return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
+  }
+}
+
+export const getInscriptionsDetailsById: RequestHandler<{ id: string }, Response, unknown> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id: id_inscripcion } = req.params
+  const idNumber = Number(id_inscripcion)
+
+  try {
+    const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE id_detalle_inscripcion = ?', [idNumber])
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (err) {
     return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
@@ -118,12 +130,12 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
  * @returns Respuesta JSON con mensaje de éxito o un error.
  */
 export const editInscriptionDetail: RequestHandler<{}, Response, inscripcionDetailData> = async (req: Request, res: Response) => {
-  const { responsable_aval } = req.params
-  const { estado_aval, observaciones, id_inscripcion } = req.body
+  const { id } = req.params
+  const { estado_aval, observaciones, responsable_aval } = req.body
   try {
-    const [result] = await connection.query('UPDATE detalles_inscripciones SET estado_aval = ?, observaciones = ? WHERE id_inscripcion = ? AND responsable_aval = ?', [estado_aval, observaciones, id_inscripcion, responsable_aval])
+    const [result] = await connection.query('UPDATE detalles_inscripciones SET estado_aval = IFNULL(?, estado_aval), observaciones = IFNULL(?, observaciones), responsable_aval = IFNULL(?, responsable_aval) WHERE id_detalle_inscripcion = ?', [estado_aval, observaciones, responsable_aval, id])
     if (!Array.isArray(result) && result?.affectedRows === 0) throw new DbError('No se pudo actualizar la modalidad de etapa práctica')
-    return res.status(httpStatus.OK).json({ message: 'Modalidad de etapa práctica actualizada con éxito' })
+    return res.status(httpStatus.OK).json({ message: 'Aval de inscripción actualizada con éxito' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }

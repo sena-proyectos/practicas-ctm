@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 // icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
@@ -7,13 +7,14 @@ import { BsCheck2Circle } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
 
 // componentes
-import { modalities, instructores } from '../../../import/staticData'
+import { modalities } from '../../../import/staticData'
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
+import { getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento, updateTeacherLider } from '../../../api/httpRequest'
 
-const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyAsign = false, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption }) => {
-  const [isOpen, setIsOpen] = useState(false)
+const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, documentStudent, celStudent, trainingProgram, ficha, academicLevel, trainingStage, modalitie, finLectiva, inicioProductiva, company, innmediateSuperior, emailSuperior, workstation, celSuperior, arl, bodyFilter = false, bodyVisits = false, view, stylesFilterVisits = false, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption, denyRegister = false, handleForm }) => {
+  const [isOpen, setIsOpen] = useState(true)
 
   const passwordIcons = {
     openEye: <AiOutlineEye />,
@@ -50,14 +51,9 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
     setModalOption(modalOptionList.loadingExcelModal)
   }
 
-  const option = instructores.map((instructor, i) => ({
-    value: instructor.nombre,
-    key: i
-  }))
-
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
-      <aside className='absolute inset-0 h-full w-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
       <section className={`relative flex h-auto w-11/12 ${bodyStudent ? 'md:w-1/2' : ' md:w-2/5'} flex-col rounded-2xl bg-white bounce`}>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
@@ -142,7 +138,6 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
               </section>
             </>
           )}
-
           {/* modalFiltro */}
           {bodyFilter && (
             <>
@@ -179,12 +174,16 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                   })}
                 </section>
                 <div className={`grid w-fit grid-cols-2 ${isOpen === true ? 'mx-4 my-12 gap-2' : 'mx-auto my-5 gap-5'} `}>
-                  <Button value={'Limpiar'} bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  <Button bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                    Limpiar
+                  </Button>
                   <div className='relative mx-auto'>
                     <span className='absolute inset-y-0 flex items-center text-white left-2'>
                       <IoSearchOutline />
                     </span>
-                    <Button value={'Buscar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                      Buscar
+                    </Button>
                   </div>
                 </div>
               </form>
@@ -233,7 +232,9 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
                   <span className='absolute inset-y-0 flex items-center text-white left-2'>
                     <BsCheck2Circle />
                   </span>
-                  <Button value={'Guardar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                  <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                    Guardar
+                  </Button>
                 </div>
               </form>
             </>
@@ -266,46 +267,37 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
 
                 <div className='flex flex-row my-5'>
                   <div className='relative mr-auto'>
-                    <Button value={'Editar'} bg={'bg-coffee/75'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button bg={'bg-coffee/75'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                      Editar
+                    </Button>
                   </div>
                   <div className='relative ml-auto'>
                     <span className='absolute inset-y-0 flex items-center text-white left-2'>
                       <IoSearchOutline />
                     </span>
-                    <Button value={'Buscar'} bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} />
+                    <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                      Buscar
+                    </Button>
                   </div>
                 </div>
               </form>
             </>
           )}
-          {bodyAsign && (
-            <section className='flex flex-col gap-3 my-5'>
-              <header>
-                <h3 className='text-[16px] font-medium text-right'>2473196</h3>
-                <h3 className='text-[16px] font-light text-right'>Análisis y Desarrollo de Software</h3>
-              </header>
-              <form action='' className='flex flex-col gap-6'>
-                <div>
-                  <label htmlFor='asig' className='text-[16px] font-normal'>
-                    Instructor Seguimiento
-                  </label>
-                  <Select placeholder='Nombre instructor' isSearch hoverColor='hover:bg-teal-200' hoverTextColor='hover:text-teal-800' placeholderSearch='Ingrese nombre instructor' selectedColor='bg-teal-600 text-white' rounded='rounded-xl' borderColor='border-slate-500' options={option} />
-                </div>
-                <Button value={'Asignar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-ms' font='font-medium' textColor='text-white' icon={<BsCheck2Circle className='text-xl' />} />
-              </form>
-            </section>
-          )}
           {bodyConfirm && (
             <>
               <section className='my-3'>
-                <p className='text-slate-400/90 text-center'>
+                <p className='text-center text-slate-400/90'>
                   Archivo a cargar: <span className='text-blue-500'>{loadingFile}</span>
                 </p>
-                <p className='text-red-500 text-center underline font-bold text-lg'>¡No podrás deshacer está acción!</p>
+                <p className='text-lg font-bold text-center text-red-500 underline'>¡No podrás deshacer está acción!</p>
                 <section className='mt-3'>
-                  <div className='flex gap-3 items-center justify-between'>
-                    <Button value={'Continuar'} bg='bg-green-500' hover='hover:bg-green-800' textSize='text-base' px='px-10' clickeame={continueLoadFile} />
-                    <Button value={'Deshacer'} bg='bg-red-500' hover='hover:bg-red-800' textSize='text-base' px='px-10' clickeame={handleModal} />
+                  <div className='flex items-center justify-between gap-3'>
+                    <Button bg='bg-green-500' rounded='rounded-md' py='py-1.5' hover='bg-green-800' textSize='text-base' px='px-10' onClick={continueLoadFile}>
+                      Continuar
+                    </Button>
+                    <Button bg='bg-red-500' rounded='rounded-md' py='py-1.5' hover='bg-red-800' textSize='text-base' px='px-10' onClick={handleModal}>
+                      Deshacer
+                    </Button>
                   </div>
                 </section>
               </section>
@@ -314,12 +306,31 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
           {bodyAccept && (
             <>
               <section className='mx-8 my-6'>
-                <h2 className='text-green-500 text-center font-bold text-lg'>¡Archivo cargado correctamente!</h2>
+                <h2 className='text-lg font-bold text-center text-green-500'>¡Archivo cargado correctamente!</h2>
                 <section className='mt-3'>
-                  <div className='flex gap-3 items-center justify-between'>
-                    <Button value={'Aceptar'} bg='bg-slate-500' hover='hover:bg-slate-700' textSize='text-base' px='px-10' clickeame={handleModal} />
+                  <div className='flex items-center justify-between gap-3'>
+                    <Button bg='bg-slate-500' hover='bg-slate-700' textSize='text-base' px='px-10' onClick={handleModal}>
+                      Aceptar
+                    </Button>
                   </div>
                 </section>
+              </section>
+            </>
+          )}
+          {denyRegister && (
+            <>
+              <section className='p-4'>
+                <form className='flex flex-col justify-center gap-4' onSubmit={handleForm}>
+                  <div>
+                    <label htmlFor='observations' className='text-sm font-light'>
+                      Observaciones
+                    </label>
+                    <textarea name='observations' id='editor' rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+                  </div>
+                  <Button bg='bg-primary' hover='bg-green-800' textSize='text-base' px='px-10' type={'submit'}>
+                    Enviar
+                  </Button>
+                </form>
               </section>
             </>
           )}
@@ -329,10 +340,203 @@ const Modals = ({ closeModal, title, bodyStudent = false, emailStudent, document
   )
 }
 
-export const LoadingModal = ({ children, title = 'Cargando' }) => {
+export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion, setNotify, emptyLeader, emptyPractical }) => {
+  const handleModal = () => {
+    closeModal()
+  }
+
+  const [teachers, setTeacher] = useState([])
+
+  const getInstructores = async () => {
+    try {
+      const response = await getTeachers()
+      const { data } = response.data
+      setTeacher(data)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  useEffect(() => {
+    getInstructores()
+  }, [])
+
+  const option = teachers.map((teacher) => ({
+    value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario + ' - ' + (teacher.id_rol === 3 ? 'Seguimiento' : 'Lider'),
+    key: teacher.id_usuario
+  }))
+
+  const [valor, setValor] = useState()
+  const [value, setValue] = useState()
+
+  const updateTeacher = async (e) => {
+    e.preventDefault()
+    const id_instructor = valor
+    const id_instructor_lider = value
+    const num_ficha = numero_ficha
+    try {
+      if (emptyPractical && emptyLeader) {
+        await updateTeacherSeguimiento(num_ficha, id_instructor)
+        await updateTeacherLider(num_ficha, id_instructor_lider)
+        setNotify(true)
+        closeModal()
+        return
+      }
+
+      if (emptyLeader) {
+        await updateTeacherLider(num_ficha, id_instructor)
+      } else {
+        await updateTeacherSeguimiento(num_ficha, id_instructor)
+      }
+      setNotify(true)
+      closeModal()
+    } catch (error) {
+      closeModal()
+      throw new Error(error)
+    }
+  }
+
+  return (
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
+      <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+        <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer' onClick={handleModal} />
+        <header className='grid pt-5 place-items-center '>
+          <h2 className={`text-xl font-medium text-center w-fit border-primary`}>{title}</h2>
+        </header>
+        <section className='flex justify-center'>
+          <section className='flex flex-col w-11/12 gap-3 my-5'>
+            <header>
+              <h3 className='text-[16px] font-medium text-right'>{numero_ficha}</h3>
+              <h3 className='text-[16px] font-light text-right'>{programa_formacion}</h3>
+            </header>
+            <form action='' onSubmit={updateTeacher} className='flex flex-col gap-6'>
+              {emptyLeader && emptyPractical ? (
+                <>
+                  <div>
+                    <label htmlFor='asig' className='text-[16px] font-normal'>
+                      Instructor Seguimiento
+                    </label>
+                    <Select
+                      placeholder='Nombre instructor'
+                      isSearch
+                      hoverColor='hover:bg-teal-200'
+                      hoverTextColor='hover:text-teal-800'
+                      placeholderSearch='Ingrese nombre instructor'
+                      selectedColor='bg-teal-600 text-white'
+                      rounded='rounded-xl'
+                      borderColor='border-slate-500'
+                      options={option}
+                      onSelect={(selectedValue) => {
+                        setValor(selectedValue)
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor='asignar' className='text-[16px] font-normal'>
+                      Instructor Lider
+                    </label>
+                    <Select
+                      placeholder='Nombre instructor'
+                      isSearch
+                      hoverColor='hover:bg-teal-200'
+                      hoverTextColor='hover:text-teal-800'
+                      placeholderSearch='Ingrese nombre instructor'
+                      selectedColor='bg-teal-600 text-white'
+                      rounded='rounded-xl'
+                      borderColor='border-slate-500'
+                      options={option}
+                      onSelect={(selectedValue) => {
+                        setValue(selectedValue)
+                      }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div>
+                  <label htmlFor='asig' className='text-[16px] font-normal'>
+                    {emptyPractical ? 'Instructor Seguimiento' : emptyLeader ? 'Instructor Lider' : null}
+                  </label>
+                  <Select
+                    placeholder='Nombre instructor'
+                    isSearch
+                    hoverColor='hover:bg-teal-200'
+                    hoverTextColor='hover:text-teal-800'
+                    placeholderSearch='Ingrese nombre instructor'
+                    selectedColor='bg-teal-600 text-white'
+                    rounded='rounded-xl'
+                    borderColor='border-slate-500'
+                    options={option}
+                    onSelect={(selectedValue) => {
+                      setValor(selectedValue)
+                    }}
+                  />
+                </div>
+              )}
+              <Button type='submit' rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-ms' font='font-medium' textColor='text-white' inline>
+                <BsCheck2Circle className='text-xl' /> Asignar
+              </Button>
+            </form>
+          </section>
+        </section>
+      </section>
+    </section>
+  )
+}
+
+const DenyModal = ({ closeModal, title, id, setNotify }) => {
+  const formRef = useRef()
+
+  const handleModal = () => {
+    closeModal()
+  }
+
+  const handleForm = async (e) => {
+    e.preventDefault()
+    const formData = new FormData(formRef.current)
+    const dataTextArea = formData.get('observaciones')
+    const estado_aval = 'Rechazado'
+    try {
+      await inscriptionDetailsUpdate(id, { observaciones: dataTextArea, estado_aval })
+      setNotify(true)
+      closeModal()
+    } catch (error) {
+      closeModal()
+    }
+  }
+
+  return (
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
+      <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+        <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
+        <header className='grid pt-5 place-items-center '>
+          <h2 className={`text-xl font-medium text-center w-fit 'border-b-1' border-primary`}>{title ?? 'Confirmar'}</h2>
+        </header>
+        <section className='flex justify-center'>
+          <section className='w-11/12 p-4'>
+            <form className='flex flex-col justify-center gap-4' ref={formRef} onSubmit={handleForm}>
+              <section>
+                <label htmlFor='observaciones' className='text-sm font-light'>
+                  Observaciones
+                </label>
+                <textarea name='observaciones' id='editor' rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+              </section>
+              <Button bg='bg-primary' hover='bg-green-800' textSize='text-base' px='px-10' type={'submit'}>
+                Enviar
+              </Button>
+            </form>
+          </section>
+        </section>
+      </section>
+    </section>
+  )
+}
+
+const LoadingModal = ({ children, title = 'Cargando' }) => {
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen bg-black/50 backdrop-blur-sm backdrop-filter'>
-      <section className='relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce'>
+      <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-2/5 rounded-2xl bounce'>
         <header className='grid pt-5 place-items-center'>
           <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
         </header>
@@ -342,4 +546,4 @@ export const LoadingModal = ({ children, title = 'Cargando' }) => {
   )
 }
 
-export { Modals }
+export { Modals, DenyModal, LoadingModal }

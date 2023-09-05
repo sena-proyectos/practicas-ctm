@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `sena_practicas` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `sena_practicas`;
--- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.32, for Linux (x86_64)
 --
 -- Host: localhost    Database: sena_practicas
 -- ------------------------------------------------------
--- Server version	8.0.33
+-- Server version	8.0.34
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -56,7 +56,7 @@ CREATE TABLE `aprendices` (
 
 LOCK TABLES `aprendices` WRITE;
 /*!40000 ALTER TABLE `aprendices` DISABLE KEYS */;
-INSERT INTO `aprendices` VALUES (1,'Lorena','Quiceno Giraldo','CC','1028882894','lorenquiceno@gmail.com','3245887367','2023-11-02','practicas',1,1,1,1),(2,'Stiven','Benjumea','CC','1028882444','stevenbenjumea9@gmail.com','3245880123','2023-11-02','practicas',1,1,1,1),(3,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','2023-11-02','practicas',1,1,1,1),(5,'Juan Guillermo','Gomez Zapata','CC','1027800913','juanlestar0408@gmail.com','3006953395','2023-10-05','Practicas',1,1,1,1);
+INSERT INTO `aprendices` VALUES (1,'Lorena','Quiceno Giraldo','CC','1028882894','lorenquiceno@gmail.com','3245887367','2023-11-02','Prácticas',1,1,1,1),(2,'Stiven','Benjumea','CC','1028882444','stevenbenjumea9@gmail.com','3245880123','2023-11-02','Prácticas',1,2,1,1),(3,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','2023-11-02','Prácticas',1,3,1,1),(4,'Juan Guillermo','Gomez Zapata','CC','1027800913','juanlestar0408@gmail.com','3006953395','2023-10-05','Prácticas',1,4,1,1),(5,'Eyson','Quiceno Giraldo','CC','1092925678','eysonquiceno@gmail.com','3135189268','2024-12-06','Lectiva',1,5,1,1);
 /*!40000 ALTER TABLE `aprendices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,13 +147,16 @@ DROP TABLE IF EXISTS `detalle_fichas_aprendices`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `detalle_fichas_aprendices` (
+  `id_detalle_ficha_aprendiz` int NOT NULL AUTO_INCREMENT,
   `id_ficha` int NOT NULL,
   `id_aprendiz` int NOT NULL,
+  PRIMARY KEY (`id_detalle_ficha_aprendiz`),
+  UNIQUE KEY `id_detalle_ficha_aprendiz_UNIQUE` (`id_detalle_ficha_aprendiz`),
   KEY `id_ficha` (`id_ficha`),
   KEY `id_aprendiz` (`id_aprendiz`),
   CONSTRAINT `detalle_fichas_aprendices_ibfk_1` FOREIGN KEY (`id_ficha`) REFERENCES `fichas` (`id_ficha`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `detalle_fichas_aprendices_ibfk_2` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,7 +165,7 @@ CREATE TABLE `detalle_fichas_aprendices` (
 
 LOCK TABLES `detalle_fichas_aprendices` WRITE;
 /*!40000 ALTER TABLE `detalle_fichas_aprendices` DISABLE KEYS */;
-INSERT INTO `detalle_fichas_aprendices` VALUES (1,1),(1,2);
+INSERT INTO `detalle_fichas_aprendices` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,1,5);
 /*!40000 ALTER TABLE `detalle_fichas_aprendices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,10 +182,14 @@ CREATE TABLE `detalles_inscripciones` (
   `estado_aval` varchar(100) NOT NULL,
   `observaciones` varchar(500) DEFAULT NULL,
   `id_inscripcion` int NOT NULL,
+  `rol_responsable` int NOT NULL,
+  `descripcion_detalle` varchar(100) NOT NULL,
   PRIMARY KEY (`id_detalle_inscripcion`),
   KEY `id_inscripcion` (`id_inscripcion`),
-  CONSTRAINT `detalles_inscripciones_ibfk_1` FOREIGN KEY (`id_inscripcion`) REFERENCES `inscripciones` (`id_inscripcion`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `fk_detalles_inscripciones_2_idx` (`rol_responsable`),
+  CONSTRAINT `detalles_inscripciones_ibfk_1` FOREIGN KEY (`id_inscripcion`) REFERENCES `inscripciones` (`id_inscripcion`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_detalles_inscripciones_2` FOREIGN KEY (`rol_responsable`) REFERENCES `roles` (`id_rol`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,7 +198,7 @@ CREATE TABLE `detalles_inscripciones` (
 
 LOCK TABLES `detalles_inscripciones` WRITE;
 /*!40000 ALTER TABLE `detalles_inscripciones` DISABLE KEYS */;
-INSERT INTO `detalles_inscripciones` VALUES (1,'3','Rechazado',NULL,1),(2,'4','Pendiente',NULL,1),(3,'2','Pendiente',NULL,1),(4,'3','Pendiente',NULL,2),(5,'4','Pendiente',NULL,2),(6,'2','Pendiente',NULL,2),(7,'3','Aprobado',NULL,3),(8,'4','Aprobado',NULL,3),(9,'2','Aprobado',NULL,3),(10,'3','Pendiente',NULL,4),(11,'4','Pendiente',NULL,4),(12,'2','Pendiente',NULL,4),(13,'3','Pendiente',NULL,5),(14,'4','Pendiente',NULL,5),(15,'2','Pendiente',NULL,5);
+INSERT INTO `detalles_inscripciones` VALUES (1,'1','Pendiente',NULL,1,1,'Documento completo'),(2,'1','Pendiente',NULL,1,1,'RAPS aprobados'),(3,'4','Pendiente',NULL,1,3,'Funciones'),(4,'6','Pendiente',NULL,1,2,'Aval'),(5,'1','Pendiente',NULL,2,1,'Documento completo'),(6,'1','Pendiente',NULL,2,1,'RAPS aprobados'),(7,'4','Pendiente',NULL,2,3,'Funciones'),(8,'6','Pendiente',NULL,2,2,'Aval'),(9,'1','Pendiente',NULL,3,1,'Documento completo'),(10,'1','Pendiente',NULL,3,1,'RAPS aprobados'),(11,'4','Pendiente',NULL,3,3,'Funciones'),(12,'6','Pendiente',NULL,3,2,'Aval'),(13,'1','Pendiente',NULL,4,1,'Documento completo'),(14,'1','Pendiente',NULL,4,1,'RAPS aprobados'),(15,'4','Pendiente',NULL,4,3,'Funciones'),(16,'6','Pendiente',NULL,4,2,'Aval'),(17,'1','Pendiente',NULL,5,1,'Documento completo'),(18,'1','Pendiente',NULL,5,1,'RAPS aprobados'),(19,'4','Pendiente',NULL,5,3,'Funciones'),(20,'6','Pendiente',NULL,5,2,'Aval');
 /*!40000 ALTER TABLE `detalles_inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -332,8 +339,8 @@ CREATE TABLE `fichas` (
   `fecha_inicio_lectiva` date NOT NULL,
   `fecha_fin_lectiva` date NOT NULL,
   `fecha_inicio_practica` date NOT NULL,
-  `id_instructor_seguimiento` int NOT NULL,
-  `id_instructor_lider` int NOT NULL,
+  `id_instructor_seguimiento` int DEFAULT NULL,
+  `id_instructor_lider` int DEFAULT NULL,
   `id_nivel_formacion` int NOT NULL,
   PRIMARY KEY (`id_ficha`),
   KEY `fk_fichas_1` (`id_instructor_seguimiento`),
@@ -341,7 +348,7 @@ CREATE TABLE `fichas` (
   KEY `fk_fichas_2` (`id_instructor_lider`) /*!80000 INVISIBLE */,
   CONSTRAINT `fichas_ibfk_1` FOREIGN KEY (`id_nivel_formacion`) REFERENCES `niveles_formacion` (`id_nivel_formacion`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_fichas_1` FOREIGN KEY (`id_instructor_seguimiento`) REFERENCES `usuarios` (`id_usuario`),
-  CONSTRAINT `fk_fichas_2` FOREIGN KEY (`id_instructor_lider`) REFERENCES `usuarios` (`id_usuario`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `fk_fichas_2` FOREIGN KEY (`id_instructor_lider`) REFERENCES `usuarios` (`id_usuario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -351,7 +358,7 @@ CREATE TABLE `fichas` (
 
 LOCK TABLES `fichas` WRITE;
 /*!40000 ALTER TABLE `fichas` DISABLE KEYS */;
-INSERT INTO `fichas` VALUES (1,'2473196','ADSO','2022-02-01','2023-04-30','2023-05-01',3,4,2);
+INSERT INTO `fichas` VALUES (1,'2473196','Análisis y Desarrollo de Software','2022-02-01','2023-02-10','2023-04-01',4,NULL,2);
 /*!40000 ALTER TABLE `fichas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -402,7 +409,7 @@ CREATE TABLE `inscripciones` (
 
 LOCK TABLES `inscripciones` WRITE;
 /*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
-INSERT INTO `inscripciones` VALUES (1,'Stiven','Blandón Urrego','CC','1017924888','blandon0207s@gmail.com','3183577499','lectiva','1','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','ninguno',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'empresa','pdf.pdf','N/A','Rechazado','2023-07-27 16:34:43','Admin Admin'),(2,'Lorena','Quiceno Giraldo','CC','1082882294','lorenquiceno@gmail.com','3245887367','practica','2','Análisis y Desarrollo de Software','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','FIC','9003238537','Teleperformance','Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','empresa','pdf(1).pdf','N/A','Pendiente','2023-07-27 17:16:00','Admin Admin'),(3,'Juan Guillermo','Gomez Zapata','CC','1027800913','juanlestar0408@gmail.com','3006953395','practica','2','ADSO','tecnologia','2473196','2023-04-05','Adelaida','acanom@sena.edu.co','jovenes en accion','9003238537','Teleperformance','Cra 40 #43b-33','Jessica Martinez','HHRR','3233459687','jessicalamejor@teleformance.co','empresa','pdf(1)(1).pdf','Ninguna','Aprobado','2023-07-28 16:23:38','Admin Admin'),(4,'Angie Tatiana','Mosquera','CC','1027150354','atatianmosquera@gmail.com','3012491058','lectiva','5','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','apoyo de sostenimiento sena','9003238537','Teleperformance','Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','empresa','pdf(3).pdf','N/A','Pendiente','2023-08-18 15:30:13','Admin Admin'),(5,'Angie Tatiana','Mosquera','CC','1027150354','atatianmosquera@gmail.com','3012491058','lectiva','5','ADSO','tecnologia','2473196','2023-04-30','Adelaida','adelaida@misena.edu.co','apoyo de sostenimiento sena','9003238537',NULL,'Cra 23 # 94a-33','Alejandra Tabarez','Recursos Humanos','3203456755','Alejandra@teleperformance.com','empresa','pdf(3).pdf','N/A','Pendiente','2023-08-18 16:05:15','Admin Admin');
+INSERT INTO `inscripciones` VALUES (1,'Stiven','Blandón Urrego','Tarjeta de identidad','1017924888','blandon0207s@gmail.com','3183577499','Productiva','4','ADSO','Tecnólogo','2473196','2023-04-05','juan','adelaidalamejor@misena.edu.co','Ninguno',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'El SENA','doc.pdf','N/A','Pendiente','2023-08-29 18:59:53','Admin Admin'),(2,'Juan Guillermo','Gómez Zapata','Cédula de ciudadanía','1027800913','jggomez016@gmail.com','3195810996','Productiva','2','ADSO','Tecnólogo','2473196','2023-04-05','roberto','adelaidalamejor@misena.edu.co','Ninguno','900323853','TELEPERFORMANCE','CALLE 26 92 32','Richard Alexander Betancur Sierra','Presidente','3002694862','rabs@gmail.com',NULL,'doc1.pdf','Big empresa','Pendiente','2023-08-29 18:59:53','Admin Admin'),(3,'Guillermo Stiven','Benjumea Morales','Cédula de ciudadanía','1040491426','stevenbenjumea9@gmail.com','3016911686','Productiva','1','ADSO','Tecnólogo','2473196','2023-04-05','juan','adelaidalamejor@misena.edu.co','Ninguno','900323853','TELEPERFORMANCE','CALLE 26 92 32','Richard Alexander Betancur Sierra','Presidente','3002694862','jessica@gmail.com','La empresa','doc2.pdf','NULL','Pendiente','2023-08-29 18:59:53','Admin Admin'),(4,'Lorena','Quiceno Giraldo','Cédula de ciudadanía','1082882294','lorenquiceno@gmail.com','3245887367','Productiva','3','ADSO','Tecnólogo','2473196','2023-04-05','roberto','adelaidalamejor@misena.edu.co','Ninguno','900323853','TELEPERFORMANCE','CALLE 26 92 32','Richard Alexander Betancur Sierra','Presidente','3002694862','correo@gmail.com','EL SENA','doc3.pdf','Todo melo','Pendiente','2023-08-29 18:59:53','Admin Admin'),(5,'Maria Elena ','David','Cédula de ciudadanía','30079181','mariaelenad863@gmail.com','3152116968','Lectiva','5','ADSI','Técnico','2478032','2023-04-05','roberto','adelaidalamejor@misena.edu.co','Ninguno','900323853','TELEPERFORMANCE','CALLE 26 92 32','Richard Alexander Betancur Sierra','Presidente','3002694862','correo@gmail.com','EL SENA','archivos.pdf','Todo melo','Pendiente','2023-08-29 18:59:53','Admin Admin');
 /*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -416,29 +423,48 @@ UNLOCK TABLES;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `inscripcion_trigger` AFTER INSERT ON `inscripciones` FOR EACH ROW BEGIN
   DECLARE instructor_seguimiento_id INT;
-  DECLARE instructor_lider_id INT;
-  DECLARE responsable_rol2_id INT;
+  DECLARE instructor_lider_practicas_id INT;
+  DECLARE coordinador_id INT;
+  DECLARE rol_instructor_lider_practicas INT;
+  DECLARE rol_coordinador INT;
+  DECLARE rol_instructor_seguimiento INT;
   
+  -- Obtener rol coordinador
+  SELECT id_rol INTO rol_coordinador
+  FROM roles
+  WHERE nombre_rol = 'Coordinador' LIMIT 1;
+  
+  -- Obtener rol instructor de seguimiento
+  SELECT id_rol INTO rol_instructor_seguimiento
+  FROM roles
+  WHERE nombre_rol = 'Instructor de Seguimiento' LIMIT 1;
+  
+  -- Obtener rol instructor líder de prácticas
+  SELECT id_rol INTO rol_instructor_lider_practicas
+  FROM roles
+  WHERE nombre_rol = 'Instructor líder de prácticas' LIMIT 1;
+
   -- Obtener el ID del instructor de seguimiento basado en el número de ficha
   SELECT id_instructor_seguimiento INTO instructor_seguimiento_id
   FROM fichas
-  WHERE numero_ficha = NEW.numero_ficha_inscripcion;
+  WHERE numero_ficha = NEW.numero_ficha_inscripcion LIMIT 1;
   
-  -- Obtener el ID del instructor líder basado en el número de ficha
-  SELECT id_instructor_lider INTO instructor_lider_id
-  FROM fichas
-  WHERE numero_ficha = NEW.numero_ficha_inscripcion;
-  
-  -- Obtener el ID del usuario con id_rol 2
-  SELECT id_usuario INTO responsable_rol2_id
+  -- Obtener el ID del instructor líder de prácticas basado en el id de usuario
+  SELECT id_usuario INTO instructor_lider_practicas_id
   FROM usuarios
-  WHERE id_rol = 2;
+  WHERE id_rol = 1 LIMIT 1;
+  
+  -- Obtener el ID del usuario con rol coordinador acádemico
+  SELECT id_usuario INTO coordinador_id
+  FROM usuarios
+  WHERE numero_documento_usuario = '1234567098' LIMIT 1;
   
   -- Insertar los tres registros en detalles_inscripciones
-  INSERT INTO detalles_inscripciones (responsable_aval, estado_aval, id_inscripcion)
-  VALUES (instructor_seguimiento_id, 'Pendiente', NEW.id_inscripcion),
-         (instructor_lider_id, 'Pendiente', NEW.id_inscripcion),
-         (responsable_rol2_id, 'Pendiente', NEW.id_inscripcion);
+  INSERT INTO detalles_inscripciones (responsable_aval, estado_aval, id_inscripcion, rol_responsable, descripcion_detalle)
+  VALUES (instructor_lider_practicas_id, 'Pendiente', NEW.id_inscripcion, rol_instructor_lider_practicas, 'Documento completo'),
+  (instructor_lider_practicas_id, 'Pendiente', NEW.id_inscripcion, rol_instructor_lider_practicas, 'RAPS aprobados'),
+  (instructor_seguimiento_id, 'Pendiente', NEW.id_inscripcion, rol_instructor_seguimiento, 'Funciones'),
+  (coordinador_id, 'Pendiente', NEW.id_inscripcion, rol_coordinador, 'Aval');
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -568,7 +594,7 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (1,'Administrador'),(2,'Coordinador'),(3,'Instructor de Seguimiento'),(4,'Instructor Líder');
+INSERT INTO `roles` VALUES (1,'Instructor líder de prácticas'),(2,'Coordinador'),(3,'Instructor de Seguimiento'),(4,'Instructor Líder');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -625,7 +651,7 @@ CREATE TABLE `usuarios` (
   PRIMARY KEY (`id_usuario`),
   KEY `id_rol` (`id_rol`),
   CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -634,7 +660,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanlestar12@gmail.com','3195810996','$2b$10$G/qBWAkBBWWYv168liiN4.yNHoflbKb9y6nUEFZvtVomsVCNQhmo6',1),(2,'Stiven','Blandón','CC','1017924888','blandon0207s@gmail.com','3183577499','$2b$10$GWUNM.FJKmU81l5dW0pDBOuc5EGYTeYjJxa9ENNNaioKoWM3QR.aq',2),(3,'Adelaida','Benavidez','CC','1017923453','adelaida@misena.edu.co','3183575433','$2b$10$wskcGpv.zlFyAp1gWLZSpunAe5uqGcgJ2yAhpzOQyRWdlpp./jUkG',4),(4,'Juan','Esteban','CC','1064973453','juanEsteban45@misena.edu.co','3133675433','$2b$10$SAeF4T/nxMHjfl5LhHzqjOI920j/dS9CU8NCpDecLicv.kSxegV/m',3);
+INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanlestar12@gmail.com','3195810996','$2b$10$G/qBWAkBBWWYv168liiN4.yNHoflbKb9y6nUEFZvtVomsVCNQhmo6',1),(2,'Stiven','Blandón','CC','1017924888','blandon0207s@gmail.com','3183577499','$2b$10$GWUNM.FJKmU81l5dW0pDBOuc5EGYTeYjJxa9ENNNaioKoWM3QR.aq',2),(3,'Adelaida','Benavidez','CC','1017923453','adelaida@misena.edu.co','3183575433','$2b$10$wskcGpv.zlFyAp1gWLZSpunAe5uqGcgJ2yAhpzOQyRWdlpp./jUkG',4),(4,'Juan','Esteban','CC','1064973453','juanEsteban45@misena.edu.co','3133675433','$2b$10$SAeF4T/nxMHjfl5LhHzqjOI920j/dS9CU8NCpDecLicv.kSxegV/m',1),(5,'Líder','Líder','CC','1234567809','Liderlider@gmail.com','3195810996','$2b$10$dfg1Lu3pt3y169EKQZPKeOHPu/dcqpEOfPbwFgtkhAnegXbMFBAyS',4),(6,'Coordi','Coordi','CC','1234567098','Coordicoordi@gmail.com','3195810996','$2b$10$qN1T5s1.6iHJhiyayLFl5u8MK7YeKpaIz7U8ATCJilojcFl3a3kvG',2),(7,'Seguim','Seguim','CC','1234560987','Seguimseguim@gmail.com','3195810996','$2b$10$AWKbnyNkMJ9MlVOuBlTk4.0R8Kx.e5appDM5E.1bw4QoYyQaQ85zq',3);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -683,4 +709,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-18 11:08:21
+-- Dump completed on 2023-08-29 19:18:14
