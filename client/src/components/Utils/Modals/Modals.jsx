@@ -264,34 +264,6 @@ export const FilterModal = ({ closeModal, title, view, stylesFilterVisits = fals
   )
 }
 
-export const FilterModalStudents = ({ closeModal, title }) => {
-  const handleModal = () => {
-    closeModal()
-  }
-
-  // const option = modalities.map((modality) => ({
-  //   value: modality.name,
-  //   key: modality.value
-  // }))
-
-  return (
-    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
-      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
-      <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
-        <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
-        <header className='grid pt-5 place-items-center '>
-          <h2 className={`text-xl font-medium text-center w-fit border-b-1 border-primary`}>{title}</h2>
-        </header>
-        <section className='flex justify-center'>
-          <section className='w-11/12 p-4'>
-            <form action=''></form>
-          </section>
-        </section>
-      </section>
-    </section>
-  )
-}
-
 export const InfoStudentModal = ({ closeModal, title, emailStudent, documentStudent, cellPhoneNumber, program, courseNumber, academicLevel, formationStage, modalitie, lectivaEnd, productiveStart, company, innmediateSuperior, positionSuperior, emailSuperior, celphoneSuperior, arl }) => {
   const handleModal = () => {
     closeModal()
