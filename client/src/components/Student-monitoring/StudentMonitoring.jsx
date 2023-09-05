@@ -6,7 +6,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
 import { CardStudent } from '../Utils/Card/Card'
-import { Modals } from '../Utils/Modals/Modals'
+import { FilterModal, InfoStudentModal } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
 import { filter } from '../../import/staticData'
 import { Pagination } from '../Utils/Pagination/Pagination'
@@ -101,8 +101,10 @@ export const StudentMonitoring = () => {
 
   return (
     <>
-      {modalFilter && <Modals bodyFilter title={'Filtrar'} view={filterStudents} closeModal={handleModal} />}
-      {infoStudent && <Modals closeModal={handleModalInfo} bodyStudent title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} celStudent={userInfoById.celular_aprendiz} trainingProgram={userInfoById.nombre_programa_formacion} ficha={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} trainingStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} finLectiva={dates.fin_lectiva} inicioProductiva={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} workstation={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />}
+      {modalFilter && <FilterModal title={'Filtrar'} view={filterStudents} closeModal={handleModal} />}
+      {infoStudent && (
+        <InfoStudentModal closeModal={handleModalInfo} bodyStudent title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} cellPhoneNumber={userInfoById.celular_aprendiz} program={userInfoById.nombre_programa_formacion} courseNumber={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} formationStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} lectivaEnd={dates.fin_lectiva} productiveStart={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} positionSuperior={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celphoneSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />
+      )}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-3-10-75-15 gap-y-2 '>
