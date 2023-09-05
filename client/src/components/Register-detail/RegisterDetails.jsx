@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
+import { Slide, toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 // icons
@@ -15,8 +15,11 @@ import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { keysRoles } from '../../import/staticData'
 
-import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById } from '../../api/httpRequest'
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate } from '../../api/httpRequest'
 import { AiOutlineFullscreen } from 'react-icons/ai'
+import { checkApprovementData } from '../../validation/approvementValidation'
+import Cookies from 'js-cookie'
+import decode from 'jwt-decode'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
@@ -65,7 +68,7 @@ export const RegisterDetails = () => {
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
-      <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
+      <ToastContainer transition={Slide} />
       <Siderbar />
       <section className='relative grid flex-auto gap-2 w-min grid-rows-3-10-75-15'>
         <header className='border-b-1 w-[70%] mx-auto border-b-zinc-300 h-[9vh]'>
@@ -292,18 +295,13 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
 }
 
 const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
-  const descriptionRef = useRef(null)
   const iFrameRef = useRef(null)
-  const [avalInfoDocumentos, setAvalInfoDocumentos] = useState([])
+
   const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
-  const [nameResponsableDocumentos, setNameResponsableDocumentos] = useState('')
+
   const [nameResponsableFunciones, setNameResponsableFunciones] = useState('')
-  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
 
   const [notify, setNotify] = useState(false)
-  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
-
-  const handleUseState = (setState, value) => setState(value)
 
   useEffect(() => {
     if (notify) {
@@ -323,16 +321,6 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
     setNotify(false)
   }, [notify])
 
-  const fetchDataDocuments = async () => {
-    const res = await getAvalById(avalDocumentos)
-    const { data } = res.data
-    const response = await getUserById(data[0].responsable_aval)
-    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
-    const fullName = `${nombres_usuario} ${apellidos_usuario}`
-    setNameResponsableDocumentos(fullName)
-    setAvalInfoDocumentos(data)
-  }
-
   const fetchDataFunciones = async () => {
     const res = await getAvalById(avalFunciones)
     const { data } = res.data
@@ -340,16 +328,7 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
     const { nombres_usuario, apellidos_usuario } = response.data.data[0]
     const fullName = `${nombres_usuario} ${apellidos_usuario}`
     setNameResponsableFunciones(fullName)
-    setAvalInfoFunciones(data)
-  }
-
-  const handleSubmitButton = () => {
-    if (!selectedApproveButton) return
-    if (descriptionRef.current.value.length === 0) {
-      setDisableSubmitButton(true)
-      return
-    }
-    handleUseState(setDisableSubmitButton, false)
+    setAvalInfoFunciones(data[0])
   }
 
   const handleFullScreenIFrame = () => {
@@ -361,19 +340,9 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
     if (iframe.msRequestFullscreen) return iframe.msRequestFullscreen()
   }
 
-  const selectButtonToSubmit = (value) => {
-    setSelectedApproveButton(value)
-    if (descriptionRef.current.value.length === 0 || !value) {
-      setDisableSubmitButton(true)
-      return
-    }
-    handleUseState(setDisableSubmitButton, false)
-  }
-
   useEffect(() => {
-    if (avalDocumentos) fetchDataDocuments()
     if (avalFunciones) fetchDataFunciones()
-  }, [avalDocumentos, avalFunciones])
+  }, [avalFunciones])
 
   return (
     <>
@@ -394,120 +363,44 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
           </section>
         </section>
         <section className='flex flex-col w-[95%] gap-6 mx-auto'>
-          <div className='w-[95%] mx-auto'>
-            {avalInfoDocumentos.map((aval) => {
-              return (
-                <form action='' className='flex flex-col gap-2' key={aval.id_detalle_inscripcion}>
-                  <section className='grid items-center grid-cols-2 gap-2'>
-                    <section className='flex flex-col'>
-                      <span className='text-sm font-semibold'>
-                        Líder Prácticas <span className='text-red-800'>(Documentos)</span>
-                      </span>
-                      <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
-                    </section>
-                    <div className='flex py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
-                      <h3 className='px-2 text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
-                    </div>
-                  </section>
-                  <div>
-                    <label htmlFor='' className='text-sm font-light'>
-                      Observaciones
-                    </label>
-                    <textarea id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
-                  </div>
-                  <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
-                    {idRol === Number(keysRoles[0]) ? (
-                      <div className='flex flex-row gap-2 place-self-center'>
-                        {!selectedApproveButton ? (
-                          <>
-                            <Button type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
-                              <PiCheckCircleBold className='text-xl' /> Sí
-                            </Button>
-                            <Button type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
-                              <PiXCircleBold className='text-xl' /> No
-                            </Button>
-                          </>
-                        ) : selectedApproveButton === 'No' ? (
-                          <>
-                            <Button type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
-                              <PiCheckCircleBold className='text-xl' /> Sí
-                            </Button>
-                            <Button type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
-                              <PiXCircleBold className='text-xl' /> No
-                            </Button>
-                          </>
-                        ) : (
-                          <>
-                            <Button type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
-                              <PiCheckCircleBold className='text-xl' /> Sí
-                            </Button>
-                            <Button type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
-                              <PiXCircleBold className='text-xl' /> No
-                            </Button>
-                          </>
-                        )}
-                      </div>
-                    ) : (
-                      <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval}</h5>
-                    )}
-                    {idRol === Number(keysRoles[0]) &&
-                      (disableSubmitButton ? (
-                        <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
-                          <LuSave />
-                          Guardar
-                        </Button>
-                      ) : (
-                        <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
-                          <LuSave />
-                          Guardar
-                        </Button>
-                      ))}
-                  </div>
-                </form>
-              )
-            })}
-          </div>
+          <FullDocsApproval idRol={idRol} avalDocumentos={avalDocumentos} />
           <hr className='w-3/4 mx-auto border-[1px] text-neutral-400' />
           <div className='w-[95%] mx-auto'>
-            {avalInfoFunciones.map((aval) => {
-              return (
-                <form action='' className='flex flex-col gap-2' key={aval.id_detalle_inscripcion}>
-                  <section className='grid items-center grid-cols-2 gap-2'>
-                    <section className='flex flex-col gap-1'>
-                      <span className='text-sm font-semibold'>
-                        Encargado <span className='text-red-800'>(Funciones)</span>
-                      </span>
-                      <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
-                    </section>
-                    <section>
-                      <input type='text' defaultValue={nameResponsableFunciones} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
-                    </section>
-                  </section>
-                  <div>
-                    <label htmlFor='observations' className='text-sm font-light'>
-                      Observaciones
-                    </label>
-                    <textarea name='observations' id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+            <form action='' className='flex flex-col gap-2'>
+              <section className='grid items-center grid-cols-2 gap-2'>
+                <section className='flex flex-col gap-1'>
+                  <span className='text-sm font-semibold'>
+                    Encargado <span className='text-red-800'>(Funciones)</span>
+                  </span>
+                  <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
+                </section>
+                <section>
+                  <input type='text' defaultValue={nameResponsableFunciones} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
+                </section>
+              </section>
+              <div>
+                <label htmlFor='observations' className='text-sm font-light'>
+                  Observaciones
+                </label>
+                <textarea name='observations' id='editor' defaultValue={avalInfoFunciones.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+              </div>
+              <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
+                {idRol === Number(keysRoles[2]) ? (
+                  <div className='flex flex-row gap-2 place-self-center'>
+                    <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+                    <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
                   </div>
-                  <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
-                    {idRol === Number(keysRoles[2]) ? (
-                      <div className='flex flex-row gap-2 place-self-center'>
-                        <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
-                        <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
-                      </div>
-                    ) : (
-                      <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval}</h5>
-                    )}
-                    {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) && (
-                      <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
-                        <LuSave />
-                        Guardar
-                      </Button>
-                    )}
-                  </div>
-                </form>
-              )
-            })}
+                ) : (
+                  <h5 className={`text-sm font-medium text-center ${avalInfoFunciones.estado_aval === 'Pendiente' ? 'text-slate-600' : avalInfoFunciones.estado_aval === 'Rechazado' ? 'text-red-500' : avalInfoFunciones.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{avalInfoFunciones.estado_aval}</h5>
+                )}
+                {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) && (
+                  <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                    <LuSave />
+                    Guardar
+                  </Button>
+                )}
+              </div>
+            </form>
           </div>
         </section>
       </section>
@@ -515,9 +408,198 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
   )
 }
 
+const FullDocsApproval = ({ idRol, avalDocumentos }) => {
+  const fullDocsRef = useRef(null)
+  const descriptionRef = useRef(null)
+
+  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
+  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
+  const [avalInfoDocumentos, setAvalInfoDocumentos] = useState([])
+  const [nameResponsableDocumentos, setNameResponsableDocumentos] = useState('')
+
+  const handleUseState = (setState, value) => setState(value)
+
+  const fetchDataDocuments = async () => {
+    const res = await getAvalById(avalDocumentos)
+    const { data } = res.data
+    const response = await getUserById(data[0].responsable_aval)
+    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
+    const fullName = `${nombres_usuario} ${apellidos_usuario}`
+    setNameResponsableDocumentos(fullName)
+    setAvalInfoDocumentos(data[0])
+  }
+
+  useEffect(() => {
+    if (avalDocumentos) fetchDataDocuments()
+  }, [avalDocumentos])
+
+  const handleSubmitButton = () => {
+    if (!selectedApproveButton) return
+    if (descriptionRef.current.value.length === 0) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  const selectButtonToSubmit = (value) => {
+    setSelectedApproveButton(value)
+    if (descriptionRef.current.value.length === 0 || !value) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  const handleFullDocsForm = async (e) => {
+    e.preventDefault()
+    const approveOptions = { Si: 'Si', No: 'No' }
+
+    const formData = new FormData(fullDocsRef.current)
+    formData.append('approveOption', approveOptions[selectedApproveButton])
+    const observations = formData.get('fullDocsObservations')
+    const approveOption = formData.get('approveOption')
+    try {
+      await checkApprovementData({ observations, approveOption })
+      const loadingToast = toast.loading('Enviando...')
+      if (selectedApproveButton === approveOptions.Si) return acceptFullDocsApprove({ observations, approveOption, avalDocumentos }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyFullDocsApprove({ observations, approveOption, avalDocumentos })
+    } catch (err) {
+      console.log(err)
+      if (toast.isActive('error-full-docs')) return
+      toast.error('Los campos son incorrectos, corríjalos.', {
+        toastId: 'error-full-docs',
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored'
+      })
+    }
+  }
+
+  const acceptFullDocsApprove = async (payload, toastId) => {
+    const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
+    const id = payload.avalDocumentos
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const denyFullDocsApprove = (payload) => {
+    console.log(payload)
+  }
+
+  return (
+    <div className='w-[95%] mx-auto'>
+      <form className='flex flex-col gap-2' ref={fullDocsRef} onSubmit={handleFullDocsForm}>
+        <section className='grid items-center grid-cols-2 gap-2'>
+          <section className='flex flex-col'>
+            <span className='text-sm font-semibold'>
+              Líder Prácticas <span className='text-red-800'>(Documentos)</span>
+            </span>
+            <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
+          </section>
+          <div className='flex py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+            <h3 className='px-2 text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
+          </div>
+        </section>
+        <div>
+          <label htmlFor='fullDocsObservations' className='text-sm font-light'>
+            Observaciones <span className='font-bold text-red-500'>*</span>
+          </label>
+          <textarea name='fullDocsObservations' id='editor' defaultValue={avalInfoDocumentos.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
+        </div>
+        <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
+          {idRol === Number(keysRoles[0]) ? (
+            <div className='flex flex-row gap-2 place-self-center'>
+              {!selectedApproveButton ? (
+                <>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              ) : selectedApproveButton === 'No' ? (
+                <>
+                  <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              )}
+            </div>
+          ) : (
+            <h5 className={`text-sm font-medium text-center ${avalInfoDocumentos.estado_aval === 'Pendiente' ? 'text-slate-600' : avalInfoDocumentos.estado_aval === 'Rechazado' ? 'text-red-500' : avalInfoDocumentos.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{avalInfoDocumentos.estado_aval}</h5>
+          )}
+          {idRol === Number(keysRoles[0]) &&
+            (disableSubmitButton ? (
+              <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                <LuSave />
+                Guardar
+              </Button>
+            ) : (
+              <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                <LuSave />
+                Guardar
+              </Button>
+            ))}
+        </div>
+      </form>
+    </div>
+  )
+}
+
 const RAPS = ({ idRol, avalRaps }) => {
-  const [avalInfo, setAvalInfo] = useState([])
+  const [avalInfo, setAvalInfo] = useState({})
+  const descriptionRef = useRef(null)
   const [nameResponsable, setNameResponsable] = useState('')
+  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
+  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
+
+  const handleUseState = (setState, value) => setState(value)
+
+  const handleSubmitButton = () => {
+    if (!selectedApproveButton) return
+    if (descriptionRef.current.value.length === 0) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  const selectButtonToSubmit = (value) => {
+    setSelectedApproveButton(value)
+    if (descriptionRef.current.value.length === 0 || !value) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
 
   const fetchRaps = async () => {
     const res = await getAvalById(avalRaps)
@@ -526,7 +608,7 @@ const RAPS = ({ idRol, avalRaps }) => {
     const { nombres_usuario, apellidos_usuario } = response.data.data[0]
     const fullName = `${nombres_usuario} ${apellidos_usuario}`
     setNameResponsable(fullName)
-    setAvalInfo(data)
+    setAvalInfo(data[0])
   }
 
   useEffect(() => {
@@ -543,43 +625,71 @@ const RAPS = ({ idRol, avalRaps }) => {
       </section>
       <section className='flex flex-col w-[95%] gap-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>
-          {avalInfo.map((aval) => {
-            return (
-              <form action='' className='flex flex-col gap-2' key={aval.id_detalle_inscripcion}>
-                <section className='grid items-center grid-cols-2 gap-2'>
-                  <section className='flex flex-col'>
-                    <span className='text-sm font-semibold'>Líder Prácticas</span>
-                    <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
-                  </section>
-                  <div className='flex py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
-                    <h3 className='px-2 text-sm whitespace-nowrap'>{nameResponsable}</h3>
-                  </div>
-                </section>
-                <div>
-                  <label htmlFor='' className='text-sm font-light'>
-                    Observaciones
-                  </label>
-                  <textarea id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
-                </div>
-                <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
-                  {idRol === Number(keysRoles[0]) ? (
-                    <div className='flex flex-row gap-2 place-self-center'>
-                      <Button value={'Sí'} type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-green-800' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
-                      <Button value={'No'} type='button' bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' icon={<PiXCircleBold className='text-xl' />} />
-                    </div>
+          <form action='' className='flex flex-col gap-2'>
+            <section className='grid items-center grid-cols-2 gap-2'>
+              <section className='flex flex-col'>
+                <span className='text-sm font-semibold'>Líder Prácticas</span>
+                <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
+              </section>
+              <div className='flex py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+                <h3 className='px-2 text-sm whitespace-nowrap'>{nameResponsable}</h3>
+              </div>
+            </section>
+            <div>
+              <label htmlFor='' className='text-sm font-light'>
+                Observaciones
+              </label>
+              <textarea id='editor' defaultValue={avalInfo.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' ref={descriptionRef} onInput={handleSubmitButton} />
+            </div>
+            <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
+              {idRol === Number(keysRoles[0]) ? (
+                <div className='flex flex-row gap-2 place-self-center'>
+                  {!selectedApproveButton ? (
+                    <>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  ) : selectedApproveButton === 'No' ? (
+                    <>
+                      <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
                   ) : (
-                    <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval}</h5>
-                  )}
-                  {idRol === Number(keysRoles[0]) && (
-                    <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
-                      <LuSave />
-                      Guardar
-                    </Button>
+                    <>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
                   )}
                 </div>
-              </form>
-            )
-          })}
+              ) : (
+                <h5 className={`text-sm font-medium text-center ${avalInfo.estado_aval === 'Pendiente' ? 'text-slate-600' : avalInfo.estado_aval === 'Rechazado' ? 'text-red-500' : avalInfo.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{avalInfo.estado_aval}</h5>
+              )}
+              {idRol === Number(keysRoles[0]) &&
+                (disableSubmitButton ? (
+                  <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                    <LuSave />
+                    Guardar
+                  </Button>
+                ) : (
+                  <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                    <LuSave />
+                    Guardar
+                  </Button>
+                ))}
+            </div>
+          </form>
         </div>
       </section>
     </section>

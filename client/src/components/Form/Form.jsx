@@ -103,12 +103,12 @@ const Form = ({ inputs }) => {
         loadingBtn ? (
           <LoadingButton />
         ) : (
-          <Button bg={'bg-[#438EF2]'} type={'submit'} hover hoverConfig='bg-[#2d61a5] ease-in delay-75 duration-150'>
+          <Button bg={'bg-[#438EF2]'} px='px-[5rem]' rounded='rounded-md' textColor='text-white' font='font-semibold' textSize='text-lg' py='py-1.5' type={'submit'} hover hoverConfig='bg-[#2d61a5] ease-in delay-75 duration-150'>
             Iniciar Sesión
           </Button>
         )
       ) : (
-        <Button bg='bg-[#438EF2]' type='submit' hover hoverConfig='bg-[#2d61a5] ease-in delay-75 duration-150'>
+        <Button bg='bg-[#438EF2]' type='submit' px='px-[5rem]' rounded='rounded-md' textColor='text-white' font='font-semibold' textSize='text-lg' py='py-1.5' hover hoverConfig='bg-[#2d61a5] ease-in delay-75 duration-150'>
           Registrarse
         </Button>
       )}

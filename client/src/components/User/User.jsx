@@ -94,12 +94,12 @@ const User = () => {
           <div className='z-10 flex flex-col p-8 bg-white border shadow-xl justify-self-center rounded-2xl border-neutral-400 '>
             {selectedButton === 'login' ? <h2 className='text-xl font-bold text-center'>{title.login}</h2> : <h2 className='text-xl font-bold text-center'>{title.register}</h2>}
             <span className='text-lg font-light '>Es un placer para nosotros tenerte aquí</span>
-            <div className={`flex w-72 flex-row justify-items-center rounded-lg bg-gray ${selectedButton === 'register'}  relative mx-auto my-2.5 `}>
+            <div className={`flex w-72 flex-row justify-items-center rounded-lg border border-gray-400 ${selectedButton === 'register'}  relative mx-auto my-2.5 `}>
               <div className={`absolute ml-2 mt-1 h-6 w-32 rounded-md bg-white transition-all `} ref={divRef}></div>
-              <button className='z-10 w-32 h-8 m-auto text-sm text-black rounded-md' onClick={() => handleButtonClick('login')}>
+              <button className='z-10 w-full h-8 m-auto text-sm text-black transition-colors rounded-l-md hover:bg-gray-200' onClick={() => handleButtonClick('login')}>
                 Iniciar sesión
               </button>
-              <button className='z-10 w-32 h-8 m-auto text-sm text-black rounded-md' onClick={() => handleButtonClick('register')}>
+              <button className='z-10 w-full h-8 m-auto text-sm text-black transition-colors rounded-r-md hover:bg-gray-200' onClick={() => handleButtonClick('register')}>
                 Registrarse
               </button>
             </div>
