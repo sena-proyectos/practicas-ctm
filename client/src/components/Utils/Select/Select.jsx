@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { BiChevronRight } from 'react-icons/bi'
 import { AiOutlineSearch } from 'react-icons/ai'
 
-export const Select = ({ options, placeholder, placeholderSearch, hoverColor, hoverTextColor, py = 'py-1', rounded, border = 'border-[0.5px]', borderColor, isSearch = false, bgContainer = 'bg-white', selectedColor, textSize }) => {
+export const Select = ({ options, placeholder, placeholderSearch, hoverColor, hoverTextColor, py = 'py-1', rounded, border = 'border-[0.5px]', borderColor, isSearch = false, bgContainer = 'bg-white', selectedColor, textSize, shadow }) => {
   const [inputValue, setInputValue] = useState('')
   const [selected, setSelected] = useState('')
   const [open, setOpen] = useState(false)
 
   return (
     <div className='w-full max-h-7'>
-      <div onClick={() => setOpen(!open)} className={`flex items-center justify-between w-full px-2 ${bgContainer} ${rounded} ${border} ${borderColor} ${py} select-none ${textSize} ${open ? 'mb-0' : 'mb-1'}`}>
+      <div onClick={() => setOpen(!open)} className={`flex items-center justify-between w-full px-2 ${bgContainer} ${rounded} ${border} ${shadow} ${borderColor} ${py} select-none ${textSize} ${open ? 'mb-0' : 'mb-1'} ${selected ? 'text-black' : 'text-slate-400'}`}>
         {selected ? (selected.length > 45 ? selected.substring(0, 45) + '...' : selected) : placeholder}
         <BiChevronRight className={`text-xl ${open ? 'rotate-90' : 'rotate-0'} transition-all duration-500`} />
       </div>

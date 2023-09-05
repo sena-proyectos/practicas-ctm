@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 
 // icons
 import { BsCheck2Circle } from 'react-icons/bs'
 import { LuArrowRight, LuChevronDown, LuArrowLeft } from 'react-icons/lu'
 import { AiOutlineCloudUpload } from 'react-icons/ai'
+import { IoReturnDownBack } from 'react-icons/io5'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -54,7 +55,7 @@ export const RegisterDetails = () => {
     nit_empresa_inscripcion: useRef(null),
     telefono_jefe_empresa_inscripcion: useRef(null),
     email_jefe_empresa_inscripcion: useRef(null),
-    nombre_empresa_inscripción: useRef(null),
+    nombre_empresa_inscripcion: useRef(null),
     direccion_empresa_inscripcion: useRef(null),
     nombre_jefe_empresa_inscripcion: useRef(null),
     cargo_jefe_empresa_inscripcion: useRef(null),
@@ -354,6 +355,12 @@ export const RegisterDetails = () => {
               </div>
             </div>
           </form>
+          <div className='absolute top-7 left-11'>
+            <Link to='/registros' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
+              <IoReturnDownBack />
+              Salir
+            </Link>
+          </div>
           <div className='flex flex-row justify-center mx-auto'>
             <div className='absolute bottom-20 '>
               <Button value={'Guardar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' icon={<BsCheck2Circle className='text-xl' />} />

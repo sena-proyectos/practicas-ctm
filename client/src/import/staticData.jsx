@@ -322,7 +322,7 @@ export const dataInscription = {
     },
     {
       type: 'text',
-      name: 'nombre_empresa_inscripción',
+      name: 'nombre_empresa_inscripcion',
       placeholder: 'SENA',
       label: 'Razón social (Empresa)'
     },

@@ -41,6 +41,12 @@ export const GetUserByName = async (searchQuery) => {
 
   return response
 }
+/* BUSCAR APRENDICES DE UNA FICHA */
+export const GetStudentsByCourse = async (data) => {
+  const URL = `${baseUrl}${api}/classStudents?numero_ficha=${data}`
+  const response = await axios.get(URL)
+  return response
+}
 
 /* BUSCAR INSTRUCTOR POR NOMBRE */
 export const GetTeacherByName = async (data) => {
@@ -96,3 +102,30 @@ export const inscriptionDetailUser = async (id, limit = 3, offset = 0) => {
   const response = await axios.get(URL)
   return response
 }
+
+export const readExcel = async (fileData) => {
+  const URL = `${baseUrl}${api}/inscription-excel-file`
+  const response = await axios.post(URL, fileData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  return response
+}
+
+// OBTENER FICHAS
+export const getClass = async () => {
+  const URL = `${baseUrl}${api}/classes`
+
+  const response = await axios.get(URL)
+  return response
+}
+
+// OBTENER APRENDICES DE UNA FICHA
+export const getClassById = async (id) => {
+  const URL = `${baseUrl}${api}/class/${id}`
+
+  const response = await axios.get(URL)
+  return response
+}
+

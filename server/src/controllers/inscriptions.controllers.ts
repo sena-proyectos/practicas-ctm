@@ -3,7 +3,7 @@ import { type inscripcionDetailData, type inscriptionData } from '../interfaces/
 import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
-import { type CustomError, DbErrorNotFound, DbError } from '../errors/customErrors.js'
+import { type CustomError, DbErrorNotFound, DbError, DataNotValid } from '../errors/customErrors.js'
 import { type RowDataPacket } from 'mysql2'
 import { errorCodes } from '../models/errorCodes.enums.js'
 
@@ -39,7 +39,6 @@ export const getInscriptionsDetailsByUser: RequestHandler<{ id: string }, Respon
     const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE responsable_aval = ? LIMIT ? OFFSET ?', [idNumber, limitNumber, offsetNumber])
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (err) {
-    console.log(err)
     return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
   }
 }
@@ -61,7 +60,6 @@ export const getInscriptionsDetailsByInscription: RequestHandler<{ id: string },
     const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE id_inscripcion = ? LIMIT ? OFFSET ?', [idNumber, limitNumber, offsetNumber])
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (err) {
-    console.log(err)
     return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
   }
 }
@@ -107,9 +105,8 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
       if ((result as RowDataPacket[]).length === 0) throw new DbErrorNotFound(`No se pudo crear la inscripcion número ${i}.`, errorCodes.ERROR_CREATE_STUDENT)
       i += 1
     }
-    return res.status(httpStatus.CREATED).json({ data: { infoInscription: `Added ${i}`, msg: 'Inscripciones creados' } })
+    return res.status(httpStatus.CREATED).json({ data: { infoInscription: `Added ${i}`, msg: 'Inscripciones creados', code: 'toEnd' } })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
@@ -148,6 +145,31 @@ export const editInscription: RequestHandler<{ id: string }, Response, inscripti
     )
     if (!Array.isArray(inscription) && inscription?.affectedRows === 0) throw new DbError('No se pudo modificar la inscripción.')
     return res.status(httpStatus.OK).json({ message: 'Inscripción modificada con éxito.' })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const returnExcelData = async (req: Request, res: Response): Promise<Response> => {
+  const { excelData } = req.body
+  try {
+    const [rows] = await connection.query('SELECT documento_inscripcion FROM inscripciones WHERE estado_general_inscripcion <> "Rechazado"')
+
+    if (Array.isArray(rows)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const existingDocumentos = rows.map((row: any) => row.documento_inscripcion)
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const filteredDataArray = excelData.filter((item: any) => {
+        const documentoAprendiz = String(item['Numero de documento del aprendiz'])
+        const shouldInclude = !existingDocumentos.includes(documentoAprendiz)
+        return shouldInclude
+      })
+
+      return res.status(httpStatus.OK).json({ data: filteredDataArray, code: 'toUpload' })
+    } else {
+      throw new DataNotValid('Excel no válido')
+    }
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }

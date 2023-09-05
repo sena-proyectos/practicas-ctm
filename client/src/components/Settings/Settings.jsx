@@ -30,7 +30,7 @@ const Settings = () => {
               </header>
               <section className='flex flex-col w-4/5 gap-2 mx-auto mt-5'>
                 <div className='mx-auto my-auto w-[5rem] rounded-full'>
-                  <img className='object-cover' src='public/user.png' alt='img_user' />
+                  <img className='object-cover' src='/user.png' alt='img_user' />
                 </div>
                 <div className='my-auto'>
                   <h4 className='text-center'>Stiven Blandón Urrego</h4>

@@ -21,6 +21,7 @@ export const StudentMonitoring = () => {
   const [userInfoById, setInfoUserById] = useState({})
   const [loading, setLoading] = useState(true)
   const [pageNumber, setPageNumber] = useState(-1)
+  const [dates, setDates] = useState({})
 
   const handleIconClick = () => {
     setModalFilter(!modalFilter)
@@ -43,6 +44,8 @@ export const StudentMonitoring = () => {
     try {
       const response = await GetStudentsDetailById(userID)
       const res = response.data.data[0]
+      const { fecha_fin_lectiva, fecha_inicio_practica } = res
+      setDates({ fin_lectiva: fecha_fin_lectiva.split('T')[0], inicio_practicas: fecha_inicio_practica.split('T')[0] })
       setInfoUserById(res)
     } catch (error) {
       console.log('Ha ocurrido un error al mostrar los datos del usuario')
@@ -66,24 +69,25 @@ export const StudentMonitoring = () => {
         setSearchedApprentices(data)
       }
     } catch (error) {
-      const message = error.response.data.error.info.message
+      const message = error?.response?.data?.error?.info?.message
 
-      setError(message)
+      setError(message ?? 'Usuario no existente')
       setSearchedApprentices([])
     }
   }
 
-  useEffect(() => {
-    const getApprentices = async () => {
-      try {
-        const response = await detailInfoStudents()
-        const { data } = response.data
-        setApprentices(data)
-        setLoading(false)
-      } catch (error) {
-        setError('Error al obtener los aprendices')
-      }
+  const getApprentices = async () => {
+    try {
+      const response = await detailInfoStudents()
+      const { data } = response.data
+      setApprentices(data)
+      setLoading(false)
+    } catch (error) {
+      setError('Error al obtener los aprendices')
     }
+  }
+
+  useEffect(() => {
     getApprentices()
   }, [])
 
@@ -98,9 +102,7 @@ export const StudentMonitoring = () => {
   return (
     <>
       {modalFilter && <Modals bodyFilter title={'Filtrar'} view={filterStudents} closeModal={handleModal} />}
-      {infoStudent && (
-        <Modals closeModal={handleModalInfo} bodyStudent title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} celStudent={userInfoById.celular_aprendiz} trainingProgram={userInfoById.nombre_programa_formacion} ficha={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} trainingStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} finLectiva={userInfoById.fecha_fin_lectiva} inicioProductiva={userInfoById.fecha_inicio_practica} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} workstation={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />
-      )}
+      {infoStudent && <Modals closeModal={handleModalInfo} bodyStudent title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} celStudent={userInfoById.celular_aprendiz} trainingProgram={userInfoById.nombre_programa_formacion} ficha={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} trainingStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} finLectiva={dates.fin_lectiva} inicioProductiva={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} workstation={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-3-10-75-15 gap-y-2 '>
@@ -144,3 +146,4 @@ const SkeletonLoading = ({ number = 6 }) =>
       <Skeleton height={'14rem'} className='scale-90 rounded-2xl' />
     </div>
   ))
+
