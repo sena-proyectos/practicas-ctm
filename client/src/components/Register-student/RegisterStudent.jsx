@@ -176,7 +176,6 @@ export const RegisterStudent = () => {
       return
     }
     setSelectedFiles([currentFile])
-    readExcelFile(currentFile)
   }
   return (
     <>
