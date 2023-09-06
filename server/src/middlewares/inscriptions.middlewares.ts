@@ -83,26 +83,59 @@ export const readExcelFile = async (req: Request, res: Response, next: NextFunct
       dateNF: 'dd-mm-yyyy'
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const dataToSend = await Promise.all(excelData.map(async (item: any) => {
-      const modalidad = item['Modalidad etapa practica']
+    const dataToSend = await Promise.all(excelData.map(async (item: any, i: number) => {
+      const modalidad = item['Seleccione la Alternativa de Etapa Productiva que desea registrar']
+      // console.log('test1')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const [result]: any[] = await connection.query('SELECT id_modalidad FROM modalidades where nombre_modalidad like ?', [`%${modalidad as string}%`])
-      const fechaTerminacionLectiva = item['Fecha de terminacion de la etapa lectiva']
-      const parts = fechaTerminacionLectiva.split('-')
+      console.log(result, i)
+      // console.log('test2', result)
+      // const fechaTerminacionLectiva = item['Fecha de terminación de la etapa lectiva']
+      // console.log(fechaTerminacionLectiva)
+      // const parts = fechaTerminacionLectiva.split('/')
+      // console.log(parts)
 
-      if (parts.length !== 3) throw new DataNotValid('La fecha de terminación de la etapa lectiva no es válida, verifícalo.')
+      // if (parts.length !== 3) throw new DataNotValid('La fecha de terminación de la etapa lectiva no es válida, verifícalo.')
 
-      const dateParsed = new Date(parts[2], parts[1] - 1, parts[0]).toISOString().split('T')[0]
+      // const dateParsed = new Date(parts[2], parts[1] - 1, parts[0]).toISOString().split('T')[0]
+
+      if (item['Seleccione la Etapa de Formación en la que se encuentra'] === null) return
 
       return {
-        ...item,
-        'Modalidad etapa practica': result[0].id_modalidad,
-        'Fecha de terminacion de la etapa lectiva': dateParsed
+        id: i,
+        nombre_inscripcion: item['Nombre Completo'],
+        apellido_inscripcion: item['Apellidos completos'],
+        tipo_documento_inscripcion: item['Tipo de Documento de Identidad'],
+        documento_inscripcion: item['Numero de documento del aprendiz'],
+        email_inscripcion: item['Correo electrónico del aprendiz'],
+        inscripcion_celular: item['Número de celular del aprendiz'],
+        etapa_actual_inscripcion: item['Seleccione la Etapa de Formación en la que se encuentra'],
+        modalidad_inscripcion: result[0]?.id_modalidad,
+        nombre_programa_inscripcion: item['Nombre del Programa'],
+        nivel_formacion_inscripcion: item['Nivel de formación'],
+        numero_ficha_inscripcion: item['Número de ficha'],
+        fecha_fin_lectiva_inscripcion: item['Fecha de terminación de la etapa lectiva'],
+        nombre_instructor_lider_inscripcion: item['Nombre completo del instructor líder'],
+        email_instructor_lider_inscripcion: item['Correo del instructor líder'],
+        apoyo_sostenimiento_inscripcion: item['Recibe alguno de estos apoyos de sostenimiento'],
+        nit_empresa_inscripcion: item['NIT de la Empresa'] ?? null,
+        nombre_empresa_inscripcion: item['Razón Social (Nombre de la Empresa)'] ?? null,
+        direccion_empresa_inscripcion: item['Direcciòn de la empresa'] ?? null,
+        nombre_jefe_empresa_inscripcion: item['Nombre Completo del Contacto en la Empresa (Jefe inmediato)'] ?? null,
+        cargo_jefe_empresa_inscripcion: item['Cargo del Contacto en la Empresa'] ?? null,
+        telefono_jefe_empresa_inscripcion: item['Teléfono de la Empresa o Jefe inmediato'] ?? null,
+        email_jefe_empresa_inscripcion: item['Correo Electrónico Contacto en la Empresa'] ?? null,
+        municipio_empresa: item['Municipio donde se encuentra la Empresa'] ?? null,
+        arl: item['Si su modalidad de práctica es Pasantía o Monitoria, quién asume el pago de la ARL?'] ?? null,
+        link_documentos: item['Anexar documentos. Todos los documentos requeridos para el registro deben estar unidos en un solo PDF'],
+        observaciones: item['Observaciones - Comentarios'] ?? null
       }
     }))
+    console.log(dataToSend)
     req.body.excelData = dataToSend
     next()
   } catch (error) {
+    console.log(error)
     handleHTTP(res, error as CustomError)
   }
 }
