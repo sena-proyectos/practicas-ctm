@@ -13,7 +13,7 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
-import { keysRoles } from '../../import/staticData'
+import { colorTextStatus, keysRoles } from '../../import/staticData'
 
 import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate } from '../../api/httpRequest'
 import { AiOutlineFullscreen } from 'react-icons/ai'
@@ -297,10 +297,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
 const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
   const iFrameRef = useRef(null)
 
-  const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
-
-  const [nameResponsableFunciones, setNameResponsableFunciones] = useState('')
-
   const [notify, setNotify] = useState(false)
 
   useEffect(() => {
@@ -321,16 +317,6 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
     setNotify(false)
   }, [notify])
 
-  const fetchDataFunciones = async () => {
-    const res = await getAvalById(avalFunciones)
-    const { data } = res.data
-    const response = await getUserById(data[0].responsable_aval)
-    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
-    const fullName = `${nombres_usuario} ${apellidos_usuario}`
-    setNameResponsableFunciones(fullName)
-    setAvalInfoFunciones(data[0])
-  }
-
   const handleFullScreenIFrame = () => {
     const iframe = iFrameRef.current
     if (!iframe) return
@@ -339,10 +325,6 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
     if (iframe.webkitRequestFullscreen) return iframe.webkitRequestFullscreen()
     if (iframe.msRequestFullscreen) return iframe.msRequestFullscreen()
   }
-
-  useEffect(() => {
-    if (avalFunciones) fetchDataFunciones()
-  }, [avalFunciones])
 
   return (
     <>
@@ -359,52 +341,75 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
             </section>
           </header>
           <section className='flex flex-col justify-center gap-3 h-5/6'>
-            <iframe src='/Acta_29_de_Agosto_2023.pdf' className='w-full h-full' loading='lazy' allowFullScreen ref={iFrameRef}></iframe>
+            <iframe src='https://drive.google.com/file/d/1_aTWCNT9eE32X2E9f8w26OjzwJKGJc-v/preview' className='w-full h-full' loading='lazy' allowFullScreen ref={iFrameRef}></iframe>
           </section>
         </section>
         <section className='flex flex-col w-[95%] gap-6 mx-auto'>
           <FullDocsApproval idRol={idRol} avalDocumentos={avalDocumentos} />
           <hr className='w-3/4 mx-auto border-[1px] text-neutral-400' />
-          <div className='w-[95%] mx-auto'>
-            <form action='' className='flex flex-col gap-2'>
-              <section className='grid items-center grid-cols-2 gap-2'>
-                <section className='flex flex-col gap-1'>
-                  <span className='text-sm font-semibold'>
-                    Encargado <span className='text-red-800'>(Funciones)</span>
-                  </span>
-                  <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
-                </section>
-                <section>
-                  <input type='text' defaultValue={nameResponsableFunciones} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
-                </section>
-              </section>
-              <div>
-                <label htmlFor='observations' className='text-sm font-light'>
-                  Observaciones
-                </label>
-                <textarea name='observations' id='editor' defaultValue={avalInfoFunciones.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
-              </div>
-              <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
-                {idRol === Number(keysRoles[2]) ? (
-                  <div className='flex flex-row gap-2 place-self-center'>
-                    <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
-                    <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
-                  </div>
-                ) : (
-                  <h5 className={`text-sm font-medium text-center ${avalInfoFunciones.estado_aval === 'Pendiente' ? 'text-slate-600' : avalInfoFunciones.estado_aval === 'Rechazado' ? 'text-red-500' : avalInfoFunciones.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{avalInfoFunciones.estado_aval}</h5>
-                )}
-                {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) && (
-                  <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
-                    <LuSave />
-                    Guardar
-                  </Button>
-                )}
-              </div>
-            </form>
-          </div>
+          <FunctionsApproval idRol={idRol} avalFunciones={avalFunciones} />
         </section>
       </section>
     </>
+  )
+}
+
+const FunctionsApproval = ({ idRol, avalFunciones }) => {
+  const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
+  const [nameResponsableFunciones, setNameResponsableFunciones] = useState('')
+
+  const fetchDataFunciones = async () => {
+    const res = await getAvalById(avalFunciones)
+    const { data } = res.data
+    const response = await getUserById(data[0].responsable_aval)
+    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
+    const fullName = `${nombres_usuario} ${apellidos_usuario}`
+    setNameResponsableFunciones(fullName)
+    setAvalInfoFunciones(data[0])
+  }
+
+  useEffect(() => {
+    if (avalFunciones) fetchDataFunciones()
+  }, [avalFunciones])
+
+  return (
+    <div className='w-[95%] mx-auto'>
+      <form action='' className='flex flex-col gap-2' onSubmit={(e) => e.preventDefault()}>
+        <section className='grid items-center grid-cols-2 gap-2'>
+          <section className='flex flex-col gap-1'>
+            <span className='text-sm font-semibold'>
+              Encargado <span className='text-red-800'>(Funciones)</span>
+            </span>
+            <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
+          </section>
+          <section>
+            <input type='text' defaultValue={nameResponsableFunciones} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
+          </section>
+        </section>
+        <div>
+          <label htmlFor='observations' className='text-sm font-light'>
+            Observaciones
+          </label>
+          <textarea name='observations' id='editor' defaultValue={avalInfoFunciones.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+        </div>
+        <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
+          {idRol === Number(keysRoles[2]) ? (
+            <div className='flex flex-row gap-2 place-self-center'>
+              <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
+              <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
+            </div>
+          ) : (
+            <h5 className={`text-sm font-medium text-center ${avalInfoFunciones.estado_aval === 'Pendiente' ? 'text-slate-600' : avalInfoFunciones.estado_aval === 'Rechazado' ? 'text-red-500' : avalInfoFunciones.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{avalInfoFunciones.estado_aval}</h5>
+          )}
+          {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) && (
+            <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+              <LuSave />
+              Guardar
+            </Button>
+          )}
+        </div>
+      </form>
+    </div>
   )
 }
 
@@ -506,13 +511,16 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
       <form className='flex flex-col gap-2' ref={fullDocsRef} onSubmit={handleFullDocsForm}>
         <section className='grid items-center grid-cols-2 gap-2'>
           <section className='flex flex-col'>
-            <span className='text-sm font-semibold'>
-              Líder Prácticas <span className='text-red-800'>(Documentos)</span>
-            </span>
-            <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
+            <span className='text-sm font-semibold'>Líder Prácticas:</span>
+            <span className='text-sm font-semibold'>Última fecha de modificación:</span>
+            <span className='text-sm font-medium'>Fecha Registro: {avalInfoDocumentos.fecha_creacion}</span>
           </section>
-          <div className='flex py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
-            <h3 className='px-2 text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
+          <div className='flex flex-col py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+            <h3 className='text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
+            <h3 className='text-sm whitespace-nowrap'>{avalInfoDocumentos.fecha_modificacion}</h3>
+            <h5 className='text-sm whitespace-nowrap'>
+              Estado: <span className={`font-semibold ${colorTextStatus[avalInfoDocumentos.estado_aval]}`}>{avalInfoDocumentos.estado_aval}</span>
+            </h5>
           </div>
         </section>
         <div>
@@ -522,7 +530,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
           <textarea name='fullDocsObservations' id='editor' defaultValue={avalInfoDocumentos.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
         </div>
         <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
-          {idRol === Number(keysRoles[0]) ? (
+          {idRol === Number(keysRoles[0]) && (
             <div className='flex flex-row gap-2 place-self-center'>
               {!selectedApproveButton ? (
                 <>
@@ -553,8 +561,6 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
                 </>
               )}
             </div>
-          ) : (
-            <h5 className={`text-sm font-medium text-center ${avalInfoDocumentos.estado_aval === 'Pendiente' ? 'text-slate-600' : avalInfoDocumentos.estado_aval === 'Rechazado' ? 'text-red-500' : avalInfoDocumentos.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{avalInfoDocumentos.estado_aval}</h5>
           )}
           {idRol === Number(keysRoles[0]) &&
             (disableSubmitButton ? (
@@ -575,8 +581,9 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
 }
 
 const RAPS = ({ idRol, avalRaps }) => {
-  const [avalInfo, setAvalInfo] = useState({})
+  const formRef = useRef(null)
   const descriptionRef = useRef(null)
+  const [avalInfo, setAvalInfo] = useState({})
   const [nameResponsable, setNameResponsable] = useState('')
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
   const [disableSubmitButton, setDisableSubmitButton] = useState(true)
@@ -611,6 +618,55 @@ const RAPS = ({ idRol, avalRaps }) => {
     setAvalInfo(data[0])
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const approveOptions = { Si: 'Si', No: 'No' }
+
+    const formData = new FormData(formRef.current)
+    formData.append('approveOption', approveOptions[selectedApproveButton])
+    const observations = formData.get('description')
+    const approveOption = formData.get('approveOption')
+    try {
+      await checkApprovementData({ observations, approveOption })
+      if (toast.isActive('loadingToast')) return
+      const loadingToast = toast.loading('Enviando...', {
+        toastId: 'loadingToast'
+      })
+      if (selectedApproveButton === approveOptions.Si) return acceptApprove({ observations, approveOption, avalRaps }, loadingToast)
+    } catch (err) {
+      console.log(err)
+      if (toast.isActive('error-full-docs')) return
+      toast.error('Los campos son incorrectos, corríjalos.', {
+        toastId: 'error-full-docs',
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored'
+      })
+    }
+  }
+
+  const acceptApprove = async (payload, toastId) => {
+    const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
+    const id = payload.avalRaps
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchRaps()
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   useEffect(() => {
     if (avalRaps) fetchRaps()
   }, [avalRaps])
@@ -619,30 +675,35 @@ const RAPS = ({ idRol, avalRaps }) => {
     <section className='grid grid-cols-2 w-[95%] h-[70vh] gap-3 mx-auto'>
       <section className='h-'>
         <h2>RAPS</h2>
-        <section>
-          <iframe src='//sena.territorio.la/indexLoginDashboard.php?login=true' height={'100rem'} className='w-full h-full'></iframe>
+        <section className='h-5/6'>
+          <iframe src='https://www.youtube.com/embed/bTdbjzGCl-w' allowFullScreen className='w-full h-full'></iframe>
         </section>
       </section>
       <section className='flex flex-col w-[95%] gap-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>
-          <form action='' className='flex flex-col gap-2'>
+          <form className='flex flex-col gap-2' onSubmit={handleSubmit} ref={formRef}>
             <section className='grid items-center grid-cols-2 gap-2'>
               <section className='flex flex-col'>
-                <span className='text-sm font-semibold'>Líder Prácticas</span>
-                <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
+                <span className='text-sm font-semibold'>Líder Prácticas:</span>
+                <span className='text-sm font-semibold'>Última fecha de modificación:</span>
+                <span className='text-sm font-medium'>Fecha Registro: {avalInfo.fecha_creacion}</span>
               </section>
-              <div className='flex py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
-                <h3 className='px-2 text-sm whitespace-nowrap'>{nameResponsable}</h3>
+              <div className='flex flex-col py-1 rounded-lg cursor-default justify-items-center w-fit bg-gray place-self-center'>
+                <h3 className='text-sm whitespace-nowrap'>{nameResponsable}</h3>
+                <h3 className='text-sm whitespace-nowrap'>{avalInfo.fecha_modificacion}</h3>
+                <h5 className='text-sm whitespace-nowrap'>
+                  Estado: <span className={`font-semibold ${colorTextStatus[avalInfo.estado_aval]}`}>{avalInfo.estado_aval}</span>
+                </h5>
               </div>
             </section>
             <div>
-              <label htmlFor='' className='text-sm font-light'>
+              <label htmlFor='description' className='text-sm font-light'>
                 Observaciones
               </label>
-              <textarea id='editor' defaultValue={avalInfo.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' ref={descriptionRef} onInput={handleSubmitButton} />
+              <textarea name='description' id='editor' defaultValue={avalInfo.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' ref={descriptionRef} onInput={handleSubmitButton} />
             </div>
             <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
-              {idRol === Number(keysRoles[0]) ? (
+              {idRol === Number(keysRoles[0]) && (
                 <div className='flex flex-row gap-2 place-self-center'>
                   {!selectedApproveButton ? (
                     <>
@@ -673,17 +734,15 @@ const RAPS = ({ idRol, avalRaps }) => {
                     </>
                   )}
                 </div>
-              ) : (
-                <h5 className={`text-sm font-medium text-center ${avalInfo.estado_aval === 'Pendiente' ? 'text-slate-600' : avalInfo.estado_aval === 'Rechazado' ? 'text-red-500' : avalInfo.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{avalInfo.estado_aval}</h5>
               )}
               {idRol === Number(keysRoles[0]) &&
                 (disableSubmitButton ? (
-                  <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                  <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} type='submit' isDisabled inline>
                     <LuSave />
                     Guardar
                   </Button>
                 ) : (
-                  <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                  <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} type='submit' inline>
                     <LuSave />
                     Guardar
                   </Button>

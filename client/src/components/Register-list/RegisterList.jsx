@@ -108,6 +108,7 @@ export const RegisterList = () => {
     const fileData = new FormData()
     fileData.append('excelFile', file)
     const { data, code } = await (await readExcel(fileData)).data
+    console.log(data, code)
     const dataToSend = data.map((item) => {
       return {
         nombre_inscripcion: item['Nombres completos'],
@@ -145,7 +146,7 @@ export const RegisterList = () => {
 
   const uploadExcelFile = async (payload, code) => {
     try {
-      await InscriptionApprentice(payload)
+      // await InscriptionApprentice(payload)
       setModalOption(code)
       setTimeout(() => {
         handleCloseModal()

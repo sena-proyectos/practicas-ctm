@@ -7,6 +7,12 @@ export const rolesNames = {
   4: 'Instructor Líder'
 }
 
+export const colorTextStatus = {
+  Pendiente: 'text-blue-600',
+  Aprobado: 'text-green-600',
+  Rechazado: 'text-red-600'
+}
+
 export const keysRoles = Object.keys(rolesNames)
 
 /*
@@ -642,3 +648,4 @@ export const colorsOddRow = [
     linkcolor: 'bg-purple-600'
   }
 ]
+
