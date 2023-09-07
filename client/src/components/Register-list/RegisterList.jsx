@@ -25,7 +25,7 @@ import { Pagination } from '../Utils/Pagination/Pagination'
 
 import { InscriptionApprentice, getInscriptions, readExcel } from '../../api/httpRequest'
 import { keysRoles } from '../../import/staticData'
-import { LoadingModal, Modals } from '../Utils/Modals/Modals'
+import { LoadingModal, ModalConfirm } from '../Utils/Modals/Modals'
 
 export const modalOptionList = {
   confirmModal: 'confirm',
@@ -224,7 +224,7 @@ export const RegisterList = () => {
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
-      {isModalOpen && modalOption === modalOptionList.confirmModal && <Modals setModalOption={handleModalOption} bodyConfirm title={'¿Está seguro?'} loadingFile={fileName} closeModal={handleCloseModal} />}
+      {isModalOpen && modalOption === modalOptionList.confirmModal && <ModalConfirm setModalOption={handleModalOption} title={'¿Está seguro?'} loadingFile={fileName} closeModal={handleCloseModal} />}
       {isModalOpen && modalOption === modalOptionList.loadingExcelModal && <LoadingExcelFileModal />}
       {isModalOpen && modalOption === modalOptionList.uploadingExcelModal && <UploadingExcelFileModal />}
       <Siderbar />

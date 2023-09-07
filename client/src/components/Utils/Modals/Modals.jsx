@@ -12,32 +12,9 @@ import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
 import { getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento, updateTeacherLider } from '../../../api/httpRequest'
 
-const Modals = ({ closeModal, title, bodyPassword = false, detallesBitacoras = false, subtitle = false, textSubtitle, bodyConfirm = false, bodyAccept = false, loadingFile, setModalOption, denyRegister = false, handleForm }) => {
-  const passwordIcons = {
-    openEye: <AiOutlineEye />,
-    closeEye: <AiOutlineEyeInvisible />
-  }
-
-  const passwordStatus = {
-    shown: 'text',
-    hidden: 'password'
-  }
-
-  const [showPassword, setShowPassword] = useState(passwordStatus.hidden)
-
-  const handlePassword = (id) => {
-    setShowPassword((prevState) => ({
-      ...prevState,
-      [id]: prevState[id] === passwordStatus.shown ? passwordStatus.hidden : passwordStatus.shown
-    }))
-  }
-
+const BitacoraModal = ({ closeModal, title }) => {
   const handleModal = () => {
     closeModal()
-  }
-
-  const continueLoadFile = () => {
-    setModalOption(modalOptionList.loadingExcelModal)
   }
 
   return (
@@ -46,160 +23,56 @@ const Modals = ({ closeModal, title, bodyPassword = false, detallesBitacoras = f
       <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
-          <h2 className={`text-xl font-medium text-center w-fit ${subtitle === true ? 'border-0' : 'border-b-1'} border-primary`}>{title}</h2>
-          {subtitle && <span className='w-1/2 text-sm font-light text-center border-b-1 border-primary'>{textSubtitle}</span>}
+          <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
         </header>
         <section className='flex-auto w-5/6 mx-auto'>
-          {/* ModalContraseña */}
-          {bodyPassword && (
-            <>
-              <form action='' className='flex flex-col gap-3 pt-6'>
-                <section className='grid grid-cols-2'>
-                  <label className='font-semibold w-fit whitespace-nowrap' htmlFor=''>
-                    Contraseña Anterior
-                  </label>
-                  <div className='relative w-full mx-auto text-gray-400'>
-                    <span className='absolute inset-y-0 right-[1%] flex transform cursor-pointer select-none items-center pr-3' onClick={() => handlePassword('oldPassword')}>
-                      {showPassword.oldPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
-                    </span>
-                    <input id='oldPassword' type={showPassword.oldPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' />
-                  </div>
-                </section>
-                <section className='grid grid-cols-2-50-50'>
-                  <label className='font-semibold w-fit whitespace-nowrap' htmlFor=''>
-                    Nueva Contraseña
-                  </label>
-                  <div className='relative w-full mx-auto text-gray-400'>
-                    <span className='absolute inset-y-0 right-[1%] flex transform cursor-pointer select-none items-center pr-3' onClick={() => handlePassword('newPassword')}>
-                      {showPassword.newPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
-                    </span>
-                    <input id='newPassword' type={showPassword.newPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' />
-                  </div>
-                </section>
-                <section className='grid grid-cols-2'>
-                  <label className='font-semibold w-fit whitespace-nowrap' htmlFor=''>
-                    Confirmar Contraseña
-                  </label>
-                  <div className='relative w-full mx-auto text-gray-400'>
-                    <span className='absolute inset-y-0 right-[1%] flex transform cursor-pointer select-none items-center pr-3' onClick={() => handlePassword('confirmPassword')}>
-                      {showPassword.confirmPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
-                    </span>
-                    <input id='confirmPassword' type={showPassword.confirmPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' />
-                  </div>
-                </section>
-                <div className='relative mx-auto my-5'>
-                  <span className='absolute inset-y-0 flex items-center text-white left-2'>
-                    <BsCheck2Circle />
-                  </span>
-                  <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
-                    Guardar
-                  </Button>
-                </div>
-              </form>
-            </>
-          )}
-          {detallesBitacoras && (
-            <>
-              <form action='' className='flex flex-col gap-3 pt-8'>
-                <section className='flex flex-col gap-2 md:flex-row'>
-                  <label className='font-medium'>Responsable</label>
-                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' />
-                </section>
-                <section className='flex flex-col gap-3 md:flex-row'>
-                  <label htmlFor='' className='font-medium whitespace-nowrap'>
-                    Fecha Creación
-                  </label>
-                  <input type='date' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none md:w-1/3' />
-                </section>
-                <section className='flex flex-col gap-3 md:flex-row'>
-                  <label htmlFor='' className='font-medium whitespace-nowrap'>
-                    Fecha Asignado
-                  </label>
-                  <input type='date' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none md:w-1/3' />
-                </section>
-                <section className='flex flex-col'>
-                  <label htmlFor='' className='font-medium'>
-                    Observaciones
-                  </label>
-                  <textarea name='' id='' rows='10' className='border-gray-400 focus:text-gray-900 max-h-[8rem] min-h-[2rem] w-full overflow-y-auto rounded-md border-[1.2px]  bg-white py-[0.9px] pl-3 text-base  text-black focus:bg-white focus:outline-none' placeholder='Digite alguna observación' />
-                </section>
+          <form action='' className='flex flex-col gap-3 pt-8'>
+            <section className='flex flex-col gap-2 md:flex-row'>
+              <label className='font-medium'>Responsable</label>
+              <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' />
+            </section>
+            <section className='flex flex-col gap-3 md:flex-row'>
+              <label htmlFor='' className='font-medium whitespace-nowrap'>
+                Fecha Creación
+              </label>
+              <input type='date' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none md:w-1/3' />
+            </section>
+            <section className='flex flex-col gap-3 md:flex-row'>
+              <label htmlFor='' className='font-medium whitespace-nowrap'>
+                Fecha Asignado
+              </label>
+              <input type='date' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none md:w-1/3' />
+            </section>
+            <section className='flex flex-col'>
+              <label htmlFor='' className='font-medium'>
+                Observaciones
+              </label>
+              <textarea name='' id='' rows='10' className='border-gray-400 focus:text-gray-900 max-h-[8rem] min-h-[2rem] w-full overflow-y-auto rounded-md border-[1.2px]  bg-white py-[0.9px] pl-3 text-base  text-black focus:bg-white focus:outline-none' placeholder='Digite alguna observación' />
+            </section>
 
-                <div className='flex flex-row my-5'>
-                  <div className='relative mr-auto'>
-                    <Button bg={'bg-coffee/75'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
-                      Editar
-                    </Button>
-                  </div>
-                  <div className='relative ml-auto'>
-                    <span className='absolute inset-y-0 flex items-center text-white left-2'>
-                      <IoSearchOutline />
-                    </span>
-                    <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
-                      Buscar
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            </>
-          )}
-          {bodyConfirm && (
-            <>
-              <section className='my-3'>
-                <p className='text-center text-slate-400/90'>
-                  Archivo a cargar: <span className='text-blue-500'>{loadingFile}</span>
-                </p>
-                <p className='text-lg font-bold text-center text-red-500 underline'>¡No podrás deshacer está acción!</p>
-                <section className='mt-3'>
-                  <div className='flex items-center justify-between gap-3'>
-                    <Button bg='bg-green-500' rounded='rounded-md' py='py-1.5' hover='bg-green-800' textSize='text-base' px='px-10' onClick={continueLoadFile}>
-                      Continuar
-                    </Button>
-                    <Button bg='bg-red-500' rounded='rounded-md' py='py-1.5' hover='bg-red-800' textSize='text-base' px='px-10' onClick={handleModal}>
-                      Deshacer
-                    </Button>
-                  </div>
-                </section>
-              </section>
-            </>
-          )}
-          {bodyAccept && (
-            <>
-              <section className='mx-8 my-6'>
-                <h2 className='text-lg font-bold text-center text-green-500'>¡Archivo cargado correctamente!</h2>
-                <section className='mt-3'>
-                  <div className='flex items-center justify-between gap-3'>
-                    <Button bg='bg-slate-500' hover='bg-slate-700' textSize='text-base' px='px-10' onClick={handleModal}>
-                      Aceptar
-                    </Button>
-                  </div>
-                </section>
-              </section>
-            </>
-          )}
-          {denyRegister && (
-            <>
-              <section className='p-4'>
-                <form className='flex flex-col justify-center gap-4' onSubmit={handleForm}>
-                  <div>
-                    <label htmlFor='observations' className='text-sm font-light'>
-                      Observaciones
-                    </label>
-                    <textarea name='observations' id='editor' rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
-                  </div>
-                  <Button bg='bg-primary' hover='bg-green-800' textSize='text-base' px='px-10' type={'submit'}>
-                    Enviar
-                  </Button>
-                </form>
-              </section>
-            </>
-          )}
+            <div className='flex flex-row my-5'>
+              <div className='relative mr-auto'>
+                <Button bg={'bg-coffee/75'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                  Editar
+                </Button>
+              </div>
+              <div className='relative ml-auto'>
+                <span className='absolute inset-y-0 flex items-center text-white left-2'>
+                  <IoSearchOutline />
+                </span>
+                <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                  Buscar
+                </Button>
+              </div>
+            </div>
+          </form>
         </section>
       </section>
     </section>
   )
 }
 
-export const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
+const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
   const handleModal = () => {
     closeModal()
   }
@@ -220,7 +93,106 @@ export const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) =>
   )
 }
 
-export const InfoStudentModal = ({ closeModal, title, emailStudent, documentStudent, cellPhoneNumber, program, courseNumber, academicLevel, formationStage, modalitie, lectivaEnd, productiveStart, company, innmediateSuperior, positionSuperior, emailSuperior, celphoneSuperior, arl }) => {
+const PasswordModal = ({ closeModal, title }) => {
+  const handleModal = () => {
+    closeModal()
+  }
+
+  const passwordIcons = {
+    openEye: <AiOutlineEye />,
+    closeEye: <AiOutlineEyeInvisible />
+  }
+
+  const passwordStatus = {
+    shown: 'text',
+    hidden: 'password'
+  }
+
+  const [showOldPassword, setShowOldPassword] = useState(passwordStatus.hidden)
+  const [showNewPassword, setShowNewPassword] = useState(passwordStatus.hidden)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(passwordStatus.hidden)
+  const formValuesRef = useRef({})
+
+  const handleOldPassword = () => (showOldPassword === passwordStatus.shown ? setShowOldPassword(passwordStatus.hidden) : setShowOldPassword(passwordStatus.shown))
+  const handleNewPassword = () => (showNewPassword === passwordStatus.shown ? setShowNewPassword(passwordStatus.hidden) : setShowNewPassword(passwordStatus.shown))
+  const handleConfirmPassword = () => (showConfirmPassword === passwordStatus.shown ? setShowConfirmPassword(passwordStatus.hidden) : setShowConfirmPassword(passwordStatus.shown))
+
+  const handleInputChange = (e, index) => {
+    const { name, value } = e.target
+    formValuesRef.current = {
+      ...formValuesRef.current,
+      [index]: {
+        ...formValuesRef.current[index],
+        [name]: value
+      }
+    }
+  }
+
+  return (
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
+      <section className={`relative flex h-auto flex-col rounded-2xl bg-white bounce`}>
+        <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
+        <header className='grid pt-5 place-items-center '>
+          <h2 className={`text-xl font-medium text-center w-fit border-b-1 border-primary`}>{title}</h2>
+        </header>
+        <section className='flex justify-center'>
+          <section className='w-11/12 p-4'>
+            <form action='' className='flex flex-col gap-3 pt-6'>
+              <section className='grid grid-cols-2'>
+                <label className='font-semibold w-fit whitespace-nowrap' htmlFor=''>
+                  Contraseña Anterior
+                </label>
+                <div className='relative w-full mx-auto text-gray-400'>
+                  <span onClick={handleOldPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
+                    {showOldPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
+                  </span>
+                  <input type={showOldPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' onChange={(e) => handleInputChange(e)} />
+                </div>
+              </section>
+              <section className='grid grid-cols-2-50-50'>
+                <label className='font-semibold w-fit whitespace-nowrap' htmlFor=''>
+                  Nueva Contraseña
+                </label>
+                <div className='relative w-full mx-auto text-gray-400'>
+                  <div className='relative w-full mx-auto text-gray-400'>
+                    <span onClick={handleNewPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
+                      {showNewPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
+                    </span>
+                    <input type={showNewPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' onChange={(e) => handleInputChange(e)} />
+                  </div>
+                </div>
+              </section>
+              <section className='grid grid-cols-2'>
+                <label className='font-semibold w-fit whitespace-nowrap' htmlFor=''>
+                  Confirmar Contraseña
+                </label>
+                <div className='relative w-full mx-auto text-gray-400'>
+                  <div className='relative w-full mx-auto text-gray-400'>
+                    <span onClick={handleConfirmPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
+                      {showConfirmPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
+                    </span>
+                    <input type={showConfirmPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' onChange={(e) => handleInputChange(e)} />
+                  </div>
+                </div>
+              </section>
+              <div className='relative mx-auto my-5'>
+                <span className='absolute inset-y-0 flex items-center text-white left-2'>
+                  <BsCheck2Circle />
+                </span>
+                <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                  Guardar
+                </Button>
+              </div>
+            </form>
+          </section>
+        </section>
+      </section>
+    </section>
+  )
+}
+
+const InfoStudentModal = ({ closeModal, title, emailStudent, documentStudent, cellPhoneNumber, program, courseNumber, academicLevel, formationStage, modalitie, lectivaEnd, productiveStart, company, innmediateSuperior, positionSuperior, emailSuperior, celphoneSuperior, arl }) => {
   const handleModal = () => {
     closeModal()
   }
@@ -314,7 +286,7 @@ export const InfoStudentModal = ({ closeModal, title, emailStudent, documentStud
   )
 }
 
-export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion, setNotify, emptyLeader, emptyPractical }) => {
+const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion, setNotify, emptyLeader, emptyPractical }) => {
   const handleModal = () => {
     closeModal()
   }
@@ -458,6 +430,48 @@ export const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_fo
   )
 }
 
+const ModalConfirm = ({ closeModal, title, loadingFile, setModalOption }) => {
+  const handleModal = () => {
+    closeModal()
+  }
+
+  const continueLoadFile = () => {
+    setModalOption(modalOptionList.loadingExcelModal)
+  }
+
+  return (
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
+      <section className={`relative flex h-auto  flex-col rounded-2xl bg-white bounce`}>
+        <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
+        <header className='grid pt-5 place-items-center '>
+          <h2 className={`text-xl font-medium text-center w-fit border-b-1 border-primary`}>{title}</h2>
+        </header>
+        <section className='flex justify-center'>
+          <section className='w-11/12 p-4'>
+            <section className='my-3'>
+              <p className='text-center text-slate-400/90'>
+                Archivo a cargar: <span className='text-blue-500'>{loadingFile}</span>
+              </p>
+              <p className='text-lg font-bold text-center text-red-500 underline'>¡No podrás deshacer está acción!</p>
+              <section className='mt-3'>
+                <div className='flex items-center justify-between gap-3'>
+                  <Button bg='bg-green-500' rounded='rounded-md' py='py-1.5' hover='bg-green-800' textSize='text-base' px='px-10' onClick={continueLoadFile}>
+                    Continuar
+                  </Button>
+                  <Button bg='bg-red-500' rounded='rounded-md' py='py-1.5' hover='bg-red-800' textSize='text-base' px='px-10' onClick={handleModal}>
+                    Deshacer
+                  </Button>
+                </div>
+              </section>
+            </section>
+          </section>
+        </section>
+      </section>
+    </section>
+  )
+}
+
 const DenyModal = ({ closeModal, title, id, setNotify }) => {
   const formRef = useRef()
 
@@ -520,4 +534,4 @@ const LoadingModal = ({ children, title = 'Cargando' }) => {
   )
 }
 
-export { Modals, DenyModal, LoadingModal }
+export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal }

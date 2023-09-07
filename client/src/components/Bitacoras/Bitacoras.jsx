@@ -2,29 +2,18 @@ import { useState } from 'react'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
-import { Modals } from '../Utils/Modals/Modals'
-import { filter, testInscriptions } from '../../import/staticData'
+import { BitacoraModal } from '../Utils/Modals/Modals'
+import { testInscriptions } from '../../import/staticData'
 import { AiOutlineEye } from 'react-icons/ai'
 import { Button } from '../Utils/Button/Button'
 
 const Bitacoras = () => {
-  const [mostrarModal, setMostrarModal] = useState(false)
   const [filteredData, setFilteredData] = useState([])
   const [modalDetalles, setModalDetalles] = useState()
-
-  const handleIconClick = () => {
-    setMostrarModal(!mostrarModal)
-  }
-
-  const handleModal = () => {
-    setMostrarModal(!mostrarModal)
-  }
 
   const handleDetalles = () => {
     setModalDetalles(!modalDetalles)
   }
-
-  const filterBitacoras = filter.filterBitacoras
 
   const filterEstado = (estado) => {
     const filtered = testInscriptions.data.filter((x) => {
@@ -36,13 +25,12 @@ const Bitacoras = () => {
 
   return (
     <>
-      {mostrarModal && <Modals bodyFilter view={filterBitacoras} title={'Bitacoras'} closeModal={handleModal} />}
-      {modalDetalles && <Modals detallesBitacoras title={'Detalles'} closeModal={handleDetalles} />}
+      {modalDetalles && <BitacoraModal title={'Detalles'} closeModal={handleDetalles} />}
       <main className='flex flex-row min-h-screen'>
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
           <header className='grid place-items-center'>
-            <Search filter iconClick={handleIconClick} />
+            <Search filter />
           </header>
           <div>
             <section className='w-11/12 mx-auto'>
@@ -139,4 +127,3 @@ const Bitacoras = () => {
 }
 
 export { Bitacoras }
-

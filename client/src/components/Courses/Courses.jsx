@@ -69,7 +69,6 @@ export const Courses = () => {
     }, 100)
   }
 
-  console.log(coursesOriginal)
   const ShowFilter = (filterType) => {
     if (filterType === 'etapa') setFiltersButtons({ etapa: !filtersButtons.etapa, nivel: false, fecha: false, inicioPractica: false })
     if (filterType === 'nivel') setFiltersButtons({ nivel: !filtersButtons.nivel, modalidad: false, fecha: false, inicioPractica: false })
