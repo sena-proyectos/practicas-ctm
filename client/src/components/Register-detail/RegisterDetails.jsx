@@ -20,6 +20,7 @@ import { AiOutlineFullscreen } from 'react-icons/ai'
 import { checkApprovementData } from '../../validation/approvementValidation'
 import Cookies from 'js-cookie'
 import decode from 'jwt-decode'
+import { Card3D } from '../Utils/Card/Card'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
@@ -236,16 +237,71 @@ const InfoEmpresa = ({ inscriptionAprendiz }) => {
 }
 
 const Coordinador = ({ idRol, avalCoordinador }) => {
+  const { id } = useParams()
   const [avalInfo, setAvalInfo] = useState([])
+  const [dataAprendiz, setDataAprendiz] = useState([])
+  const [dataEmpresa, setDataEmpresa ] = useState([])
+  const [idUser, setIdUser] = useState([])
+  const [user, setUser] = useState(0)
+  const prevUserIdRef = useRef()
+
+  useEffect(() => {
+    prevUserIdRef.current = idUser
+  }, [idUser])
+  useEffect(() => {
+    if (prevUserIdRef.current !== undefined) {
+      // Realiza la lógica que necesitas cuando idUser cambia después de la primera vez.
+      getUser(idUser)
+    }
+  }, [idUser])
+  useEffect(() => {
+    if (avalCoordinador) fetchRaps()
+  }, [avalCoordinador])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getInscriptionAprendiz(id)
+      await getDetallesInscripcion(id)
+    }
+    fetchData()
+  }, [id])
+
+  const getInscriptionAprendiz = async (id) => {
+    try {
+      const response = await getInscriptionById(id)
+      const res = response.data.data
+      setDataAprendiz(res)
+    } catch (error) {
+      console.log('Ha ocurrido un error al mostrar los datos del usuario')
+    }
+  }
+  const getDetallesInscripcion = async (id) => {
+    try {
+      const response = await getInscriptionDetails(id)
+      const res = response.data.data
+      const res2 = response.data.data[1].responsable_aval
+      console.log(res)
+      console.log(res2)
+      setDataEmpresa(res)
+      setIdUser(res2)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const getUser = async (id) => {
+    const response = await getUserById(id)
+    const res = response.data.data[0].nombres_usuario
+    const res2 = response.data.data[0].apellidos_usuario
+    console.log(res)
+    setUser(res + ' ' + res2)
+  }
+
   const fetchRaps = async () => {
     const res = await getAvalById(avalCoordinador)
     const { data } = res.data
     setAvalInfo(data)
   }
 
-  useEffect(() => {
-    if (avalCoordinador) fetchRaps()
-  }, [avalCoordinador])
 
   const option = [
     { value: 'Sergio Soto Henao', key: 'Sergio Soto Henao' },
@@ -254,7 +310,41 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     { value: 'Mauro Isaías Arango Vanegas', key: 'Mauro Isaías Arango Vanegas' }
   ]
   return (
-    <section className={`flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
+    <section className={`flex flex-col   w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
+      <section className='text-md'>
+        {dataAprendiz.map((item) => (
+          <div key={item.id_inscripcion} className='grid grid-cols-2'>
+            <div className='text-center'>
+              <h1 className='text-center'>INFORMACION DEL APRENDIZ </h1>
+              <div className='my-11'>
+                <p className='my-3'>
+                  {item.nombre_inscripcion} {item.apellido_inscripcion}
+                </p>
+                <p className='my-3'>{item.email_inscripcion}</p>
+                <p className='my-3'>
+                  {item.tipo_documento_inscripcion}: {item.documento_inscripcion}
+                </p>
+                <p className='my-3'>{item.modalidad_inscripcion === '1' ? 'Pasantías' : item.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : item.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : item.modalidad_inscripcion === '4' ? 'Monitoría' : item.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</p>
+              </div>
+            </div>
+            <div className='border-l-2 border-violet-800 px-4 '>
+              <h1 className='text-center'>AVALES</h1>
+              <div className='flex'>
+                <div className='w-full p-4 overflow-y-auto h-60 justify-center justify-items-center flex'>
+                  <div className='w-3/4 mx-10'>
+                    {dataEmpresa.map((item) => (
+                      <div className='my-4 justify-center justify-items-center' key={item.id_detalle_inscripcion}>
+                        <Card3D title={item.descripcion_detalle} header={item.estado_aval} item1={item.observaciones} item2={user} item1text={'Observaciones'} item2text={'Responsable del aval'} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
+      <section></section>
       <div className={` w-[95%] mx-auto`}>
         {avalInfo.map((aval) => {
           return (

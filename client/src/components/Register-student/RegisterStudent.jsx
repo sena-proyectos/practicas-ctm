@@ -55,7 +55,6 @@ export const RegisterStudent = () => {
     setShowDataEmpresa(section === 'empresa')
     setShowDataAprendiz(section === 'aprendiz')
   }
-
   // eslint-disable-next-line no-unused-vars
   const handleObservationChange = (event) => {
     setObservation(event.target.value)
@@ -81,6 +80,7 @@ export const RegisterStudent = () => {
         const response = res.data.data[0].id_usuario
         formValues.id_instructor_lider_inscripcion = response
       }
+      console.log(formValues)
 
       // if (archivo) {
       //   try {
@@ -126,6 +126,7 @@ export const RegisterStudent = () => {
 
     // validar que los campos de tipo number sean numeros
     ValidateInputsTypeNumber(formValues.numero_documento_inscripcion, formValues.numero_telefono_inscripcion, formValues.numero_ficha_inscripcion)
+    
 
     // validar que el numero de documento sea valido
     // enviar los datos al backend

@@ -30,7 +30,7 @@ export const Select = ({ options, placeholder, placeholderSearch, hoverColor, ho
               if (option.value.toLowerCase() !== selected.toLowerCase()) {
                 setSelected(option.value)
                 setOpen(false)
-                onSelect(option.key)
+                console.log(option.value)
               }
             }}
           >

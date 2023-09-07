@@ -44,7 +44,7 @@ export const Card = ({ title, titleColor, description, buttonText, bgColor = 'bg
   )
 }
 
-export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, onClick }) => {
+export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, item1text, item2text, item3text, item4text, onClick }) => {
   return (
     <div className='[perspective:1000px] group flex flex-col gap-1 rounded-xl md:h-[9.5rem] sm:h-[10rem] h-[8rem]' onClick={onClick}>
       <div className='relative w-full h-full rounded-xl transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] bg-white'>
@@ -64,20 +64,20 @@ export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, on
         </div>
         <div className='absolute w-full h-full shadow-lg rounded-xl border-slate-100 border-1  [transform:rotateY(180deg)] [backface-visibility:hidden] p-3 flex flex-col gap-1 justify-center'>
           <section className='flex flex-col items-center'>
-            <h6 className='text-xs font-medium'>Instructor de Seguimiento</h6>
+            <h6 className='text-xs font-medium'>{item1text}</h6>
             <p className='text-xs font-light'>{item1}</p>
           </section>
           <section className='flex flex-col items-center'>
-            <h6 className='text-xs font-medium'>Instructor Líder</h6>
+            <h6 className='text-xs font-medium'>{item2text}</h6>
             <p className='text-xs font-light'>{item2}</p>
           </section>
           <section className='grid grid-cols-2'>
             <section className='flex flex-col items-center'>
-              <h6 className='text-xs font-medium'>Final Lectiva</h6>
+              <h6 className='text-xs font-medium'>{item3text}</h6>
               <p className='text-xs font-light'>{item3}</p>
             </section>
             <section className='flex flex-col items-center'>
-              <h6 className='text-xs font-medium'>Inicio Práctica</h6>
+              <h6 className='text-xs font-medium'>{item4text}</h6>
               <p className='text-xs font-light'>{item4}</p>
             </section>
           </section>
