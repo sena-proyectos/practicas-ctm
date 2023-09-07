@@ -15,7 +15,7 @@ import { errorCodes } from '../models/errorCodes.enums.js'
  */
 export const getInscriptions = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const [inscriptions] = await connection.query('SELECT i.*, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END')
+    const [inscriptions] = await connection.query('SELECT i.*, m.nombre_modalidad, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i INNER JOIN modalidades m ON i.modalidad_inscripcion = m.id_modalidad LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END')
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -70,19 +70,18 @@ export const getInscriptionsDetailsById: RequestHandler<{ id: string }, Response
 
   try {
     const [inscriptions] = await connection.query('SELECT detalles_inscripciones.*, inscripciones.fecha_creacion FROM detalles_inscripciones LEFT JOIN inscripciones ON inscripciones.id_inscripcion = detalles_inscripciones.id_inscripcion WHERE detalles_inscripciones.id_detalle_inscripcion = ?', [idNumber])
-    const formattedInscriptions = (inscriptions as Array<{ fecha_modificacion: Date, fecha_creacion: Date }>).map((inscription) => {
+    const formattedInscriptions = (inscriptions as Array<{ fecha_modificacion: Date; fecha_creacion: Date }>).map((inscription) => {
       const formattedDate = new Date(inscription.fecha_modificacion).toLocaleString()
       const formattedDateCreation = new Date(inscription.fecha_creacion).toLocaleDateString()
-      return { ...inscription, fecha_modificacion: formattedDate, fecha_creacion: formattedDateCreation };
-    });
+      return { ...inscription, fecha_modificacion: formattedDate, fecha_creacion: formattedDateCreation }
+    })
 
-    return res.status(httpStatus.OK).json({ data: formattedInscriptions });
+    return res.status(httpStatus.OK).json({ data: formattedInscriptions })
   } catch (err) {
     console.log(err)
-    return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'));
+    return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
   }
 }
-
 
 /**
  * @description Obtiene una inscripción por su ID.
