@@ -471,78 +471,6 @@ export const estadoIcons = {
 }
 
 /*
- * src: src\components\Utils\Modals\Modals.jsx
- */
-export const filter = {
-  filterStudents: [
-    {
-      type: 'text',
-      name: 'ficha',
-      placeholder: '2473196',
-      label: 'Fichas:'
-    },
-    {
-      type: 'text',
-      name: 'programaFormacion',
-      placeholder: 'ADSO',
-      label: 'Programa de formación:'
-    },
-    {
-      type: 'select',
-      name: 'modalitie',
-      placeholder: 'Sin seleccionar',
-      label: 'Modalidad:'
-    }
-  ],
-  filterVisits: [
-    {
-      type: 'date',
-      name: 'fechaInicio',
-      placeholder: '2021-01-01',
-      label: 'Fecha inicio'
-    },
-    {
-      type: 'date',
-      name: 'fechaFin',
-      placeholder: '2021-01-01',
-      label: 'Fecha fin'
-    },
-    {
-      type: 'text',
-      name: 'ficha',
-      placeholder: '2473196',
-      label: 'Ficha'
-    },
-    {
-      type: 'text',
-      name: 'empresa',
-      placeholder: 'Empresa',
-      label: 'Empresa'
-    }
-  ],
-  filterBitacoras: [
-    {
-      type: 'text',
-      name: 'ficha',
-      placeholder: '2473196',
-      label: 'Fichas'
-    },
-    {
-      type: 'text',
-      name: 'programaFormacion',
-      placeholder: 'ADSO',
-      label: 'Programa de formación'
-    },
-    {
-      type: 'text',
-      name: 'nombreAprendiz',
-      placeholder: 'Juan Perez',
-      label: 'Nombre Aprendiz'
-    }
-  ]
-}
-
-/*
  * src: src\components\Bitacoras\Bitacoras.jsx
  */
 export const testInscriptions = {
@@ -648,4 +576,3 @@ export const colorsOddRow = [
     linkcolor: 'bg-purple-600'
   }
 ]
-
