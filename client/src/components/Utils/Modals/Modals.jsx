@@ -7,7 +7,6 @@ import { BsCheck2Circle } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
 
 // componentes
-import { modalities } from '../../../import/staticData'
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
@@ -200,64 +199,21 @@ const Modals = ({ closeModal, title, bodyPassword = false, detallesBitacoras = f
   )
 }
 
-export const FilterModal = ({ closeModal, title, view, stylesFilterVisits = false }) => {
+export const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
   const handleModal = () => {
     closeModal()
   }
 
-  const option = modalities.map((modality) => ({
-    value: modality.name,
-    key: modality.value
-  }))
-
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
-      <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+      <section className={`relative flex h-auto ${width} flex-col rounded-2xl bg-white bounce`}>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
-          <h2 className={`text-xl font-medium text-center w-fit 'border-b-1' border-primary`}>{title}</h2>
+          <h2 className={`text-xl font-medium text-center w-fit border-b-1 border-primary`}>{title}</h2>
         </header>
         <section className='flex justify-center'>
-          <section className='w-11/12 p-4'>
-            <form action=''>
-              <section className={`${stylesFilterVisits === false ? 'my-4 flex flex-col justify-center gap-3 pt-2' : 'grid grid-cols-2 grid-rows-2-50-50 gap-x-9 gap-y-3 pb-6 pt-4 '}`}>
-                {view.map((filtro, i) => {
-                  return (
-                    <section key={i}>
-                      <div className={`${stylesFilterVisits === false ? 'grid grid-cols-1 md:grid-cols-2-45-55' : 'flex flex-col '}`}>
-                        <label className='font-semibold ' htmlFor=''>
-                          {filtro.label}
-                        </label>
-                        <div>
-                          {filtro.type === 'date' ? (
-                            <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none ${stylesFilterVisits === false ? 'w-full' : 'w-full'}`} />
-                          ) : filtro.type === 'text' ? (
-                            <input type={filtro.type} name={filtro.name} placeholder={filtro.placeholder} className={`border-gray-400 focus:text-gray-900 rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none ${stylesFilterVisits === false ? 'w-full' : 'w-full'}`} />
-                          ) : filtro.type === 'select' ? (
-                            <Select options={option} placeholder={'Seleccione la modalidad'} hoverColor='hover:bg-slate-600' hoverTextColor='hover:text-white' placeholderSearch='Ingrese nombre instructor' selectedColor='bg-slate-600 text-white' rounded='rounded-md' py='py-[2.6px]' borderColor='border-slate-500' textSize={'text-sm'} />
-                          ) : null}
-                        </div>
-                      </div>
-                    </section>
-                  )
-                })}
-              </section>
-              <div className={`grid w-fit grid-cols-2 mx-auto my-5 gap-5' `}>
-                <Button bg={'bg-primary'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
-                  Limpiar
-                </Button>
-                <div className='relative mx-auto'>
-                  <span className='absolute inset-y-0 flex items-center text-white left-2'>
-                    <IoSearchOutline />
-                  </span>
-                  <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
-                    Buscar
-                  </Button>
-                </div>
-              </div>
-            </form>
-          </section>
+          <section className='w-11/12 p-4'>{children}</section>
         </section>
       </section>
     </section>
