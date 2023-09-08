@@ -108,34 +108,9 @@ export const RegisterList = () => {
     const fileData = new FormData()
     fileData.append('excelFile', file)
     const { data, code } = await (await readExcel(fileData)).data
-    console.log(data, code)
-    const dataToSend = data.map((item) => {
+    const dataToSend = data.map((item, index) => {
       return {
-        nombre_inscripcion: item['Nombres completos'],
-        apellido_inscripcion: item['Apellidos completos'],
-        tipo_documento_inscripcion: item['Tipo de Documento de Identidad'],
-        documento_inscripcion: item['Numero de documento del aprendiz'],
-        email_inscripcion: item['Correo electronico del aprendiz'],
-        inscripcion_celular: item['Numero de celular del aprendiz'],
-        etapa_actual_inscripcion: item['Etapa de formacion'],
-        modalidad_inscripcion: item['Modalidad etapa practica'],
-        nombre_programa_inscripcion: item['Nombre del programa'],
-        nivel_formacion_inscripcion: item['Nivel de formacion'],
-        numero_ficha_inscripcion: item['Numero de ficha'],
-        fecha_fin_lectiva_inscripcion: item['Fecha de terminacion de la etapa lectiva'],
-        nombre_instructor_lider_inscripcion: item['Nombre completo del instructor lider'],
-        email_instructor_lider_inscripcion: item['Correo del instructor lider'],
-        apoyo_sostenimiento_inscripcion: item['Apoyos de sostenimiento'],
-        nit_empresa_inscripcion: item['NIT de la empresa'] ?? null,
-        nombre_empresa_inscripcion: item['Nombre de la empresa'] ?? null,
-        direccion_empresa_inscripcion: item['Direccion de la empresa'] ?? null,
-        nombre_jefe_empresa_inscripcion: item['Nombre completo jefe inmediato'] ?? null,
-        cargo_jefe_empresa_inscripcion: item['Cargo contacto jefe inmediato'] ?? null,
-        telefono_jefe_empresa_inscripcion: item['Teléfono de la Empresa o Jefe inmediato'] ?? null,
-        email_jefe_empresa_inscripcion: item['Correo electronico de la empresa o jefe inmediato'] ?? null,
-        arl: item['¿Quién asume el pago de la ARL?'] ?? null,
-        link_documentos: item.Documentos,
-        observaciones: item.Observaciones,
+        ...data[index],
         responsable_inscripcion: username
       }
     })
@@ -146,7 +121,7 @@ export const RegisterList = () => {
 
   const uploadExcelFile = async (payload, code) => {
     try {
-      // await InscriptionApprentice(payload)
+      await InscriptionApprentice(payload)
       setModalOption(code)
       setTimeout(() => {
         handleCloseModal()

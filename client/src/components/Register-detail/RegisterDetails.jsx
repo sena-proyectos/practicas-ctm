@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { LuSave } from 'react-icons/lu'
 import { IoReturnDownBack } from 'react-icons/io5'
 import { PiCheckCircleBold, PiXCircleBold } from 'react-icons/pi'
+import { FaGoogleDrive } from 'react-icons/fa'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -26,6 +27,7 @@ export const RegisterDetails = () => {
   const idRol = Number(localStorage.getItem('idRol'))
   const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
   const [details, setDetails] = useState({})
+  const [linkDocs, setLinkDocs] = useState('')
 
   useEffect(() => {
     getInscriptionAprendiz(id)
@@ -50,6 +52,8 @@ export const RegisterDetails = () => {
     try {
       const response = await getInscriptionById(id)
       const res = response.data.data
+      const { link_documentos } = res[0]
+      setLinkDocs(link_documentos)
       setInscriptionAprendiz(res)
     } catch (error) {
       console.log('Ha ocurrido un error al mostrar los datos del usuario')
@@ -104,7 +108,7 @@ export const RegisterDetails = () => {
             <InfoEmpresa inscriptionAprendiz={inscriptionAprendiz} />
           </div>
           <div className={`${selectedTab === 'documentos' ? 'visible h-full' : 'hidden'}`}>
-            <Docs idRol={idRol} avalDocumentos={details.documentosId} avalFunciones={details.funcionesId} />
+            <Docs idRol={idRol} linkDocs={linkDocs} avalDocumentos={details.documentosId} avalFunciones={details.funcionesId} />
           </div>
           <div className={`${selectedTab === 'raps' ? 'visible' : 'hidden'}`}>
             <RAPS idRol={idRol} avalRaps={details.rapsId} />
@@ -294,10 +298,28 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   )
 }
 
-const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
+const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
   const iFrameRef = useRef(null)
+  const [showDriveButton, setShowDriveButton] = useState(null)
 
   const [notify, setNotify] = useState(false)
+
+  const checkDriveLink = (linkDocs) => {
+    const regex = /folders/i
+    const testRegex = regex.test(linkDocs)
+    if (testRegex) {
+      setShowDriveButton(true)
+      return true
+    }
+    return false
+  }
+
+  useEffect(() => {
+    if (linkDocs) {
+      const checkLink = checkDriveLink(linkDocs)
+      console.log(checkLink)
+    }
+  }, [linkDocs])
 
   useEffect(() => {
     if (notify) {
@@ -329,21 +351,36 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones }) => {
   return (
     <>
       <section className='grid grid-cols-2 w-[95%] h-full gap-3 mx-auto'>
-        <section className='flex flex-col gap-3'>
-          <header className='grid grid-cols-2'>
-            <section className='flex items-center'>
-              <h2>Documentación </h2>
+        {showDriveButton === true ? (
+          <section className='flex flex-col gap-3'>
+            <header className='grid grid-cols-2'>
+              <section className='flex items-center'>
+                <h2>Documentación </h2>
+              </section>
+            </header>
+            <section className='flex items-center justify-center gap-3 h-5/6'>
+              <Link target='_blank' to={linkDocs} className='flex items-center justify-around gap-2 px-3 py-1 text-base font-medium text-white bg-[#4688F4] shadow-lg rounded-xl shadow-[#4688F4]/50'>
+                Ir a la carpeta <FaGoogleDrive />
+              </Link>
             </section>
-            <section className='grid items-center justify-end'>
-              <Button textSize='text-base' bg='bg-gray-400' px='px-[2px]' py='py-[2px]' rounded='rounded-2xl' hover hoverConfig='bg-gray-600' type='button' onClick={handleFullScreenIFrame}>
-                <AiOutlineFullscreen />
-              </Button>
-            </section>
-          </header>
-          <section className='flex flex-col justify-center gap-3 h-5/6'>
-            <iframe src='https://drive.google.com/file/d/1_aTWCNT9eE32X2E9f8w26OjzwJKGJc-v/preview' className='w-full h-full' loading='lazy' allowFullScreen ref={iFrameRef}></iframe>
           </section>
-        </section>
+        ) : (
+          <section className='flex flex-col gap-3'>
+            <header className='grid grid-cols-2'>
+              <section className='flex items-center'>
+                <h2>Documentación </h2>
+              </section>
+              <section className='grid items-center justify-end'>
+                <Button textSize='text-base' bg='bg-gray-400' px='px-[2px]' py='py-[2px]' rounded='rounded-2xl' hover hoverConfig='bg-gray-600' type='button' onClick={handleFullScreenIFrame}>
+                  <AiOutlineFullscreen />
+                </Button>
+              </section>
+            </header>
+            <section className='flex flex-col justify-center gap-3 h-5/6'>
+              <iframe src={linkDocs} className='w-full h-full' loading='lazy' allowFullScreen ref={iFrameRef}></iframe>
+            </section>
+          </section>
+        )}
         <section className='flex flex-col w-[95%] gap-6 mx-auto'>
           <FullDocsApproval idRol={idRol} avalDocumentos={avalDocumentos} />
           <hr className='w-3/4 mx-auto border-[1px] text-neutral-400' />
@@ -676,7 +713,7 @@ const RAPS = ({ idRol, avalRaps }) => {
       <section className='h-'>
         <h2>RAPS</h2>
         <section className='h-5/6'>
-          <iframe src='https://www.youtube.com/embed/bTdbjzGCl-w' allowFullScreen className='w-full h-full'></iframe>
+          <iframe src='https://www.youtube.com/embed/p1aAgS-Lns4?si=5DjDbeb5iFakh1jS' title='YouTube video player' allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen className='w-full h-full'></iframe>
         </section>
       </section>
       <section className='flex flex-col w-[95%] gap-2 mx-auto'>
