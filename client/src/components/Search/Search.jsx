@@ -3,7 +3,7 @@ import { LuSettings2 } from 'react-icons/lu'
 import { Button } from '../Utils/Button/Button'
 import { useRef, useEffect } from 'react'
 
-const Search = ({ searchStudent, searchFilter = false, filter = false, iconClick }) => {
+const Search = ({ searchStudent, searchFilter = false, filter = false, icon = false, iconClick, placeholder }) => {
   const search = useRef()
   const debounceTimeout = useRef(null)
 
@@ -35,12 +35,14 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, iconClick
             <Button bg={'bg-transparent'} rounded='rounded-md' font='font-semibold' textSize='text-lg' px='px-3' textColor='text-black' className='absolute right-[6px]'>
               <IoSearchOutline />
             </Button>
-            <input type='text' placeholder='Busca a un aprendiz' className='flex-1 py-1 bg-transparent outline-none w-fit rounded-3xl focus:placeholder-transparent' ref={search} name='nombreCompleto' autoComplete='off' />
-            <article className='absolute right-[8px] w-fit'>
-              <Button bg={'bg-transparent'} px={'px-3'} textColor='text-black' onClick={iconClick}>
-                <LuSettings2 />
-              </Button>
-            </article>
+            <input type='text' placeholder={placeholder} className='flex-1 py-1 bg-transparent outline-none w-fit rounded-3xl focus:placeholder-transparent' ref={search} name='nombreCompleto' autoComplete='off' />
+            {icon && (
+              <article className='absolute right-[8px] w-fit flex items-center'>
+                <Button bg={'bg-transparent'} px={'px-3'} textColor='text-black' onClick={iconClick}>
+                  <LuSettings2 />
+                </Button>
+              </article>
+            )}
           </form>
         </>
       )}

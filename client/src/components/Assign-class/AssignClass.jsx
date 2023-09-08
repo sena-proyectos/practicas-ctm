@@ -97,7 +97,7 @@ export const AssignClass = () => {
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
           <header className='grid place-items-center'>
-            <Search searchFilter />
+            <Search searchFilter placeholder={'Busca una ficha'} />
           </header>
           <section>
             <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>

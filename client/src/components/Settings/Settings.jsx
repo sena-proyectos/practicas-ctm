@@ -5,9 +5,9 @@ import { BsCheck2Circle } from 'react-icons/bs'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
-import { Modals } from '../Utils/Modals/Modals'
+import { PasswordModal } from '../Utils/Modals/Modals'
 
-const Settings = () => {
+export const Settings = () => {
   const [mostrarModal, setMostrarModal] = useState(false)
 
   const handleEditModal = () => {
@@ -19,7 +19,7 @@ const Settings = () => {
   }
   return (
     <>
-      {mostrarModal && <Modals bodyPassword title={'Cambiar Contraseña'} closeModal={handleModal} />}
+      {mostrarModal && <PasswordModal bodyPassword title={'Cambiar Contraseña'} closeModal={handleModal} />}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-2-90-10'>
@@ -85,6 +85,3 @@ const Settings = () => {
     </>
   )
 }
-
-export { Settings }
-

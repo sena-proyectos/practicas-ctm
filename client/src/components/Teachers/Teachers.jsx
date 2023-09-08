@@ -57,7 +57,7 @@ export const Teachers = () => {
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
-          <Search searchFilter />
+          <Search searchFilter placeholder={'Busca un instructor'} />
         </header>
         <section className='flex flex-col h-full gap-3'>
           <section className='grid grid-cols-1 gap-x-3 gap-y-4 md:grid-cols-4 px-8 md:px-12 pt-6 md:gap-y-2 md:gap-x-8 h-fit md:h-[85%] st1:grid-cols-3 st1:gap-y-4 st2:gap-y-4 st2:grid-cols-2'>
