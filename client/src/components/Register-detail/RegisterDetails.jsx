@@ -16,14 +16,17 @@ import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { colorTextStatus, keysRoles } from '../../import/staticData'
 
-import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate } from '../../api/httpRequest'
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail } from '../../api/httpRequest'
 import { AiOutlineFullscreen } from 'react-icons/ai'
 import { checkApprovementData } from '../../validation/approvementValidation'
 import Cookies from 'js-cookie'
 import decode from 'jwt-decode'
+import { inscriptionStore } from '../../store/config'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
+  const { setInscriptionData } = inscriptionStore()
+
   const idRol = Number(localStorage.getItem('idRol'))
   const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
   const [details, setDetails] = useState({})
@@ -52,6 +55,7 @@ export const RegisterDetails = () => {
     try {
       const response = await getInscriptionById(id)
       const res = response.data.data
+      setInscriptionData(res[0])
       const { link_documentos } = res[0]
       setLinkDocs(link_documentos)
       setInscriptionAprendiz(res)
@@ -316,8 +320,7 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
 
   useEffect(() => {
     if (linkDocs) {
-      const checkLink = checkDriveLink(linkDocs)
-      console.log(checkLink)
+      checkDriveLink(linkDocs)
     }
   }, [linkDocs])
 
@@ -395,18 +398,26 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
   const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
   const [nameResponsableFunciones, setNameResponsableFunciones] = useState('')
 
-  const fetchDataFunciones = async () => {
-    const res = await getAvalById(avalFunciones)
-    const { data } = res.data
-    const response = await getUserById(data[0].responsable_aval)
-    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
-    const fullName = `${nombres_usuario} ${apellidos_usuario}`
-    setNameResponsableFunciones(fullName)
-    setAvalInfoFunciones(data[0])
+  const fetchDataFunciones = async (payload) => {
+    if (!payload) return
+    try {
+      const res = await getAvalById(payload)
+      const { data } = await res.data
+      const response = await getUserById(data[0].responsable_aval)
+      const { nombres_usuario, apellidos_usuario } = await response.data.data[0]
+      const fullName = `${nombres_usuario} ${apellidos_usuario}`
+      setNameResponsableFunciones(fullName)
+      setAvalInfoFunciones(data[0])
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   useEffect(() => {
-    if (avalFunciones) fetchDataFunciones()
+    console.log(avalFunciones)
+    if (avalFunciones !== undefined) {
+      fetchDataFunciones(avalFunciones)
+    }
   }, [avalFunciones])
 
   return (
@@ -620,6 +631,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
 const RAPS = ({ idRol, avalRaps }) => {
   const formRef = useRef(null)
   const descriptionRef = useRef(null)
+  const { inscriptionData } = inscriptionStore()
   const [avalInfo, setAvalInfo] = useState({})
   const [nameResponsable, setNameResponsable] = useState('')
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
@@ -670,6 +682,7 @@ const RAPS = ({ idRol, avalRaps }) => {
         toastId: 'loadingToast'
       })
       if (selectedApproveButton === approveOptions.Si) return acceptApprove({ observations, approveOption, avalRaps }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyApprove({ observations, approveOption, avalRaps }, loadingToast)
     } catch (err) {
       console.log(err)
       if (toast.isActive('error-full-docs')) return
@@ -688,7 +701,7 @@ const RAPS = ({ idRol, avalRaps }) => {
   }
 
   const acceptApprove = async (payload, toastId) => {
-    const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
+    const estado_aval = { Si: 'Aprobado' }
     const id = payload.avalRaps
     const cookie = Cookies.get('token')
     const { id_usuario: responsable } = decode(cookie).data.user
@@ -704,6 +717,28 @@ const RAPS = ({ idRol, avalRaps }) => {
     }
   }
 
+  const denyApprove = async (payload, toastId) => {
+    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const estado_aval = { No: 'Rechazado' }
+    const id = payload.avalRaps
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      console.log('inscripcion updated')
+      const resEmail = await sendEmail({ to: 'lestarhernan@hotmail.com', text: `Querido ${nombre_inscripcion} ${apellido_inscripcion}, su solicitud de inscripción de etapa práctica ha sido rechazada por la siguiente observación: ${payload.observations}. Gracias por utilizar nuestros servicios.`, subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      console.log(resEmail)
+      toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchRaps()
+    } catch (error) {
+      console.log(error)
+      // throw new Error(error)
+    }
+  }
+
   useEffect(() => {
     if (avalRaps) fetchRaps()
   }, [avalRaps])
@@ -712,9 +747,7 @@ const RAPS = ({ idRol, avalRaps }) => {
     <section className='grid grid-cols-2 w-[95%] h-[70vh] gap-3 mx-auto'>
       <section className='h-'>
         <h2>RAPS</h2>
-        <section className='h-5/6'>
-          <iframe src='https://www.youtube.com/embed/p1aAgS-Lns4?si=5DjDbeb5iFakh1jS' title='YouTube video player' allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen className='w-full h-full'></iframe>
-        </section>
+        <section className='h-5/6'>{/* <iframe src='https://www.youtube.com/embed/p1aAgS-Lns4?si=5DjDbeb5iFakh1jS' title='YouTube video player' allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen className='w-full h-full'></iframe> */}</section>
       </section>
       <section className='flex flex-col w-[95%] gap-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>

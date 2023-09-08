@@ -5,9 +5,9 @@ import { emailSchema } from '../schemas/email.schemas.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 
 export const checkEmail = (req: Request, res: Response, next: NextFunction): void => {
-  const { to, subject, text } = req.body
+  const { to, text, subject } = req.body
   try {
-    const { error } = emailSchema.validate({ to, subject, text })
+    const { error } = emailSchema.validate({ to, text, title: subject })
     if (error !== undefined) throw new DataNotValid('Debes llenar todos los campos')
     next()
   } catch (error) {
