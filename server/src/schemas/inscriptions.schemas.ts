@@ -3,30 +3,26 @@ import Joi from 'joi'
 export const inscriptionSchema = Joi.object({
   nombre_inscripcion: Joi
     .string()
-    .required()
-    .min(3),
+    .required(),
   apellido_inscripcion: Joi
     .string()
-    .required()
-    .min(3),
+    .required(),
   tipo_documento_inscripcion: Joi
     .string()
     .required(),
   documento_inscripcion: Joi
-    .number()
+    .string()
     .required(),
   email_inscripcion: Joi
     .string()
-    .email()
     .required()
-    .min(3),
+    .trim(),
   inscripcion_celular: Joi
-    .number()
+    .string()
     .required(),
   etapa_actual_inscripcion: Joi
     .string()
-    .required()
-    .min(3),
+    .required(),
   modalidad_inscripcion: Joi
     .number()
     .required(),
@@ -35,68 +31,64 @@ export const inscriptionSchema = Joi.object({
     .required(),
   nivel_formacion_inscripcion: Joi
     .string()
-    .required()
-    .min(3),
+    .required(),
   numero_ficha_inscripcion: Joi
-    .number()
+    .string()
     .required(),
   fecha_fin_lectiva_inscripcion: Joi
     .date()
-    .required(),
+    .allow(null),
   nombre_instructor_lider_inscripcion: Joi
     .string()
-    .required()
-    .min(3),
+    .allow(null),
   email_instructor_lider_inscripcion: Joi
     .string()
-    .email()
     .required()
-    .min(3),
+    .trim(),
   apoyo_sostenimiento_inscripcion: Joi
     .string()
     .required()
     .min(3),
   nit_empresa_inscripcion: Joi
-    .number()
+    .string()
     .allow(null),
   nombre_empresa_inscripcion: Joi
     .string()
-    .allow(null)
-    .min(3),
+    .allow(null),
   direccion_empresa_inscripcion: Joi
     .string()
-    .allow(null)
-    .min(3),
+    .allow(null),
+  municipio_empresa: Joi
+    .string()
+    .allow(null),
   nombre_jefe_empresa_inscripcion: Joi
     .string()
-    .allow(null)
-    .min(3),
+    .allow(null),
   cargo_jefe_empresa_inscripcion: Joi
     .string()
-    .allow(null)
-    .min(3),
-  telefono_jefe_empresa_inscripcion: Joi
-    .number()
     .allow(null),
+  telefono_jefe_empresa_inscripcion: Joi
+    .string()
+    .allow(null)
+    .trim(),
   email_jefe_empresa_inscripcion: Joi
     .string()
-    .email()
     .allow(null)
-    .min(3),
+
+    .trim(),
   arl: Joi
     .string()
-    .allow(null)
-    .min(3),
+    .allow(null),
   link_documentos: Joi
     .string()
     .required(),
   observaciones: Joi
     .string()
-    .required(),
+    .allow(null),
   responsable_inscripcion: Joi
     .string()
     .required()
-    .min(3)
+
 })
 
 export const inscriptionDetailSchema = Joi.object({
