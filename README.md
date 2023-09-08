@@ -39,17 +39,17 @@ Para poder importar la base correctamente debes tener <a href="https://dev.mysql
 En api crear un archivo llamado: .env que tenga la siguiente forma:
 
 ```env
-// Ruta del servidor de express
+# Ruta del servidor de express
 PORT=3000
-// Usuario del usuario MySQL
+# Usuario del usuario MySQL
 DB_USER=root
-// Contraseña del usuario MySQL
+# Contraseña del usuario MySQL
 DB_PASSWORD=root
-// Host del usuario MySQL
+# Host del usuario MySQL
 DB_HOST=localhost
-// nombre de la base de datos MySQL
+# nombre de la base de datos MySQL
 DB_DATABASE=practicas_sena
-// Puerto de conexión de SQL
+# Puerto de conexión de SQL
 DB_PORT=3306
 ```
 

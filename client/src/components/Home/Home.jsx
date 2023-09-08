@@ -4,6 +4,7 @@ import { rolesCard } from '../../import/staticData'
 import { Footer } from '../Footer/Footer'
 
 const Home = () => {
+  // const [idRol, setIdRol] = useState(Number(localStorage.getItem('idRol')))
   const idRol = Number(localStorage.getItem('idRol'))
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
@@ -25,3 +26,4 @@ const Home = () => {
 }
 
 export { Home }
+

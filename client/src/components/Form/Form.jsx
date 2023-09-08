@@ -101,7 +101,7 @@ const Form = ({ inputs }) => {
       <hr className='mx-auto my-2 h-[1px] w-4/5 bg-slate-300' />
       {inputs.length === 2 ? (
         loadingBtn ? (
-          <LoadingButton />
+          <LoadingButton bgColor='[#438EF2]' classNames='rounded-md text-white flex gap-3 font-semibold text-lg py-1.5 justify-center w-5/6 mx-auto items-center' />
         ) : (
           <Button bg={'bg-[#438EF2]'} px='px-[5rem]' rounded='rounded-md' textColor='text-white' font='font-semibold' textSize='text-lg' py='py-1.5' type={'submit'} hover hoverConfig='bg-[#2d61a5] ease-in delay-75 duration-150'>
             Iniciar Sesión
