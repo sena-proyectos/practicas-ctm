@@ -10,7 +10,7 @@
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
-    "project": ["./server/tsconfig.json"]
+    "project": ["./tsconfig.json"]
   },
   "rules": {
     "@typescript-eslint/naming-convention": "off",
@@ -19,6 +19,8 @@
     "no-trailing-spaces": "error",
     "space-in-parens": "error",
     "comma-dangle": "error",
-    "quotes": ["error", "single"]
+    "quotes": ["error", "single"],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off"
   }
 }
