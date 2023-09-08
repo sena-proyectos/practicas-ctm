@@ -1,11 +1,6 @@
 import Joi from 'joi'
 
 export const emailSchema = Joi.object({
-  from: Joi
-    .string()
-    .required()
-    .min(10)
-    .max(100),
   to: Joi
     .string()
     .required()
