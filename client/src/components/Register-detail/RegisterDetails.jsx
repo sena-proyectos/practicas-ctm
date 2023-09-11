@@ -245,15 +245,109 @@ const InfoEmpresa = ({ inscriptionAprendiz }) => {
 
 const Coordinador = ({ idRol, avalCoordinador }) => {
   const [avalInfo, setAvalInfo] = useState([])
-  const fetchRaps = async () => {
+  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
+  const descriptionRef = useRef(null)
+  const formRef = useRef(null)
+
+  const { inscriptionData } = inscriptionStore()
+  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
+
+  const fetchInfo = async () => {
     const res = await getAvalById(avalCoordinador)
     const { data } = res.data
     setAvalInfo(data)
   }
 
   useEffect(() => {
-    if (avalCoordinador) fetchRaps()
+    if (avalCoordinador) fetchInfo()
   }, [avalCoordinador])
+
+  const handleSubmitButton = () => {
+    if (!selectedApproveButton) return
+    if (descriptionRef.current.value.length === 0) {
+      setDisableSubmitButton(true)
+      return
+    }
+    setDisableSubmitButton(false)
+  }
+
+  const selectButtonToSubmit = (value) => {
+    setSelectedApproveButton(value)
+    if (descriptionRef.current.value.length === 0 || !value) {
+      setDisableSubmitButton(true)
+      return
+    }
+    setDisableSubmitButton(false)
+  }
+
+  const handleAvalForm = async (e) => {
+    e.preventDefault()
+    const approveOptions = { Si: 'Si', No: 'No' }
+
+    const formData = new FormData(formRef.current)
+    formData.append('approveOption', approveOptions[selectedApproveButton])
+    const observations = formData.get('observations')
+    const approveOption = formData.get('approveOption')
+    try {
+      await checkApprovementData({ observations, approveOption })
+      const loadingToast = toast.loading('Enviando...')
+      if (selectedApproveButton === approveOptions.Si) return acceptApprove({ observations, approveOption, avalCoordinador }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyApprove({ observations, approveOption, avalCoordinador }, loadingToast)
+    } catch (err) {
+      console.log(err)
+      if (toast.isActive('loadingToast')) return
+      toast.error('Los campos son incorrectos, corríjalos.', {
+        toastId: 'error-full-docs',
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeButton: true,
+        type: 'error',
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored'
+      })
+    }
+  }
+
+  const acceptApprove = async (payload, toastId) => {
+    const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
+    const id = payload.avalCoordinador
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchInfo()
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const denyApprove = async (payload, toastId) => {
+    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const estado_aval = { No: 'Rechazado' }
+    const id = payload.avalCoordinador
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      console.log('inscripcion updated')
+      await sendEmail({ to: 'blandon0207s@outlook.com', text: `Querido ${nombre_inscripcion} ${apellido_inscripcion}, su solicitud de inscripción de etapa práctica ha sido rechazada por la siguiente observación: ${payload.observations}. Gracias por utilizar nuestros servicios.`, subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchInfo()
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 
   const option = [
     { value: 'Sergio Soto Henao', key: 'Sergio Soto Henao' },
@@ -261,39 +355,68 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     { value: 'Jaime León Vergara Areiza', key: 'Jaime León Vergara Areiza' },
     { value: 'Mauro Isaías Arango Vanegas', key: 'Mauro Isaías Arango Vanegas' }
   ]
+
   return (
     <section className={`flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
       <div className={` w-[95%] mx-auto`}>
         {avalInfo.map((aval) => {
           return (
-            <form action='' className='flex flex-col gap-4 ' key={aval.id_detalle_inscripcion}>
+            <form onSubmit={handleAvalForm} ref={formRef} className='flex flex-col gap-4 ' key={aval.id_detalle_inscripcion}>
               <div>
                 <label htmlFor='' className='text-sm font-light'>
                   Coordinador Asignado
                 </label>
                 <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} />
               </div>
-              {idRol === Number(keysRoles[1]) ? (
+              {idRol && (
                 <div className='flex flex-row gap-2 place-self-center'>
-                  <Button bg='bg-primary' px='px-2' font='font-medium' textSize='text-sm' py='py-1' rounded='rounded-xl' inline>
-                    <PiCheckCircleBold className='text-xl' /> Sí
-                  </Button>
-                  <Button bg='bg-red-500' px='px-2' font='font-medium' textSize='text-sm' py='py-1' rounded='rounded-xl' inline>
-                    <PiXCircleBold className='text-xl' /> No
-                  </Button>
+                  {!selectedApproveButton ? (
+                    <>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  ) : selectedApproveButton === 'No' ? (
+                    <>
+                      <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  )}
                 </div>
-              ) : (
-                <h5 className={`text-sm font-medium text-center ${aval.estado_aval === 'Pendiente' ? 'text-slate-600' : aval.estado_aval === 'Rechazado' ? 'text-red-500' : aval.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{aval.estado_aval === 'Pendiente' ? 'La solicitud esta siendo procesada por el coordinador' : aval.estado_aval === 'Rechazado' ? 'Rechazado' : aval.estado_aval === 'Aprobado' ? 'Aprobado' : null}</h5>
               )}
               <div>
-                <label htmlFor='' className='text-sm font-light'>
+                <label htmlFor='observations' className='text-sm font-light'>
                   Observaciones
                 </label>
-                <textarea id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' disabled />
+                <textarea name='observations' id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
               </div>
-              <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'} inline>
-                <LuSave /> Guardar
-              </Button>
+              {disableSubmitButton ? (
+                <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                  <LuSave />
+                  Guardar
+                </Button>
+              ) : (
+                <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                  <LuSave />
+                  Guardar
+                </Button>
+              )}
             </form>
           )
         })}
@@ -402,19 +525,19 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     if (!payload) return
     try {
       const res = await getAvalById(payload)
-      const { data } = await res.data
-      const response = await getUserById(data[0].responsable_aval)
-      const { nombres_usuario, apellidos_usuario } = await response.data.data[0]
+      const response = await res.data.data[0]
+      const { responsable_aval } = await response
+      const responseData = await getUserById(responsable_aval)
+      const { nombres_usuario, apellidos_usuario } = await responseData.data.data[0]
       const fullName = `${nombres_usuario} ${apellidos_usuario}`
       setNameResponsableFunciones(fullName)
-      setAvalInfoFunciones(data[0])
+      setAvalInfoFunciones(response)
     } catch (error) {
       throw new Error(error)
     }
   }
 
   useEffect(() => {
-    console.log(avalFunciones)
     if (avalFunciones !== undefined) {
       fetchDataFunciones(avalFunciones)
     }
@@ -464,6 +587,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
 const FullDocsApproval = ({ idRol, avalDocumentos }) => {
   const fullDocsRef = useRef(null)
   const descriptionRef = useRef(null)
+  const { inscriptionData } = inscriptionStore()
 
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
   const [disableSubmitButton, setDisableSubmitButton] = useState(true)
@@ -516,10 +640,10 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
       await checkApprovementData({ observations, approveOption })
       const loadingToast = toast.loading('Enviando...')
       if (selectedApproveButton === approveOptions.Si) return acceptFullDocsApprove({ observations, approveOption, avalDocumentos }, loadingToast)
-      if (selectedApproveButton === approveOptions.No) return denyFullDocsApprove({ observations, approveOption, avalDocumentos })
+      if (selectedApproveButton === approveOptions.No) return denyFullDocsApprove({ observations, approveOption, avalDocumentos }, loadingToast)
     } catch (err) {
       console.log(err)
-      if (toast.isActive('error-full-docs')) return
+      if (toast.isActive('loadingToast')) return
       toast.error('Los campos son incorrectos, corríjalos.', {
         toastId: 'error-full-docs',
         position: 'top-right',
@@ -545,13 +669,32 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
       await inscriptionDetailsUpdate(id, data)
       toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
+      fetchDataDocuments()
     } catch (error) {
       throw new Error(error)
     }
   }
 
-  const denyFullDocsApprove = (payload) => {
-    console.log(payload)
+  const denyFullDocsApprove = async (payload, toastId) => {
+    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const estado_aval = { No: 'Rechazado' }
+    const id = payload.avalDocumentos
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    console.log(id, data)
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      console.log('inscripcion updated')
+      const resEmail = await sendEmail({ to: 'blandon0207s@outlook.com', text: `Querido ${nombre_inscripcion} ${apellido_inscripcion}, su solicitud de inscripción de etapa práctica ha sido rechazada por la siguiente observación: ${payload.observations}. Gracias por utilizar nuestros servicios.`, subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      console.log(resEmail)
+      toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchDataDocuments()
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   return (
@@ -728,14 +871,12 @@ const RAPS = ({ idRol, avalRaps }) => {
     try {
       await inscriptionDetailsUpdate(id, data)
       console.log('inscripcion updated')
-      const resEmail = await sendEmail({ to: 'lestarhernan@hotmail.com', text: `Querido ${nombre_inscripcion} ${apellido_inscripcion}, su solicitud de inscripción de etapa práctica ha sido rechazada por la siguiente observación: ${payload.observations}. Gracias por utilizar nuestros servicios.`, subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
-      console.log(resEmail)
+      await sendEmail({ to: 'blandon0207s@outlook.com', text: `Querido ${nombre_inscripcion} ${apellido_inscripcion}, su solicitud de inscripción de etapa práctica ha sido rechazada por la siguiente observación: ${payload.observations}. Gracias por utilizar nuestros servicios.`, subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchRaps()
     } catch (error) {
-      console.log(error)
-      // throw new Error(error)
+      throw new Error(error)
     }
   }
 
@@ -747,7 +888,7 @@ const RAPS = ({ idRol, avalRaps }) => {
     <section className='grid grid-cols-2 w-[95%] h-[70vh] gap-3 mx-auto'>
       <section className='h-'>
         <h2>RAPS</h2>
-        <section className='h-5/6'>{/* <iframe src='https://www.youtube.com/embed/p1aAgS-Lns4?si=5DjDbeb5iFakh1jS' title='YouTube video player' allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen className='w-full h-full'></iframe> */}</section>
+        <section className='h-5/6'>{/*  <iframe src='https://www.youtube.com/embed/p1aAgS-Lns4?si=5DjDbeb5iFakh1jS' title='YouTube video player' allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen className='w-full h-full'></iframe> */}</section>
       </section>
       <section className='flex flex-col w-[95%] gap-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>

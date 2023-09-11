@@ -1,7 +1,7 @@
 {
   "name": "client",
   "private": true,
-  "version": "2.7.0-alpha",
+  "version": "2.8.0-alpha",
   "type": "module",
   "scripts": {
     "dev": "vite --open",
@@ -44,3 +44,4 @@
     "vite": "4.4.9"
   }
 }
+
