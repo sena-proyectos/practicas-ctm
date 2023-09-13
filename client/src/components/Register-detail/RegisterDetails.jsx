@@ -774,8 +774,11 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
 const RAPS = ({ idRol, avalRaps }) => {
   const formRef = useRef(null)
   const descriptionRef = useRef(null)
+
   const { inscriptionData } = inscriptionStore()
+
   const [avalInfo, setAvalInfo] = useState({})
+  const [htmlContent, setHtmlContent] = useState('')
   const [nameResponsable, setNameResponsable] = useState('')
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
   const [disableSubmitButton, setDisableSubmitButton] = useState(true)
@@ -824,23 +827,27 @@ const RAPS = ({ idRol, avalRaps }) => {
       const loadingToast = toast.loading('Enviando...', {
         toastId: 'loadingToast'
       })
-      if (selectedApproveButton === approveOptions.Si) return acceptApprove({ observations, approveOption, avalRaps }, loadingToast)
-      if (selectedApproveButton === approveOptions.No) return denyApprove({ observations, approveOption, avalRaps }, loadingToast)
+      if (selectedApproveButton === approveOptions.Si) return acceptApprove({ observations, approveOption, avalRaps, htmlContent }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyApprove({ observations, approveOption, avalRaps, htmlContent }, loadingToast)
     } catch (err) {
-      console.log(err)
-      if (toast.isActive('error-full-docs')) return
-      toast.error('Los campos son incorrectos, corríjalos.', {
-        toastId: 'error-full-docs',
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'colored'
-      })
+      if (toast.isActive('loadingToast')) return
+      toast.update('loadingToast', { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
     }
+  }
+
+  const handleContentPaste = (e) => {
+    const pastedContent = e.clipboardData.getData('text/html')
+    setHtmlContent(pastedContent)
+    e.preventDefault()
+  }
+
+  const handleInputText = (e) => {
+    const content = e.target.innerHTML
+    console.log(content)
+    if (content.length === 0) {
+      setHtmlContent('')
+    }
+    setHtmlContent(content)
   }
 
   const acceptApprove = async (payload, toastId) => {
@@ -856,6 +863,7 @@ const RAPS = ({ idRol, avalRaps }) => {
       selectButtonToSubmit(null)
       fetchRaps()
     } catch (error) {
+      toast.update(toastId, { render: 'Ha ocurrido un error. Inténtelo más tarde', isLoading: false, type: 'error', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       throw new Error(error)
     }
   }
@@ -870,12 +878,12 @@ const RAPS = ({ idRol, avalRaps }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
-      console.log('inscripcion updated')
-      await sendEmail({ to: 'blandon0207s@outlook.com', text: `Querido ${nombre_inscripcion} ${apellido_inscripcion}, su solicitud de inscripción de etapa práctica ha sido rechazada por la siguiente observación: ${payload.observations}. Gracias por utilizar nuestros servicios.`, subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      await sendEmail({ to: 'blandon0207s@outlook.com', subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchRaps()
     } catch (error) {
+      toast.update(toastId, { render: 'Ha ocurrido un error. Inténtelo más tarde', isLoading: false, type: 'error', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       throw new Error(error)
     }
   }
@@ -888,7 +896,9 @@ const RAPS = ({ idRol, avalRaps }) => {
     <section className='grid grid-cols-2 w-[95%] h-[70vh] gap-3 mx-auto'>
       <section className='h-'>
         <h2>RAPS</h2>
-        <section className='h-5/6'>{/*  <iframe src='https://www.youtube.com/embed/p1aAgS-Lns4?si=5DjDbeb5iFakh1jS' title='YouTube video player' allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen className='w-full h-full'></iframe> */}</section>
+        <section className='h-5/6'>
+          <iframe src='https://www.youtube.com/embed/p1aAgS-Lns4?si=5DjDbeb5iFakh1jS' title='YouTube video player' allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen className='w-full h-full'></iframe>
+        </section>
       </section>
       <section className='flex flex-col w-[95%] gap-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>
@@ -907,11 +917,17 @@ const RAPS = ({ idRol, avalRaps }) => {
                 </h5>
               </div>
             </section>
-            <div>
-              <label htmlFor='description' className='text-sm font-light'>
-                Observaciones
-              </label>
-              <textarea name='description' id='editor' defaultValue={avalInfo.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' ref={descriptionRef} onInput={handleSubmitButton} />
+            <div className='flex flex-col gap-3'>
+              <section className='flex flex-col gap-2'>
+                <label htmlFor='description' className='text-sm font-light'>
+                  Observaciones <span className='font-medium text-red-500'>*</span>
+                </label>
+                <textarea name='description' id='editor' defaultValue={avalInfo.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' ref={descriptionRef} onInput={handleSubmitButton} />
+              </section>
+              <section className='flex flex-col gap-2'>
+                <p className='text-sm font-light'>Tabla de envidencia</p>
+                <div contentEditable onPaste={handleContentPaste} className='block w-full h-[30vh] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' onInput={handleInputText} dangerouslySetInnerHTML={{ __html: htmlContent }}></div>
+              </section>
             </div>
             <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
               {idRol === Number(keysRoles[0]) && (
