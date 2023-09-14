@@ -339,8 +339,8 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
-      console.log('inscripcion updated')
-      await sendEmail({ to: 'blandon0207s@outlook.com', text: `Querido ${nombre_inscripcion} ${apellido_inscripcion}, su solicitud de inscripción de etapa práctica ha sido rechazada por la siguiente observación: ${payload.observations}. Gracias por utilizar nuestros servicios.`, subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+
+      await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchInfo()
@@ -687,7 +687,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     try {
       await inscriptionDetailsUpdate(id, data)
       console.log('inscripcion updated')
-      const resEmail = await sendEmail({ to: 'blandon0207s@outlook.com', text: `Querido ${nombre_inscripcion} ${apellido_inscripcion}, su solicitud de inscripción de etapa práctica ha sido rechazada por la siguiente observación: ${payload.observations}. Gracias por utilizar nuestros servicios.`, subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      const resEmail = await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       console.log(resEmail)
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
@@ -878,7 +878,7 @@ const RAPS = ({ idRol, avalRaps }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
-      await sendEmail({ to: 'blandon0207s@outlook.com', subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
+      await sendEmail({ to: 'stevenbenjumea9@gmail.com', subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchRaps()
@@ -896,9 +896,7 @@ const RAPS = ({ idRol, avalRaps }) => {
     <section className='grid grid-cols-2 w-[95%] h-[70vh] gap-3 mx-auto'>
       <section className='h-'>
         <h2>RAPS</h2>
-        <section className='h-5/6'>
-          <iframe src='https://www.youtube.com/embed/p1aAgS-Lns4?si=5DjDbeb5iFakh1jS' title='YouTube video player' allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen className='w-full h-full'></iframe>
-        </section>
+        <section className='h-5/6'>{/* <iframe src='https://www.youtube.com/embed/p1aAgS-Lns4?si=5DjDbeb5iFakh1jS' title='YouTube video player' allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen className='w-full h-full'></iframe> */}</section>
       </section>
       <section className='flex flex-col w-[95%] gap-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>
