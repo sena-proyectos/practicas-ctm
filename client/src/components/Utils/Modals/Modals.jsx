@@ -308,7 +308,7 @@ const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion
   }, [])
 
   const option = teachers.map((teacher) => ({
-    value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario + ' - ' + (teacher.id_rol === 3 ? 'Seguimiento' : 'Lider'),
+    value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario + ' - ' + teacher.email_usuario,
     key: teacher.id_usuario
   }))
 
@@ -362,6 +362,7 @@ const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion
                   placeholderSearch='Ingrese nombre instructor'
                   selectedColor='bg-teal-600 text-white'
                   rounded='rounded-xl'
+                  characters='45'
                   borderColor='border-slate-500'
                   options={option}
                   selectedKey={selectedOptionKey}

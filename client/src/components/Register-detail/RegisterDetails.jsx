@@ -16,7 +16,7 @@ import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { colorTextStatus, keysRoles } from '../../import/staticData'
 
-import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail } from '../../api/httpRequest'
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers } from '../../api/httpRequest'
 import { AiOutlineFullscreen } from 'react-icons/ai'
 import { checkApprovementData } from '../../validation/approvementValidation'
 import Cookies from 'js-cookie'
@@ -519,18 +519,18 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
 
 const FunctionsApproval = ({ idRol, avalFunciones }) => {
   const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
-  const [nameResponsableFunciones, setNameResponsableFunciones] = useState('')
+  // const [nameResponsableFunciones, setNameResponsableFunciones] = useState('')
 
   const fetchDataFunciones = async (payload) => {
     if (!payload) return
     try {
       const res = await getAvalById(payload)
       const response = await res.data.data[0]
-      const { responsable_aval } = await response
-      const responseData = await getUserById(responsable_aval)
-      const { nombres_usuario, apellidos_usuario } = await responseData.data.data[0]
-      const fullName = `${nombres_usuario} ${apellidos_usuario}`
-      setNameResponsableFunciones(fullName)
+      // const { responsable_aval } = await response
+      // const responseData = await getUserById(responsable_aval)
+      // const { nombres_usuario, apellidos_usuario } = await responseData.data.data[0]
+      // const fullName = `${nombres_usuario} ${apellidos_usuario}`
+      // setNameResponsableFunciones(fullName)
       setAvalInfoFunciones(response)
     } catch (error) {
       throw new Error(error)
@@ -543,6 +543,34 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     }
   }, [avalFunciones])
 
+  const [teachers, setTeacher] = useState([])
+
+  const getInstructores = async () => {
+    try {
+      const response = await getTeachers()
+      const { data } = response.data
+      setTeacher(data)
+      console.log(data)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  useEffect(() => {
+    getInstructores()
+  }, [])
+
+  const option = teachers.map((teacher) => ({
+    value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario + ' - ' + teacher.email_usuario,
+    key: teacher.id_usuario
+  }))
+
+  const [selectedOptionKey, setSelectedOptionKey] = useState('')
+
+  const handleSelectChange = (optionKey) => {
+    setSelectedOptionKey(optionKey)
+  }
+
   return (
     <div className='w-[95%] mx-auto'>
       <form action='' className='flex flex-col gap-2' onSubmit={(e) => e.preventDefault()}>
@@ -554,7 +582,24 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
             <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
           </section>
           <section>
-            <input type='text' defaultValue={nameResponsableFunciones} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' />
+            <Select
+              name='name_instructor'
+              placeholder='Nombre instructor'
+              isSearch
+              hoverColor='hover:bg-teal-600'
+              hoverTextColor='hover:text-white'
+              selectedColor='bg-teal-600 text-white'
+              characters='25'
+              placeholderSearch='Nombre instructor'
+              rounded='rounded-xl'
+              textSearch='text-sm'
+              shadow='shadow-md'
+              textSize='text-sm'
+              options={option}
+              selectedKey={selectedOptionKey}
+              onChange={handleSelectChange} // Pasar el manejador de cambio
+            />
+            {/* <input type='text' defaultValue={nameResponsableFunciones} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' /> */}
           </section>
         </section>
         <div>
@@ -979,4 +1024,3 @@ const RAPS = ({ idRol, avalRaps }) => {
     </section>
   )
 }
-
