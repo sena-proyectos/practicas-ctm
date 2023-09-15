@@ -38,11 +38,38 @@ export const RegisterStudent = () => {
     setShowDataAprendiz(section === 'aprendiz')
   }
 
+  const [selectedValues, setSelectedValues] = useState({
+    tipo_documento_inscripcion: '',
+    modalidad_inscripcion: '',
+    etapa_actual_inscripcion: '',
+    nivel_formacion_inscripcion: '',
+    apoyo_sostenimiento_inscripcion: '',
+    arl: ''
+  })
+
+  // ...
+
+  // Define una función para actualizar los valores seleccionados
+  const handleSelectChange = (name, value) => {
+    setSelectedValues((prevValues) => ({
+      ...prevValues,
+      [name]: value
+    }))
+  }
+
   // Validación de campos y capturación de los valores
   const handleSubmit = async (e) => {
     e.preventDefault()
     // capturar los valores de los inputs del formulario
     const formValues = Object.fromEntries(new FormData(e.target))
+    formValues.modalidad_inscripcion = selectedValues.modalidad_inscripcion
+    formValues.tipo_documento_inscripcion = selectedValues.tipo_documento_inscripcion
+    formValues.etapa_actual_inscripcion = selectedValues.etapa_actual_inscripcion
+    formValues.nivel_formacion_inscripcion = selectedValues.nivel_formacion_inscripcion
+    formValues.apoyo_sostenimiento_inscripcion = selectedValues.apoyo_sostenimiento_inscripcion
+    formValues.arl = selectedValues.arl
+
+    console.log(formValues)
 
     try {
       const teacher = formValues.nombre_instructor_lider_inscripcion
@@ -150,27 +177,27 @@ export const RegisterStudent = () => {
                     item.name === 'tipo_documento_inscripcion' &&
                       (option = idTypes.map((item, i) => ({
                         value: item.name,
-                        key: i
+                        key: item.value
                       })))
                     item.name === 'modalidad_inscripcion' &&
                       (option = modalities.map((item, i) => ({
                         value: item.name,
-                        key: i
+                        key: item.value
                       })))
                     item.name === 'etapa_actual_inscripcion' &&
                       (option = etapasFormacion.map((item, i) => ({
                         value: item.name,
-                        key: i
+                        key: item.value
                       })))
                     item.name === 'nivel_formacion_inscripcion' &&
                       (option = nivelFormacion.map((item, i) => ({
                         value: item.name,
-                        key: i
+                        key: item.value
                       })))
                     item.name === 'apoyo_sostenimiento_inscripcion' &&
                       (option = apoyoSostenimiento.map((item, i) => ({
                         value: item.name,
-                        key: i
+                        key: item.value
                       })))
                     return (
                       <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
@@ -180,7 +207,20 @@ export const RegisterStudent = () => {
                         {item.type === 'number' ? (
                           <input type={item.type} name={item.name} className='focus:text-gray-900 w-full rounded-xl shadow-md py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-400' autoComplete='on' placeholder={item.placeholder} />
                         ) : item.type === 'select' ? (
-                          <Select placeholder='Selecciona una opcion' rounded='rounded-xl' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' border='none' shadow='shadow-md' options={option} />
+                          <Select
+                            name={item.name}
+                            placeholder={item.placeholder}
+                            rounded='rounded-xl'
+                            py='py-1'
+                            hoverColor='hover:bg-slate-300'
+                            hoverTextColor='hover:text-black'
+                            selectedColor='bg-slate-300 text-black'
+                            textSize='text-sm'
+                            border='none'
+                            shadow='shadow-md'
+                            options={option}
+                            onChange={(value) => handleSelectChange(item.name, value)} // Actualiza los valores seleccionados
+                          />
                         ) : (
                           <input type={item.type} name={item.name} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-400' autoComplete='on' placeholder={item.placeholder} />
                         )}
@@ -196,7 +236,7 @@ export const RegisterStudent = () => {
                     item.name === 'arl' &&
                       (option = pagoArl.map((item, i) => ({
                         value: item.name,
-                        key: i
+                        key: item.value
                       })))
                     return (
                       <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
@@ -215,7 +255,20 @@ export const RegisterStudent = () => {
                             </div>
                           </div>
                         ) : item.type === 'select' ? (
-                          <Select placeholder='Selecciona una opcion' rounded='rounded-xl' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' border='none' shadow='shadow-md' options={option} />
+                          <Select
+                            name={item.name}
+                            placeholder={item.placeholder}
+                            rounded='rounded-xl'
+                            py='py-1'
+                            hoverColor='hover:bg-slate-300'
+                            hoverTextColor='hover:text-black'
+                            selectedColor='bg-slate-300 text-black'
+                            textSize='text-sm'
+                            border='none'
+                            shadow='shadow-md'
+                            options={option}
+                            onChange={(value) => handleSelectChange(item.name, value)} // Actualiza los valores seleccionados
+                          />
                         ) : item.type === 'textarea' ? (
                           <div className='relative'>
                             <textarea id='editor' rows='3' className='block absolute w-full max-h-[5.5rem] resize-none overflow-y-auto border-gray-400 focus:text-gray-900 rounded-xl shadow-md bg-white py-[0.9px] px-3 text-sm text-black focus:bg-white focus:outline-none placeholder:text-slate-400' placeholder={item.placeholder} required></textarea>
@@ -279,4 +332,3 @@ export const RegisterStudent = () => {
     </>
   )
 }
-
