@@ -15,6 +15,7 @@ export const checkIdReq: RequestHandler<{ id: string }, Response, unknown> = (re
     if (isNaN(idParse)) throw new IdIsNaN('El id no es un número.')
     next()
   } catch (error) {
+    console.log(error)
     handleHTTP(res, error as CustomError)
   }
 }
