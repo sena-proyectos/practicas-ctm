@@ -10,7 +10,7 @@ import { IoMdClose } from 'react-icons/io'
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
-import { getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento, updateTeacherLider } from '../../../api/httpRequest'
+import { getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento } from '../../../api/httpRequest'
 
 const BitacoraModal = ({ closeModal, title }) => {
   const handleModal = () => {
@@ -286,7 +286,7 @@ const InfoStudentModal = ({ closeModal, title, emailStudent, documentStudent, ce
   )
 }
 
-const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion, setNotify, emptyLeader, emptyPractical }) => {
+const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion, setNotify }) => {
   const handleModal = () => {
     closeModal()
   }
@@ -312,28 +312,20 @@ const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion
     key: teacher.id_usuario
   }))
 
-  const [valor, setValor] = useState()
-  const [value, setValue] = useState()
+  const [selectedOptionKey, setSelectedOptionKey] = useState('')
+
+  const handleSelectChange = (optionKey) => {
+    setSelectedOptionKey(optionKey)
+  }
 
   const updateTeacher = async (e) => {
     e.preventDefault()
-    const id_instructor = valor
-    const id_instructor_lider = value
-    const num_ficha = numero_ficha
-    try {
-      if (emptyPractical && emptyLeader) {
-        await updateTeacherSeguimiento(num_ficha, id_instructor)
-        await updateTeacherLider(num_ficha, id_instructor_lider)
-        setNotify(true)
-        closeModal()
-        return
-      }
 
-      if (emptyLeader) {
-        await updateTeacherLider(num_ficha, id_instructor)
-      } else {
-        await updateTeacherSeguimiento(num_ficha, id_instructor)
-      }
+    const id_instructor = selectedOptionKey
+    const num_ficha = numero_ficha
+
+    try {
+      await updateTeacherSeguimiento(num_ficha, id_instructor)
       setNotify(true)
       closeModal()
     } catch (error) {
@@ -356,69 +348,27 @@ const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion
               <h3 className='text-[16px] font-medium text-right'>{numero_ficha}</h3>
               <h3 className='text-[16px] font-light text-right'>{programa_formacion}</h3>
             </header>
-            <form action='' onSubmit={updateTeacher} className='flex flex-col gap-6'>
-              {emptyLeader && emptyPractical ? (
-                <>
-                  <div>
-                    <label htmlFor='asig' className='text-[16px] font-normal'>
-                      Instructor Seguimiento
-                    </label>
-                    <Select
-                      placeholder='Nombre instructor'
-                      isSearch
-                      hoverColor='hover:bg-teal-200'
-                      hoverTextColor='hover:text-teal-800'
-                      placeholderSearch='Ingrese nombre instructor'
-                      selectedColor='bg-teal-600 text-white'
-                      rounded='rounded-xl'
-                      borderColor='border-slate-500'
-                      options={option}
-                      onSelect={(selectedValue) => {
-                        setValor(selectedValue)
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor='asignar' className='text-[16px] font-normal'>
-                      Instructor Lider
-                    </label>
-                    <Select
-                      placeholder='Nombre instructor'
-                      isSearch
-                      hoverColor='hover:bg-teal-200'
-                      hoverTextColor='hover:text-teal-800'
-                      placeholderSearch='Ingrese nombre instructor'
-                      selectedColor='bg-teal-600 text-white'
-                      rounded='rounded-xl'
-                      borderColor='border-slate-500'
-                      options={option}
-                      onSelect={(selectedValue) => {
-                        setValue(selectedValue)
-                      }}
-                    />
-                  </div>
-                </>
-              ) : (
-                <div>
-                  <label htmlFor='asig' className='text-[16px] font-normal'>
-                    {emptyPractical ? 'Instructor Seguimiento' : emptyLeader ? 'Instructor Lider' : null}
-                  </label>
-                  <Select
-                    placeholder='Nombre instructor'
-                    isSearch
-                    hoverColor='hover:bg-teal-200'
-                    hoverTextColor='hover:text-teal-800'
-                    placeholderSearch='Ingrese nombre instructor'
-                    selectedColor='bg-teal-600 text-white'
-                    rounded='rounded-xl'
-                    borderColor='border-slate-500'
-                    options={option}
-                    onSelect={(selectedValue) => {
-                      setValor(selectedValue)
-                    }}
-                  />
-                </div>
-              )}
+            <form onSubmit={updateTeacher} className='flex flex-col gap-6'>
+              <div>
+                <label htmlFor='asig' className='text-[16px] font-normal'>
+                  Instructor Seguimiento
+                </label>
+                <Select
+                  name='name_instructor'
+                  placeholder='Nombre instructor'
+                  isSearch
+                  hoverColor='hover:bg-teal-200'
+                  hoverTextColor='hover:text-teal-800'
+                  placeholderSearch='Ingrese nombre instructor'
+                  selectedColor='bg-teal-600 text-white'
+                  rounded='rounded-xl'
+                  borderColor='border-slate-500'
+                  options={option}
+                  selectedKey={selectedOptionKey}
+                  onChange={handleSelectChange} // Pasar el manejador de cambio
+                />
+              </div>
+
               <Button type='submit' rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-ms' font='font-medium' textColor='text-white' inline>
                 <BsCheck2Circle className='text-xl' /> Asignar
               </Button>
