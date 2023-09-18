@@ -12,6 +12,7 @@ import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Pagination } from '../Utils/Pagination/Pagination'
 import { Card3D } from '../Utils/Card/Card'
+import { keysRoles } from '../../import/staticData'
 
 export const TeacherClass = () => {
   const { id } = useParams()
@@ -19,6 +20,7 @@ export const TeacherClass = () => {
   const [teacherClass, setTeacherClass] = useState([])
   const [pageNumber, setPageNumber] = useState(0)
   const [rol, setRol] = useState('')
+  const idRol = Number(localStorage.getItem('idRol'))
 
   useEffect(() => {
     getUser(id)
@@ -84,12 +86,14 @@ export const TeacherClass = () => {
               })
             )}
           </section>
-          <div className='absolute top-4 left-8'>
-            <Link to='/instructores' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
-              <IoReturnDownBack />
-              Regresar
-            </Link>
-          </div>
+          {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+            <div className='absolute top-4 left-8'>
+              <Link to='/instructores' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
+                <IoReturnDownBack />
+                Regresar
+              </Link>
+            </div>
+          )}
           <div className='flex justify-center h-[13vh] relative bottom-0'>
             <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>

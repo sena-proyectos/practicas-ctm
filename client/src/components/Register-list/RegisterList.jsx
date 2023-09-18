@@ -276,7 +276,7 @@ export const RegisterList = () => {
         </header>
         <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto'>
           <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} />
-          <div className='flex justify-center h-[13vh] relative bottom-0'>
+          <div className='flex justify-center h-[11.5vh] relative bottom-0'>
             <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
           {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
