@@ -511,7 +511,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
   const handleUseState = (setState, value) => setState(value)
 
   const fetchDataDocuments = async () => {
-    const res = await getAvalById(avalDocumentos)
+    const res  = await getAvalById(avalDocumentos)
     const { data } = res.data
     const response = await getUserById(data[0].responsable_aval)
     const { nombres_usuario, apellidos_usuario } = response.data.data[0]
