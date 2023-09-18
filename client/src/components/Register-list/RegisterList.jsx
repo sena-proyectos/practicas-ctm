@@ -5,12 +5,16 @@ import decode from 'jwt-decode'
 import LoadingUI from 'react-loading'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Swal from 'sweetalert2'
+import Cookies from 'js-cookie'
 
 // icons
 import { BsPatchCheck, BsHourglass, BsXOctagon } from 'react-icons/bs'
 import { AiOutlineCloudUpload, AiOutlineFileAdd } from 'react-icons/ai'
 import { IoAddCircleOutline } from 'react-icons/io5'
-import { PiMicrosoftExcelLogoBold } from 'react-icons/pi'
+import { PiMicrosoftExcelLogoBold, PiCaretRightBold } from 'react-icons/pi'
+import { BiSad } from 'react-icons/bi'
+import { TiDelete } from 'react-icons/ti'
 
 // Componentes
 import { Footer } from '../Footer/Footer'
@@ -21,10 +25,7 @@ import { Pagination } from '../Utils/Pagination/Pagination'
 
 import { InscriptionApprentice, getInscriptions, readExcel } from '../../api/httpRequest'
 import { keysRoles } from '../../import/staticData'
-import { LoadingModal, Modals } from '../Utils/Modals/Modals'
-import Cookies from 'js-cookie'
-import Swal from 'sweetalert2'
-import { BiSad } from 'react-icons/bi'
+import { LoadingModal, ModalConfirm } from '../Utils/Modals/Modals'
 
 export const modalOptionList = {
   confirmModal: 'confirm',
@@ -43,6 +44,10 @@ export const RegisterList = () => {
   const [loadingData, setLoadingData] = useState(true)
   const excelRef = useRef()
   const navigate = useNavigate()
+  const [showFiltros, setShowFiltros] = useState(false)
+  const [filtersButtons, setFiltersButtons] = useState({ modalidad: false, estado: false, fecha: false })
+  const [activeFilter, setActiveFilter] = useState(false)
+  const [inscriptionOriginal, setInscriptionOriginal] = useState([])
 
   const inscriptionsPerPage = 6
   const pageCount = Math.ceil(inscriptions.length / inscriptionsPerPage)
@@ -88,6 +93,7 @@ export const RegisterList = () => {
       const response = await getInscriptions()
       const { data } = response.data
       setInscriptions(data)
+      setInscriptionOriginal(data)
       setLoadingData(false)
     } catch (error) {
       throw new Error(error)
@@ -108,33 +114,9 @@ export const RegisterList = () => {
     const fileData = new FormData()
     fileData.append('excelFile', file)
     const { data, code } = await (await readExcel(fileData)).data
-    const dataToSend = data.map((item) => {
+    const dataToSend = data.map((item, index) => {
       return {
-        nombre_inscripcion: item['Nombres completos'],
-        apellido_inscripcion: item['Apellidos completos'],
-        tipo_documento_inscripcion: item['Tipo de Documento de Identidad'],
-        documento_inscripcion: item['Numero de documento del aprendiz'],
-        email_inscripcion: item['Correo electronico del aprendiz'],
-        inscripcion_celular: item['Numero de celular del aprendiz'],
-        etapa_actual_inscripcion: item['Etapa de formacion'],
-        modalidad_inscripcion: item['Modalidad etapa practica'],
-        nombre_programa_inscripcion: item['Nombre del programa'],
-        nivel_formacion_inscripcion: item['Nivel de formacion'],
-        numero_ficha_inscripcion: item['Numero de ficha'],
-        fecha_fin_lectiva_inscripcion: item['Fecha de terminacion de la etapa lectiva'],
-        nombre_instructor_lider_inscripcion: item['Nombre completo del instructor lider'],
-        email_instructor_lider_inscripcion: item['Correo del instructor lider'],
-        apoyo_sostenimiento_inscripcion: item['Apoyos de sostenimiento'],
-        nit_empresa_inscripcion: item['NIT de la empresa'] ?? null,
-        nombre_empresa_inscripcion: item['Nombre de la empresa'] ?? null,
-        direccion_empresa_inscripcion: item['Direccion de la empresa'] ?? null,
-        nombre_jefe_empresa_inscripcion: item['Nombre completo jefe inmediato'] ?? null,
-        cargo_jefe_empresa_inscripcion: item['Cargo contacto jefe inmediato'] ?? null,
-        telefono_jefe_empresa_inscripcion: item['Teléfono de la Empresa o Jefe inmediato'] ?? null,
-        email_jefe_empresa_inscripcion: item['Correo electronico de la empresa o jefe inmediato'] ?? null,
-        arl: item['¿Quién asume el pago de la ARL?'] ?? null,
-        link_documentos: item.Documentos,
-        observaciones: item.Observaciones,
+        ...data[index],
         responsable_inscripcion: username
       }
     })
@@ -178,20 +160,123 @@ export const RegisterList = () => {
     setIsModalOpen(!isModalOpen)
   }
 
+  const handleFilter = () => {
+    setShowFiltros(!showFiltros)
+  }
+
+  const disableShowFiltros = () => {
+    setTimeout(() => {
+      setShowFiltros(false)
+      setFiltersButtons({ modalidad: false, estado: false, fecha: false })
+    }, 100)
+  }
+
+  const ShowFilter = (filterType) => {
+    if (filterType === 'modalidad') setFiltersButtons({ modalidad: !filtersButtons.modalidad, etapa: false, fecha: false })
+    if (filterType === 'estado') setFiltersButtons({ estado: !filtersButtons.estado, modalidad: false, fecha: false })
+    if (filterType === 'fecha') setFiltersButtons({ fecha: !filtersButtons.fecha, modalidad: false, estado: false })
+  }
+
+  const handleTypeFilter = (filterType, filter) => {
+    if (filterType === 'modalidad') {
+      const filterMap = inscriptionOriginal.filter((inscription) => inscription.nombre_modalidad === filter)
+      setInscriptions(filterMap)
+    }
+    if (filterType === 'estado') {
+      const filterMap = inscriptionOriginal.filter((inscription) => inscription.estado_general_inscripcion === filter)
+      setInscriptions(filterMap)
+    }
+    disableShowFiltros()
+    setActiveFilter(true)
+  }
+
+  const handleResetFilter = () => {
+    setInscriptions(inscriptionOriginal)
+    disableShowFiltros()
+    setActiveFilter(false)
+  }
+
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
-      {isModalOpen && modalOption === modalOptionList.confirmModal && <Modals setModalOption={handleModalOption} bodyConfirm title={'¿Está seguro?'} loadingFile={fileName} closeModal={handleCloseModal} />}
+      {isModalOpen && modalOption === modalOptionList.confirmModal && <ModalConfirm setModalOption={handleModalOption} title={'¿Está seguro?'} loadingFile={fileName} closeModal={handleCloseModal} />}
       {isModalOpen && modalOption === modalOptionList.loadingExcelModal && <LoadingExcelFileModal />}
       {isModalOpen && modalOption === modalOptionList.uploadingExcelModal && <UploadingExcelFileModal />}
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
-          <Search filter />
+          <Search filter iconClick={handleFilter} />
+          <ul className={`absolute right-80 mt-1 top-4 w-36 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
+            <li>
+              <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('modalidad')}>
+                Modalidad
+                <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.modalidad ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
+                {filtersButtons.modalidad && (
+                  <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
+                    <ul className='flex flex-col gap-1 py-2 w-44'>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('modalidad', 'Pasantías')}>
+                        Pasantías
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('modalidad', 'Proyecto Productivo')}>
+                        Proyecto Productivo
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('modalidad', 'Monitoría')}>
+                        Monitoría
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('modalidad', 'Vinculación laboral')}>
+                        Vinculación laboral
+                      </li>
+                    </ul>
+                  </section>
+                )}
+              </button>
+            </li>
+            <li>
+              <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('estado')}>
+                Estado
+                <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.estado ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
+                {filtersButtons.estado && (
+                  <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
+                    <ul className='flex flex-col w-40 gap-1 py-2'>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('estado', 'Aprobado')}>
+                        Aprobado
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('estado', 'Pendiente')}>
+                        Pendiente
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('estado', 'Rechazado')}>
+                        Rechazado
+                      </li>
+                    </ul>
+                  </section>
+                )}
+              </button>
+            </li>
+            <li>
+              <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('fecha')}>
+                Fecha
+                <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.fecha ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
+                {filtersButtons.fecha && (
+                  <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg h-10 flex items-center'>
+                    <form action=''>
+                      <input type='date' className='w-full py-1 pl-2 pr-3 text-sm text-black focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-400' />
+                    </form>
+                  </section>
+                )}
+              </button>
+            </li>
+          </ul>
+          {activeFilter && (
+            <section className='absolute right-3'>
+              <button type='button' className='text-sm font-light flex items-center gap-[2px] hover:text-red-500 transition-colors' onClick={handleResetFilter}>
+                <TiDelete className='text-xl text-red-500' /> Borrar Filtro
+              </button>
+            </section>
+          )}
         </header>
-        <section className='flex flex-col w-11/12 gap-3 mx-auto'>
+        <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto'>
           <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} />
-          <div className='flex justify-center h-[13vh] relative bottom-0'>
+          <div className='flex justify-center h-[11.5vh] relative bottom-0'>
             <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
           </div>
           {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
@@ -238,7 +323,7 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData }) 
             return (
               <tr className='grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center' key={x.id_inscripcion}>
                 <td className='max-w-[20ch] font-medium text-center break-words'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</td>
-                <td className='font-light text-center '>{x.modalidad_inscripcion === '1' ? 'Pasantías' : x.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : x.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : x.modalidad_inscripcion === '4' ? 'Monitoría' : x.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</td>
+                <td className='font-light text-center max-w-[10ch] break-words'>{x.nombre_modalidad}</td>
                 <td className='font-light text-center '>{x.fecha_creacion.split('T')[0]}</td>
                 <td className='text-sm font-light text-center '>
                   <div className='w-10 mx-auto rounded-full select-none bg-grayPrimary'>{x.estado_general_inscripcion === 'Rechazado' ? 'N/A' : `${x.avales_aprobados} | 4`}</div>
@@ -262,7 +347,7 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData }) 
         ) : (
           <tr className='grid h-full mt-10 place-content-center'>
             <th scope='row' className='flex items-center gap-1 text-xl text-red-500'>
-              <p>¡Oops! No hay ningún aprendiz con este filtro.</p>
+              <p>¡Oops! No hay ninguna inscripción con este filtro.</p>
               <BiSad className='text-2xl' />
             </th>
           </tr>
@@ -319,4 +404,3 @@ const UploadingExcelFileModal = () => (
     </section>
   </LoadingModal>
 )
-

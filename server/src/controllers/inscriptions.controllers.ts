@@ -15,7 +15,7 @@ import { errorCodes } from '../models/errorCodes.enums.js'
  */
 export const getInscriptions = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const [inscriptions] = await connection.query('SELECT i.*, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END')
+    const [inscriptions] = await connection.query('SELECT i.*, m.nombre_modalidad, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i INNER JOIN modalidades m ON i.modalidad_inscripcion = m.id_modalidad LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END')
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -69,8 +69,14 @@ export const getInscriptionsDetailsById: RequestHandler<{ id: string }, Response
   const idNumber = Number(id_inscripcion)
 
   try {
-    const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE id_detalle_inscripcion = ?', [idNumber])
-    return res.status(httpStatus.OK).json({ data: inscriptions })
+    const [inscriptions] = await connection.query('SELECT detalles_inscripciones.*, inscripciones.fecha_creacion FROM detalles_inscripciones LEFT JOIN inscripciones ON inscripciones.id_inscripcion = detalles_inscripciones.id_inscripcion WHERE detalles_inscripciones.id_detalle_inscripcion = ?', [idNumber])
+    const formattedInscriptions = (inscriptions as Array<{ fecha_modificacion: Date; fecha_creacion: Date }>).map((inscription) => {
+      const formattedDate = new Date(inscription.fecha_modificacion).toLocaleString()
+      const formattedDateCreation = new Date(inscription.fecha_creacion).toLocaleDateString()
+      return { ...inscription, fecha_modificacion: formattedDate, fecha_creacion: formattedDateCreation }
+    })
+
+    return res.status(httpStatus.OK).json({ data: formattedInscriptions })
   } catch (err) {
     return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
   }
@@ -108,12 +114,45 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
   try {
     let i = 0
     for (const inscription of inscriptions) {
+<<<<<<< HEAD
       const { nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion } = inscription
       console.log('paso 2')
       const [result] = await connection.query(
         'INSERT INTO inscripciones (nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion]
       )
+=======
+      const { nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, municipio_empresa, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion } = inscription
+      const [result] = await connection.query('INSERT INTO inscripciones (nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, municipio_empresa, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+        nombre_inscripcion,
+        apellido_inscripcion,
+        tipo_documento_inscripcion,
+        documento_inscripcion,
+        email_inscripcion,
+        inscripcion_celular,
+        etapa_actual_inscripcion,
+        modalidad_inscripcion,
+        nombre_programa_inscripcion,
+        nivel_formacion_inscripcion,
+        numero_ficha_inscripcion,
+        fecha_fin_lectiva_inscripcion,
+        nombre_instructor_lider_inscripcion,
+        email_instructor_lider_inscripcion,
+        apoyo_sostenimiento_inscripcion,
+        nit_empresa_inscripcion,
+        nombre_empresa_inscripcion,
+        direccion_empresa_inscripcion,
+        municipio_empresa,
+        nombre_jefe_empresa_inscripcion,
+        cargo_jefe_empresa_inscripcion,
+        telefono_jefe_empresa_inscripcion,
+        email_jefe_empresa_inscripcion,
+        arl,
+        link_documentos,
+        observaciones,
+        responsable_inscripcion
+      ])
+>>>>>>> inscriptions
       if ((result as RowDataPacket[]).length === 0) throw new DbErrorNotFound(`No se pudo crear la inscripcion número ${i}.`, errorCodes.ERROR_CREATE_STUDENT)
       i += 1
     }
@@ -168,12 +207,10 @@ export const returnExcelData = async (req: Request, res: Response): Promise<Resp
     const [rows] = await connection.query('SELECT documento_inscripcion FROM inscripciones WHERE estado_general_inscripcion <> "Rechazado"')
 
     if (Array.isArray(rows)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const existingDocumentos = rows.map((row: any) => row.documento_inscripcion)
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const filteredDataArray = excelData.filter((item: any) => {
-        const documentoAprendiz = String(item['Numero de documento del aprendiz'])
+        const documentoAprendiz = item?.documento_inscripcion
         const shouldInclude = !existingDocumentos.includes(documentoAprendiz)
         return shouldInclude
       })

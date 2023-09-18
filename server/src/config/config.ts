@@ -1,4 +1,6 @@
 import { config } from 'dotenv'
+import nodemailer from 'nodemailer'
+import smtpTransport from 'nodemailer-smtp-transport'
 
 config()
 
@@ -11,17 +13,15 @@ const DB_PORT = process.env.DB_PORT ?? 3306
 const MAIL_USER = process.env.MAIL_USER ?? 'null'
 const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? 'null'
 
-const emailConfig = {
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: MAIL_USER,
-    pass: MAIL_PASSWORD
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-}
+const emailConfig = nodemailer.createTransport(
+  smtpTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: MAIL_USER,
+      pass: MAIL_PASSWORD
+    }
+  }))
 
 export { PORT, DB_USER, DB_PASSWORD, DB_HOST, DB_DATABASE, DB_PORT, emailConfig }

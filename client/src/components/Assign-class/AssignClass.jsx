@@ -24,8 +24,6 @@ export const AssignClass = () => {
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
   const [detailCourse, setDetailCourse] = useState([])
-  const [isEmptyLeader, setIsEmptyLeader] = useState()
-  const [isEmptyPractical, setIsEmptyPractical] = useState()
 
   const getCursos = async () => {
     try {
@@ -50,10 +48,6 @@ export const AssignClass = () => {
       const response = await GetClassByNumber(numero_ficha)
       const { data } = response.data
       setDetailCourse(data[0])
-      const emptyPractical = !data[0].id_instructor_seguimiento
-      const emptyLeader = !data[0].id_instructor_lider
-      setIsEmptyPractical(emptyPractical)
-      setIsEmptyLeader(emptyLeader)
     } catch (error) {
       throw new Error(error)
     }
@@ -91,13 +85,13 @@ export const AssignClass = () => {
 
   return (
     <>
-      {modalAsign && <AsignTeacherModal title={'Asignar Instructor'} numero_ficha={detailCourse.numero_ficha} emptyLeader={isEmptyLeader} emptyPractical={isEmptyPractical} programa_formacion={detailCourse.nombre_programa_formacion} setNotify={setNotify} closeModal={handleModal} />}
+      {modalAsign && <AsignTeacherModal title={'Asignar Instructor'} numero_ficha={detailCourse.numero_ficha} programa_formacion={detailCourse.nombre_programa_formacion} setNotify={setNotify} closeModal={handleModal} />}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
           <header className='grid place-items-center'>
-            <Search searchFilter />
+            <Search searchFilter placeholder={'Busca una ficha'} />
           </header>
           <section>
             <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>

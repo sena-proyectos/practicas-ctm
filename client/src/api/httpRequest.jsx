@@ -172,7 +172,22 @@ export const getAvalById = async (id) => {
 // OBTENER USERS BY IDmm
 export const getUserById = async (id) => {
   const URL = `${baseUrl}${api}/user/${id}`
+<<<<<<< HEAD
   const response = await axios.get(URL)
+=======
+
+  try {
+    const response = await axios.get(URL)
+    return response
+  } catch (error) {
+    return error
+  }
+}
+
+export const sendEmail = async (payload) => {
+  const URL = `${baseUrl}${api}/sendEmail`
+  const response = await axios.post(URL, payload)
+>>>>>>> inscriptions
   return response
 }
 

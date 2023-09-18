@@ -7,6 +7,12 @@ export const rolesNames = {
   4: 'Instructor Líder'
 }
 
+export const colorTextStatus = {
+  Pendiente: 'text-blue-600',
+  Aprobado: 'text-green-600',
+  Rechazado: 'text-red-600'
+}
+
 export const keysRoles = Object.keys(rolesNames)
 
 /*
@@ -233,7 +239,7 @@ export const dataInscription = {
     {
       type: 'select',
       name: 'tipo_documento_inscripcion',
-      placeholder: 'sin seleccionar',
+      placeholder: 'Sin seleccionar',
       label: 'Tipo documento',
       required: true
     },
@@ -452,6 +458,7 @@ export const colorIcon = {
   '/aprov': 'text-secondary',
   '/instructores': 'text-rosa',
   '/fichas': 'text-coffee',
+  // '/fichas-instructor/:id': 'text-coffee',
   '/visitas': 'text-primary',
   '/config': 'text-fifth'
 }
@@ -462,78 +469,6 @@ export const colorIcon = {
 export const estadoIcons = {
   visitado: <LuCalendarCheck2 />,
   visitadont: <LuCalendarX2 />
-}
-
-/*
- * src: src\components\Utils\Modals\Modals.jsx
- */
-export const filter = {
-  filterStudents: [
-    {
-      type: 'text',
-      name: 'ficha',
-      placeholder: '2473196',
-      label: 'Fichas:'
-    },
-    {
-      type: 'text',
-      name: 'programaFormacion',
-      placeholder: 'ADSO',
-      label: 'Programa de formación:'
-    },
-    {
-      type: 'select',
-      name: 'modalitie',
-      placeholder: 'Sin seleccionar',
-      label: 'Modalidad:'
-    }
-  ],
-  filterVisits: [
-    {
-      type: 'date',
-      name: 'fechaInicio',
-      placeholder: '2021-01-01',
-      label: 'Fecha inicio'
-    },
-    {
-      type: 'date',
-      name: 'fechaFin',
-      placeholder: '2021-01-01',
-      label: 'Fecha fin'
-    },
-    {
-      type: 'text',
-      name: 'ficha',
-      placeholder: '2473196',
-      label: 'Ficha'
-    },
-    {
-      type: 'text',
-      name: 'empresa',
-      placeholder: 'Empresa',
-      label: 'Empresa'
-    }
-  ],
-  filterBitacoras: [
-    {
-      type: 'text',
-      name: 'ficha',
-      placeholder: '2473196',
-      label: 'Fichas'
-    },
-    {
-      type: 'text',
-      name: 'programaFormacion',
-      placeholder: 'ADSO',
-      label: 'Programa de formación'
-    },
-    {
-      type: 'text',
-      name: 'nombreAprendiz',
-      placeholder: 'Juan Perez',
-      label: 'Nombre Aprendiz'
-    }
-  ]
 }
 
 /*
