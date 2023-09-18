@@ -16,6 +16,7 @@ const Siderbar = () => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(true)
   const [dataFullName, setDataFullName] = useState(null)
+  const [idUsuario, setIdUsuario] = useState()
 
   useEffect(() => {
     const handleResize = () => {
@@ -48,6 +49,8 @@ const Siderbar = () => {
     try {
       const tokenData = jwtDecode(token)
       const { nombres_usuario, apellidos_usuario } = tokenData.data.user
+      const { id_usuario } = tokenData.data.user
+      setIdUsuario(id_usuario)
       const fullName = `${nombres_usuario} ${apellidos_usuario}`
       setDataFullName(fullName)
     } catch (error) {
@@ -120,14 +123,26 @@ const Siderbar = () => {
                 </Link>
               </li>
             )}
-            <li>
-              <Link to='/fichas' className={styles('/fichas')}>
-                <span className={spanStyle('/fichas')}>
-                  <IoBookOutline />
-                </span>
-                {open && (idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) ? 'Fichas' : 'Mis fichas')}
-              </Link>
-            </li>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <li>
+                <Link to='/fichas' className={styles('/fichas')}>
+                  <span className={spanStyle('/fichas')}>
+                    <IoBookOutline />
+                  </span>
+                  {open && 'Fichas'}
+                </Link>
+              </li>
+            )}
+            {idRol === Number(keysRoles[2]) && (
+              <li>
+                <Link to={`/fichas-instructor/${idUsuario}`} className={styles('/fichas')}>
+                  <span className={spanStyle('/fichas')}>
+                    <IoBookOutline />
+                  </span>
+                  {open && 'Mis fichas'}
+                </Link>
+              </li>
+            )}
             {/* {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
               <li>
                 <Link to="/bitacoras" className={styles('/bitacoras')}>
@@ -173,4 +188,3 @@ const Siderbar = () => {
 }
 
 export { Siderbar }
-

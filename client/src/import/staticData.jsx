@@ -239,7 +239,7 @@ export const dataInscription = {
     {
       type: 'select',
       name: 'tipo_documento_inscripcion',
-      placeholder: 'sin seleccionar',
+      placeholder: 'Sin seleccionar',
       label: 'Tipo documento',
       required: true
     },
@@ -458,6 +458,7 @@ export const colorIcon = {
   '/aprov': 'text-secondary',
   '/instructores': 'text-rosa',
   '/fichas': 'text-coffee',
+  // '/fichas-instructor/:id': 'text-coffee',
   '/visitas': 'text-primary',
   '/config': 'text-fifth'
 }
