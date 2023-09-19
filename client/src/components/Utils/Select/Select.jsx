@@ -34,17 +34,7 @@ export const Select = ({ options, placeholder, placeholderSearch, hoverColor, ho
             className={`px-1.5 py-1 my-1 text-sm ${hoverColor} ${hoverTextColor} rounded-md cursor-pointer select-none
              ${option.value.toLowerCase() === selected.toLowerCase() && selectedColor}
              ${option.value.toLowerCase().startsWith(inputValue) ? 'block' : 'hidden'}`}
-<<<<<<< HEAD
-            onClick={() => {
-              if (option.value.toLowerCase() !== selected.toLowerCase()) {
-                setSelected(option.value)
-                setOpen(false)
-                console.log(option.value)
-              }
-            }}
-=======
             onClick={() => handleSelectOption(option)}
->>>>>>> inscriptions
           >
             {option.value}
           </li>

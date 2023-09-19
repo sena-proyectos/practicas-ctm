@@ -17,7 +17,6 @@ export interface inscriptionData {
   nit_empresa_inscripcion?: number
   nombre_empresa_inscripcion?: string
   direccion_empresa_inscripcion?: string
-  municipio_empresa?: string
   nombre_jefe_empresa_inscripcion?: string
   cargo_jefe_empresa_inscripcion?: string
   telefono_jefe_empresa_inscripcion?: number

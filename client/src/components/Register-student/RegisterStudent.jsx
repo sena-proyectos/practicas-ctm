@@ -28,7 +28,6 @@ export const RegisterStudent = () => {
   const [selectedFiles, setSelectedFiles] = useState(null)
   const [showDataEmpresa, setShowDataEmpresa] = useState(false)
   const [showDataAprendiz, setShowDataAprendiz] = useState(true)
-  const [observation, setObservation] = useState('')
   const formRef = useRef(null)
   const fileInputRef = useRef(null)
 
@@ -55,12 +54,6 @@ export const RegisterStudent = () => {
     setShowDataEmpresa(section === 'empresa')
     setShowDataAprendiz(section === 'aprendiz')
   }
-<<<<<<< HEAD
-  // eslint-disable-next-line no-unused-vars
-  const handleObservationChange = (event) => {
-    setObservation(event.target.value)
-  }
-=======
 
   const [selectedValues, setSelectedValues] = useState({
     tipo_documento_inscripcion: '',
@@ -81,7 +74,6 @@ export const RegisterStudent = () => {
     }))
   }
 
->>>>>>> inscriptions
   // Validación de campos y capturación de los valores
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -94,14 +86,14 @@ export const RegisterStudent = () => {
     formValues.apoyo_sostenimiento_inscripcion = selectedValues.apoyo_sostenimiento_inscripcion
     formValues.arl = selectedValues.arl
 
-    console.log(formValues)
-
     try {
+      const observation = formValues.observaciones
       const teacher = formValues.nombre_instructor_lider_inscripcion
       const classNumber = formValues.id_ficha_inscripcion
       const archivo = formValues.link_documentos.name
 
-      formValues.fecha_creacion_inscripcion = Date.now()
+
+      formValues.fecha_creacion = Date.now()
       formValues.observaciones = observation
       formValues.link_documentos = archivo
       // const fileInput = document.getElementById('file-input');
@@ -111,7 +103,6 @@ export const RegisterStudent = () => {
         const response = res.data.data[0].id_usuario
         formValues.id_instructor_lider_inscripcion = response
       }
-      console.log(formValues)
 
       // if (archivo) {
       //   try {
@@ -162,7 +153,9 @@ export const RegisterStudent = () => {
     // validar que el numero de documento sea valido
     // enviar los datos al backend
     const responsable_inscripcion = `${decoded.data.user.nombres_usuario} ${decoded.data.user.apellidos_usuario}`
-    const form = { ...formValues, responsable_inscripcion }
+    const estado_general_inscripcion = 'Pendiente'
+
+    const form = {...formValues, responsable_inscripcion, estado_general_inscripcion }
     const dataToSend = Array(form)
     const data = await sendDataInscription(dataToSend)
     // mostramos una alerta de exito
@@ -324,7 +317,7 @@ export const RegisterStudent = () => {
                           />
                         ) : item.type === 'textarea' ? (
                           <div className='relative'>
-                            <textarea id='editor' rows='3' className='block absolute w-full max-h-[5.5rem] resize-none overflow-y-auto border-gray-400 focus:text-gray-900 rounded-xl shadow-md bg-white py-[0.9px] px-3 text-sm text-black focus:bg-white focus:outline-none placeholder:text-slate-400' placeholder={item.placeholder} required></textarea>
+                            <textarea id='editor' rows='3' className='block absolute w-full max-h-[5.5rem] resize-none overflow-y-auto border-gray-400 focus:text-gray-900 rounded-xl shadow-md bg-white py-[0.9px] px-3 text-sm text-black focus:bg-white focus:outline-none placeholder:text-slate-400' placeholder={item.placeholder} required  name={item.name} ></textarea>
                           </div>
                         ) : (
                           <input type={item.type} name={item.name} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-400' autoComplete='on' placeholder={item.placeholder} />

@@ -16,7 +16,7 @@ import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { colorTextStatus, keysRoles } from '../../import/staticData'
 
-import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers } from '../../api/httpRequest'
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById, GetClassByNumber } from '../../api/httpRequest'
 import { AiOutlineFullscreen } from 'react-icons/ai'
 import { checkApprovementData } from '../../validation/approvementValidation'
 import Cookies from 'js-cookie'
@@ -254,7 +254,11 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   const { inscriptionData } = inscriptionStore()
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
 
-  const fetchInfo = async () => {
+   const fetchInfo = async () => {
+    const res = await getAvalById(avalCoordinador)
+    const { data } = res.data
+    setAvalInfo(data)
+  }
   const [dataAprendiz, setDataAprendiz] = useState([])
   const [dataEmpresa, setDataEmpresa] = useState([])
   const [idUser, setIdUser] = useState(0)
@@ -517,8 +521,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       </div>
     </section>
   )
-}
-
+  }
 const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
   const iFrameRef = useRef(null)
   const [showDriveButton, setShowDriveButton] = useState(null)
@@ -933,6 +936,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
 }
 
 const RAPS = ({ idRol, avalRaps }) => {
+  const {id} = useParams()
   const formRef = useRef(null)
   const descriptionRef = useRef(null)
 
@@ -1048,7 +1052,9 @@ const RAPS = ({ idRol, avalRaps }) => {
       throw new Error(error)
     }
   }
-
+  
+  const [ficha, setFicha] = useState(0)
+  const [courses, setCourses] = useState([])
   useEffect(() => {
     const fetchData = async () => {
       try {

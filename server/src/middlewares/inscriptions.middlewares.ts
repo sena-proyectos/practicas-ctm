@@ -19,39 +19,10 @@ export const checkInscriptionData: RequestHandler<{}, Response, inscriptionData>
   try {
     let inscriptionLength = 0
     for (const inscription of inscriptions) {
-      const { nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, municipio_empresa, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion } = inscription
+      const { nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion } = inscription
 
       const { error } = inscriptionSchema.validate({
-<<<<<<< HEAD
-        nombre_inscripcion,
-        apellido_inscripcion,
-        tipo_documento_inscripcion,
-        documento_inscripcion: numberParsed,
-        email_inscripcion,
-        inscripcion_celular: phoneStudentParsed,
-        etapa_actual_inscripcion,
-        modalidad_inscripcion,
-        nombre_programa_inscripcion,
-        nivel_formacion_inscripcion,
-        numero_ficha_inscripcion: fichaNumber,
-        fecha_fin_lectiva_inscripcion,
-        nombre_instructor_lider_inscripcion,
-        email_instructor_lider_inscripcion,
-        apoyo_sostenimiento_inscripcion,
-        nit_empresa_inscripcion: nitEmpresaNumber,
-        nombre_empresa_inscripcion,
-        direccion_empresa_inscripcion,
-        nombre_jefe_empresa_inscripcion,
-        cargo_jefe_empresa_inscripcion,
-        telefono_jefe_empresa_inscripcion: phoneBossParsed,
-        email_jefe_empresa_inscripcion,
-        arl,
-        link_documentos,
-        observaciones,
-        responsable_inscripcion
-=======
-        nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, municipio_empresa, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
->>>>>>> inscriptions
+        nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
       })
       console.log(error)
       if (error !== undefined) throw new DataNotValid(`Los datos ingresados del id ${inscriptionLength} no son válidos, verifícalos.`)
@@ -166,7 +137,6 @@ export const readExcelFile = async (req: Request, res: Response, next: NextFunct
         cargo_jefe_empresa_inscripcion: item['Cargo del Contacto en la Empresa '] ?? null,
         telefono_jefe_empresa_inscripcion: item['Teléfono de la Empresa o Jefe inmediato'] ?? null,
         email_jefe_empresa_inscripcion: item['Correo Electrónico Contacto en la Empresa'] ?? null,
-        municipio_empresa: item['Municipio donde se encuentra la Empresa'] ?? null,
         arl: item['Si su modalidad de práctica es Pasantía o Monitoria, quién asume el pago de la ARL?'] ?? null,
         observaciones: item['Observaciones - Comentarios'] ?? null
       }
