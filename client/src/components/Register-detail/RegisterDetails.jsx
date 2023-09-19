@@ -61,7 +61,7 @@ export const RegisterDetails = () => {
       setLinkDocs(link_documentos)
       setInscriptionAprendiz(res)
     } catch (error) {
-      console.log('Ha ocurrido un error al mostrar los datos del usuario')
+      console.error('Ha ocurrido un error al mostrar los datos del usuario')
     }
   }
 
@@ -71,7 +71,7 @@ export const RegisterDetails = () => {
       const res = response.data.data
       setDetails({ documentosId: res[0].id_detalle_inscripcion, rapsId: res[1].id_detalle_inscripcion, funcionesId: res[2].id_detalle_inscripcion, avalId: res[3].id_detalle_inscripcion })
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -292,7 +292,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       const res = response.data.data
       setDataAprendiz(res)
     } catch (error) {
-      console.log('Ha ocurrido un error al mostrar los datos del usuario')
+      console.error('Ha ocurrido un error al mostrar los datos del usuario')
     }
   }
   const getDetallesInscripcion = async (id) => {
@@ -300,19 +300,16 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       const response = await getInscriptionDetails(id)
       const res = response.data.data
       const res2 = response.data.data[1].responsable_aval
-      console.log(res)
-      console.log(res2)
       setDataEmpresa(res)
       setIdUser(res2)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
   const getUser = async (id) => {
     const response = await getUserById(id)
     const res = response.data.data[0].nombres_usuario
     const res2 = response.data.data[0].apellidos_usuario
-    console.log(res)
     setUser(res + ' ' + res2)
   }
 
@@ -358,7 +355,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       if (selectedApproveButton === approveOptions.Si) return acceptApprove({ observations, approveOption, avalCoordinador }, loadingToast)
       if (selectedApproveButton === approveOptions.No) return denyApprove({ observations, approveOption, avalCoordinador }, loadingToast)
     } catch (err) {
-      console.log(err)
       if (toast.isActive('loadingToast')) return
       toast.error('Los campos son incorrectos, corríjalos.', {
         toastId: 'error-full-docs',
@@ -438,13 +434,13 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                 <p className='my-3'>{item.modalidad_inscripcion === '1' ? 'Pasantías' : item.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : item.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : item.modalidad_inscripcion === '4' ? 'Monitoría' : item.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</p>
               </div>
             </div>
-            <div className='border-l-2 border-violet-800 px-4 '>
+            <div className='px-4 border-l-2 border-violet-800 '>
               <h1 className='text-center'>AVALES</h1>
               <div className='flex'>
-                <div className='w-full p-4 overflow-y-auto h-60 justify-center justify-items-center flex'>
+                <div className='flex justify-center w-full p-4 overflow-y-auto h-60 justify-items-center'>
                   <div className='w-3/4 mx-10'>
                     {dataEmpresa.map((item) => (
-                      <div className='my-4 justify-center justify-items-center' key={item.id_detalle_inscripcion}>
+                      <div className='justify-center my-4 justify-items-center' key={item.id_detalle_inscripcion}>
                         <Card3D title={item.descripcion_detalle} header={item.estado_aval} item1={item.observaciones} item2={user} item1text={'Observaciones'} item2text={'Responsable del aval'} />
                       </div>
                     ))}
@@ -525,7 +521,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
 const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
   const iFrameRef = useRef(null)
   const [showDriveButton, setShowDriveButton] = useState(null)
-  const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
 
   const [notify, setNotify] = useState(false)
 
@@ -647,7 +642,6 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
       const response = await getTeachers()
       const { data } = response.data
       setTeacher(data)
-      console.log(data)
     } catch (error) {
       throw new Error(error)
     }
@@ -761,7 +755,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
         await getModalities(res)
         if (avalDocumentos) fetchDataDocuments()
       } catch (error) {
-        console.log('Ha ocurrido un error al mostrar los datos del usuario')
+        console.error('Ha ocurrido un error al mostrar los datos del usuario')
       }
     }
 
@@ -771,7 +765,6 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
 
   const getModalities = async () => {
     const res = await getModalitiesById(idModalidad)
-    console.log(res.data.data)
     setModalidad(res.data.data)
   }
   const handleSubmitButton = () => {
@@ -806,7 +799,6 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
       if (selectedApproveButton === approveOptions.Si) return acceptFullDocsApprove({ observations, approveOption, avalDocumentos }, loadingToast)
       if (selectedApproveButton === approveOptions.No) return denyFullDocsApprove({ observations, approveOption, avalDocumentos }, loadingToast)
     } catch (err) {
-      console.log(err)
       if (toast.isActive('loadingToast')) return
       toast.error('Los campos son incorrectos, corríjalos.', {
         toastId: 'error-full-docs',
@@ -847,12 +839,10 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     const { id_usuario: responsable } = decode(cookie).data.user
 
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
-    console.log(id, data)
     try {
       await inscriptionDetailsUpdate(id, data)
-      console.log('inscripcion updated')
-      const resEmail = await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
-      console.log(resEmail)
+      ('inscripcion updated')
+      await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchDataDocuments()
@@ -1008,7 +998,6 @@ const RAPS = ({ idRol, avalRaps }) => {
 
   const handleInputText = (e) => {
     const content = e.target.innerHTML
-    console.log(content)
     if (content.length === 0) {
       setHtmlContent('')
     }
@@ -1067,7 +1056,7 @@ const RAPS = ({ idRol, avalRaps }) => {
         }
         if (avalRaps) fetchRaps()
       } catch (error) {
-        console.log('Ha ocurrido un error al mostrar los datos del usuario')
+        console.error('Ha ocurrido un error al mostrar los datos del usuario')
       }
     }
 
@@ -1090,7 +1079,7 @@ const RAPS = ({ idRol, avalRaps }) => {
         <section>
           {courses.map((item) => (
             <div key={item.id_ficha}>
-              <h1 className='text-center my-2'>Fichas</h1>
+              <h1 className='my-2 text-center'>Fichas</h1>
               <div className='text-center'>
                 <p className='my-2'>{item.numero_ficha}</p>
                 <p className='my-2'>{item.id_nivel_formacion}</p>

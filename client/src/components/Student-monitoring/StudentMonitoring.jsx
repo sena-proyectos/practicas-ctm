@@ -51,7 +51,7 @@ export const StudentMonitoring = () => {
       setDates({ fin_lectiva: fecha_fin_lectiva.split('T')[0], inicio_practicas: fecha_inicio_practica.split('T')[0] })
       setInfoUserById(res)
     } catch (error) {
-      console.log('Ha ocurrido un error al mostrar los datos del usuario')
+      console.error('Ha ocurrido un error al mostrar los datos del usuario')
     }
   }
 

@@ -169,7 +169,7 @@ export const getAvalById = async (id) => {
   return response
 }
 
-// OBTENER USERS BY IDmm
+// OBTENER USERS BY ID
 export const getUserById = async (id) => {
   const URL = `${baseUrl}${api}/user/${id}`
 
