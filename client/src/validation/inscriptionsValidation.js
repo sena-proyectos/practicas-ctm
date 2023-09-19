@@ -1,7 +1,6 @@
 import Joi from 'joi'
 
 export const inscriptionValidation = Joi.object({
-  modalidad_inscripcion: Joi.number().required().min(1),
   nombre_inscripcion: Joi.string().required().min(3).max(50),
   apellido_inscripcion: Joi.string().required().min(3).max(45),
   tipo_documento_inscripcion: Joi.string().required().min(2).max(50),
@@ -9,10 +8,18 @@ export const inscriptionValidation = Joi.object({
   email_inscripcion: Joi.string().required().min(5).max(60),
   inscripcion_celular: Joi.string().required().min(5).max(15),
   etapa_actual_inscripcion: Joi.string().required().min(3).max(15),
+  modalidad_inscripcion: Joi.number().required().min(1),
+  nombre_programa_inscripcion: Joi.string().min(2),
   nivel_formacion_inscripcion: Joi.string().required().min(3).max(20),
   numero_ficha_inscripcion: Joi.number().required().min(1),
+  fecha_fin_lectiva_inscripcion: Joi.date().required(),
+  nombre_instructor_lider_inscripcion: Joi.string().required().min(3),
+  email_instructor_lider_inscripcion: Joi.string().required().min(3),
   id_instructor_lider_inscripcion: Joi.number().required().min(1),
   apoyo_sostenimiento_inscripcion: Joi.string().required().min(2).max(50),
+  nit_empresa_inscripcion: Joi.number(),
+  nombre_empresa_inscripcion: Joi.string().required(),
+  direccion_empresa_inscripcion: Joi.string().min(3).max(100).allow(null),
   id_empresa_inscripcion: Joi.number().min(1).allow(null),
   nombre_jefe_empresa_inscripcion: Joi.string().min(3).max(100).allow(null),
   cargo_jefe_empresa_inscripcion: Joi.string().min(3).max(100).allow(null),
@@ -21,6 +28,6 @@ export const inscriptionValidation = Joi.object({
   arl: Joi.string().min(2).max(20).allow(null),
   link_documentos: Joi.string().required().min(5).max(200),
   observaciones: Joi.string().required().min(1).max(200),
-  fecha_creacion_inscripcion: Joi.date().required(),
+  fecha_creacion: Joi.date().required(),
   id_usuario_responsable_inscripcion: Joi.number().required().min(1)
 })

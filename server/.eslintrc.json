@@ -10,7 +10,19 @@
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    "project": "./server/tsconfig.json"
+=======
     "project": ["./*/tsconfig.json"]
+>>>>>>> origin/master
+=======
+    "project": ["./server/tsconfig.json"]
+>>>>>>> origin/inscriptions
+=======
+    "project": ["./*/tsconfig.json"]
+>>>>>>> inscriptions
   },
   "rules": {
     "@typescript-eslint/naming-convention": "off",

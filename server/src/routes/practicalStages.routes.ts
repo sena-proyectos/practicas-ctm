@@ -7,7 +7,11 @@ const practicalStageRoutes: IRouter = Router()
 
 // * GET
 practicalStageRoutes.get('/practical-stages', getPracticalStages)
+
+practicalStageRoutes.get('/practical-stages/:id', checkIdReq, getPracticalStageById
+)
 practicalStageRoutes.get('/practical-stages/:id', checkIdReq, getPracticalStageById)
+
 
 // * POST
 practicalStageRoutes.post('/create-practical-stage', checkPracticalStageData, createPracticalStage)
