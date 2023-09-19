@@ -10,13 +10,15 @@ import { IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoP
 
 // Componentes
 import { colorIcon, rolesNames, keysRoles } from '../../import/staticData'
+import { userStore } from '../../store/config'
 
 const Siderbar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [open, setOpen] = useState(true)
   const [dataFullName, setDataFullName] = useState(null)
-  const [idUsuario, setIdUsuario] = useState()
+  const { setUserId } = userStore()
+  const { userId } = userStore()
 
   useEffect(() => {
     const handleResize = () => {
@@ -50,7 +52,7 @@ const Siderbar = () => {
       const tokenData = jwtDecode(token)
       const { nombres_usuario, apellidos_usuario } = tokenData.data.user
       const { id_usuario } = tokenData.data.user
-      setIdUsuario(id_usuario)
+      setUserId(id_usuario)
       const fullName = `${nombres_usuario} ${apellidos_usuario}`
       setDataFullName(fullName)
     } catch (error) {
@@ -135,7 +137,7 @@ const Siderbar = () => {
             )}
             {idRol === Number(keysRoles[2]) && (
               <li>
-                <Link to={`/fichas-instructor/${idUsuario}`} className={styles('/fichas')}>
+                <Link to={`/fichas-instructor/${userId}`} className={styles('/fichas')}>
                   <span className={spanStyle('/fichas')}>
                     <IoBookOutline />
                   </span>
