@@ -16,12 +16,13 @@ import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { colorTextStatus, keysRoles } from '../../import/staticData'
 
-import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers } from '../../api/httpRequest'
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById, GetClassByNumber } from '../../api/httpRequest'
 import { AiOutlineFullscreen } from 'react-icons/ai'
 import { checkApprovementData } from '../../validation/approvementValidation'
 import Cookies from 'js-cookie'
 import decode from 'jwt-decode'
 import { inscriptionStore } from '../../store/config'
+import { Card3D } from '../Utils/Card/Card'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
@@ -244,6 +245,7 @@ const InfoEmpresa = ({ inscriptionAprendiz }) => {
 }
 
 const Coordinador = ({ idRol, avalCoordinador }) => {
+  const { id } = useParams()
   const [avalInfo, setAvalInfo] = useState([])
   const [disableSubmitButton, setDisableSubmitButton] = useState(true)
   const descriptionRef = useRef(null)
@@ -252,7 +254,69 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   const { inscriptionData } = inscriptionStore()
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
 
-  const fetchInfo = async () => {
+   const fetchInfo = async () => {
+    const res = await getAvalById(avalCoordinador)
+    const { data } = res.data
+    setAvalInfo(data)
+  }
+  const [dataAprendiz, setDataAprendiz] = useState([])
+  const [dataEmpresa, setDataEmpresa] = useState([])
+  const [idUser, setIdUser] = useState(0)
+  const [user, setUser] = useState(0)
+  const prevUserIdRef = useRef()
+
+  useEffect(() => {
+    prevUserIdRef.current = idUser
+  }, [idUser])
+  useEffect(() => {
+    if (prevUserIdRef.current !== 0) {
+      // Realiza la lógica que necesitas cuando idUser cambia después de la primera vez.
+      getUser(idUser)
+    }
+  }, [idUser])
+  useEffect(() => {
+    if (avalCoordinador) fetchRaps()
+  }, [avalCoordinador])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getInscriptionAprendiz(id)
+      await getDetallesInscripcion(id)
+    }
+    fetchData()
+  }, [id],)
+
+  const getInscriptionAprendiz = async (id) => {
+    try {
+      const response = await getInscriptionById(id)
+      const res = response.data.data
+      setDataAprendiz(res)
+    } catch (error) {
+      console.log('Ha ocurrido un error al mostrar los datos del usuario')
+    }
+  }
+  const getDetallesInscripcion = async (id) => {
+    try {
+      const response = await getInscriptionDetails(id)
+      const res = response.data.data
+      const res2 = response.data.data[1].responsable_aval
+      console.log(res)
+      console.log(res2)
+      setDataEmpresa(res)
+      setIdUser(res2)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const getUser = async (id) => {
+    const response = await getUserById(id)
+    const res = response.data.data[0].nombres_usuario
+    const res2 = response.data.data[0].apellidos_usuario
+    console.log(res)
+    setUser(res + ' ' + res2)
+  }
+
+  const fetchRaps = async () => {
     const res = await getAvalById(avalCoordinador)
     const { data } = res.data
     setAvalInfo(data)
@@ -357,7 +421,41 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   ]
 
   return (
-    <section className={`flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
+    <section className={`flex flex-col   w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
+      <section className='text-md'>
+        {dataAprendiz.map((item) => (
+          <div key={item.id_inscripcion} className='grid grid-cols-2'>
+            <div className='text-center'>
+              <h1 className='text-center'>INFORMACION DEL APRENDIZ </h1>
+              <div className='my-11'>
+                <p className='my-3'>
+                  {item.nombre_inscripcion} {item.apellido_inscripcion}
+                </p>
+                <p className='my-3'>{item.email_inscripcion}</p>
+                <p className='my-3'>
+                  {item.tipo_documento_inscripcion}: {item.documento_inscripcion}
+                </p>
+                <p className='my-3'>{item.modalidad_inscripcion === '1' ? 'Pasantías' : item.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : item.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : item.modalidad_inscripcion === '4' ? 'Monitoría' : item.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</p>
+              </div>
+            </div>
+            <div className='border-l-2 border-violet-800 px-4 '>
+              <h1 className='text-center'>AVALES</h1>
+              <div className='flex'>
+                <div className='w-full p-4 overflow-y-auto h-60 justify-center justify-items-center flex'>
+                  <div className='w-3/4 mx-10'>
+                    {dataEmpresa.map((item) => (
+                      <div className='my-4 justify-center justify-items-center' key={item.id_detalle_inscripcion}>
+                        <Card3D title={item.descripcion_detalle} header={item.estado_aval} item1={item.observaciones} item2={user} item1text={'Observaciones'} item2text={'Responsable del aval'} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
+      <section></section>
       <div className={` w-[95%] mx-auto`}>
         {avalInfo.map((aval) => {
           return (
@@ -423,11 +521,11 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       </div>
     </section>
   )
-}
-
+  }
 const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
   const iFrameRef = useRef(null)
   const [showDriveButton, setShowDriveButton] = useState(null)
+  const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
 
   const [notify, setNotify] = useState(false)
 
@@ -446,7 +544,6 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
       checkDriveLink(linkDocs)
     }
   }, [linkDocs])
-
   useEffect(() => {
     if (notify) {
       toast.success('Se ha rechazado correctamente', {
@@ -638,11 +735,14 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
   const [disableSubmitButton, setDisableSubmitButton] = useState(true)
   const [avalInfoDocumentos, setAvalInfoDocumentos] = useState([])
   const [nameResponsableDocumentos, setNameResponsableDocumentos] = useState('')
+  const { id } = useParams()
+  const [modalidad, setModalidad] = useState([])
+  const [idModalidad, setIdModalidad] = useState(0)
 
   const handleUseState = (setState, value) => setState(value)
 
   const fetchDataDocuments = async () => {
-    const res = await getAvalById(avalDocumentos)
+    const res  = await getAvalById(avalDocumentos)
     const { data } = res.data
     const response = await getUserById(data[0].responsable_aval)
     const { nombres_usuario, apellidos_usuario } = response.data.data[0]
@@ -652,9 +752,28 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
   }
 
   useEffect(() => {
-    if (avalDocumentos) fetchDataDocuments()
-  }, [avalDocumentos])
+    const fetchData = async () => {
+      try {
+        const response = await getInscriptionById(id)
+        const res = response.data.data[0].modalidad_inscripcion
+        setIdModalidad(res)
+        // Llamar a getCourses con el valor actualizado de ficha
+        await getModalities(res)
+        if (avalDocumentos) fetchDataDocuments()
+      } catch (error) {
+        console.log('Ha ocurrido un error al mostrar los datos del usuario')
+      }
+    }
 
+    fetchData() // Llamar a fetchData cuando el componente se monte o cuando id cambie
+  }, [id, avalDocumentos])
+
+
+  const getModalities = async () => {
+    const res = await getModalitiesById(idModalidad)
+    console.log(res.data.data)
+    setModalidad(res.data.data)
+  }
   const handleSubmitButton = () => {
     if (!selectedApproveButton) return
     if (descriptionRef.current.value.length === 0) {
@@ -817,6 +936,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
 }
 
 const RAPS = ({ idRol, avalRaps }) => {
+  const {id} = useParams()
   const formRef = useRef(null)
   const descriptionRef = useRef(null)
 
@@ -932,16 +1052,60 @@ const RAPS = ({ idRol, avalRaps }) => {
       throw new Error(error)
     }
   }
-
+  
+  const [ficha, setFicha] = useState(0)
+  const [courses, setCourses] = useState([])
   useEffect(() => {
-    if (avalRaps) fetchRaps()
-  }, [avalRaps])
+    const fetchData = async () => {
+      try {
+        const response = await getInscriptionById(id)
+        const res = response.data.data[0].numero_ficha_inscripcion
+        setFicha(res)
+        // Llamar a getCourses con el valor actualizado de ficha
+        if(ficha !== 0) {
+          await getCourses(res)
+        }
+        if (avalRaps) fetchRaps()
+      } catch (error) {
+        console.log('Ha ocurrido un error al mostrar los datos del usuario')
+      }
+    }
 
+    fetchData() // Llamar a fetchData cuando el componente se monte o cuando id cambie
+  }, [id, avalRaps])
+
+  const getCourses = async () => {
+    try {
+      const response = await GetClassByNumber(ficha)
+      const { data } = response.data
+      setCourses(data)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
   return (
     <section className='grid grid-cols-2 w-[95%] h-[70vh] gap-3 mx-auto'>
       <section className='h-'>
         <h2>RAPS</h2>
-        <section className='h-5/6'>{/* <iframe src='https://www.youtube.com/embed/p1aAgS-Lns4?si=5DjDbeb5iFakh1jS' title='YouTube video player' allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen className='w-full h-full'></iframe> */}</section>
+        <section>
+          {courses.map((item) => (
+            <div key={item.id_ficha}>
+              <h1 className='text-center my-2'>Fichas</h1>
+              <div className='text-center'>
+                <p className='my-2'>{item.numero_ficha}</p>
+                <p className='my-2'>{item.id_nivel_formacion}</p>
+                <p className='my-2'>{item.nombre_programa_formacion}</p>
+                <p className='my-2'>Lider de ficha: {item.id_instructor_lider}</p>
+                <p className='my-2'>Lider de seguimiento: {item.id_instructor_seguimiento}</p>
+                <div className='grid grid-cols-2'>
+                  <p>Fecha fin lectiva: {new Date(item.fecha_inicio_lectiva).toLocaleDateString()}</p>
+                  <p>Fecha inicio practica: {new Date(item.fecha_fin_lectiva).toLocaleDateString()}</p>
+                </div>
+                <p className='my-3'>Fecha fin lectiva: {new Date(item.fecha_fin_lectiva).toLocaleDateString()}</p>
+              </div>
+            </div>
+          ))}
+        </section>
       </section>
       <section className='flex flex-col w-[95%] gap-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>

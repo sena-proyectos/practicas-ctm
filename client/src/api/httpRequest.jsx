@@ -169,7 +169,7 @@ export const getAvalById = async (id) => {
   return response
 }
 
-// OBTENER USERS BY ID
+// OBTENER USERS BY IDmm
 export const getUserById = async (id) => {
   const URL = `${baseUrl}${api}/user/${id}`
 
@@ -210,3 +210,12 @@ export const getClassByLiderTeacherId = async (id) => {
   const response = await axios.get(URL)
   return response
 }
+
+// OBTENER MODALIDADES BY ID
+
+export const getModalitiesById = async (id) => {
+  const URL = `${baseUrl}${api}/practical-stages/${id}`
+  const response = await axios.get(URL)
+  return response
+}
+
