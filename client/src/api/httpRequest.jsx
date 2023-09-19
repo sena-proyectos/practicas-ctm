@@ -138,8 +138,8 @@ export const getClassById = async (id) => {
 }
 
 // OBTENER INSTRUCTORES
-export const getTeachers = async () => {
-  const URL = `${baseUrl}${api}/teachers`
+export const getTeachers = async (limit = 50) => {
+  const URL = `${baseUrl}${api}/teachers?limit=${limit}`
 
   const response = await axios.get(URL)
   return response
@@ -210,4 +210,3 @@ export const getClassByLiderTeacherId = async (id) => {
   const response = await axios.get(URL)
   return response
 }
-

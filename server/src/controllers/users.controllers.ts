@@ -47,11 +47,11 @@ export const editUser: RequestHandler<{}, Response, userForm> = async (req: Requ
 
 export const getTeachers = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const page = !Number.isNaN(parseInt(req.query.page as string)) || 1
-    const limit = !Number.isNaN(parseInt(req.query.limit as string)) || 10
-    const offset = (Number(page) - 1) * Number(limit)
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || 10
+    const offset: number = (page - 1) * limit
 
-    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 OR id_rol = 4 LIMIT ? OFFSET ?', [limit, offset])
+    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 LIMIT ? OFFSET ?', [limit, offset])
     if (!Array.isArray(teachers) || teachers.length === 0) throw new DbErrorNotFound('No hay instructores registrados.', errorCodes.ERROR_GET_TEACHER)
 
     const [total] = (await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3')) as unknown as Array<{ count: number }>
