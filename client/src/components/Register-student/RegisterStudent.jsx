@@ -31,30 +31,54 @@ export const RegisterStudent = () => {
   const formRef = useRef(null)
   const fileInputRef = useRef(null)
 
-  // const [formData, setFormData] = useState({})
-  // const [formDirty, setFormDirty] = useState(false)
-  // const history = useHistory()
-
   const token = Cookies.get('token')
   const decoded = jwtdecoded(token)
 
   const id = decoded.data.user.id_usuario
+
+  /**
+   * Función para manejar el cambio de archivo.
+   *
+   * @function
+   * @name handleFileChange
+   * @param {Object} e - Evento de cambio de archivo.
+   * @returns {void}
+   *
+   * @example
+   * const eventoCambioArchivo = e;
+   * handleFileChange(eventoCambioArchivo);
+   */
   const handleFileChange = (e) => {
     const file = e.target.files[0]
     setSelectedFiles(file)
   }
-  // Manejador para cambios en los campos del formulario
-  // const handleInputChange = (event) => {
-  //   const { name, value } = event.target
-  //   setFormData((prevData) => ({ ...prevData, [name]: value }))
-  //   setFormDirty(true) // Se activa cuando hay cambios en los campos
-  // }
 
+  /**
+   * Función para cambiar la sección visible entre empresa y aprendiz.
+   *
+   * @function
+   * @name handleChangeSection
+   * @param {string} section - Sección a mostrar.
+   * @returns {void}
+   *
+   * @example
+   * handleChangeSection('empresa');
+   */
   const handleChangeSection = (section) => {
     setShowDataEmpresa(section === 'empresa')
     setShowDataAprendiz(section === 'aprendiz')
   }
 
+  /**
+   * Estado local para almacenar los valores seleccionados en los select del formulario.
+   *
+   * @constant
+   * @name selectedValues
+   * @type {Object}
+   *
+   * @example
+   * const valoresSeleccionados = selectedValues;
+   */
   const [selectedValues, setSelectedValues] = useState({
     tipo_documento_inscripcion: '',
     modalidad_inscripcion: '',
@@ -64,9 +88,18 @@ export const RegisterStudent = () => {
     arl: ''
   })
 
-  // ...
-
-  // Define una función para actualizar los valores seleccionados
+  /**
+   * Función para actualizar los valores seleccionados.
+   *
+   * @function
+   * @name handleSelectChange
+   * @param {string} name - Nombre del valor seleccionado.
+   * @param {string} value - Valor seleccionado.
+   * @returns {void}
+   *
+   * @example
+   * handleSelectChange('modalidad_inscripcion', 'Presencial');
+   */
   const handleSelectChange = (name, value) => {
     setSelectedValues((prevValues) => ({
       ...prevValues,
@@ -74,7 +107,19 @@ export const RegisterStudent = () => {
     }))
   }
 
-  // Validación de campos y capturación de los valores
+  /**
+   * Función para manejar el envío del formulario.
+   *
+   * @async
+   * @function
+   * @name handleSubmit
+   * @param {Object} e - Evento de envío del formulario.
+   * @returns {void}
+   *
+   * @example
+   * const eventoEnvioFormulario = e;
+   * handleSubmit(eventoEnvioFormulario);
+   */
   const handleSubmit = async (e) => {
     e.preventDefault()
     // capturar los valores de los inputs del formulario
@@ -92,7 +137,6 @@ export const RegisterStudent = () => {
       const classNumber = formValues.id_ficha_inscripcion
       const archivo = formValues.link_documentos.name
 
-
       formValues.fecha_creacion = Date.now()
       formValues.observaciones = observation
       formValues.link_documentos = archivo
@@ -103,19 +147,6 @@ export const RegisterStudent = () => {
         const response = res.data.data[0].id_usuario
         formValues.id_instructor_lider_inscripcion = response
       }
-
-      // if (archivo) {
-      //   try {
-      //     const res = await saveDocuments(archivo)
-      //     const response = res.data
-      //     // formValues(prevFormValues => ({
-      //     //   ...prevFormValues,
-      //     //   link_documentos: response
-      //     // }));
-      //   } catch (error) {
-      //     console.error('Error al guardar documentos:', error)
-      //   }
-      // }
 
       if (classNumber) {
         const res = await GetClassByNumber(classNumber)
@@ -148,14 +179,13 @@ export const RegisterStudent = () => {
 
     // validar que los campos de tipo number sean numeros
     ValidateInputsTypeNumber(formValues.numero_documento_inscripcion, formValues.numero_telefono_inscripcion, formValues.numero_ficha_inscripcion)
-    
 
     // validar que el numero de documento sea valido
     // enviar los datos al backend
     const responsable_inscripcion = `${decoded.data.user.nombres_usuario} ${decoded.data.user.apellidos_usuario}`
     const estado_general_inscripcion = 'Pendiente'
 
-    const form = {...formValues, responsable_inscripcion, estado_general_inscripcion }
+    const form = { ...formValues, responsable_inscripcion, estado_general_inscripcion }
     const dataToSend = Array(form)
     const data = await sendDataInscription(dataToSend)
     // mostramos una alerta de exito
@@ -167,14 +197,35 @@ export const RegisterStudent = () => {
     deleteData()
   }
 
-  // enviar los datos al backend
+  /**
+   * Función para enviar los datos de inscripción al backend.
+   *
+   * @async
+   * @function
+   * @name sendDataInscription
+   * @param {Object[]} data - Datos de inscripción a enviar.
+   * @returns {Promise<string>} - Mensaje de respuesta del backend.
+   *
+   * @example
+   * const datosInscripcion = [{ /* ... *\/ }];
+   * const respuesta = await sendDataInscription(datosInscripcion);
+   */
   const sendDataInscription = async (data) => {
     const response = await InscriptionApprentice(data)
     const { message } = response.data
     return message
   }
 
-  // vaciar los inputs
+  /**
+   * Función para vaciar los campos del formulario.
+   *
+   * @function
+   * @name deleteData
+   * @returns {void}
+   *
+   * @example
+   * deleteData();
+   */
   const deleteData = () => {
     if (formRef.current) {
       formRef.current.reset()
@@ -184,8 +235,16 @@ export const RegisterStudent = () => {
     }
   }
 
-  // Leer archivo excel
-  // TODO: Cambiar el lector de excel porque este NO FUNCIONA
+  /**
+   * Función para manejar el cambio de archivo Excel.
+   *
+   * @function
+   * @name handleExcelFile
+   * @returns {void}
+   *
+   * @example
+   * handleExcelFile();
+   */
   const handleExcelFile = () => {
     const currentFile = excelFileRef.current.files[0]
 
@@ -317,7 +376,7 @@ export const RegisterStudent = () => {
                           />
                         ) : item.type === 'textarea' ? (
                           <div className='relative'>
-                            <textarea id='editor' rows='3' className='block absolute w-full max-h-[5.5rem] resize-none overflow-y-auto border-gray-400 focus:text-gray-900 rounded-xl shadow-md bg-white py-[0.9px] px-3 text-sm text-black focus:bg-white focus:outline-none placeholder:text-slate-400' placeholder={item.placeholder} required  name={item.name} ></textarea>
+                            <textarea id='editor' rows='3' className='block absolute w-full max-h-[5.5rem] resize-none overflow-y-auto border-gray-400 focus:text-gray-900 rounded-xl shadow-md bg-white py-[0.9px] px-3 text-sm text-black focus:bg-white focus:outline-none placeholder:text-slate-400' placeholder={item.placeholder} required name={item.name}></textarea>
                           </div>
                         ) : (
                           <input type={item.type} name={item.name} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-400' autoComplete='on' placeholder={item.placeholder} />

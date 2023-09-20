@@ -3,11 +3,7 @@ import { Link } from 'react-router-dom'
 // Icons
 import { BsJournalBookmark } from 'react-icons/bs'
 
-export const Card = ({ title, titleColor, description, buttonText, bgColor = 'bg-white', link, scale, subtitle, shadow, cardHome = false, cardVisits = false, borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, modalClicked, transition = 'transition-none', userID, height = 'h-auto', width = 'w-auto', shadowColor }) => {
-  const userInfo = () => {
-    modalClicked(userID)
-  }
-
+export const Card = ({ title, titleColor, description, buttonText, bgColor = 'bg-white', link, scale, subtitle, shadow, cardHome = false, cardVisits = false, borderColor, roundedLink, info1, info2, icon, isButton = false, showModal, transition = 'transition-none', height = 'h-auto', width = 'w-auto', shadowColor }) => {
   return (
     <div className={`${bgColor} bg-opacity-60 ${shadow} ${shadowColor} flex ${height} flex-col justify-center rounded-2xl px-3 py-2 ${scale && 'scale-90'} ${width}`}>
       <header>
@@ -35,11 +31,7 @@ export const Card = ({ title, titleColor, description, buttonText, bgColor = 'bg
           {buttonText}
         </Link>
       )}
-      {isButton && showModal && (
-        <button className={`${roundedLink} border-1 ${borderColor} mx-auto mt-4 w-fit justify-self-end p-1.5 text-xs font-semibold`} onClick={userInfo}>
-          {buttonText}
-        </button>
-      )}
+      {isButton && showModal && <button className={`${roundedLink} border-1 ${borderColor} mx-auto mt-4 w-fit justify-self-end p-1.5 text-xs font-semibold`}>{buttonText}</button>}
     </div>
   )
 }
@@ -109,4 +101,3 @@ export const CardStudent = ({ nameStudent, emailStudent, programStudent, courseS
     </section>
   )
 }
-

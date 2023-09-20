@@ -49,12 +49,72 @@ export const RegisterList = () => {
   const [activeFilter, setActiveFilter] = useState(false)
   const [inscriptionOriginal, setInscriptionOriginal] = useState([])
 
+  /**
+   * Número de inscripciones por página.
+   *
+   * @constant
+   * @name inscriptionsPerPage
+   * @type {number}
+   *
+   * @example
+   * const inscripcionesPorPagina = inscriptionsPerPage;
+   */
   const inscriptionsPerPage = 6
+  /**
+   * Número total de páginas para la paginación de inscripciones.
+   *
+   * @constant
+   * @name pageCount
+   * @type {number}
+   *
+   * @example
+   * const totalPaginas = pageCount;
+   */
   const pageCount = Math.ceil(inscriptions.length / inscriptionsPerPage)
+  /**
+   * Índice de inicio de la página actual.
+   *
+   * @constant
+   * @name startIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceInicio = startIndex;
+   */
   const startIndex = pageNumber * inscriptionsPerPage
+  /**
+   * Índice de fin de la página actual.
+   *
+   * @constant
+   * @name endIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
   const endIndex = startIndex + inscriptionsPerPage
+  /**
+   * Identificador del rol del usuario almacenado en el almacenamiento local.
+   *
+   * @constant
+   * @name idRol
+   * @type {number}
+   *
+   * @example
+   * const idRolUsuario = idRol;
+   */
   const idRol = Number(localStorage.getItem('idRol'))
 
+  /**
+   * Función para redirigir al usuario a la página de registro de aprendices.
+   *
+   * @function
+   * @name handleRegister
+   * @returns {void}
+   *
+   * @example
+   * handleRegister();
+   */
   const handleRegister = () => {
     return navigate('/registrar-aprendiz')
   }
@@ -65,8 +125,29 @@ export const RegisterList = () => {
     setUsername(`${nombres_usuario} ${apellidos_usuario}`)
   }, [])
 
+  /**
+   * Función para manejar la opción del modal.
+   *
+   * @function
+   * @name handleModalOption
+   * @param {Object} data - Datos de la opción del modal.
+   * @returns {void}
+   *
+   * @example
+   * handleModalOption(datosOpcionModal);
+   */
   const handleModalOption = (data) => setModalOption(data)
 
+  /**
+   * Función para mostrar una notificación de éxito.
+   *
+   * @function
+   * @name notify
+   * @returns {void}
+   *
+   * @example
+   * notify();
+   */
   const notify = () => {
     toast.success('Archivo excel leído correctamente', {
       position: 'top-right',
@@ -81,6 +162,16 @@ export const RegisterList = () => {
     })
   }
 
+  /**
+   * Función para cerrar el modal.
+   *
+   * @function
+   * @name handleCloseModal
+   * @returns {void}
+   *
+   * @example
+   * handleCloseModal();
+   */
   const handleCloseModal = () => {
     excelRef.current.value = ''
     setModalOption(modalOptionList.confirmModal)
@@ -88,6 +179,18 @@ export const RegisterList = () => {
     setIsModalOpen(!isModalOpen)
   }
 
+  /**
+   * Función para obtener los registros.
+   *
+   * @async
+   * @function
+   * @name getRegistros
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getRegistros();
+   */
   const getRegistros = async () => {
     try {
       const response = await getInscriptions()
@@ -108,6 +211,18 @@ export const RegisterList = () => {
     if (modalOption === modalOptionList.loadingExcelModal) readExcelFile()
   }, [modalOption])
 
+  /**
+   * Función para leer un archivo de Excel.
+   *
+   * @async
+   * @function
+   * @name readExcelFile
+   * @throws {Error} Error en caso de fallo en la lectura del archivo.
+   * @returns {void}
+   *
+   * @example
+   * readExcelFile();
+   */
   const readExcelFile = async () => {
     const { files } = excelRef.current
     const file = files[0]
@@ -125,6 +240,20 @@ export const RegisterList = () => {
     }, 1000)
   }
 
+  /**
+   * Función para cargar un archivo de Excel.
+   *
+   * @async
+   * @function
+   * @name uploadExcelFile
+   * @param {Object} payload - Datos a enviar.
+   * @param {string} code - Código de la operación.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * uploadExcelFile(datos, 'codigoOperacion');
+   */
   const uploadExcelFile = async (payload, code) => {
     try {
       await InscriptionApprentice(payload)
@@ -145,6 +274,16 @@ export const RegisterList = () => {
     }
   }
 
+  /**
+   * Función para manejar la carga de un archivo de Excel.
+   *
+   * @function
+   * @name handleExcelFile
+   * @returns {void}
+   *
+   * @example
+   * handleExcelFile();
+   */
   const handleExcelFile = () => {
     const { files } = excelRef.current
     if (files.length === 0) {
@@ -160,10 +299,30 @@ export const RegisterList = () => {
     setIsModalOpen(!isModalOpen)
   }
 
+  /**
+   * Función para mostrar u ocultar el filtro.
+   *
+   * @function
+   * @name handleFilter
+   * @returns {void}
+   *
+   * @example
+   * handleFilter();
+   */
   const handleFilter = () => {
     setShowFiltros(!showFiltros)
   }
 
+  /**
+   * Función para desactivar la visualización del filtro.
+   *
+   * @function
+   * @name disableShowFiltros
+   * @returns {void}
+   *
+   * @example
+   * disableShowFiltros();
+   */
   const disableShowFiltros = () => {
     setTimeout(() => {
       setShowFiltros(false)
@@ -171,12 +330,35 @@ export const RegisterList = () => {
     }, 100)
   }
 
+  /**
+   * Función para mostrar un tipo de filtro (modalidad, estado, fecha).
+   *
+   * @function
+   * @name ShowFilter
+   * @param {string} filterType - Tipo de filtro a mostrar.
+   * @returns {void}
+   *
+   * @example
+   * ShowFilter('modalidad');
+   */
   const ShowFilter = (filterType) => {
     if (filterType === 'modalidad') setFiltersButtons({ modalidad: !filtersButtons.modalidad, etapa: false, fecha: false })
     if (filterType === 'estado') setFiltersButtons({ estado: !filtersButtons.estado, modalidad: false, fecha: false })
     if (filterType === 'fecha') setFiltersButtons({ fecha: !filtersButtons.fecha, modalidad: false, estado: false })
   }
 
+  /**
+   * Función para manejar el tipo de filtro (modalidad, estado, fecha).
+   *
+   * @function
+   * @name handleTypeFilter
+   * @param {string} filterType - Tipo de filtro a aplicar.
+   * @param {string} filter - Valor del filtro.
+   * @returns {void}
+   *
+   * @example
+   * handleTypeFilter('modalidad', 'Presencial');
+   */
   const handleTypeFilter = (filterType, filter) => {
     if (filterType === 'modalidad') {
       const filterMap = inscriptionOriginal.filter((inscription) => inscription.nombre_modalidad === filter)
@@ -190,6 +372,16 @@ export const RegisterList = () => {
     setActiveFilter(true)
   }
 
+  /**
+   * Función para restablecer los filtros.
+   *
+   * @function
+   * @name handleResetFilter
+   * @returns {void}
+   *
+   * @example
+   * handleResetFilter();
+   */
   const handleResetFilter = () => {
     setInscriptions(inscriptionOriginal)
     disableShowFiltros()

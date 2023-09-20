@@ -13,33 +13,119 @@ const Form = ({ inputs }) => {
   const navigate = useNavigate()
   const [loadingBtn, setLoadingBtn] = useState(false)
 
+  /**
+   * Iconos para mostrar y ocultar la contraseña.
+   *
+   * @constant
+   * @name passwordIcons
+   * @type {Object}
+   *
+   * @example
+   * const iconosPassword = passwordIcons;
+   */
   const passwordIcons = {
     openEye: <AiOutlineEye />,
     closeEye: <AiOutlineEyeInvisible />
   }
 
+  /**
+   * Estados para controlar la visibilidad de la contraseña.
+   *
+   * @constant
+   * @name passwordStatus
+   * @type {Object}
+   *
+   * @example
+   * const estadosContraseña = passwordStatus;
+   */
   const passwordStatus = {
     shown: 'text',
     hidden: 'password'
   }
 
+  /**
+   * Estado para controlar la visibilidad de la contraseña.
+   *
+   * @state
+   * @name showPassword
+   * @type {string}
+   *
+   * @example
+   * const mostrarContraseña = showPassword;
+   */
   const [showPassword, setShowPassword] = useState(passwordStatus.hidden)
+
+  /**
+   * Referencia a los valores del formulario.
+   *
+   * @ref
+   * @name formValuesRef
+   * @type {Object}
+   *
+   * @example
+   * const referenciaValoresFormulario = formValuesRef;
+   */
   const formValuesRef = useRef({})
 
+  /**
+   * Función para manejar la visibilidad de la contraseña.
+   *
+   * @function
+   * @name handlePassword
+   * @returns {void}
+   *
+   * @example
+   * handlePassword();
+   */
   const handlePassword = () => (showPassword === passwordStatus.shown ? setShowPassword(passwordStatus.hidden) : setShowPassword(passwordStatus.shown))
 
+  /**
+   * Función para manejar el envío del formulario.
+   *
+   * @function
+   * @name handleSubmit
+   * @param {Event} e - Evento del formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleSubmit(evento);
+   */
   const handleSubmit = (e) => {
     e.preventDefault()
     const dataToSend = flattenObject(formValuesRef.current)
     sendData(dataToSend)
   }
 
+  /**
+   * Función para aplanar un objeto anidado.
+   *
+   * @function
+   * @name flattenObject
+   * @param {Object} obj - Objeto a aplanar.
+   * @returns {Object} Objeto aplanado.
+   *
+   * @example
+   * const objetoAplanado = flattenObject(objetoAnidado);
+   */
   const flattenObject = (obj) => {
     return Object.values(obj).reduce((result, current) => {
       return { ...result, ...current }
     }, {})
   }
 
+  /**
+   * Función asincrónica para enviar datos al servidor.
+   *
+   * @async
+   * @function
+   * @name sendData
+   * @param {Object} data - Datos a enviar.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * sendData(datos);
+   */
   const sendData = async (data) => {
     setLoadingBtn(true)
     try {
@@ -68,6 +154,18 @@ const Form = ({ inputs }) => {
     }
   }
 
+  /**
+   * Función para manejar el cambio en la entrada del formulario.
+   *
+   * @function
+   * @name handleInputChange
+   * @param {Event} e - Evento de cambio en la entrada.
+   * @param {string} index - Índice del formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleInputChange(evento, 'index');
+   */
   const handleInputChange = (e, index) => {
     const { name, value } = e.target
     formValuesRef.current = {
@@ -117,4 +215,3 @@ const Form = ({ inputs }) => {
 }
 
 export { Form }
-

@@ -38,6 +38,16 @@ export const RegisterDetails = () => {
     getDetallesInscripcion(id)
   }, [id])
 
+  /**
+   * Función para obtener la pestaña seleccionada actualmente.
+   *
+   * @function
+   * @name getSelectedTab
+   * @returns {string} - Nombre de la pestaña seleccionada.
+   *
+   * @example
+   * const pestañaSeleccionada = getSelectedTab();
+   */
   const getSelectedTab = () => {
     const savedTab = JSON.parse(sessionStorage.getItem('currentDetailTab'))
     if (!savedTab) return 'infoAprendiz'
@@ -45,13 +55,43 @@ export const RegisterDetails = () => {
     return savedTab.lastTab
   }
 
+  /**
+   * Estado local para almacenar la pestaña seleccionada.
+   *
+   * @constant
+   * @name selectedTab
+   * @type {string}
+   *
+   * @example
+   * const pestañaActual = selectedTab;
+   */
   const [selectedTab, setSelectedTab] = useState(getSelectedTab)
 
+  /**
+   * Función para actualizar la pestaña seleccionada en el almacenamiento de sesión.
+   *
+   * @function
+   * @returns {void}
+   *
+   */
   useEffect(() => {
     const payload = JSON.stringify({ lastTab: selectedTab, paramLink: id })
     sessionStorage.setItem('currentDetailTab', payload)
   }, [selectedTab])
 
+  /**
+   * Función para obtener los datos de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getInscriptionAprendiz
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getInscriptionAprendiz(idAprendiz);
+   */
   const getInscriptionAprendiz = async (id) => {
     try {
       const response = await getInscriptionById(id)
@@ -65,6 +105,19 @@ export const RegisterDetails = () => {
     }
   }
 
+  /**
+   * Función para obtener los detalles de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getDetallesInscripcion
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getDetallesInscripcion(idAprendiz);
+   */
   const getDetallesInscripcion = async (id) => {
     try {
       const response = await getInscriptionDetails(id)
@@ -254,7 +307,18 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   const { inscriptionData } = inscriptionStore()
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
 
-   const fetchInfo = async () => {
+  /**
+   * Función para obtener la información de un aval por su ID.
+   *
+   * @async
+   * @function
+   * @name fetchInfo
+   * @returns {void}
+   *
+   * @example
+   * fetchInfo();
+   */
+  const fetchInfo = async () => {
     const res = await getAvalById(avalCoordinador)
     const { data } = res.data
     setAvalInfo(data)
@@ -265,27 +329,70 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   const [user, setUser] = useState(0)
   const prevUserIdRef = useRef()
 
+  /**
+   * Efecto para almacenar el ID de usuario previo.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
   useEffect(() => {
     prevUserIdRef.current = idUser
   }, [idUser])
+
+  /**
+   * Efecto para realizar acciones cuando el ID de usuario cambia después de la primera vez.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
   useEffect(() => {
     if (prevUserIdRef.current !== 0) {
       // Realiza la lógica que necesitas cuando idUser cambia después de la primera vez.
       getUser(idUser)
     }
   }, [idUser])
+
+  /**
+   * Efecto para realizar acciones cuando se actualiza el valor de `avalCoordinador`.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
   useEffect(() => {
     if (avalCoordinador) fetchRaps()
   }, [avalCoordinador])
 
+  /**
+   * Efecto para obtener los datos de inscripción del aprendiz y sus detalles.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
   useEffect(() => {
     const fetchData = async () => {
       await getInscriptionAprendiz(id)
       await getDetallesInscripcion(id)
     }
     fetchData()
-  }, [id],)
+  }, [id])
 
+  /**
+   * Función para obtener los datos de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getInscriptionAprendiz
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getInscriptionAprendiz(idAprendiz);
+   */
   const getInscriptionAprendiz = async (id) => {
     try {
       const response = await getInscriptionById(id)
@@ -295,6 +402,20 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       console.error('Ha ocurrido un error al mostrar los datos del usuario')
     }
   }
+
+  /**
+   * Función para obtener los detalles de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getDetallesInscripcion
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getDetallesInscripcion(idAprendiz);
+   */
   const getDetallesInscripcion = async (id) => {
     try {
       const response = await getInscriptionDetails(id)
@@ -306,6 +427,20 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       console.error(error)
     }
   }
+
+  /**
+   * Función para obtener los datos de un usuario por su ID.
+   *
+   * @async
+   * @function
+   * @name getUser
+   * @param {string} id - ID del usuario.
+   * @returns {void}
+   *
+   * @example
+   * const idUsuario = '123456';
+   * getUser(idUsuario);
+   */
   const getUser = async (id) => {
     const response = await getUserById(id)
     const res = response.data.data[0].nombres_usuario
@@ -313,6 +448,17 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     setUser(res + ' ' + res2)
   }
 
+  /**
+   * Función para obtener los datos de raps.
+   *
+   * @async
+   * @function
+   * @name fetchRaps
+   * @returns {void}
+   *
+   * @example
+   * fetchRaps();
+   */
   const fetchRaps = async () => {
     const res = await getAvalById(avalCoordinador)
     const { data } = res.data
@@ -323,6 +469,16 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     if (avalCoordinador) fetchInfo()
   }, [avalCoordinador])
 
+  /**
+   * Función para validar y habilitar el botón de envío del formulario.
+   *
+   * @function
+   * @name handleSubmitButton
+   * @returns {void}
+   *
+   * @example
+   * handleSubmitButton();
+   */
   const handleSubmitButton = () => {
     if (!selectedApproveButton) return
     if (descriptionRef.current.value.length === 0) {
@@ -332,6 +488,17 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     setDisableSubmitButton(false)
   }
 
+  /**
+   * Función para seleccionar el botón de aprobación.
+   *
+   * @function
+   * @name selectButtonToSubmit
+   * @param {string} value - Valor del botón de aprobación.
+   * @returns {void}
+   *
+   * @example
+   * selectButtonToSubmit('Si');
+   */
   const selectButtonToSubmit = (value) => {
     setSelectedApproveButton(value)
     if (descriptionRef.current.value.length === 0 || !value) {
@@ -341,6 +508,19 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     setDisableSubmitButton(false)
   }
 
+  /**
+   * Función para manejar el envío del formulario de aval.
+   *
+   * @async
+   * @function
+   * @name handleAvalForm
+   * @param {object} e - Evento del formulario.
+   * @returns {void}
+   *
+   * @example
+   * const eventoFormulario = { target: { value: 'Valor' } };
+   * handleAvalForm(eventoFormulario);
+   */
   const handleAvalForm = async (e) => {
     e.preventDefault()
     const approveOptions = { Si: 'Si', No: 'No' }
@@ -372,6 +552,21 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     }
   }
 
+  /**
+   * Función para aceptar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name acceptApprove
+   * @param {object} payload - Datos para la aprobación.
+   * @param {string} toastId - ID del toast.
+   * @returns {void}
+   *
+   * @example
+   * const datosAprobacion = { observations: 'Observaciones', approveOption: 'Si', avalCoordinador: 123 };
+   * const toastId = 'toast-id';
+   * acceptApprove(datosAprobacion, toastId);
+   */
   const acceptApprove = async (payload, toastId) => {
     const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
     const id = payload.avalCoordinador
@@ -389,6 +584,21 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     }
   }
 
+  /**
+   * Función para denegar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name denyApprove
+   * @param {object} payload - Datos para la aprobación.
+   * @param {string} toastId - ID del toast.
+   * @returns {void}
+   *
+   * @example
+   * const datosAprobacion = { observations: 'Observaciones', approveOption: 'No', avalCoordinador: 123 };
+   * const toastId = 'toast-id';
+   * denyApprove(datosAprobacion, toastId);
+   */
   const denyApprove = async (payload, toastId) => {
     const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
     const estado_aval = { No: 'Rechazado' }
@@ -409,6 +619,16 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     }
   }
 
+  /**
+   * Opciones de selección de los coordinadores.
+   *
+   * @constant
+   * @name option
+   * @type {Array}
+   *
+   * @example
+   * const opcionesSeleccion = option;
+   */
   const option = [
     { value: 'Sergio Soto Henao', key: 'Sergio Soto Henao' },
     { value: 'Marianela Henao Atehortúa', key: 'Marianela Henao Atehortúa' },
@@ -517,13 +737,25 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       </div>
     </section>
   )
-  }
+}
+
 const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
   const iFrameRef = useRef(null)
   const [showDriveButton, setShowDriveButton] = useState(null)
 
   const [notify, setNotify] = useState(false)
 
+  /**
+   * Función para verificar si el enlace es de Google Drive.
+   *
+   * @function
+   * @name checkDriveLink
+   * @param {string} linkDocs - Enlace a verificar.
+   * @returns {boolean} - Devuelve `true` si el enlace es de Google Drive, de lo contrario, `false`.
+   *
+   * @example
+   * const esEnlaceDrive = checkDriveLink('https://drive.google.com/folders/...');
+   */
   const checkDriveLink = (linkDocs) => {
     const regex = /folders/i
     const testRegex = regex.test(linkDocs)
@@ -534,11 +766,43 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
     return false
   }
 
+  /**
+   * Efecto para verificar si el enlace es de Google Drive al cambiar el valor de `linkDocs`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (linkDocs) {
+   *     checkDriveLink(linkDocs);
+   *   }
+   * }, [linkDocs]);
+   */
   useEffect(() => {
     if (linkDocs) {
       checkDriveLink(linkDocs)
     }
   }, [linkDocs])
+
+  /**
+   * Efecto para mostrar una notificación de éxito cuando `notify` es `true`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (notify) {
+   *     toast.success('Se ha rechazado correctamente', { ... });
+   *   }
+   *   setNotify(false);
+   * }, [notify]);
+   */
   useEffect(() => {
     if (notify) {
       toast.success('Se ha rechazado correctamente', {
@@ -557,6 +821,16 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
     setNotify(false)
   }, [notify])
 
+  /**
+   * Función para poner el iframe en pantalla completa.
+   *
+   * @function
+   * @name handleFullScreenIFrame
+   * @returns {void}
+   *
+   * @example
+   * handleFullScreenIFrame();
+   */
   const handleFullScreenIFrame = () => {
     const iframe = iFrameRef.current
     if (!iframe) return
@@ -611,32 +885,62 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
 
 const FunctionsApproval = ({ idRol, avalFunciones }) => {
   const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
-  // const [nameResponsableFunciones, setNameResponsableFunciones] = useState('')
+  const [teachers, setTeacher] = useState([])
+  const [selectedOptionKey, setSelectedOptionKey] = useState('')
 
+  /**
+   * Función para obtener y almacenar información del aval de funciones.
+   *
+   * @function
+   * @name fetchDataFunciones
+   * @param {string|number} payload - Identificador del aval de funciones.
+   * @returns {void}
+   *
+   * @example
+   * fetchDataFunciones(1);
+   */
   const fetchDataFunciones = async (payload) => {
     if (!payload) return
     try {
       const res = await getAvalById(payload)
       const response = await res.data.data[0]
-      // const { responsable_aval } = await response
-      // const responseData = await getUserById(responsable_aval)
-      // const { nombres_usuario, apellidos_usuario } = await responseData.data.data[0]
-      // const fullName = `${nombres_usuario} ${apellidos_usuario}`
-      // setNameResponsableFunciones(fullName)
       setAvalInfoFunciones(response)
     } catch (error) {
       throw new Error(error)
     }
   }
 
+  /**
+   * Efecto para obtener información del aval de funciones al cambiar el valor de `avalFunciones`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (avalFunciones !== undefined) {
+   *     fetchDataFunciones(avalFunciones);
+   *   }
+   * }, [avalFunciones]);
+   */
   useEffect(() => {
     if (avalFunciones !== undefined) {
       fetchDataFunciones(avalFunciones)
     }
   }, [avalFunciones])
 
-  const [teachers, setTeacher] = useState([])
-
+  /**
+   * Función para obtener y almacenar información de los instructores.
+   *
+   * @function
+   * @name getInstructores
+   * @returns {void}
+   *
+   * @example
+   * getInstructores();
+   */
   const getInstructores = async () => {
     try {
       const response = await getTeachers()
@@ -651,13 +955,32 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     getInstructores()
   }, [])
 
+  /**
+   * Variable que almacena opciones de los instructores para utilizar en el select.
+   *
+   * @constant
+   * @name option
+   * @type {array}
+   *
+   * @example
+   * const opcionesInstructores = option;
+   */
   const option = teachers.map((teacher) => ({
     value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario + ' - ' + teacher.email_usuario,
     key: teacher.id_usuario
   }))
 
-  const [selectedOptionKey, setSelectedOptionKey] = useState('')
-
+  /**
+   * Función para actualizar la clave de la opción seleccionada en el select.
+   *
+   * @function
+   * @name handleSelectChange
+   * @param {string|number} optionKey - Clave de la opción seleccionada.
+   * @returns {void}
+   *
+   * @example
+   * handleSelectChange(1);
+   */
   const handleSelectChange = (optionKey) => {
     setSelectedOptionKey(optionKey)
   }
@@ -690,7 +1013,6 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
               selectedKey={selectedOptionKey}
               onChange={handleSelectChange} // Pasar el manejador de cambio
             />
-            {/* <input type='text' defaultValue={nameResponsableFunciones} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' /> */}
           </section>
         </section>
         <div>
@@ -733,10 +1055,32 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
   const [modalidad, setModalidad] = useState([])
   const [idModalidad, setIdModalidad] = useState(0)
 
+  /**
+   * Función para actualizar el estado usando setState.
+   *
+   * @function
+   * @name handleUseState
+   * @param {function} setState - Función para actualizar el estado.
+   * @param {any} value - Valor para actualizar el estado.
+   * @returns {void}
+   *
+   * @example
+   * handleUseState(setStateFuncion, valorActualizado);
+   */
   const handleUseState = (setState, value) => setState(value)
 
+  /**
+   * Función para obtener y almacenar información de documentos.
+   *
+   * @function
+   * @name fetchDataDocuments
+   * @returns {void}
+   *
+   * @example
+   * fetchDataDocuments();
+   */
   const fetchDataDocuments = async () => {
-    const res  = await getAvalById(avalDocumentos)
+    const res = await getAvalById(avalDocumentos)
     const { data } = res.data
     const response = await getUserById(data[0].responsable_aval)
     const { nombres_usuario, apellidos_usuario } = response.data.data[0]
@@ -745,6 +1089,19 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     setAvalInfoDocumentos(data[0])
   }
 
+  /**
+   * Efecto para obtener información de documentos cuando cambia el valor de `avalDocumentos`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (avalDocumentos) fetchDataDocuments();
+   * }, [avalDocumentos]);
+   */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -762,11 +1119,21 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     fetchData() // Llamar a fetchData cuando el componente se monte o cuando id cambie
   }, [id, avalDocumentos])
 
-
+  /**
+   * Función para obtener modalidades.
+   *
+   * @function
+   * @name getModalities
+   * @returns {void}
+   *
+   * @example
+   * getModalities();
+   */
   const getModalities = async () => {
     const res = await getModalitiesById(idModalidad)
     setModalidad(res.data.data)
   }
+
   const handleSubmitButton = () => {
     if (!selectedApproveButton) return
     if (descriptionRef.current.value.length === 0) {
@@ -785,6 +1152,17 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     handleUseState(setDisableSubmitButton, false)
   }
 
+  /**
+   * Función para manejar el envío de formularios de documentos.
+   *
+   * @function
+   * @name handleFullDocsForm
+   * @param {object} e - Evento del formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleFullDocsForm(evento);
+   */
   const handleFullDocsForm = async (e) => {
     e.preventDefault()
     const approveOptions = { Si: 'Si', No: 'No' }
@@ -814,6 +1192,18 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     }
   }
 
+  /**
+   * Función para aceptar la aprobación de documentos.
+   *
+   * @function
+   * @name acceptFullDocsApprove
+   * @param {object} payload - Datos para la aprobación.
+   * @param {string} toastId - Identificador del Toast.
+   * @returns {void}
+   *
+   * @example
+   * acceptFullDocsApprove({ observations, approveOption, avalDocumentos }, 'toastId');
+   */
   const acceptFullDocsApprove = async (payload, toastId) => {
     const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
     const id = payload.avalDocumentos
@@ -831,6 +1221,18 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     }
   }
 
+  /**
+   * Función para denegar la aprobación de documentos.
+   *
+   * @function
+   * @name denyFullDocsApprove
+   * @param {object} payload - Datos para la denegación.
+   * @param {string} toastId - Identificador del Toast.
+   * @returns {void}
+   *
+   * @example
+   * denyFullDocsApprove({ observations, approveOption, avalDocumentos }, 'toastId');
+   */
   const denyFullDocsApprove = async (payload, toastId) => {
     const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
     const estado_aval = { No: 'Rechazado' }
@@ -840,8 +1242,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
 
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
-      await inscriptionDetailsUpdate(id, data)
-      ('inscripcion updated')
+      await inscriptionDetailsUpdate(id, data)('inscripcion updated')
       await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
@@ -926,7 +1327,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
 }
 
 const RAPS = ({ idRol, avalRaps }) => {
-  const {id} = useParams()
+  const { id } = useParams()
   const formRef = useRef(null)
   const descriptionRef = useRef(null)
 
@@ -938,8 +1339,30 @@ const RAPS = ({ idRol, avalRaps }) => {
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
   const [disableSubmitButton, setDisableSubmitButton] = useState(true)
 
+  /**
+   * Función para manejar la actualización de un estado utilizando useState.
+   *
+   * @function
+   * @name handleUseState
+   * @param {function} setState - Función de estado para actualizar el valor.
+   * @param {*} value - Nuevo valor para el estado.
+   * @returns {void}
+   *
+   * @example
+   * handleUseState(setDisableSubmitButton, false);
+   */
   const handleUseState = (setState, value) => setState(value)
 
+  /**
+   * Función para manejar el envío de formulario.
+   *
+   * @function
+   * @name handleSubmitButton
+   * @returns {void}
+   *
+   * @example
+   * handleSubmitButton();
+   */
   const handleSubmitButton = () => {
     if (!selectedApproveButton) return
     if (descriptionRef.current.value.length === 0) {
@@ -949,6 +1372,17 @@ const RAPS = ({ idRol, avalRaps }) => {
     handleUseState(setDisableSubmitButton, false)
   }
 
+  /**
+   * Función para seleccionar un botón de aprobación para enviar.
+   *
+   * @function
+   * @name selectButtonToSubmit
+   * @param {string} value - Valor del botón seleccionado ('Si' o 'No').
+   * @returns {void}
+   *
+   * @example
+   * selectButtonToSubmit('Si');
+   */
   const selectButtonToSubmit = (value) => {
     setSelectedApproveButton(value)
     if (descriptionRef.current.value.length === 0 || !value) {
@@ -958,6 +1392,18 @@ const RAPS = ({ idRol, avalRaps }) => {
     handleUseState(setDisableSubmitButton, false)
   }
 
+  /**
+   * Función asincrónica para obtener información de instructores.
+   *
+   * @async
+   * @function
+   * @name fetchRaps
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * fetchRaps();
+   */
   const fetchRaps = async () => {
     const res = await getAvalById(avalRaps)
     const { data } = res.data
@@ -968,6 +1414,17 @@ const RAPS = ({ idRol, avalRaps }) => {
     setAvalInfo(data[0])
   }
 
+  /**
+   * Función para manejar el envío de formulario.
+   *
+   * @function
+   * @name handleSubmit
+   * @param {Event} e - Evento del formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleSubmit(event);
+   */
   const handleSubmit = async (e) => {
     e.preventDefault()
     const approveOptions = { Si: 'Si', No: 'No' }
@@ -990,12 +1447,34 @@ const RAPS = ({ idRol, avalRaps }) => {
     }
   }
 
+  /**
+   * Función para manejar la acción de pegar contenido en un elemento.
+   *
+   * @function
+   * @name handleContentPaste
+   * @param {Event} e - Evento de pegado de contenido.
+   * @returns {void}
+   *
+   * @example
+   * handleContentPaste(event);
+   */
   const handleContentPaste = (e) => {
     const pastedContent = e.clipboardData.getData('text/html')
     setHtmlContent(pastedContent)
     e.preventDefault()
   }
 
+  /**
+   * Función para manejar la entrada de texto en un elemento.
+   *
+   * @function
+   * @name handleInputText
+   * @param {Event} e - Evento de entrada de texto.
+   * @returns {void}
+   *
+   * @example
+   * handleInputText(event);
+   */
   const handleInputText = (e) => {
     const content = e.target.innerHTML
     if (content.length === 0) {
@@ -1004,6 +1483,20 @@ const RAPS = ({ idRol, avalRaps }) => {
     setHtmlContent(content)
   }
 
+  /**
+   * Función asincrónica para aceptar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name acceptApprove
+   * @param {Object} payload - Datos necesarios para la aprobación.
+   * @param {string} toastId - Identificador del toast.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * acceptApprove({ observations: 'Aprobado', approveOption: 'Si', avalRaps: 123, htmlContent: '<html>...</html>' }, 'loadingToast');
+   */
   const acceptApprove = async (payload, toastId) => {
     const estado_aval = { Si: 'Aprobado' }
     const id = payload.avalRaps
@@ -1022,6 +1515,20 @@ const RAPS = ({ idRol, avalRaps }) => {
     }
   }
 
+  /**
+   * Función asincrónica para denegar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name denyApprove
+   * @param {Object} payload - Datos necesarios para la denegación.
+   * @param {string} toastId - Identificador del toast.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * denyApprove({ observations: 'Rechazado', approveOption: 'No', avalRaps: 456, htmlContent: '<html>...</html>' }, 'loadingToast');
+   */
   const denyApprove = async (payload, toastId) => {
     const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
     const estado_aval = { No: 'Rechazado' }
@@ -1041,7 +1548,7 @@ const RAPS = ({ idRol, avalRaps }) => {
       throw new Error(error)
     }
   }
-  
+
   const [ficha, setFicha] = useState(0)
   const [courses, setCourses] = useState([])
   useEffect(() => {
@@ -1051,7 +1558,7 @@ const RAPS = ({ idRol, avalRaps }) => {
         const res = response.data.data[0].numero_ficha_inscripcion
         setFicha(res)
         // Llamar a getCourses con el valor actualizado de ficha
-        if(ficha !== 0) {
+        if (ficha !== 0) {
           await getCourses(res)
         }
         if (avalRaps) fetchRaps()
@@ -1063,6 +1570,18 @@ const RAPS = ({ idRol, avalRaps }) => {
     fetchData() // Llamar a fetchData cuando el componente se monte o cuando id cambie
   }, [id, avalRaps])
 
+  /**
+   * Función para obtener información de cursos y actualizar la lista de cursos.
+   *
+   * @async
+   * @function
+   * @name getCourses
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getCourses();
+   */
   const getCourses = async () => {
     try {
       const response = await GetClassByNumber(ficha)

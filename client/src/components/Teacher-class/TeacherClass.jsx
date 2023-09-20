@@ -26,6 +26,19 @@ export const TeacherClass = () => {
     getUser(id)
   }, [id])
 
+  /**
+   * Función asincrónica para obtener el rol del usuario por su ID.
+   *
+   * @async
+   * @function
+   * @name getUser
+   * @param {number} id - ID del usuario.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getUser(123);
+   */
   const getUser = async (id) => {
     try {
       const response = await getUserById(id)
@@ -36,6 +49,15 @@ export const TeacherClass = () => {
     }
   }
 
+  /**
+   * Efecto secundario para obtener y establecer la lista de clases del usuario según su rol.
+   *
+   * @function
+   * @name useEffect
+   * @param {number} rol - Rol del usuario (3 o 4).
+   * @param {number} id - ID del usuario.
+   * @returns {void}
+   */
   useEffect(() => {
     if (rol && (rol === 3 || rol === 4)) {
       const apiRoute = rol === 3 ? 'getClassByTeacherId' : 'getClassByLiderTeacherId'
@@ -54,6 +76,19 @@ export const TeacherClass = () => {
     }
   }, [rol, id])
 
+  /**
+   * Función para obtener los datos de las clases según el rol y el ID del usuario.
+   *
+   * @function
+   * @name getClassData
+   * @param {number} id - ID del usuario.
+   * @param {string} apiRoute - Ruta de la API para obtener los datos de las clases.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {Promise} Promesa que devuelve los datos de las clases.
+   *
+   * @example
+   * getClassData(123, 'getClassByTeacherId');
+   */
   const getClassData = async (id, apiRoute) => {
     return (await apiRoute) === 'getClassByTeacherId' ? getClassByTeacherId(id) : getClassByLiderTeacherId(id)
   }
@@ -62,9 +97,50 @@ export const TeacherClass = () => {
     setLoading(false)
   }, [])
 
+  /**
+   * Número de cursos a mostrar por página.
+   *
+   * @constant
+   * @name coursesPerPage
+   * @type {number}
+   * @default 6
+   *
+   * @example
+   * const cursosPorPagina = coursesPerPage;
+   */
   const coursesPerPage = 6
+  /**
+   * Calcula el número de páginas necesarias para la paginación de cursos.
+   *
+   * @constant
+   * @name pageCount
+   * @type {number}
+   *
+   * @example
+   * const numeroDePaginas = pageCount;
+   */
   const pageCount = Math.ceil(teacherClass.length / coursesPerPage)
+  /**
+   * Índice de inicio de la lista de cursos a mostrar en la página actual.
+   *
+   * @constant
+   * @name startIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceInicio = startIndex;
+   */
   const startIndex = pageNumber * coursesPerPage
+  /**
+   * Índice de fin de la lista de cursos a mostrar en la página actual.
+   *
+   * @constant
+   * @name endIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
   const endIndex = startIndex + coursesPerPage
 
   return (

@@ -26,10 +26,32 @@ export const Courses = () => {
   const [filtersButtons, setFiltersButtons] = useState({ etapa: false, nivel: false, finLectiva: false, inicioPractica: false })
   const [activeFilter, setActiveFilter] = useState(false)
 
+  /**
+   * Función para manejar la visualización de los filtros.
+   *
+   * @function
+   * @name handleFilter
+   * @returns {void}
+   *
+   * @example
+   * handleFilter();
+   */
   const handleFilter = () => {
     setShowFiltros(!showFiltros)
   }
 
+  /**
+   * Función asincrónica para obtener la lista de cursos.
+   *
+   * @async
+   * @function
+   * @name getCursos
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getCursos();
+   */
   const getCursos = async () => {
     try {
       const response = await getClass()
@@ -45,9 +67,50 @@ export const Courses = () => {
     getCursos()
   }, [])
 
+  /**
+   * Número de cursos a mostrar por página.
+   *
+   * @constant
+   * @name coursesPerPage
+   * @type {number}
+   * @default 6
+   *
+   * @example
+   * const cursosPorPagina = coursesPerPage;
+   */
   const coursesPerPage = 6
+  /**
+   * Calcula el número de páginas necesarias para la paginación.
+   *
+   * @constant
+   * @name pageCount
+   * @type {number}
+   *
+   * @example
+   * const numeroDePaginas = pageCount;
+   */
   const pageCount = Math.ceil(courses.length / coursesPerPage)
+  /**
+   * Índice de inicio de la lista de cursos a mostrar en la página actual.
+   *
+   * @constant
+   * @name startIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceInicio = startIndex;
+   */
   const startIndex = pageNumber * coursesPerPage
+  /**
+   * Índice de fin de la lista de cursos a mostrar en la página actual.
+   *
+   * @constant
+   * @name endIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
   const endIndex = startIndex + coursesPerPage
 
   useEffect(() => {
@@ -55,13 +118,46 @@ export const Courses = () => {
   }, [])
 
   const navigate = useNavigate()
+
+  /**
+   * Función para navegar a la página de detalles de estudiantes por ficha.
+   *
+   * @function
+   * @name handleStudents
+   * @param {string} ficha - Número de ficha de aprendices.
+   * @returns {void}
+   *
+   * @example
+   * handleStudents('12345');
+   */
   const handleStudents = (ficha) => {
     return navigate(`/fichas/aprendices/${ficha}`)
   }
+
+  /**
+   * Función para navegar a la página de asignar instructor a una ficha.
+   *
+   * @function
+   * @name handleAsign
+   * @returns {void}
+   *
+   * @example
+   * handleAsign();
+   */
   const handleAsign = () => {
     return navigate('/asignar-ficha')
   }
 
+  /**
+   * Deshabilita la visualización de los filtros después de un breve retraso.
+   *
+   * @function
+   * @name disableShowFiltros
+   * @returns {void}
+   *
+   * @example
+   * disableShowFiltros();
+   */
   const disableShowFiltros = () => {
     setTimeout(() => {
       setShowFiltros(false)
@@ -69,6 +165,17 @@ export const Courses = () => {
     }, 100)
   }
 
+  /**
+   * Muestra u oculta el filtro especificado.
+   *
+   * @function
+   * @name ShowFilter
+   * @param {string} filterType - Tipo de filtro ('etapa', 'nivel', 'finLectiva' o 'inicioPractica').
+   * @returns {void}
+   *
+   * @example
+   * ShowFilter('etapa');
+   */
   const ShowFilter = (filterType) => {
     if (filterType === 'etapa') setFiltersButtons({ etapa: !filtersButtons.etapa, nivel: false, fecha: false, inicioPractica: false })
     if (filterType === 'nivel') setFiltersButtons({ nivel: !filtersButtons.nivel, modalidad: false, fecha: false, inicioPractica: false })
@@ -76,6 +183,18 @@ export const Courses = () => {
     if (filterType === 'inicioPractica') setFiltersButtons({ inicioPractica: !filtersButtons.inicioPractica, etapa: false, nivel: false, finLectiva: false })
   }
 
+  /**
+   * Maneja la selección de filtro de tipo y actualiza la lista de cursos.
+   *
+   * @function
+   * @name handleFilterType
+   * @param {string} filterType - Tipo de filtro ('etapa' o 'nivel').
+   * @param {string} filter - Valor del filtro seleccionado.
+   * @returns {void}
+   *
+   * @example
+   * handleFilterType('etapa', 'Activo');
+   */
   const handleFilterType = (filterType, filter) => {
     if (filterType === 'etapa') {
       const filterMap = coursesOriginal.filter((course) => course.estado === filter)
@@ -89,6 +208,16 @@ export const Courses = () => {
     setActiveFilter(true)
   }
 
+  /**
+   * Restablece los filtros y muestra la lista original de cursos.
+   *
+   * @function
+   * @name handleResetFilter
+   * @returns {void}
+   *
+   * @example
+   * handleResetFilter();
+   */
   const handleResetFilter = () => {
     setCourses(coursesOriginal)
     disableShowFiltros()

@@ -13,6 +13,18 @@ const User = () => {
   const idRol = Number(localStorage.getItem('idRol'))
   const cookie = Cookies.get('token')
 
+  /**
+   * Función asincrónica para redirigir al usuario a la página de inicio si ya está autenticado.
+   *
+   * @async
+   * @function
+   * @name earlyReturn
+   * @throws {Error} Redirección si el usuario ya está autenticado.
+   * @returns {void}
+   *
+   * @example
+   * earlyReturn();
+   */
   const earlyReturn = async () => {
     if (idRol && cookie) goto('/home', { replace: true })
   }
@@ -25,6 +37,16 @@ const User = () => {
 
   const divRef = useRef(null)
 
+  /**
+   * Configuración del formulario de inicio de sesión.
+   *
+   * @constant
+   * @name loginForm
+   * @type {Array}
+   *
+   * @example
+   * const configuracionFormularioLogin = loginForm;
+   */
   const loginForm = [
     {
       icon: <AiOutlineIdcard />,
@@ -39,6 +61,16 @@ const User = () => {
       nameInput: 'contrasena'
     }
   ]
+  /**
+   * Configuración del formulario de registro.
+   *
+   * @constant
+   * @name registerForm
+   * @type {Array}
+   *
+   * @example
+   * const configuracionFormularioRegistro = registerForm;
+   */
   const registerForm = [
     { icon: <AiOutlineIdcard />, placeholder: '1017924888', type: 'text', nameInput: 'num_documento' },
     { icon: <IoPersonOutline />, placeholder: 'Juan', type: 'text', nameInput: 'nombre' },
@@ -47,8 +79,29 @@ const User = () => {
     { icon: <BiLockAlt />, placeholder: '********', type: 'password', nameInput: 'contrasena' }
   ]
 
+  /**
+   * Estado para controlar el botón seleccionado ('login' o 'register').
+   *
+   * @state
+   * @name selectedButton
+   * @type {string}
+   *
+   * @example
+   * const botonSeleccionado = selectedButton;
+   */
   const [selectedButton, setSelectedButton] = useState('login')
 
+  /**
+   * Función para manejar el cambio de botón seleccionado ('login' o 'register').
+   *
+   * @function
+   * @name handleButtonClick
+   * @param {string} button - Botón seleccionado.
+   * @returns {void}
+   *
+   * @example
+   * handleButtonClick('login');
+   */
   const handleButtonClick = (button) => {
     setSelectedButton(button)
   }
@@ -61,6 +114,16 @@ const User = () => {
     }
   }, [selectedButton])
 
+  /**
+   * Títulos para las secciones de inicio de sesión y registro.
+   *
+   * @constant
+   * @name title
+   * @type {Object}
+   *
+   * @example
+   * const titulos = title;
+   */
   const title = {
     login: 'Bienvenido de vuelta',
     register: 'Bienvenido a SENA'
