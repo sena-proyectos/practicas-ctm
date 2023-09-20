@@ -16,7 +16,7 @@ import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { colorTextStatus, keysRoles } from '../../import/staticData'
 
-import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById, GetClassByNumber } from '../../api/httpRequest'
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById } from '../../api/httpRequest'
 import { AiOutlineFullscreen } from 'react-icons/ai'
 import { checkApprovementData } from '../../validation/approvementValidation'
 import Cookies from 'js-cookie'
@@ -300,8 +300,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       const response = await getInscriptionDetails(id)
       const res = response.data.data
       const res2 = response.data.data[1].responsable_aval
-      console.log(res)
-      console.log(res2)
       setDataEmpresa(res)
       setIdUser(res2)
     } catch (error) {
@@ -312,7 +310,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     const response = await getUserById(id)
     const res = response.data.data[0].nombres_usuario
     const res2 = response.data.data[0].apellidos_usuario
-    console.log(res)
     setUser(res + ' ' + res2)
   }
 
@@ -521,7 +518,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       </div>
     </section>
   )
-  }
+}
 const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
   const iFrameRef = useRef(null)
   const [showDriveButton, setShowDriveButton] = useState(null)
@@ -647,7 +644,6 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
       const response = await getTeachers()
       const { data } = response.data
       setTeacher(data)
-      console.log(data)
     } catch (error) {
       throw new Error(error)
     }
@@ -737,7 +733,6 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
   const [nameResponsableDocumentos, setNameResponsableDocumentos] = useState('')
   const { id } = useParams()
   const [modalidad, setModalidad] = useState([])
-  const [idModalidad, setIdModalidad] = useState(0)
 
   const handleUseState = (setState, value) => setState(value)
 
@@ -756,7 +751,6 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
       try {
         const response = await getInscriptionById(id)
         const res = response.data.data[0].modalidad_inscripcion
-        setIdModalidad(res)
         // Llamar a getCourses con el valor actualizado de ficha
         await getModalities(res)
         if (avalDocumentos) fetchDataDocuments()
@@ -769,9 +763,8 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
   }, [id, avalDocumentos])
 
 
-  const getModalities = async () => {
-    const res = await getModalitiesById(idModalidad)
-    console.log(res.data.data)
+  const getModalities = async (id) => {
+    const res = await getModalitiesById(id)
     setModalidad(res.data.data)
   }
   const handleSubmitButton = () => {
@@ -869,6 +862,11 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
             <span className='text-sm font-semibold'>Líder Prácticas:</span>
             <span className='text-sm font-semibold'>Última fecha de modificación:</span>
             <span className='text-sm font-medium'>Fecha Registro: {avalInfoDocumentos.fecha_creacion}</span>
+            {modalidad.map((item) => (
+              <div key={item.id_modalidad}>
+                <span className='text-sm font-medium'>{item.nombre_modalidad}</span>
+              </div>
+            ))}
           </section>
           <div className='flex flex-col py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
             <h3 className='text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
@@ -1053,18 +1051,13 @@ const RAPS = ({ idRol, avalRaps }) => {
     }
   }
   
-  const [ficha, setFicha] = useState(0)
-  const [courses, setCourses] = useState([])
+  const [info, setInfo] = useState([])
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getInscriptionById(id)
-        const res = response.data.data[0].numero_ficha_inscripcion
-        setFicha(res)
-        // Llamar a getCourses con el valor actualizado de ficha
-        if(ficha !== 0) {
-          await getCourses(res)
-        }
+        const res = response.data.data
+        setInfo(res)
         if (avalRaps) fetchRaps()
       } catch (error) {
         console.log('Ha ocurrido un error al mostrar los datos del usuario')
@@ -1074,38 +1067,11 @@ const RAPS = ({ idRol, avalRaps }) => {
     fetchData() // Llamar a fetchData cuando el componente se monte o cuando id cambie
   }, [id, avalRaps])
 
-  const getCourses = async () => {
-    try {
-      const response = await GetClassByNumber(ficha)
-      const { data } = response.data
-      setCourses(data)
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
   return (
     <section className='grid grid-cols-2 w-[95%] h-[70vh] gap-3 mx-auto'>
       <section className='h-'>
         <h2>RAPS</h2>
-        <section>
-          {courses.map((item) => (
-            <div key={item.id_ficha}>
-              <h1 className='text-center my-2'>Fichas</h1>
-              <div className='text-center'>
-                <p className='my-2'>{item.numero_ficha}</p>
-                <p className='my-2'>{item.id_nivel_formacion}</p>
-                <p className='my-2'>{item.nombre_programa_formacion}</p>
-                <p className='my-2'>Lider de ficha: {item.id_instructor_lider}</p>
-                <p className='my-2'>Lider de seguimiento: {item.id_instructor_seguimiento}</p>
-                <div className='grid grid-cols-2'>
-                  <p>Fecha fin lectiva: {new Date(item.fecha_inicio_lectiva).toLocaleDateString()}</p>
-                  <p>Fecha inicio practica: {new Date(item.fecha_fin_lectiva).toLocaleDateString()}</p>
-                </div>
-                <p className='my-3'>Fecha fin lectiva: {new Date(item.fecha_fin_lectiva).toLocaleDateString()}</p>
-              </div>
-            </div>
-          ))}
-        </section>
+        <section></section>
       </section>
       <section className='flex flex-col w-[95%] gap-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>
@@ -1113,8 +1079,13 @@ const RAPS = ({ idRol, avalRaps }) => {
             <section className='grid items-center grid-cols-2 gap-2'>
               <section className='flex flex-col'>
                 <span className='text-sm font-semibold'>Líder Prácticas:</span>
-                <span className='text-sm font-semibold'>Última fecha de modificación:</span>
-                <span className='text-sm font-medium'>Fecha Registro: {avalInfo.fecha_creacion}</span>
+                {info.map((item) => (
+                  <div key={item.id_inscripcion}>
+                    <p>{item.numero_ficha_inscripcion}</p>
+                    <p>{item.nombre_inscripcion + ' ' + item.apellido_inscripcion}</p>
+                  </div>
+                ))}
+                <span className='text-sm font-medium'>{avalInfo.fecha_creacion}</span>
               </section>
               <div className='flex flex-col py-1 rounded-lg cursor-default justify-items-center w-fit bg-gray place-self-center'>
                 <h3 className='text-sm whitespace-nowrap'>{nameResponsable}</h3>
@@ -1122,6 +1093,12 @@ const RAPS = ({ idRol, avalRaps }) => {
                 <h5 className='text-sm whitespace-nowrap'>
                   Estado: <span className={`font-semibold ${colorTextStatus[avalInfo.estado_aval]}`}>{avalInfo.estado_aval}</span>
                 </h5>
+                {info.map((item) => (
+                  <div key={item.id_inscripcion}>
+                    <p>{item.tipo_documento_inscripcion}:</p>
+                    <p>{item.documento_inscripcion}</p>
+                  </div>
+                ))}
               </div>
             </section>
             <div className='flex flex-col gap-3'>

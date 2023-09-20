@@ -92,7 +92,6 @@ export const RegisterStudent = () => {
       const classNumber = formValues.id_ficha_inscripcion
       const archivo = formValues.link_documentos.name
 
-
       formValues.fecha_creacion = Date.now()
       formValues.observaciones = observation
       formValues.link_documentos = archivo
@@ -128,16 +127,6 @@ export const RegisterStudent = () => {
     }
     formValues.id_usuario_responsable_inscripcion = `${id}`
     // validar que los campos no esten vacios
-    const emptyFields = Object.keys(formValues).filter((key) => !formValues[key])
-
-    // si hay campos vacios, mostrar alerta
-    if (emptyFields.length > 0) {
-      return Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Por favor, completa todos los campos'
-      })
-    }
     const { error } = inscriptionValidation.validate(formValues)
     if (error !== undefined) {
       return Swal.fire({
@@ -148,14 +137,13 @@ export const RegisterStudent = () => {
 
     // validar que los campos de tipo number sean numeros
     ValidateInputsTypeNumber(formValues.numero_documento_inscripcion, formValues.numero_telefono_inscripcion, formValues.numero_ficha_inscripcion)
-    
 
     // validar que el numero de documento sea valido
     // enviar los datos al backend
     const responsable_inscripcion = `${decoded.data.user.nombres_usuario} ${decoded.data.user.apellidos_usuario}`
     const estado_general_inscripcion = 'Pendiente'
 
-    const form = {...formValues, responsable_inscripcion, estado_general_inscripcion }
+    const form = { ...formValues, responsable_inscripcion, estado_general_inscripcion }
     const dataToSend = Array(form)
     const data = await sendDataInscription(dataToSend)
     // mostramos una alerta de exito
@@ -177,8 +165,18 @@ export const RegisterStudent = () => {
   // vaciar los inputs
   const deleteData = () => {
     if (formRef.current) {
+      // Resetear el formulario, lo que eliminará los valores de todos los campos
       formRef.current.reset()
+      // Eliminar también los valores de los campos "select" específicos
+      const selectFields = ['tipo_documento_inscripcion', 'modalidad_inscripcion', 'etapa_actual_inscripcion', 'nivel_formacion_inscripcion', 'apoyo_sostenimiento_inscripcion', 'arl']
+      selectFields.forEach((fieldName) => {
+        const selectInput = formRef.current.querySelector(`[name="${fieldName}"]`)
+        if (selectInput) {
+          selectInput.value = ''
+        }
+      })
     }
+
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -317,7 +315,7 @@ export const RegisterStudent = () => {
                           />
                         ) : item.type === 'textarea' ? (
                           <div className='relative'>
-                            <textarea id='editor' rows='3' className='block absolute w-full max-h-[5.5rem] resize-none overflow-y-auto border-gray-400 focus:text-gray-900 rounded-xl shadow-md bg-white py-[0.9px] px-3 text-sm text-black focus:bg-white focus:outline-none placeholder:text-slate-400' placeholder={item.placeholder} required  name={item.name} ></textarea>
+                            <textarea id='editor' rows='3' className='block absolute w-full max-h-[5.5rem] resize-none overflow-y-auto border-gray-400 focus:text-gray-900 rounded-xl shadow-md bg-white py-[0.9px] px-3 text-sm text-black focus:bg-white focus:outline-none placeholder:text-slate-400' placeholder={item.placeholder} name={item.name}></textarea>
                           </div>
                         ) : (
                           <input type={item.type} name={item.name} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-400' autoComplete='on' placeholder={item.placeholder} />
