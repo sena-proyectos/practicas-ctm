@@ -13,6 +13,16 @@ import { modalOptionList } from '../../Register-list/RegisterList'
 import { getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento } from '../../../api/httpRequest'
 
 const BitacoraModal = ({ closeModal, title }) => {
+  /**
+   * Función para manejar el cierre del modal.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
   const handleModal = () => {
     closeModal()
   }
@@ -73,6 +83,16 @@ const BitacoraModal = ({ closeModal, title }) => {
 }
 
 const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
+  /**
+   * Función para manejar el cierre del modal.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
   const handleModal = () => {
     closeModal()
   }
@@ -94,15 +114,45 @@ const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
 }
 
 const PasswordModal = ({ closeModal, title }) => {
+  /**
+   * Función para manejar el cierre del modal.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
   const handleModal = () => {
     closeModal()
   }
 
+  /**
+   * Iconos para mostrar y ocultar la contraseña.
+   *
+   * @constant
+   * @name passwordIcons
+   * @type {object}
+   *
+   * @example
+   * const iconosContraseña = passwordIcons;
+   */
   const passwordIcons = {
     openEye: <AiOutlineEye />,
     closeEye: <AiOutlineEyeInvisible />
   }
 
+  /**
+   * Estados para mostrar u ocultar contraseñas.
+   *
+   * @constant
+   * @name passwordStatus
+   * @type {object}
+   *
+   * @example
+   * const estadosContraseña = passwordStatus;
+   */
   const passwordStatus = {
     shown: 'text',
     hidden: 'password'
@@ -113,10 +163,52 @@ const PasswordModal = ({ closeModal, title }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(passwordStatus.hidden)
   const formValuesRef = useRef({})
 
+  /**
+   * Función para manejar el cambio de visibilidad de la antigua contraseña.
+   *
+   * @function
+   * @name handleOldPassword
+   * @returns {void}
+   *
+   * @example
+   * handleOldPassword();
+   */
   const handleOldPassword = () => (showOldPassword === passwordStatus.shown ? setShowOldPassword(passwordStatus.hidden) : setShowOldPassword(passwordStatus.shown))
+  /**
+   * Función para manejar el cambio de visibilidad de la nueva contraseña.
+   *
+   * @function
+   * @name handleNewPassword
+   * @returns {void}
+   *
+   * @example
+   * handleNewPassword();
+   */
   const handleNewPassword = () => (showNewPassword === passwordStatus.shown ? setShowNewPassword(passwordStatus.hidden) : setShowNewPassword(passwordStatus.shown))
+  /**
+   * Función para manejar el cambio de visibilidad de la confirmación de contraseña.
+   *
+   * @function
+   * @name handleConfirmPassword
+   * @returns {void}
+   *
+   * @example
+   * handleConfirmPassword();
+   */
   const handleConfirmPassword = () => (showConfirmPassword === passwordStatus.shown ? setShowConfirmPassword(passwordStatus.hidden) : setShowConfirmPassword(passwordStatus.shown))
 
+  /**
+   * Función para manejar el cambio en la entrada de datos del formulario.
+   *
+   * @function
+   * @name handleInputChange
+   * @param {Event} e - Evento de cambio de entrada de datos.
+   * @param {number} index - Índice del elemento en el formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleInputChange(event, 0);
+   */
   const handleInputChange = (e, index) => {
     const { name, value } = e.target
     formValuesRef.current = {
@@ -193,6 +285,16 @@ const PasswordModal = ({ closeModal, title }) => {
 }
 
 const InfoStudentModal = ({ closeModal, title, emailStudent, documentStudent, cellPhoneNumber, program, courseNumber, academicLevel, formationStage, modalitie, lectivaEnd, productiveStart, company, innmediateSuperior, positionSuperior, emailSuperior, celphoneSuperior, arl }) => {
+  /**
+   * Función para manejar el cierre del modal.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
   const handleModal = () => {
     closeModal()
   }
@@ -287,12 +389,33 @@ const InfoStudentModal = ({ closeModal, title, emailStudent, documentStudent, ce
 }
 
 const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion, setNotify }) => {
+  /**
+   * Función para manejar el cierre del modal.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
   const handleModal = () => {
     closeModal()
   }
 
   const [teachers, setTeacher] = useState([])
+  const [selectedOptionKey, setSelectedOptionKey] = useState('')
 
+  /**
+   * Función para obtener la lista de instructores.
+   *
+   * @function
+   * @name getInstructores
+   * @returns {void}
+   *
+   * @example
+   * getInstructores();
+   */
   const getInstructores = async () => {
     try {
       const response = await getTeachers()
@@ -307,17 +430,47 @@ const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion
     getInstructores()
   }, [])
 
+  /**
+   * Opciones de instructores para un select.
+   *
+   * @constant
+   * @name option
+   * @type {array}
+   *
+   * @example
+   * const opcionesInstructores = option;
+   */
   const option = teachers.map((teacher) => ({
     value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario + ' - ' + teacher.email_usuario,
     key: teacher.id_usuario
   }))
 
-  const [selectedOptionKey, setSelectedOptionKey] = useState('')
-
+  /**
+   * Función para manejar el cambio de opción seleccionada en el select.
+   *
+   * @function
+   * @name handleSelectChange
+   * @param {string} optionKey - Clave de la opción seleccionada.
+   * @returns {void}
+   *
+   * @example
+   * handleSelectChange('claveOpcion');
+   */
   const handleSelectChange = (optionKey) => {
     setSelectedOptionKey(optionKey)
   }
 
+  /**
+   * Función para actualizar el instructor asignado.
+   *
+   * @function
+   * @name updateTeacher
+   * @param {Event} e - Evento de envío del formulario.
+   * @returns {void}
+   *
+   * @example
+   * updateTeacher(event);
+   */
   const updateTeacher = async (e) => {
     e.preventDefault()
 
@@ -382,10 +535,30 @@ const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion
 }
 
 const ModalConfirm = ({ closeModal, title, loadingFile, setModalOption }) => {
+  /**
+   * Función para manejar el cierre del modal.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
   const handleModal = () => {
     closeModal()
   }
 
+  /**
+   * Función para continuar con la carga de un archivo.
+   *
+   * @function
+   * @name continueLoadFile
+   * @returns {void}
+   *
+   * @example
+   * continueLoadFile();
+   */
   const continueLoadFile = () => {
     setModalOption(modalOptionList.loadingExcelModal)
   }
@@ -426,10 +599,31 @@ const ModalConfirm = ({ closeModal, title, loadingFile, setModalOption }) => {
 const DenyModal = ({ closeModal, title, id, setNotify }) => {
   const formRef = useRef()
 
+  /**
+   * Función para manejar el cierre del modal.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
   const handleModal = () => {
     closeModal()
   }
 
+  /**
+   * Función para manejar el envío del formulario.
+   *
+   * @function
+   * @name handleForm
+   * @param {Event} e - Evento de envío del formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleForm(event);
+   */
   const handleForm = async (e) => {
     e.preventDefault()
     const formData = new FormData(formRef.current)

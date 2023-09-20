@@ -7,6 +7,20 @@ export const Select = ({ options, placeholder, placeholderSearch, hoverColor, ho
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState('')
 
+  /**
+   * Función para manejar la selección de una opción.
+   *
+   * @function
+   * @name handleSelectOption
+   * @param {object} option - Opción seleccionada.
+   * @param {string} option.key - Clave de la opción.
+   * @param {string} option.value - Valor de la opción.
+   * @returns {void}
+   *
+   * @example
+   * const opcionSeleccionada = { key: 'clave', value: 'valor' };
+   * handleSelectOption(opcionSeleccionada);
+   */
   const handleSelectOption = (option) => {
     if (onChange) {
       onChange(option.key)

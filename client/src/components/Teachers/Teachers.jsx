@@ -18,6 +18,18 @@ export const Teachers = () => {
   const [loading, setLoading] = useState(true)
   const [teacher, setTeacher] = useState([])
 
+  /**
+   * Función asincrónica para obtener la lista de instructores.
+   *
+   * @async
+   * @function
+   * @name getInstructores
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getInstructores();
+   */
   const getInstructores = async () => {
     try {
       const response = await getTeachers()
@@ -32,14 +44,63 @@ export const Teachers = () => {
     getInstructores()
   }, [])
 
+  /**
+   * Número de instructores a mostrar por página.
+   *
+   * @constant
+   * @name instructoresPerPage
+   * @type {number}
+   * @default 8
+   *
+   * @example
+   * const instructoresPorPagina = instructoresPerPage;
+   */
   const instructoresPerPage = 8
+  /**
+   * Calcula el número de páginas necesarias para la paginación de instructores.
+   *
+   * @constant
+   * @name pageCount
+   * @type {number}
+   *
+   * @example
+   * const numeroDePaginas = pageCount;
+   */
   const pageCount = Math.ceil(teacher.length / instructoresPerPage)
-
+  /**
+   * Mapea los colores para las filas impares de la lista de instructores.
+   *
+   * @constant
+   * @name allColors
+   * @type {Array<Object>}
+   *
+   * @example
+   * const coloresFilasImpares = allColors;
+   */
   const allColors = teacher.map((_, index) => ({
     ...colorsOddRow[index % colorsOddRow.length]
   }))
-
+  /**
+   * Índice de inicio de la lista de instructores a mostrar en la página actual.
+   *
+   * @constant
+   * @name startIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceInicio = startIndex;
+   */
   const startIndex = pageNumber * instructoresPerPage
+  /**
+   * Índice de fin de la lista de instructores a mostrar en la página actual.
+   *
+   * @constant
+   * @name endIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
   const endIndex = startIndex + instructoresPerPage
 
   const navigate = useNavigate()
@@ -48,6 +109,17 @@ export const Teachers = () => {
     setLoading(false)
   }, [])
 
+  /**
+   * Función para navegar a la página de fichas de instructor por su ID.
+   *
+   * @function
+   * @name handleCourse
+   * @param {number} id - ID del instructor.
+   * @returns {void}
+   *
+   * @example
+   * handleCourse(123);
+   */
   const handleCourse = (id) => {
     return navigate(`/fichas-instructor/${id}`)
   }

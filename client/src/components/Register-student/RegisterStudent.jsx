@@ -31,30 +31,54 @@ export const RegisterStudent = () => {
   const formRef = useRef(null)
   const fileInputRef = useRef(null)
 
-  // const [formData, setFormData] = useState({})
-  // const [formDirty, setFormDirty] = useState(false)
-  // const history = useHistory()
-
   const token = Cookies.get('token')
   const decoded = jwtdecoded(token)
 
   const id = decoded.data.user.id_usuario
+
+  /**
+   * Función para manejar el cambio de archivo.
+   *
+   * @function
+   * @name handleFileChange
+   * @param {Object} e - Evento de cambio de archivo.
+   * @returns {void}
+   *
+   * @example
+   * const eventoCambioArchivo = e;
+   * handleFileChange(eventoCambioArchivo);
+   */
   const handleFileChange = (e) => {
     const file = e.target.files[0]
     setSelectedFiles(file)
   }
-  // Manejador para cambios en los campos del formulario
-  // const handleInputChange = (event) => {
-  //   const { name, value } = event.target
-  //   setFormData((prevData) => ({ ...prevData, [name]: value }))
-  //   setFormDirty(true) // Se activa cuando hay cambios en los campos
-  // }
 
+  /**
+   * Función para cambiar la sección visible entre empresa y aprendiz.
+   *
+   * @function
+   * @name handleChangeSection
+   * @param {string} section - Sección a mostrar.
+   * @returns {void}
+   *
+   * @example
+   * handleChangeSection('empresa');
+   */
   const handleChangeSection = (section) => {
     setShowDataEmpresa(section === 'empresa')
     setShowDataAprendiz(section === 'aprendiz')
   }
 
+  /**
+   * Estado local para almacenar los valores seleccionados en los select del formulario.
+   *
+   * @constant
+   * @name selectedValues
+   * @type {Object}
+   *
+   * @example
+   * const valoresSeleccionados = selectedValues;
+   */
   const [selectedValues, setSelectedValues] = useState({
     tipo_documento_inscripcion: '',
     modalidad_inscripcion: '',
@@ -64,9 +88,18 @@ export const RegisterStudent = () => {
     arl: ''
   })
 
-  // ...
-
-  // Define una función para actualizar los valores seleccionados
+  /**
+   * Función para actualizar los valores seleccionados.
+   *
+   * @function
+   * @name handleSelectChange
+   * @param {string} name - Nombre del valor seleccionado.
+   * @param {string} value - Valor seleccionado.
+   * @returns {void}
+   *
+   * @example
+   * handleSelectChange('modalidad_inscripcion', 'Presencial');
+   */
   const handleSelectChange = (name, value) => {
     setSelectedValues((prevValues) => ({
       ...prevValues,
@@ -74,7 +107,19 @@ export const RegisterStudent = () => {
     }))
   }
 
-  // Validación de campos y capturación de los valores
+  /**
+   * Función para manejar el envío del formulario.
+   *
+   * @async
+   * @function
+   * @name handleSubmit
+   * @param {Object} e - Evento de envío del formulario.
+   * @returns {void}
+   *
+   * @example
+   * const eventoEnvioFormulario = e;
+   * handleSubmit(eventoEnvioFormulario);
+   */
   const handleSubmit = async (e) => {
     e.preventDefault()
     // capturar los valores de los inputs del formulario
@@ -102,19 +147,6 @@ export const RegisterStudent = () => {
         const response = res.data.data[0].id_usuario
         formValues.id_instructor_lider_inscripcion = response
       }
-
-      // if (archivo) {
-      //   try {
-      //     const res = await saveDocuments(archivo)
-      //     const response = res.data
-      //     // formValues(prevFormValues => ({
-      //     //   ...prevFormValues,
-      //     //   link_documentos: response
-      //     // }));
-      //   } catch (error) {
-      //     console.error('Error al guardar documentos:', error)
-      //   }
-      // }
 
       if (classNumber) {
         const res = await GetClassByNumber(classNumber)
@@ -155,14 +187,35 @@ export const RegisterStudent = () => {
     deleteData()
   }
 
-  // enviar los datos al backend
+  /**
+   * Función para enviar los datos de inscripción al backend.
+   *
+   * @async
+   * @function
+   * @name sendDataInscription
+   * @param {Object[]} data - Datos de inscripción a enviar.
+   * @returns {Promise<string>} - Mensaje de respuesta del backend.
+   *
+   * @example
+   * const datosInscripcion = [{ /* ... *\/ }];
+   * const respuesta = await sendDataInscription(datosInscripcion);
+   */
   const sendDataInscription = async (data) => {
     const response = await InscriptionApprentice(data)
     const { message } = response.data
     return message
   }
 
-  // vaciar los inputs
+  /**
+   * Función para vaciar los campos del formulario.
+   *
+   * @function
+   * @name deleteData
+   * @returns {void}
+   *
+   * @example
+   * deleteData();
+   */
   const deleteData = () => {
     if (formRef.current) {
       // Resetear el formulario, lo que eliminará los valores de todos los campos
@@ -182,8 +235,16 @@ export const RegisterStudent = () => {
     }
   }
 
-  // Leer archivo excel
-  // TODO: Cambiar el lector de excel porque este NO FUNCIONA
+  /**
+   * Función para manejar el cambio de archivo Excel.
+   *
+   * @function
+   * @name handleExcelFile
+   * @returns {void}
+   *
+   * @example
+   * handleExcelFile();
+   */
   const handleExcelFile = () => {
     const currentFile = excelFileRef.current.files[0]
 

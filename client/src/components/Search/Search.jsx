@@ -7,6 +7,17 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, icon = fa
   const search = useRef()
   const debounceTimeout = useRef(null)
 
+  /**
+   * Función para manejar la búsqueda con debounce.
+   *
+   * @function
+   * @name handleSearch
+   * @param {Event} e - Evento de búsqueda.
+   * @returns {void}
+   *
+   * @example
+   * handleSearch(event);
+   */
   const handleSearch = (e) => {
     e.preventDefault()
     const searchTerm = search.current.value
@@ -17,10 +28,31 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, icon = fa
     }, 200)
   }
 
+  /**
+   * Función de evento para prevenir el comportamiento predeterminado.
+   *
+   * @function
+   * @name evnt
+   * @param {Event} e - Evento.
+   * @returns {void}
+   *
+   * @example
+   * evnt(event);
+   */
   const evnt = (e) => {
     e.preventDefault()
   }
 
+  /**
+   * Efecto de limpieza para cancelar el temporizador de debounce.
+   *
+   * @function
+   * @name cleanupEffect
+   * @returns {void}
+   *
+   * @example
+   * cleanupEffect();
+   */
   useEffect(() => {
     return () => {
       clearTimeout(debounceTimeout.current)
