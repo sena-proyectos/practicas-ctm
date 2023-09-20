@@ -15,7 +15,7 @@ import { errorCodes } from '../models/errorCodes.enums.js'
  */
 export const getInscriptions = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const [inscriptions] = await connection.query('SELECT i.*, m.nombre_modalidad, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i INNER JOIN modalidades m ON i.modalidad_inscripcion = m.id_modalidad LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END')
+    const [inscriptions] = await connection.query('SELECT i.*, m.nombre_modalidad, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i INNER JOIN modalidades m ON i.modalidad_inscripcion = m.id_modalidad LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END, i.fecha_creacion DESC;')
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -92,10 +92,7 @@ export const getInscriptionById: RequestHandler<{ id: string }, Response, inscri
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [inscription] = await connection.query(
-      'SELECT id_inscripcion, nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, DATE_FORMAT(fecha_fin_lectiva_inscripcion, "%Y-%m-%d") as fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, estado_general_inscripcion, fecha_creacion, responsable_inscripcion FROM inscripciones WHERE id_inscripcion = ?',
-      [idNumber]
-    )
+    const [inscription] = await connection.query('SELECT id_inscripcion, nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, DATE_FORMAT(fecha_fin_lectiva_inscripcion, "%Y-%m-%d") as fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, estado_general_inscripcion, fecha_creacion, responsable_inscripcion FROM inscripciones WHERE id_inscripcion = ?', [idNumber])
     return res.status(httpStatus.OK).json({ data: inscription })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
