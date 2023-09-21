@@ -16,6 +16,7 @@ import { RegisterDetails } from './components/Register-detail/RegisterDetails'
 import { Courses } from './components/Courses/Courses'
 import { Students } from './components/Students/Students'
 import { TeacherClass } from './components/Teacher-class/TeacherClass'
+import { InfoStudent } from './components/Info-student/InfoStudent'
 
 const App = () => {
   const idRol = Number(localStorage.getItem('idRol'))
@@ -36,6 +37,7 @@ const App = () => {
           {/* No está bien hecho, deberia ser anidado */}
           <Route path='/fichas/aprendices/:id' element={<Students />} />
           <Route path='/fichas-instructor/:id' element={<TeacherClass />} />
+          <Route path='/info-aprendiz' element={<InfoStudent />} />
         </Route>
 
         <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])} redirectTo='/home' />}>
