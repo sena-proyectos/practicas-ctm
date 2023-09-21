@@ -29,6 +29,7 @@ const App = () => {
           <Route path='/home' element={<Home />} />
           <Route path='/config' element={<Settings />} />
           <Route path='/seguimiento-aprendices' element={<StudentMonitoring />} />
+          <Route path='/info-aprendiz/:id' element={<InfoStudent />} />
           <Route path='/registros' element={<RegisterList />} />
           <Route path='/registrar-aprendiz' element={<RegisterStudent />} />
           <Route path='/registro-detalles/:id' element={<RegisterDetails />} />
@@ -37,7 +38,6 @@ const App = () => {
           {/* No está bien hecho, deberia ser anidado */}
           <Route path='/fichas/aprendices/:id' element={<Students />} />
           <Route path='/fichas-instructor/:id' element={<TeacherClass />} />
-          <Route path='/info-aprendiz' element={<InfoStudent />} />
         </Route>
 
         <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])} redirectTo='/home' />}>
@@ -54,3 +54,4 @@ const App = () => {
 }
 
 export default App
+

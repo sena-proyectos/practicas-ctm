@@ -313,3 +313,4 @@ const SkeletonLoading = ({ number = 6 }) =>
       <Skeleton height={'14rem'} className='scale-90 rounded-2xl' />
     </div>
   ))
+
