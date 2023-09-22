@@ -1,0 +1,135 @@
+import { Link, useParams } from 'react-router-dom'
+import { Footer } from '../Footer/Footer'
+import { Siderbar } from '../Siderbar/Sidebar'
+import { useEffect, useState } from 'react'
+import { GetStudentsDetailById } from '../../api/httpRequest'
+import { IoReturnDownBack } from 'react-icons/io5'
+
+export const InfoStudent = () => {
+  const { id } = useParams()
+
+  const [{ cargo_jefe, celular_aprendiz, email_aprendiz, email_jefe, etapa_formacion, fecha_fin_lectiva, fecha_inicio_practica, nivel_formacion, nombre_arl, nombre_completo, nombre_empresa, nombre_jefe, nombre_modalidad, nombre_programa_formacion, numero_contacto_jefe, numero_documento_aprendiz, numero_ficha }, setInfoStudent] = useState({})
+
+  const getInfoStudent = async () => {
+    try {
+      const { data } = await GetStudentsDetailById(id)
+      const info = await data.data[0]
+      let { fecha_fin_lectiva, fecha_inicio_practica } = info
+      fecha_fin_lectiva = new Date(fecha_fin_lectiva).toLocaleDateString('es-ES')
+      fecha_inicio_practica = new Date(fecha_inicio_practica).toLocaleDateString('es-ES')
+      setInfoStudent({ ...info, fecha_fin_lectiva, fecha_inicio_practica })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    getInfoStudent()
+  }, [])
+
+  return (
+    <main className='flex flex-row min-h-screen bg-whitesmoke'>
+      <Siderbar />
+      <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
+        <header className='grid place-items-center'>
+          <Link to='/seguimiento-aprendices' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors absolute left-10'>
+            <IoReturnDownBack />
+            Regresar
+          </Link>
+          <h1 className='text-2xl font-bold border-b-2 border-coffee'>{nombre_completo}</h1>
+        </header>
+        <section className='flex flex-col items-center gap-4 px-6 md:justify-center'>
+          <section className='grid w-full bg-white shadow-lg md:w-1/2 border-t-1 grid-rows-2-20-80 rounded-xl'>
+            <header className='flex items-center justify-center h-full pt-4'>
+              <h2 className='text-lg font-medium'>Info. Personal</h2>
+            </header>
+            <section className='flex flex-col justify-center px-3 py-3'>
+              <div className='grid grid-cols-2-40-60'>
+                <h3 className='font-medium'>Email:</h3>
+                <p>{email_aprendiz}</p>
+              </div>
+              <div className='grid grid-cols-2-40-60'>
+                <p className='font-medium'>No. Documento:</p>
+                <p>{numero_documento_aprendiz}</p>
+              </div>
+              <div className='grid grid-cols-2-40-60'>
+                <p className='font-medium'>Contacto:</p>
+                <p>{celular_aprendiz}</p>
+              </div>
+            </section>
+          </section>
+          <section className='grid flex-col w-full gap-4 md:grid-cols-2 '>
+            <section className='grid w-full bg-white shadow-lg border-t-1 grid-rows-2-20-80 rounded-xl'>
+              <header className='flex items-center justify-center h-full'>
+                <h2 className='text-lg font-medium'>Info. Acádemica</h2>
+              </header>
+              <section className='flex flex-col px-3 pb-7'>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Programa:</p>
+                  <p>{nombre_programa_formacion}</p>
+                </div>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Ficha:</p>
+                  <p>{numero_ficha}</p>
+                </div>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Nivel académico:</p>
+                  <p>{nivel_formacion}</p>
+                </div>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Etapa:</p>
+                  <p>{etapa_formacion}</p>
+                </div>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Modalidad:</p>
+                  <p>{nombre_modalidad}</p>
+                </div>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Fin lectiva:</p>
+                  <p>{fecha_fin_lectiva}</p>
+                </div>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Inicio prácticas:</p>
+                  <p>{fecha_inicio_practica}</p>
+                </div>
+              </section>
+            </section>
+            <section className='grid w-full bg-white shadow-lg border-t-1 grid-rows-2-20-80 rounded-xl'>
+              <header className='flex items-center justify-center h-full'>
+                <h2 className='text-lg font-medium'>Info. Laboral</h2>
+              </header>
+              <section className='flex flex-col px-3 pb-3'>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Empresa:</p>
+                  <p>{nombre_empresa}</p>
+                </div>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Jefe Inmediato:</p>
+                  <p>{nombre_jefe}</p>
+                </div>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Cargo:</p>
+                  <p>{cargo_jefe}</p>
+                </div>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Email:</p>
+                  <p>{email_jefe}</p>
+                </div>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>Contacto:</p>
+                  <p>{numero_contacto_jefe}</p>
+                </div>
+                <div className='grid grid-cols-2-40-60'>
+                  <p className='font-medium'>ARL:</p>
+                  <p>{nombre_arl}</p>
+                </div>
+              </section>
+            </section>
+          </section>
+        </section>
+        <Footer />
+      </section>
+    </main>
+  )
+}
+

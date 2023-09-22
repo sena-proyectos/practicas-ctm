@@ -16,6 +16,7 @@ import { RegisterDetails } from './components/Register-detail/RegisterDetails'
 import { Courses } from './components/Courses/Courses'
 import { Students } from './components/Students/Students'
 import { TeacherClass } from './components/Teacher-class/TeacherClass'
+import { InfoStudent } from './components/Info-student/InfoStudent'
 
 const App = () => {
   const idRol = Number(localStorage.getItem('idRol'))
@@ -28,6 +29,7 @@ const App = () => {
           <Route path='/home' element={<Home />} />
           <Route path='/config' element={<Settings />} />
           <Route path='/seguimiento-aprendices' element={<StudentMonitoring />} />
+          <Route path='/info-aprendiz/:id' element={<InfoStudent />} />
           <Route path='/registros' element={<RegisterList />} />
           <Route path='/registrar-aprendiz' element={<RegisterStudent />} />
           <Route path='/registro-detalles/:id' element={<RegisterDetails />} />
@@ -52,3 +54,4 @@ const App = () => {
 }
 
 export default App
+

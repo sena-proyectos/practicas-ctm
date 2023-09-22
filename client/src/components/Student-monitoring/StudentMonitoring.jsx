@@ -9,7 +9,8 @@ import { CardStudent } from '../Utils/Card/Card'
 import { FilterModal, InfoStudentModal } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
 // import { filter } from '../../import/staticData'
-import { Pagination } from '../Utils/Pagination/Pagination'
+// import { Pagination } from '../Utils/Pagination/Pagination'
+import { Pagination, PaginationItem, PaginationCursor } from '@nextui-org/pagination'
 import { GetUserByName, detailInfoStudents, GetStudentsDetailById } from '../../api/httpRequest'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
@@ -298,7 +299,7 @@ export const StudentMonitoring = () => {
             </div>
           )}
           <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-[5.5rem]'>
-            <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+            <Pagination showControls total={pageCount} initialPage={1} variant='flat' color='secondary' />
           </div>
           <Footer />
         </section>
@@ -313,3 +314,4 @@ const SkeletonLoading = ({ number = 6 }) =>
       <Skeleton height={'14rem'} className='scale-90 rounded-2xl' />
     </div>
   ))
+
