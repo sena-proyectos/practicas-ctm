@@ -1,6 +1,8 @@
+import { nextui } from '@nextui-org/theme'
+
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './node_modules/react-tailwindcss-select/dist/index.esm.js'],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './node_modules/react-tailwindcss-select/dist/index.esm.js', './node_modules/@nextui-org/theme/dist/components/pagination.js'],
   theme: {
     extend: {
       colors: {
@@ -75,5 +77,6 @@ export default {
       }
     }
   },
-  plugins: []
+  plugins: [nextui()]
 }
+
