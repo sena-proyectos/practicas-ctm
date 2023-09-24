@@ -1,129 +1,163 @@
-import { useState } from 'react'
-import { Footer } from '../Footer/Footer'
-import { Search } from '../Search/Search'
+import { Accordion, AccordionItem } from '@nextui-org/accordion'
+
+// Icons
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi'
+import { LuSave } from 'react-icons/lu'
+import { HiOutlinePencil } from 'react-icons/hi'
+
+// Components
 import { Siderbar } from '../Siderbar/Sidebar'
-import { BitacoraModal } from '../Utils/Modals/Modals'
-import { testInscriptions } from '../../import/staticData'
-import { AiOutlineEye } from 'react-icons/ai'
+import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
+// import { Pagination } from '../Utils/Pagination/Pagination'
 
-const Bitacoras = () => {
-  const [filteredData, setFilteredData] = useState([])
-  const [modalDetalles, setModalDetalles] = useState()
-
-  const handleDetalles = () => {
-    setModalDetalles(!modalDetalles)
-  }
-
-  const filterEstado = (estado) => {
-    const filtered = testInscriptions.data.filter((x) => {
-      return estado ? x.estado === estado : true
-    })
-
-    setFilteredData(filtered)
-  }
+export const Bitacoras = () => {
+  const form = (
+    <form action='' className='flex flex-col gap-2.5 p-3'>
+      <div className='flex flex-row justify-between'>
+        <input type='date' className='px-2 text-sm border-gray-600 rounded-[10px] focus:outline-none border-1' />
+        <h3>2473196 - ADSO</h3>
+      </div>
+      <div className='flex flex-row justify-between'>
+        <h3>Estudiante No. 1</h3>
+        <h3>CC 000000000</h3>
+      </div>
+      <textarea name='' className='w-full h-20 p-1.5 overflow-y-auto text-sm border-gray-600 focus:outline-none resize-none rounded-xl border-1' placeholder='Observaciones...' />
+      <div className='flex flex-row justify-end gap-4'>
+        <Button name='edit' type='button' bg={'bg-[#ffba00]'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
+          <HiOutlinePencil />
+          Modificar
+        </Button>
+        <Button name='save' type='button' bg={'bg-[#16a34a]'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
+          <LuSave /> Guardar
+        </Button>
+      </div>
+    </form>
+  )
 
   return (
-    <>
-      {modalDetalles && <BitacoraModal title={'Detalles'} closeModal={handleDetalles} />}
-      <main className='flex flex-row min-h-screen'>
-        <Siderbar />
-        <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
-          <header className='grid place-items-center'>
-            <Search filter />
-          </header>
-          <div>
-            <section className='w-11/12 mx-auto'>
-              <div className='flex gap-5 mx-auto w-fit'>
-                <Button bg='bg-secondary/10' textColor='text-black' font='font-normal' px='px-2' rounded='rounded-t-lg' textSize='text-sm' onClick={() => filterEstado('Calificado')}>
-                  BITÁCORAS CALIFICADAS
-                </Button>
-                <Button bg='bg-secondary/10' textColor='text-black' font='font-normal' px='px-2' rounded='rounded-t-lg' textSize='text-sm' onClick={() => filterEstado('Sin Calificar')}>
-                  BITÁCORAS SIN CALIFICAR
-                </Button>
-              </div>
-              <table className='w-full table-auto'>
-                <thead>
-                  <tr className='text-sm leading-normal text-gray-600 bg-gray-200'>
-                    <th className='py-3 text-center whitespace-nowrap'>Nombres y Apellidos</th>
-                    <th className='py-3 text-center whitespace-nowrap'>Programa de Formación</th>
-                    <th className='py-3 text-center'>Ficha</th>
-                    <th className='py-3 text-center'>Estado</th>
-                    <th className='py-3 text-center'>Fechas</th>
-                    <th className='py-3 text-center'>Detalles</th>
-                  </tr>
-                </thead>
-                <tbody className='text-sm font-light text-gray-600'>
-                  {filteredData.length > 0
-                    ? filteredData.map((x, i) => (
-                        <tr className='border-b border-gray-200' key={i}>
-                          <td className='px-3 text-center'>
-                            <span className='font-medium break-words'>{x.nombreCompleto}</span>
-                          </td>
-                          <td className='px-3 text-center'>
-                            <span className='break-words'>{x.programaFormacion}</span>
-                          </td>
-                          <td className='px-6 py-3 text-center'>
-                            <div className='flex items-center justify-center'>
-                              <span>{x.ficha}</span>
-                            </div>
-                          </td>
-                          <td className='px-6 py-3 text-center whitespace-nowrap'>
-                            <Button bg={x.estado === 'Sin Calificar' ? 'bg-red-200' : 'bg-green-200'} px={x.estado === 'Sin Calificar' ? 'px-3' : 'px-4'} py={'py-1'} textSize={'text-xs'} font={'font-medium'} rounded={'rounded-full'} textColor={x.estado === 'Sin Calificar' ? 'text-red-600' : 'text-green-600'}>
-                              {x.estado}
-                            </Button>
-                          </td>
-                          <td className='px-6 py-3 text-center'>
-                            <div className='flex items-center justify-center'>
-                              <span>{x.fecha}</span>
-                            </div>
-                          </td>
-                          <td className='px-6 py-3 text-center'>
-                            <div className='w-4 mr-2 transform cursor-pointer hover:scale-125 hover:text-purple-500' onClick={handleDetalles}>
-                              <AiOutlineEye />
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    : testInscriptions.data.map((x, i) => (
-                        <tr className='border-b border-gray-200' key={i}>
-                          <td className='px-3 text-center'>
-                            <span className='font-medium break-words'>{x.nombreCompleto}</span>
-                          </td>
-                          <td className='px-3 text-center'>
-                            <span className='break-words'>{x.programaFormacion}</span>
-                          </td>
-                          <td className='px-6 py-3 text-center'>
-                            <div className='flex items-center justify-center'>
-                              <span>{x.ficha}</span>
-                            </div>
-                          </td>
-                          <td className='px-6 py-3 text-center whitespace-nowrap'>
-                            <Button bg={x.estado === 'Sin Calificar' ? 'bg-red-200' : 'bg-green-200'} px={x.estado === 'Sin Calificar' ? 'px-3' : 'px-4'} py={'py-1'} textSize={'text-xs'} font={'font-medium'} rounded={'rounded-full'} textColor={x.estado === 'Sin Calificar' ? 'text-red-600' : 'text-green-600'}>
-                              {x.estado}
-                            </Button>
-                          </td>
-                          <td className='px-6 py-3 text-center'>
-                            <div className='flex items-center justify-center'>
-                              <span>{x.fecha}</span>
-                            </div>
-                          </td>
-                          <td className='px-6 py-3 text-center'>
-                            <div className='w-4 mr-2 transform cursor-pointer hover:scale-125 hover:text-purple-500' onClick={handleDetalles}>
-                              <AiOutlineEye />
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                </tbody>
-              </table>
-            </section>
+    <main className='flex flex-row min-h-screen bg-whitesmoke'>
+      <Siderbar />
+      <section className='relative grid flex-auto w-min grid-rows-2-80-20'>
+        <section className='grid items-start py-5 grid-rows-80-20'>
+          <div className='w-11/12 mx-auto bg-white border-gray-600 rounded-2xl border-[0.5px]'>
+            <Accordion>
+              <AccordionItem
+                key='1'
+                aria-label='Accordion 1'
+                indicator={({ isOpen }) =>
+                  isOpen ? (
+                    <FiChevronUp className='text-xl' />
+                  ) : (
+                    <div className='flex flex-row gap-16'>
+                      <div className='bg-[#bbf7d0] text-[#047857] text-sm  font-medium rounded-xl w-[130px]'>Aprobado</div>
+                      <FiChevronDown className='text-xl' />
+                    </div>
+                  )
+                }
+                className='p-2'
+                title='Carta Inicial'
+              >
+                {form}
+              </AccordionItem>
+              <AccordionItem
+                key='2'
+                aria-label='Accordion 2'
+                indicator={({ isOpen }) =>
+                  isOpen ? (
+                    <FiChevronUp className='text-xl' />
+                  ) : (
+                    <div className='flex flex-row gap-16'>
+                      <div className='bg-[#bbf7d0] text-[#047857] text-sm font-medium rounded-xl w-[130px]'>Aprobado</div>
+                      <FiChevronDown className='text-xl' />
+                    </div>
+                  )
+                }
+                className='p-2'
+                title='Evaluacion Inicial'
+              >
+                {form}
+              </AccordionItem>
+              <AccordionItem
+                key='3'
+                aria-label='Accordion 3'
+                indicator={({ isOpen }) =>
+                  isOpen ? (
+                    <FiChevronUp className='text-xl' />
+                  ) : (
+                    <div className='flex flex-row gap-16'>
+                      <div className='bg-[#bbf7d0] text-[#047857] text-sm font-medium rounded-xl w-[130px]'>Aprobado</div>
+                      <FiChevronDown className='text-xl' />
+                    </div>
+                  )
+                }
+                className='p-2'
+                title='Bitácora 1'
+              >
+                {form}
+              </AccordionItem>
+              <AccordionItem
+                key='4'
+                aria-label='Accordion 4'
+                indicator={({ isOpen }) =>
+                  isOpen ? (
+                    <FiChevronUp className='text-xl' />
+                  ) : (
+                    <div className='flex flex-row gap-16'>
+                      <div className='bg-[#bbf7d0] text-[#047857] text-sm font-medium rounded-xl w-[130px]'>Aprobado</div>
+                      <FiChevronDown className='text-xl' />
+                    </div>
+                  )
+                }
+                className='p-2'
+                title='Bitácora 2'
+              >
+                {form}
+              </AccordionItem>
+              <AccordionItem
+                key='5'
+                aria-label='Accordion 5'
+                indicator={({ isOpen }) =>
+                  isOpen ? (
+                    <FiChevronUp className='text-xl' />
+                  ) : (
+                    <div className='flex flex-row gap-16'>
+                      <div className='bg-[#e2e8f0] text-[#475569] text-sm font-medium rounded-xl w-[130px]'>Sin revisar </div>
+                      <FiChevronDown className='text-xl' />
+                    </div>
+                  )
+                }
+                className='p-2'
+                title='Bitácora 3'
+              >
+                {form}
+              </AccordionItem>
+              <AccordionItem
+                key='6'
+                aria-label='Accordion 6'
+                indicator={({ isOpen }) =>
+                  isOpen ? (
+                    <FiChevronUp className='text-xl' />
+                  ) : (
+                    <div className='flex flex-row gap-16'>
+                      <div className='bg-[#e2e8f0] text-[#475569] text-sm font-medium rounded-xl w-[130px]'>Sin revisar </div>
+                      <FiChevronDown className='text-xl' />
+                    </div>
+                  )
+                }
+                className='p-2'
+                title='Bitácora 4'
+              >
+                {form}
+              </AccordionItem>
+            </Accordion>
           </div>
-          <Footer />
+          {/* <div>
+            <Pagination />
+          </div> */}
         </section>
-      </main>
-    </>
+        <Footer />
+      </section>
+    </main>
   )
 }
-
-export { Bitacoras }
