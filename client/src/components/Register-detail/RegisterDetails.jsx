@@ -884,9 +884,17 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
 }
 
 const FunctionsApproval = ({ idRol, avalFunciones }) => {
+  const functionApproval = useRef(null)
+  const descriptionRef = useRef(null)
+  const { inscriptionData } = inscriptionStore()
+
   const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
   const [teachers, setTeacher] = useState([])
   const [selectedOptionKey, setSelectedOptionKey] = useState('')
+  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
+  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
+
+  const handleUseState = (setState, value) => setState(value)
 
   /**
    * Función para obtener y almacenar información del aval de funciones.
@@ -985,9 +993,119 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     setSelectedOptionKey(optionKey)
   }
 
+  const handleSubmitButton = () => {
+    if (!selectedApproveButton) return
+    if (descriptionRef.current.value.length === 0) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  const selectButtonToSubmit = (value) => {
+    setSelectedApproveButton(value)
+    if (descriptionRef.current.value.length === 0 || !value) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  /**
+   * Descripción: Esta función maneja la aprobación o rechazo de funciones por parte del usuario.
+   *
+   * @param {Event} e - El evento del formulario.
+   * @throws {Error} Si ocurre un error durante el proceso de aprobación o rechazo.
+   * @returns {void}
+   * @name handleFunctionsApproval
+   */
+  const handleFunctionsApproval = async (e) => {
+    e.preventDefault()
+    const approveOptions = { Si: 'Si', No: 'No' }
+
+    const formData = new FormData(functionApproval.current)
+    formData.append('approveOption', approveOptions[selectedApproveButton])
+    const observations = formData.get('functionsApprovalObservations')
+    const approveOption = formData.get('approveOption')
+    try {
+      await checkApprovementData({ observations, approveOption })
+      const loadingToast = toast.loading('Enviando...')
+      if (selectedApproveButton === approveOptions.Si) return acceptFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
+    } catch (err) {
+      if (toast.isActive('loadingToast')) return
+      toast.error('Los campos son incorrectos, corríjalos.', {
+        toastId: 'error-full-docs',
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored'
+      })
+    }
+  }
+
+  /**
+   * Descripción: Esta función maneja la aceptación de la aprobación de funciones.
+   *
+   * @param {object} payload - Los datos necesarios para realizar la aceptación.
+   * @param {string} toastId - El ID del toast de carga.
+   * @throws {Error} Si ocurre un error durante la aceptación de la aprobación.
+   * @returns {void}
+   * @name acceptFunctionsApprove
+   */
+  const acceptFuntionsApprove = async (payload, toastId) => {
+    const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
+    const id = payload.avalFunciones
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchDataFunciones()
+    } catch (error) {
+      console.log(error)
+      throw new Error(error)
+    }
+  }
+
+  /**
+   * Descripción: Esta función maneja el rechazo de la aprobación de funciones.
+   *
+   * @param {object} payload - Los datos necesarios para realizar el rechazo.
+   * @param {string} toastId - El ID del toast de carga.
+   * @throws {Error} Si ocurre un error durante el rechazo de la aprobación.
+   * @returns {void}
+   * @name denyFunctionsApprove
+   */
+  const denyFuntionsApprove = async (payload, toastId) => {
+    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const estado_aval = { No: 'Rechazado' }
+    const id = payload.avalFunciones
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      await sendEmail({ to: 'lorenquiceno@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchDataFunciones()
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   return (
     <div className='w-[95%] mx-auto'>
-      <form action='' className='flex flex-col gap-2' onSubmit={(e) => e.preventDefault()}>
+      <form action='' className='flex flex-col gap-2' ref={functionApproval} onSubmit={handleFunctionsApproval}>
         <section className='grid items-center grid-cols-2 gap-2'>
           <section className='flex flex-col gap-1'>
             <span className='text-sm font-semibold'>
@@ -1016,32 +1134,56 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
           </section>
         </section>
         <div>
-          <label htmlFor='observations' className='text-sm font-light'>
+          <label htmlFor='functionsApprovalObservations' className='text-sm font-light'>
             Observaciones
           </label>
-          <textarea name='observations' id='editor' defaultValue={avalInfoFunciones.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+          <textarea name='functionsApprovalObservations' id='editor' defaultValue={avalInfoFunciones.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
         </div>
         <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
-          {idRol === Number(keysRoles[2]) ? (
+          {idRol === Number(keysRoles[2]) && (
             <div className='flex flex-row gap-2 place-self-center'>
-              <>
-                <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
-                  <PiCheckCircleBold className='text-xl' /> Sí
-                </Button>
-                <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline>
-                  <PiXCircleBold className='text-xl' /> No
-                </Button>
-              </>
+              {!selectedApproveButton ? (
+                <>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              ) : selectedApproveButton === 'No' ? (
+                <>
+                  <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              )}
             </div>
-          ) : (
-            <h5 className={`text-sm font-medium text-center ${avalInfoFunciones.estado_aval === 'Pendiente' ? 'text-slate-600' : avalInfoFunciones.estado_aval === 'Rechazado' ? 'text-red-500' : avalInfoFunciones.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{avalInfoFunciones.estado_aval}</h5>
           )}
-          {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) && (
-            <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
-              <LuSave />
-              Guardar
-            </Button>
-          )}
+          {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) &&
+            (disableSubmitButton ? (
+              <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                <LuSave />
+                Guardar
+              </Button>
+            ) : (
+              <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                <LuSave />
+                Guardar
+              </Button>
+            ))}
         </div>
       </form>
     </div>
@@ -1538,7 +1680,7 @@ const RAPS = ({ idRol, avalRaps }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
-      await sendEmail({ to: 'stevenbenjumea9@gmail.com', subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
+      await sendEmail({ to: 'lorenquiceno@gmail.com', subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchRaps()
