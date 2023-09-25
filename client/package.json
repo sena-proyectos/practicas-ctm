@@ -1,7 +1,7 @@
 {
   "name": "client",
   "private": true,
-  "version": "2.11.0-alpha",
+  "version": "2.14.0-alpha",
   "type": "module",
   "scripts": {
     "dev": "vite --open",
@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@nextui-org/accordion": "^2.0.23",
     "axios": "1.4.0",
     "classnames": "^2.3.2",
     "joi": "17.9.2",
