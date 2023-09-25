@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { Pagination } from '@nextui-org/pagination'
 
 // icons
 import { HiOutlineUserAdd } from 'react-icons/hi'
@@ -15,7 +16,6 @@ import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
 import { AsignTeacherModal } from '../Utils/Modals/Modals'
-import { Pagination } from '../Utils/Pagination/Pagination'
 import { getClassFree, GetClassByNumber } from '../../api/httpRequest'
 
 export const AssignClass = () => {
@@ -122,7 +122,7 @@ export const AssignClass = () => {
    * @example
    * const indiceInicio = startIndex;
    */
-  const startIndex = pageNumber * coursesPerPage
+  const startIndex = (pageNumber - 1) * coursesPerPage
   /**
    * Índice de fin de la lista de cursos a mostrar en la página actual.
    *
@@ -223,7 +223,7 @@ export const AssignClass = () => {
               </Link>
             </div>
             <div className='flex justify-center h-[13vh] relative bottom-0'>
-              <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
             </div>
           </section>
           <Footer />

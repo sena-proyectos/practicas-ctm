@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Pagination } from '@nextui-org/pagination'
 
 // Icons
 import { AiOutlineEye } from 'react-icons/ai'
@@ -12,12 +13,11 @@ import { BiSad } from 'react-icons/bi'
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
-import { Pagination } from '../Utils/Pagination/Pagination'
 import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById } from '../../api/httpRequest'
 import { InfoStudentModal } from '../Utils/Modals/Modals'
 
 export const Students = () => {
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
   const [detailCourse, setDetailCourse] = useState([])
   const [studentsCourse, setStudentsCourse] = useState([])
   const [studentsCourseOriginal, setStudentsCourseOriginal] = useState([])
@@ -144,7 +144,7 @@ export const Students = () => {
    * @example
    * const indiceInicio = startIndex;
    */
-  const startIndex = pageNumber * studentsPerPage
+  const startIndex = (pageNumber - 1) * studentsPerPage
   /**
    * Índice de fin de la lista de estudiantes a mostrar en la página actual.
    *
@@ -398,7 +398,7 @@ export const Students = () => {
               </tbody>
             </table>
             <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0'>
-              <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
             </div>
           </div>
         </section>
