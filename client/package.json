@@ -1,7 +1,7 @@
 {
   "name": "client",
   "private": true,
-  "version": "2.14.0-alpha",
+  "version": "2.13.0-alpha",
   "type": "module",
   "scripts": {
     "dev": "vite --open",
@@ -11,8 +11,12 @@
   },
   "dependencies": {
     "@nextui-org/accordion": "^2.0.23",
+    "@nextui-org/pagination": "^2.0.22",
+    "@nextui-org/system": "^2.0.10",
+    "@nextui-org/theme": "^2.1.9",
     "axios": "1.4.0",
     "classnames": "^2.3.2",
+    "framer-motion": "^10.16.4",
     "joi": "17.9.2",
     "js-cookie": "3.0.5",
     "jwt-decode": "3.1.2",

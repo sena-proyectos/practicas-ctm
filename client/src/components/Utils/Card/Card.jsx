@@ -80,9 +80,6 @@ export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, it
 }
 
 export const CardStudent = ({ nameStudent, emailStudent, programStudent, courseStudent, height, userID, modalClicked }) => {
-  const userInfo = () => {
-    modalClicked(userID)
-  }
   return (
     <section className={`${height} rounded-lg shadow-xl w-auto bg-white`}>
       <header className='h-[40%] rounded-t-lg flex flex-col justify-center px-2 relative z-10 before:absolute before:inset-0 before:w-full before:h-full before:bg-black/50 before:-z-10 before:rounded-t-lg' style={{ backgroundImage: `url('https://www.profesionalonline.com/blog/wp-content/uploads/2022/01/que-es-la-programacion-orientada-a-objetos-header.jpg')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
@@ -94,10 +91,11 @@ export const CardStudent = ({ nameStudent, emailStudent, programStudent, courseS
           <p className='text-[15px] text-center'>{nameStudent}</p>
           <span className='text-xs font-light'>{emailStudent}</span>
         </div>
-        <button className='px-4 py-[2.5px] mx-auto text-xs font-light text-white bg-blue-800 rounded-lg w-fit hover:bg-blue-900 transition-colors' onClick={userInfo}>
+        <Link to={`/info-aprendiz/${userID}`} type='button' className='px-4 py-[2.5px] mx-auto text-xs font-light text-white bg-blue-800 rounded-lg w-fit hover:bg-blue-900 transition-colors'>
           Más información
-        </button>
+        </Link>
       </section>
     </section>
   )
 }
+
