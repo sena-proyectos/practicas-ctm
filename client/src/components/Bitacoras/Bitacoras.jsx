@@ -9,7 +9,6 @@ import { HiOutlinePencil } from 'react-icons/hi'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
-// import { Pagination } from '../Utils/Pagination/Pagination'
 
 export const Bitacoras = () => {
   const form = (
@@ -152,9 +151,6 @@ export const Bitacoras = () => {
               </AccordionItem>
             </Accordion>
           </div>
-          {/* <div>
-            <Pagination />
-          </div> */}
         </section>
         <Footer />
       </section>

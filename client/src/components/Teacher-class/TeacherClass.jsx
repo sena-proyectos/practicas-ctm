@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+import { Pagination } from '@nextui-org/pagination'
 
 // Icons
 import { IoReturnDownBack } from 'react-icons/io5'
@@ -10,7 +11,6 @@ import { getClassByTeacherId, getClassByLiderTeacherId, getUserById } from '../.
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
-import { Pagination } from '../Utils/Pagination/Pagination'
 import { Card3D } from '../Utils/Card/Card'
 import { keysRoles } from '../../import/staticData'
 
@@ -18,7 +18,7 @@ export const TeacherClass = () => {
   const { id } = useParams()
   const [loading, setLoading] = useState(true)
   const [teacherClass, setTeacherClass] = useState([])
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
   const [rol, setRol] = useState('')
   const idRol = Number(localStorage.getItem('idRol'))
 
@@ -130,7 +130,7 @@ export const TeacherClass = () => {
    * @example
    * const indiceInicio = startIndex;
    */
-  const startIndex = pageNumber * coursesPerPage
+  const startIndex = (pageNumber - 1) * coursesPerPage
   /**
    * Índice de fin de la lista de cursos a mostrar en la página actual.
    *
@@ -171,7 +171,7 @@ export const TeacherClass = () => {
             </div>
           )}
           <div className='flex justify-center h-[13vh] relative bottom-0'>
-            <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
           </div>
         </section>
         <Footer />
