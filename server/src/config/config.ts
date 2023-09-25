@@ -15,7 +15,7 @@ const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? 'null'
 
 const emailConfig = nodemailer.createTransport(
   smtpTransport({
-    host: 'smtp.gmail.com',
+    host: 'smtp-mail.outlook.com',
     port: 587,
     secure: false,
     auth: {
