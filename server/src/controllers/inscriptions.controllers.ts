@@ -209,3 +209,15 @@ export const returnExcelData = async (req: Request, res: Response): Promise<Resp
     return handleHTTP(res, error as CustomError)
   }
 }
+
+export const getInscriptionsDetailsByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
+  const { nombreCompleto } = req.query
+  try {
+    const [inscription] = await connection.query('SELECT CONCAT(nombre_inscripcion, " ", apellido_inscripcion) AS id_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, municipio_empresa, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, estado_general_inscripcion, fecha_creacion, responsable_inscripcion FROM inscripciones WHERE CONCAT(nombre_inscripcion, " ", apellido_inscripcion) LIKE ?', [`%${nombreCompleto as string}%`])
+    if (!Array.isArray(inscription) || inscription?.length === 0) throw new DbErrorNotFound('No se encontró el registro.')
+    return res.status(httpStatus.OK).json({ data: inscription })
+  } catch (error) {
+    console.log(error)
+    return handleHTTP(res, error as CustomError)
+  }
+}

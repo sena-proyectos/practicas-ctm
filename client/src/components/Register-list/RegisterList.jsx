@@ -23,7 +23,7 @@ import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Button } from '../Utils/Button/Button'
 
-import { InscriptionApprentice, getInscriptions, readExcel } from '../../api/httpRequest'
+import { InscriptionApprentice, getInscriptions, readExcel, GetInscriptionByName } from '../../api/httpRequest'
 import { keysRoles } from '../../import/staticData'
 import { LoadingModal, ModalConfirm } from '../Utils/Modals/Modals'
 
@@ -48,6 +48,45 @@ export const RegisterList = () => {
   const [filtersButtons, setFiltersButtons] = useState({ modalidad: false, estado: false, fecha: false })
   const [activeFilter, setActiveFilter] = useState(false)
   const [inscriptionOriginal, setInscriptionOriginal] = useState([])
+  const [error, setError] = useState(null)
+  const [searchedInscriptions, setSearchedInscriptions] = useState([])
+
+  /**
+   * Función asincrónica para buscar aprendices por nombre de usuario.
+   *
+   * @async
+   * @function
+   * @name searchInscriptions
+   * @param {string} searchTerm - Término de búsqueda para el aprendiz.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * searchInscriptions('John Doe');
+   */
+  const searchInscriptions = async (searchTerm) => {
+    if (searchTerm.trim() === '') {
+      setError(null)
+      setSearchedInscriptions([])
+      return
+    }
+    try {
+      const response = await GetInscriptionByName(searchTerm)
+      const { data } = response.data
+      if (searchTerm.trim() === '') {
+        setError(null)
+        setSearchedInscriptions([])
+      } else {
+        setError(null)
+        setSearchedInscriptions(data)
+      }
+    } catch (error) {
+      const message = error?.response?.data?.error?.info?.message
+
+      setError(message ?? 'Usuario no existente')
+      setSearchedInscriptions([])
+    }
+  }
 
   /**
    * Número de inscripciones por página.
@@ -397,7 +436,7 @@ export const RegisterList = () => {
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
-          <Search filter iconClick={handleFilter} />
+          <Search searchFilter placeholder={'Busca un aprendiz'} icon iconClick={handleFilter} searchStudent={searchInscriptions} />
           <ul className={`absolute right-80 mt-1 top-4 w-36 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
             <li>
               <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('modalidad')}>
@@ -408,6 +447,9 @@ export const RegisterList = () => {
                     <ul className='flex flex-col gap-1 py-2 w-44'>
                       <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('modalidad', 'Pasantías')}>
                         Pasantías
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('modalidad', 'Contrato de aprendizaje')}>
+                        Contrato de aprendizaje
                       </li>
                       <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('modalidad', 'Proyecto Productivo')}>
                         Proyecto Productivo
@@ -467,7 +509,7 @@ export const RegisterList = () => {
           )}
         </header>
         <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto'>
-          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} />
+          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
           <div className='flex justify-center h-[11.5vh] relative bottom-0'>
             <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
           </div>
@@ -492,11 +534,14 @@ export const RegisterList = () => {
   )
 }
 
-const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData }) => {
+const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData, searchedInscriptions, error }) => {
   const navigate = useNavigate()
   const handleAvales = (id) => {
     return navigate(`/registro-detalles/${id}`)
   }
+
+  console.log(searchedInscriptions)
+  console.error(error)
   return (
     <table className='w-full h-96'>
       <thead className=''>
