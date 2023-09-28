@@ -510,9 +510,7 @@ export const RegisterList = () => {
         </header>
         <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto'>
           <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
-          <div className='flex justify-center h-[11.5vh] relative bottom-0'>
-            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
-          </div>
+          <div className='flex justify-center h-[11.5vh] relative bottom-0'>{(searchedInscriptions > 0 || !error || inscriptions > 0) && <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />}</div>
           {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
             <div className='absolute flex flex-row-reverse gap-3 right-12 bottom-16'>
               <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline>
@@ -540,8 +538,6 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData, se
     return navigate(`/registro-detalles/${id}`)
   }
 
-  console.log(searchedInscriptions)
-  console.error(error)
   return (
     <table className='w-full h-96'>
       <thead className=''>
@@ -555,7 +551,36 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData, se
         </tr>
       </thead>
       <tbody className='grid grid-rows-6'>
-        {inscriptions.length > 0 ? (
+        {searchedInscriptions.length > 0 && !error ? (
+          searchedInscriptions.slice(startIndex, endIndex).map((x) => (
+            <tr className='grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center' key={x.id_inscripcion}>
+              <td className='max-w-[20ch] font-medium text-center break-words'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</td>
+              <td className='font-light text-center max-w-[10ch] break-words'>{x.nombre_modalidad}</td>
+              <td className='font-light text-center '>{x.fecha_creacion.split('T')[0]}</td>
+              <td className='text-sm font-light text-center '>
+                <div className='w-10 mx-auto rounded-full select-none bg-grayPrimary'>{x.estado_general_inscripcion === 'Rechazado' ? 'N/A' : `${x.avales_aprobados} | 4`}</div>
+              </td>
+              <td className='text-sm font-normal text-center whitespace-nowrap'>
+                <div className={`px-2 py-[1px] ${x.estado_general_inscripcion === 'Aprobado' ? 'bg-green-200 text-emerald-700' : x.estado_general_inscripcion === 'Pendiente' ? 'bg-slate-200 text-slate-600' : x.estado_general_inscripcion === 'Rechazado' ? 'bg-red-200 text-red-700' : ''} rounded-full flex flex-row gap-1 items-center justify-center select-none`}>
+                  <span>{x.estado_general_inscripcion}</span>
+                  <span>{x.estado_general_inscripcion === 'Aprobado' ? <BsPatchCheck /> : x.estado_general_inscripcion === 'Pendiente' ? <BsHourglass /> : x.estado_general_inscripcion === 'Rechazado' ? <BsXOctagon /> : ''}</span>
+                </div>
+              </td>
+              <td className='text-center'>
+                <Button rounded='rounded-full' bg='bg-sky-600' px='px-2' py='py-[1px]' textSize='text-sm' font='font-medium' onClick={() => handleAvales(x.id_inscripcion)}>
+                  Detalles
+                </Button>
+              </td>
+            </tr>
+          ))
+        ) : error ? (
+          <section className='absolute flex justify-center w-fit top-32'>
+            <section className='flex items-center gap-1 mx-auto text-xl font-medium text-red-500'>
+              <p>¡Oops! {error}</p>
+              <BiSad className='text-2xl' />
+            </section>
+          </section>
+        ) : inscriptions.length > 0 ? (
           inscriptions.slice(startIndex, endIndex).map((x) => {
             return (
               <tr className='grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center' key={x.id_inscripcion}>
@@ -582,12 +607,12 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData, se
         ) : loadingData ? (
           <LoadingTableList number={6} />
         ) : (
-          <tr className='grid h-full mt-10 place-content-center'>
-            <th scope='row' className='flex items-center gap-1 text-xl text-red-500'>
+          <section className='absolute flex justify-center top-32'>
+            <section className='flex items-center gap-1 mx-auto text-xl font-medium text-red-500'>
               <p>¡Oops! No hay ninguna inscripción con este filtro.</p>
               <BiSad className='text-2xl' />
-            </th>
-          </tr>
+            </section>
+          </section>
         )}
       </tbody>
     </table>
