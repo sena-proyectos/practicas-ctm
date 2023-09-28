@@ -209,3 +209,15 @@ export const returnExcelData = async (req: Request, res: Response): Promise<Resp
     return handleHTTP(res, error as CustomError)
   }
 }
+
+export const getInscriptionsDetailsByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
+  const { nombreCompleto } = req.query
+  try {
+    const [inscription] = await connection.query('SELECT i.*, m.nombre_modalidad, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i INNER JOIN modalidades m ON i.modalidad_inscripcion = m.id_modalidad LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" WHERE CONCAT(i.nombre_inscripcion, " ", i.apellido_inscripcion) LIKE ? GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END, i.fecha_creacion DESC', [`%${nombreCompleto as string}%`])
+    if (!Array.isArray(inscription) || inscription?.length === 0) throw new DbErrorNotFound('No se encontró el registro.')
+    return res.status(httpStatus.OK).json({ data: inscription })
+  } catch (error) {
+    console.log(error)
+    return handleHTTP(res, error as CustomError)
+  }
+}

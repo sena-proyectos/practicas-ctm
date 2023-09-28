@@ -219,3 +219,10 @@ export const getModalitiesById = async (id) => {
   return response
 }
 
+// Obtener inscripcion por nombre
+export const GetInscriptionByName = async (data) => {
+  const URL = `${baseUrl}${api}/inscriptionName?nombreCompleto=${data}`
+  const response = await axios.get(URL)
+
+  return response
+}

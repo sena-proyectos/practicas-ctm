@@ -313,7 +313,7 @@ export const Courses = () => {
             ) : (
               <section className='absolute flex justify-center w-full top-32'>
                 <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
-                  <p>¡Oops! No hay ninguna inscripción con este filtro.</p>
+                  <p>¡Oops! No hay ningún curso con este filtro.</p>
                   <BiSad className='text-2xl' />
                 </section>
               </section>
