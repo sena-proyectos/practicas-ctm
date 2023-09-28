@@ -647,6 +647,8 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                 <p className='my-3'>
                   {item.nombre_inscripcion} {item.apellido_inscripcion}
                 </p>
+                <p className='my-3'>Ficha: {item.numero_ficha_inscripcion}</p>
+                <p className='my-3'>{item.nombre_programa_inscripcion}</p>
                 <p className='my-3'>{item.email_inscripcion}</p>
                 <p className='my-3'>
                   {item.tipo_documento_inscripcion}: {item.documento_inscripcion}
