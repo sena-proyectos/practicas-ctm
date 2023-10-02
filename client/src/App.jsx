@@ -8,7 +8,7 @@ import { Bitacoras } from './components/Bitacoras/Bitacoras'
 import { Settings } from './components/Settings/Settings'
 import { Teachers } from './components/Teachers/Teachers'
 import { AssignClass } from './components/Assign-class/AssignClass'
-import { ProtectedRoute } from './ProtectedRoute'
+import { CheckExistingUser, ProtectedRoute } from './ProtectedRoute'
 import { keysRoles } from './import/staticData'
 import { RegisterList } from './components/Register-list/RegisterList'
 import { RegisterStudent } from './components/Register-student/RegisterStudent'
@@ -24,9 +24,11 @@ const App = () => {
   return (
     <>
       <Routes>
-        <Route path='/' element={<User />} />
-        <Route element={<ProtectedRoute idRol={idRol} />}>
+        <Route element={<CheckExistingUser redirectTo='/home' />}>
+          <Route path='/' element={<User />} />
           <Route path='/home' element={<Home />} />
+        </Route>
+        <Route element={<ProtectedRoute idRol={idRol} />}>
           <Route path='/config' element={<Settings />} />
           <Route path='/seguimiento-aprendices' element={<StudentMonitoring />} />
           <Route path='/info-aprendiz/:id' element={<InfoStudent />} />
@@ -54,4 +56,3 @@ const App = () => {
 }
 
 export default App
-

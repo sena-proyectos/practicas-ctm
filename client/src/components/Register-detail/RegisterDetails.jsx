@@ -17,7 +17,7 @@ import { Select } from '../Utils/Select/Select'
 import { colorTextStatus, keysRoles } from '../../import/staticData'
 
 import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById, registerUser, getInfoTeacherByID } from '../../api/httpRequest'
-import { AiOutlineFullscreen } from 'react-icons/ai'
+import { AiFillEdit, AiOutlineFullscreen } from 'react-icons/ai'
 import { checkApprovementData } from '../../validation/approvementValidation'
 import Cookies from 'js-cookie'
 import decode from 'jwt-decode'
@@ -683,7 +683,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                 <label htmlFor='' className='text-sm font-light'>
                   Coordinador Asignado
                 </label>
-                <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} />
+                <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} onChange={(e) => console.log(e)} />
               </div>
               {idRol && (
                 <div className='flex flex-row gap-2 place-self-center'>
@@ -916,8 +916,9 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     try {
       const res = await getAvalById(payload)
       const response = await res.data.data[0]
-      fetchFullNameInstructor(response.responsable_aval)
       setAvalInfoFunciones(response)
+      if (response.responsable_aval === null) return
+      fetchFullNameInstructor(response.responsable_aval)
     } catch (error) {
       throw new Error(error)
     }
@@ -1009,6 +1010,11 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     setSelectedOptionKey(optionKey)
   }
 
+  useEffect(() => {
+    if (selectedOptionKey.length === 0) return
+    setApprovalDetailUser(selectedOptionKey)
+  }, [selectedOptionKey])
+
   const handleSubmitButton = () => {
     if (!selectedApproveButton) return
     if (descriptionRef.current.value.length === 0) {
@@ -1045,13 +1051,14 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     // * Check if it's saving an user or saving an approval
     const names = formData.get('name')
     const lastNames = formData.get('lastname')
-    if (names && lastNames) return saveUserApproval({ names, lastNames })
+    if (names && lastNames) return saveNewUserApproval({ names, lastNames })
 
     const observations = formData.get('functionsApprovalObservations')
     const approveOption = formData.get('approveOption')
     try {
       await checkApprovementData({ observations, approveOption })
       const loadingToast = toast.loading('Enviando...')
+      console.log(selectedApproveButton)
       if (selectedApproveButton === approveOptions.Si) return acceptFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
       if (selectedApproveButton === approveOptions.No) return denyFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
     } catch (err) {
@@ -1079,7 +1086,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
    *
    * @throws {Error} - Lanza un error si no se puede guardar el usuario.
    */
-  const saveUserApproval = async (payload) => {
+  const saveNewUserApproval = async (payload) => {
     const randomNumber = randomNumberGenerator(8)
     const data = {
       nombre: payload.names,
@@ -1103,7 +1110,8 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     const idApprovalDetail = avalInfoFunciones.id_detalle_inscripcion
     try {
       await inscriptionDetailsUpdate(idApprovalDetail, { responsable_aval: id })
-      toast.success('Instructor creado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      toast.success('Instructor guardado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      fetchDataFunciones(avalFunciones)
     } catch (error) {
       toast.error('Error al guardar el instructor', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
     }
@@ -1119,6 +1127,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
    * @name acceptFunctionsApprove
    */
   const acceptFuntionsApprove = async (payload, toastId) => {
+    console.log(payload)
     const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
     const id = payload.avalFunciones
     const cookie = Cookies.get('token')
@@ -1154,7 +1163,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
-      await sendEmail({ to: 'lorenquiceno@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      await sendEmail({ to: 'blandon0207s@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchDataFunciones()
@@ -1177,12 +1186,18 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
             {fullNameInstructor === null ? (
               <Select name='name_instructor' placeholder='Nombre instructor' isSearch hoverColor='hover:bg-teal-600' hoverTextColor='hover:text-white' selectedColor='bg-teal-600 text-white' characters='25' placeholderSearch='Nombre instructor' rounded='rounded-xl' textSearch='text-sm' shadow='shadow-md' textSize='text-sm' options={option} selectedKey={selectedOptionKey} manual onChange={handleSelectChange} />
             ) : (
-              <div className='flex flex-col py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
-                <h3 className='text-sm whitespace-nowrap'>
-                  <span className='font-semibold'>Encargado:</span> {fullNameInstructor}
-                </h3>
-                <h3 className='text-sm whitespace-nowrap'>{avalInfoFunciones.fecha_modificacion}</h3>
-                <h5 className='text-sm whitespace-nowrap'>
+              <div className='flex flex-col flex-wrap items-center py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+                <section className='flex'>
+                  <h3 className='flex flex-row flex-wrap flex-grow-0 text-sm flex-shrink-1'>
+                    <span className='pr-1 font-semibold'>Encargado:</span>
+                    {fullNameInstructor}
+                    <Button type='button' bg='transparent' onClick={() => setFullNameInstructor(null)}>
+                      <AiFillEdit className='text-blue-500' />
+                    </Button>
+                  </h3>
+                </section>
+                <h3 className='text-sm'>{avalInfoFunciones.fecha_modificacion}</h3>
+                <h5 className='text-sm'>
                   Estado: <span className={`font-semibold ${colorTextStatus[avalInfoFunciones.estado_aval]}`}>{avalInfoFunciones.estado_aval}</span>
                 </h5>
               </div>
@@ -1458,7 +1473,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
               </div>
             ))}
           </section>
-          <div className='flex flex-col py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+          <div className='flex flex-col flex-wrap py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
             <h3 className='text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
             <h3 className='text-sm whitespace-nowrap'>{avalInfoDocumentos.fecha_modificacion}</h3>
             <h5 className='text-sm whitespace-nowrap'>
