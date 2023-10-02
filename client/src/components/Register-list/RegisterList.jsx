@@ -7,6 +7,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Swal from 'sweetalert2'
 import Cookies from 'js-cookie'
+import { Pagination } from '@nextui-org/pagination'
 
 // icons
 import { BsPatchCheck, BsHourglass, BsXOctagon } from 'react-icons/bs'
@@ -21,9 +22,8 @@ import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Button } from '../Utils/Button/Button'
-import { Pagination } from '@nextui-org/pagination'
 
-import { InscriptionApprentice, getInscriptions, readExcel } from '../../api/httpRequest'
+import { InscriptionApprentice, getInscriptions, readExcel, GetInscriptionByName } from '../../api/httpRequest'
 import { keysRoles } from '../../import/staticData'
 import { LoadingModal, ModalConfirm } from '../Utils/Modals/Modals'
 
@@ -48,6 +48,45 @@ export const RegisterList = () => {
   const [filtersButtons, setFiltersButtons] = useState({ modalidad: false, estado: false, fecha: false })
   const [activeFilter, setActiveFilter] = useState(false)
   const [inscriptionOriginal, setInscriptionOriginal] = useState([])
+  const [error, setError] = useState(null)
+  const [searchedInscriptions, setSearchedInscriptions] = useState([])
+
+  /**
+   * Función asincrónica para buscar aprendices por nombre de usuario.
+   *
+   * @async
+   * @function
+   * @name searchInscriptions
+   * @param {string} searchTerm - Término de búsqueda para el aprendiz.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * searchInscriptions('John Doe');
+   */
+  const searchInscriptions = async (searchTerm) => {
+    if (searchTerm.trim() === '') {
+      setError(null)
+      setSearchedInscriptions([])
+      return
+    }
+    try {
+      const response = await GetInscriptionByName(searchTerm)
+      const { data } = response.data
+      if (searchTerm.trim() === '') {
+        setError(null)
+        setSearchedInscriptions([])
+      } else {
+        setError(null)
+        setSearchedInscriptions(data)
+      }
+    } catch (error) {
+      const message = error?.response?.data?.error?.info?.message
+
+      setError(message ?? 'Usuario no existente')
+      setSearchedInscriptions([])
+    }
+  }
 
   /**
    * Número de inscripciones por página.
@@ -81,7 +120,7 @@ export const RegisterList = () => {
    * @example
    * const indiceInicio = startIndex;
    */
-  const startIndex = pageNumber * inscriptionsPerPage
+  const startIndex = (pageNumber - 1) * inscriptionsPerPage
   /**
    * Índice de fin de la página actual.
    *
@@ -397,7 +436,7 @@ export const RegisterList = () => {
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
-          <Search filter iconClick={handleFilter} />
+          <Search searchFilter placeholder={'Busca un aprendiz'} icon iconClick={handleFilter} searchStudent={searchInscriptions} />
           <ul className={`absolute right-80 mt-1 top-4 w-36 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
             <li>
               <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('modalidad')}>
@@ -408,6 +447,9 @@ export const RegisterList = () => {
                     <ul className='flex flex-col gap-1 py-2 w-44'>
                       <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('modalidad', 'Pasantías')}>
                         Pasantías
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('modalidad', 'Contrato de aprendizaje')}>
+                        Contrato de aprendizaje
                       </li>
                       <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('modalidad', 'Proyecto Productivo')}>
                         Proyecto Productivo
@@ -467,10 +509,8 @@ export const RegisterList = () => {
           )}
         </header>
         <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto'>
-          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} />
-          <div className='flex justify-center h-[11.5vh] relative bottom-0'>
-            <Pagination onChange={(e) => setPageNumber(e)} total={pageCount} page={pageNumber} initialPage={1} variant='flat' color='secondary' />
-          </div>
+          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
+          <div className='flex justify-center h-[11.5vh] relative bottom-0'>{(searchedInscriptions > 0 || !error || inscriptions > 0) && <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />}</div>
           {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
             <div className='absolute flex flex-row-reverse gap-3 right-12 bottom-16'>
               <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline>
@@ -492,11 +532,12 @@ export const RegisterList = () => {
   )
 }
 
-const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData }) => {
+const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData, searchedInscriptions, error }) => {
   const navigate = useNavigate()
   const handleAvales = (id) => {
     return navigate(`/registro-detalles/${id}`)
   }
+
   return (
     <table className='w-full h-96'>
       <thead className=''>
@@ -510,7 +551,36 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData }) 
         </tr>
       </thead>
       <tbody className='grid grid-rows-6'>
-        {inscriptions.length > 0 ? (
+        {searchedInscriptions.length > 0 && !error ? (
+          searchedInscriptions.slice(startIndex, endIndex).map((x) => (
+            <tr className='grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center' key={x.id_inscripcion}>
+              <td className='max-w-[20ch] font-medium text-center break-words'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</td>
+              <td className='font-light text-center max-w-[10ch] break-words'>{x.nombre_modalidad}</td>
+              <td className='font-light text-center '>{x.fecha_creacion.split('T')[0]}</td>
+              <td className='text-sm font-light text-center '>
+                <div className='w-10 mx-auto rounded-full select-none bg-grayPrimary'>{x.estado_general_inscripcion === 'Rechazado' ? 'N/A' : `${x.avales_aprobados} | 4`}</div>
+              </td>
+              <td className='text-sm font-normal text-center whitespace-nowrap'>
+                <div className={`px-2 py-[1px] ${x.estado_general_inscripcion === 'Aprobado' ? 'bg-green-200 text-emerald-700' : x.estado_general_inscripcion === 'Pendiente' ? 'bg-slate-200 text-slate-600' : x.estado_general_inscripcion === 'Rechazado' ? 'bg-red-200 text-red-700' : ''} rounded-full flex flex-row gap-1 items-center justify-center select-none`}>
+                  <span>{x.estado_general_inscripcion}</span>
+                  <span>{x.estado_general_inscripcion === 'Aprobado' ? <BsPatchCheck /> : x.estado_general_inscripcion === 'Pendiente' ? <BsHourglass /> : x.estado_general_inscripcion === 'Rechazado' ? <BsXOctagon /> : ''}</span>
+                </div>
+              </td>
+              <td className='text-center'>
+                <Button rounded='rounded-full' bg='bg-sky-600' px='px-2' py='py-[1px]' textSize='text-sm' font='font-medium' onClick={() => handleAvales(x.id_inscripcion)}>
+                  Detalles
+                </Button>
+              </td>
+            </tr>
+          ))
+        ) : error ? (
+          <section className='absolute flex justify-center w-fit top-32'>
+            <section className='flex items-center gap-1 mx-auto text-xl font-medium text-red-500'>
+              <p>¡Oops! {error}</p>
+              <BiSad className='text-2xl' />
+            </section>
+          </section>
+        ) : inscriptions.length > 0 ? (
           inscriptions.slice(startIndex, endIndex).map((x) => {
             return (
               <tr className='grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center' key={x.id_inscripcion}>
@@ -537,12 +607,12 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData }) 
         ) : loadingData ? (
           <LoadingTableList number={6} />
         ) : (
-          <tr className='grid h-full mt-10 place-content-center'>
-            <th scope='row' className='flex items-center gap-1 text-xl text-red-500'>
+          <section className='absolute flex justify-center top-32'>
+            <section className='flex items-center gap-1 mx-auto text-xl font-medium text-red-500'>
               <p>¡Oops! No hay ninguna inscripción con este filtro.</p>
               <BiSad className='text-2xl' />
-            </th>
-          </tr>
+            </section>
+          </section>
         )}
       </tbody>
     </table>

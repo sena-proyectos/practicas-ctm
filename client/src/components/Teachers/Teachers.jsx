@@ -11,12 +11,51 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { colorsOddRow } from '../../import/staticData'
-import { getTeachers } from '../../api/httpRequest'
+import { getTeachers, GetTeacherByName } from '../../api/httpRequest'
 
 export const Teachers = () => {
   const [pageNumber, setPageNumber] = useState(1)
   const [loading, setLoading] = useState(true)
   const [teacher, setTeacher] = useState([])
+  const [searchedTeachers, setSearchedTeachers] = useState([])
+  const [error, setError] = useState(null)
+
+  /**
+   * Función asincrónica para buscar aprendices por nombre de usuario.
+   *
+   * @async
+   * @function
+   * @name searchTeachers
+   * @param {string} searchTerm - Término de búsqueda para el aprendiz.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * searchTeachers('John Doe');
+   */
+  const searchTeachers = async (searchTerm) => {
+    if (searchTerm.trim() === '') {
+      setError(null)
+      setSearchedTeachers([])
+      return
+    }
+    try {
+      const response = await GetTeacherByName(searchTerm)
+      const { data } = response.data
+      if (searchTerm.trim() === '') {
+        setError(null)
+        setSearchedTeachers([])
+      } else {
+        setError(null)
+        setSearchedTeachers(data)
+      }
+    } catch (error) {
+      const message = error?.response?.data?.error?.info?.message
+
+      setError(message ?? 'Usuario no existente')
+      setSearchedTeachers([])
+    }
+  }
 
   /**
    * Función asincrónica para obtener la lista de instructores.
@@ -90,19 +129,19 @@ export const Teachers = () => {
    * @example
    * const indiceInicio = startIndex;
    */
-  const startIndex = pageNumber * instructoresPerPage
+  const startIndex = (pageNumber - 1) * instructoresPerPage
   /**
    * Índice de fin de la lista de instructores a mostrar en la página actual.
-  *
+   *
    * @constant
    * @name endIndex
    * @type {number}
-  *
-  * @example
-  * const indiceFin = endIndex;
-  */
- const endIndex = startIndex + instructoresPerPage
- console.log(startIndex, endIndex)
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
+  const endIndex = startIndex + instructoresPerPage
+  console.log(startIndex, endIndex)
 
   const navigate = useNavigate()
 
@@ -130,37 +169,63 @@ export const Teachers = () => {
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
-          <Search searchFilter placeholder={'Busca un instructor'} />
+          <Search searchFilter placeholder={'Busca un instructor'} searchStudent={searchTeachers} />
         </header>
         <section className='flex flex-col h-full gap-3'>
-          <section className='grid grid-cols-1 gap-x-3 gap-y-4 md:grid-cols-4 px-8 md:px-12 pt-6 md:gap-y-2 md:gap-x-8 h-fit md:h-[85%] st1:grid-cols-3 st1:gap-y-4 st2:gap-y-4 st2:grid-cols-2'>
-            {loading ? (
-              <>
-                <SkeletonLoading />
-              </>
-            ) : (
-              allColors.slice(startIndex, endIndex).map((color, index) =>
-                teacher[startIndex + index] ? (
+          {searchedTeachers.length > 0 && !error ? (
+            <section className='grid grid-cols-1 gap-x-3 gap-y-4 md:grid-cols-4 px-8 md:px-12 pt-6 md:gap-y-2 md:gap-x-8 h-fit md:h-[85%] st1:grid-cols-3 st1:gap-y-4 st2:gap-y-4 st2:grid-cols-2'>
+              {allColors.slice(startIndex, endIndex).map((color, index) =>
+                searchedTeachers[startIndex + index] ? (
                   <div className='rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[9rem] bg-white' key={index} {...color}>
                     <div className='flex flex-col w-4/5 gap-2 mx-auto my-auto'>
-                      <h6 className='font-medium text-center text-[0.9rem]'>{`${teacher[startIndex + index].nombres_usuario} ${teacher[startIndex + index].apellidos_usuario}`}</h6>
+                      <h6 className='font-medium text-center text-[0.9rem]'>{`${searchedTeachers[startIndex + index].nombres_usuario} ${searchedTeachers[startIndex + index].apellidos_usuario}`}</h6>
                       <hr className={`font-bold ${color.hrcolor} border-1`} />
-                      <p className='text-[0.8rem] font-light text-center'>{teacher[startIndex + index].id_rol === 3 ? 'Instructor Seguimiento' : teacher[startIndex + index].id_rol === 4 ? 'Instructor Líder' : ''}</p>
+                      <p className='text-[0.8rem] font-light text-center'>{searchedTeachers[startIndex + index].id_rol === 3 && 'Instructor Seguimiento'}</p>
                     </div>
                     <div className={`w-full h-full rounded-r-[2rem] ${color.sidecolor}`}>
                       <div className={`w-full h-[3rem] rounded-tr-[2rem] text-white text-xl ${color.linkcolor}`}>
-                        <button className='w-full h-full' onClick={() => handleCourse(teacher[startIndex + index].id_usuario)}>
+                        <button className='w-full h-full' onClick={() => handleCourse(searchedTeachers[startIndex + index].id_usuario)}>
                           <FaAngleRight className='h-full py-3 mx-auto' />
                         </button>
                       </div>
                     </div>
                   </div>
                 ) : null
-              )
-            )}
-          </section>
+              )}
+            </section>
+          ) : (
+            <section className='grid grid-cols-1 gap-x-3 gap-y-4 md:grid-cols-4 px-8 md:px-12 pt-6 md:gap-y-2 md:gap-x-8 h-fit md:h-[85%] st1:grid-cols-3 st1:gap-y-4 st2:gap-y-4 st2:grid-cols-2'>
+              {loading ? (
+                <>
+                  <SkeletonLoading />
+                </>
+              ) : error ? (
+                <h2 className='text-red-500'>{error}</h2>
+              ) : (
+                allColors.slice(startIndex, endIndex).map((color, index) =>
+                  teacher[startIndex + index] ? (
+                    <div className='rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[9rem] bg-white' key={index} {...color}>
+                      <div className='flex flex-col w-4/5 gap-2 mx-auto my-auto'>
+                        <h6 className='font-medium text-center text-[0.9rem]'>{`${teacher[startIndex + index].nombres_usuario} ${teacher[startIndex + index].apellidos_usuario}`}</h6>
+                        <hr className={`font-bold ${color.hrcolor} border-1`} />
+                        <p className='text-[0.8rem] font-light text-center'>{teacher[startIndex + index].id_rol === 3 && 'Instructor Seguimiento'}</p>
+                      </div>
+                      <div className={`w-full h-full rounded-r-[2rem] ${color.sidecolor}`}>
+                        <div className={`w-full h-[3rem] rounded-tr-[2rem] text-white text-xl ${color.linkcolor}`}>
+                          <button className='w-full h-full' onClick={() => handleCourse(teacher[startIndex + index].id_usuario)}>
+                            <FaAngleRight className='h-full py-3 mx-auto' />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null
+                )
+              )}
+            </section>
+          )}
+
           <div className='flex justify-center h-[13vh] relative st1:bottom-[-1.5rem] st2:bottom-[-3rem] bottom-[-4rem] md:bottom-0'>
-          <Pagination onChange={(e) => setPageNumber(e)} total={pageCount} page={pageNumber} initialPage={1} variant='flat' color='secondary' />
+            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
           </div>
         </section>
         <Footer />

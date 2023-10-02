@@ -13,8 +13,7 @@ import { LuCalendarCheck2, LuCalendarX2 } from 'react-icons/lu'
 export const rolesNames = {
   1: 'Líder prácticas',
   2: 'Coordinador',
-  3: 'Instructor de Seguimiento',
-  4: 'Instructor Líder'
+  3: 'Instructor de Seguimiento'
 }
 
 export const colorTextStatus = {
@@ -46,52 +45,43 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-primary',
       sombra: 'shadow-shadowPrimary',
-      link: '/aprendices'
+      link: '/seguimiento-aprendices'
     },
     {
-      title: 'Bitácoras incompletas',
+      title: 'Bitácoras',
       titleColor: 'black',
-      description: 'Podrás ver el listado de bitácoras que actualmente se encuentran incompletas.',
+      description: 'Podrás ver el listado de bitácoras.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
       sombra: 'shadow-shadowSalmon',
       link: '/bitacoras'
     },
     {
-      title: 'Bitácoras completas',
+      title: 'Registro',
       titleColor: 'black',
-      description: 'Podrás ver el listado de bitácoras que actualmente se encuentran completas.',
-      buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-seventh',
-      sombra: 'shadow-shadowSeventh',
-      link: '/bitacoras'
-    },
-    {
-      title: 'Aprobaciones',
-      titleColor: 'black',
-      description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
+      description: 'Podrás ver los aprendices que registros para la modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-[#385C57]',
       sombra: 'shadow-shadowGray',
-      link: '/aprov'
+      link: '/registros'
     },
     {
       title: 'Visitas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
+      description: 'Podrás ver el listado de las visitas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadow-shadowThird',
       link: '/visitas'
     },
     {
-      title: 'Inscribir un aprendiz',
+      title: 'Registrar un aprendiz',
       titleColor: 'black',
       description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-aqua',
       sombra: 'shadow-shadowAqua',
-      link: '/inscribir-aprendiz'
+      link: '/registrar-aprendiz'
     }
   ],
   2: [
@@ -102,52 +92,43 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-primary',
       sombra: 'shadow-shadowPrimary',
-      link: '/aprendices'
+      link: '/seguimiento-aprendices'
     },
     {
-      title: 'Bitácoras incompletas',
+      title: 'Bitácoras',
       titleColor: 'black',
-      description: 'Podrás ver el listado de bitácoras que actualmente se encuentran incompletas.',
+      description: 'Podrás ver el listado de bitácoras.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
       sombra: 'shadow-shadowSalmon',
       link: '/bitacoras'
     },
     {
-      title: 'Bitácoras completas',
+      title: 'Registro',
       titleColor: 'black',
-      description: 'Podrás ver el listado de bitácoras que actualmente se encuentran completas.',
-      buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-seventh',
-      sombra: 'shadow-shadowSeventh',
-      link: '/bitacoras'
-    },
-    {
-      title: 'Aprobaciones',
-      titleColor: 'black',
-      description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
+      description: 'Podrás ver los aprendices que registros para la modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-[#385C57]',
       sombra: 'shadow-shadowGray',
-      link: '/aprov'
+      link: '/registros'
     },
     {
       title: 'Visitas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
+      description: 'Podrás ver el listado de las visitas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadow-shadowThird',
       link: '/visitas'
     },
     {
-      title: 'Inscribir un aprendiz',
+      title: 'Registrar un aprendiz',
       titleColor: 'black',
       description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-aqua',
       sombra: 'shadow-shadowAqua',
-      link: '/inscribir-aprendiz'
+      link: '/registrar-aprendiz'
     }
   ],
   3: [
@@ -158,72 +139,43 @@ export const rolesCard = {
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-primary',
       sombra: 'shadow-shadowPrimary',
-      link: '/aprendices'
+      link: '/seguimiento-aprendices'
     },
     {
-      title: 'Bitácoras incompletas',
+      title: 'Bitácoras',
       titleColor: 'black',
-      description: 'Podrás ver el listado de bitácoras que actualmente se encuentran incompletas.',
+      description: 'Podrás ver el listado de bitácoras.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
       sombra: 'shadow-shadowSalmon',
       link: '/bitacoras'
     },
     {
-      title: 'Bitácoras completas',
+      title: 'Registro',
       titleColor: 'black',
-      description: 'Podrás ver el listado de bitácoras que actualmente se encuentran completas.',
-      buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-seventh',
-      sombra: 'shadow-shadowSeventh',
-      link: '/bitacoras'
-    },
-    {
-      title: 'Aprobaciones',
-      titleColor: 'black',
-      description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
+      description: 'Podrás ver los aprendices que registros para la modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-[#385C57]',
       sombra: 'shadow-shadowGray',
-      link: '/aprov'
+      link: '/registros'
     },
     {
       title: 'Visitas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de las visitas que se han realizado y las que se encuentran pendientes.',
+      description: 'Podrás ver el listado de las visitas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadow-shadowThird',
       link: '/visitas'
-    }
-  ],
-  4: [
+    },
     {
-      title: 'Listado de aprendices',
+      title: 'Registrar un aprendiz',
       titleColor: 'black',
-      description: 'Podrás ver el listado de aprendices que actualmente se encuentran en prácticas.',
+      description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-aqua',
       sombra: 'shadow-shadowAqua',
-      link: '/aprendices'
-    },
-    {
-      title: 'Aprobaciones',
-      titleColor: 'black',
-      description: 'Podrás ver los aprendices que estan esperando aprobación para la modalidad de prácticas.',
-      buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-seventh',
-      sombra: 'shadow-shadowSeventh',
-      link: '/aprov'
-    },
-    {
-      title: 'Fichas',
-      titleColor: 'black',
-      description: 'Podrás ver el listado de fichas que tienes asignadas.',
-      buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-salmon',
-      sombra: 'shadow-shadowSalmon',
-      link: '/fichas'
+      link: '/registrar-aprendiz'
     }
   ]
 }
@@ -535,7 +487,6 @@ export const colorIcon = {
   '/seguimiento-aprendices': 'text-third',
   '/bitacoras': 'text-seventh',
   '/registros': 'text-lima',
-  '/aprov': 'text-secondary',
   '/instructores': 'text-rosa',
   '/fichas': 'text-coffee',
   // '/fichas-instructor/:id': 'text-coffee',

@@ -7,6 +7,7 @@ import { LuBookPlus } from 'react-icons/lu'
 import { PiCaretRightBold } from 'react-icons/pi'
 import { TiDelete } from 'react-icons/ti'
 import { BiSad } from 'react-icons/bi'
+import { Pagination } from '@nextui-org/pagination'
 
 // Componentes
 import { Footer } from '../Footer/Footer'
@@ -14,11 +15,10 @@ import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
-import { Pagination } from '../Utils/Pagination/Pagination'
 import { getClass } from '../../api/httpRequest'
 
 export const Courses = () => {
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
   const [coursesOriginal, setCoursesOriginal] = useState([])
@@ -100,7 +100,7 @@ export const Courses = () => {
    * @example
    * const indiceInicio = startIndex;
    */
-  const startIndex = pageNumber * coursesPerPage
+  const startIndex = (pageNumber - 1) * coursesPerPage
   /**
    * Índice de fin de la lista de cursos a mostrar en la página actual.
    *
@@ -313,14 +313,14 @@ export const Courses = () => {
             ) : (
               <section className='absolute flex justify-center w-full top-32'>
                 <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
-                  <p>¡Oops! No hay ninguna inscripción con este filtro.</p>
+                  <p>¡Oops! No hay ningún curso con este filtro.</p>
                   <BiSad className='text-2xl' />
                 </section>
               </section>
             )}
           </section>
           <div className='flex justify-center h-[13vh] relative bottom-0'>
-            <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
           </div>
           <div className='absolute right-12 bottom-20'>
             <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
