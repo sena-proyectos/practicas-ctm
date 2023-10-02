@@ -141,7 +141,6 @@ export const Teachers = () => {
    * const indiceFin = endIndex;
    */
   const endIndex = startIndex + instructoresPerPage
-  console.log(startIndex, endIndex)
 
   const navigate = useNavigate()
 

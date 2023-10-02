@@ -226,3 +226,13 @@ export const GetInscriptionByName = async (data) => {
 
   return response
 }
+
+export const registerUser = async (payload) => {
+  const URL = `${baseUrl}${api}/register`
+  return await axios.post(URL, payload)
+}
+
+export const getInfoTeacherByID = async (id) => {
+  const URL = `${baseUrl}${api}/teacher/${id}`
+  return await axios.get(URL)
+}
