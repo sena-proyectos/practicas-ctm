@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+import { Pagination } from '@nextui-org/pagination'
 
 // Icons
 import { FaAngleRight } from 'react-icons/fa'
@@ -9,12 +10,11 @@ import { FaAngleRight } from 'react-icons/fa'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
-import { Pagination } from '../Utils/Pagination/Pagination'
 import { colorsOddRow } from '../../import/staticData'
 import { getTeachers } from '../../api/httpRequest'
 
 export const Teachers = () => {
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
   const [loading, setLoading] = useState(true)
   const [teacher, setTeacher] = useState([])
 
@@ -93,15 +93,16 @@ export const Teachers = () => {
   const startIndex = pageNumber * instructoresPerPage
   /**
    * Índice de fin de la lista de instructores a mostrar en la página actual.
-   *
+  *
    * @constant
    * @name endIndex
    * @type {number}
-   *
-   * @example
-   * const indiceFin = endIndex;
-   */
-  const endIndex = startIndex + instructoresPerPage
+  *
+  * @example
+  * const indiceFin = endIndex;
+  */
+ const endIndex = startIndex + instructoresPerPage
+ console.log(startIndex, endIndex)
 
   const navigate = useNavigate()
 
@@ -159,7 +160,7 @@ export const Teachers = () => {
             )}
           </section>
           <div className='flex justify-center h-[13vh] relative st1:bottom-[-1.5rem] st2:bottom-[-3rem] bottom-[-4rem] md:bottom-0'>
-            <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+          <Pagination onChange={(e) => setPageNumber(e)} total={pageCount} page={pageNumber} initialPage={1} variant='flat' color='secondary' />
           </div>
         </section>
         <Footer />

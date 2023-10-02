@@ -10,7 +10,7 @@ import { FilterModal, InfoStudentModal } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
 // import { filter } from '../../import/staticData'
 // import { Pagination } from '../Utils/Pagination/Pagination'
-import { Pagination, PaginationItem, PaginationCursor } from '@nextui-org/pagination'
+import { Pagination } from '@nextui-org/pagination'
 import { GetUserByName, detailInfoStudents, GetStudentsDetailById } from '../../api/httpRequest'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
@@ -24,7 +24,7 @@ export const StudentMonitoring = () => {
   const [infoStudent, setInfoStudent] = useState(false)
   const [userInfoById, setInfoUserById] = useState({})
   const [loading, setLoading] = useState(true)
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
   const [dates, setDates] = useState({})
 
   /**
@@ -209,7 +209,7 @@ export const StudentMonitoring = () => {
    * @example
    * const indiceInicio = startIndex;
    */
-  const startIndex = pageNumber * studentsPerPage
+  const startIndex = 1
   /**
    * Índice de fin de la lista de aprendices a mostrar en la página actual.
    *
@@ -299,7 +299,7 @@ export const StudentMonitoring = () => {
             </div>
           )}
           <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-[5.5rem]'>
-            <Pagination showControls total={pageCount} initialPage={1} variant='flat' color='secondary' />
+            <Pagination onChange={(e) => setPageNumber(e)} total={pageCount} page={pageNumber} initialPage={1} variant='flat' color='secondary' />
           </div>
           <Footer />
         </section>

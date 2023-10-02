@@ -21,7 +21,7 @@ import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Button } from '../Utils/Button/Button'
-import { Pagination } from '../Utils/Pagination/Pagination'
+import { Pagination } from '@nextui-org/pagination'
 
 import { InscriptionApprentice, getInscriptions, readExcel } from '../../api/httpRequest'
 import { keysRoles } from '../../import/staticData'
@@ -37,7 +37,7 @@ export const modalOptionList = {
 export const RegisterList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [inscriptions, setInscriptions] = useState([])
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
   const [fileName, setFileName] = useState(null)
   const [modalOption, setModalOption] = useState(modalOptionList.confirmModal)
   const [username, setUsername] = useState(null)
@@ -469,7 +469,7 @@ export const RegisterList = () => {
         <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto'>
           <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} />
           <div className='flex justify-center h-[11.5vh] relative bottom-0'>
-            <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+            <Pagination onChange={(e) => setPageNumber(e)} total={pageCount} page={pageNumber} initialPage={1} variant='flat' color='secondary' />
           </div>
           {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
             <div className='absolute flex flex-row-reverse gap-3 right-12 bottom-16'>
