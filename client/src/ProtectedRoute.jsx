@@ -1,12 +1,14 @@
 import Cookies from 'js-cookie'
 import { useEffect } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 const ProtectedRoute = ({ idRol, children, redirectTo = '/' }) => {
   const navigate = useNavigate()
+  if (idRol !== false) {
+    idRol = Number(localStorage.getItem('idRol'))
+  }
 
   useEffect(() => {
-    console.log(!idRol, idRol)
     if (!idRol) {
       return navigate(redirectTo)
     }
@@ -19,11 +21,13 @@ const CheckExistingUser = ({ children, redirectTo = '/home' }) => {
   const navigate = useNavigate()
   const idRol = Number(localStorage.getItem('idRol'))
   const cookie = Cookies.get('token')
+  const location = useLocation()
+  let locationKeyHome
+  if (location.pathname === '/home') {
+    locationKeyHome = location.key
+  }
   useEffect(() => {
-    if (!cookie && !idRol) {
-      return navigate('/', { replace: true })
-    }
-    if (cookie && idRol) {
+    if ((cookie && idRol && location.pathname === '/' && location.key === locationKeyHome) === true) {
       return navigate(redirectTo, { replace: true })
     }
   }, [cookie, idRol, navigate])
