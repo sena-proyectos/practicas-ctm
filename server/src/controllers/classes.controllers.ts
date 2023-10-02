@@ -129,10 +129,11 @@ export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Res
   const { numero_ficha } = req.query
   const classNumber = Number(numero_ficha)
   try {
-    const [classQuery] = await connection.query('SELECT * FROM fichas WHERE numero_ficha = ?', [classNumber])
+    const [classQuery] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica,niveles_formacion.nivel_formacion, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas INNER JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion  LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario WHERE fichas.numero_ficha = ?', [classNumber])
     if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se encontró la ficha.', errorCodes.ERROR_GET_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
+    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }

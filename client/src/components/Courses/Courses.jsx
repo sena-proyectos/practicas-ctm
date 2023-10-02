@@ -15,7 +15,7 @@ import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
-import { getClass } from '../../api/httpRequest'
+import { getClass, GetClassByNumber } from '../../api/httpRequest'
 
 export const Courses = () => {
   const [pageNumber, setPageNumber] = useState(1)
@@ -25,6 +25,45 @@ export const Courses = () => {
   const [showFiltros, setShowFiltros] = useState(false)
   const [filtersButtons, setFiltersButtons] = useState({ etapa: false, nivel: false, finLectiva: false, inicioPractica: false })
   const [activeFilter, setActiveFilter] = useState(false)
+  const [error, setError] = useState(null)
+  const [searchedCourses, setSearchedCourses] = useState([])
+
+  /**
+   * Función asincrónica para buscar fichas por numero de ficha.
+   *
+   * @async
+   * @function
+   * @name searchCourses
+   * @param {string} searchTerm - Término de búsqueda para el aprendiz.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * searchCourses('John Doe');
+   */
+  const searchCourses = async (searchTerm) => {
+    if (searchTerm.trim() === '') {
+      setError(null)
+      setSearchedCourses([])
+      return
+    }
+    try {
+      const response = await GetClassByNumber(searchTerm)
+      const { data } = response.data
+      if (searchTerm.trim() === '') {
+        setError(null)
+        setSearchedCourses([])
+      } else {
+        setError(null)
+        setSearchedCourses(data)
+      }
+    } catch (error) {
+      const message = error?.response?.data?.error?.info?.message
+
+      setError(message ?? 'Usuario no existente')
+      setSearchedCourses([])
+    }
+  }
 
   /**
    * Función para manejar la visualización de los filtros.
@@ -229,7 +268,7 @@ export const Courses = () => {
       <Siderbar />
       <section className='relative grid flex-auto grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
-          <Search searchFilter placeholder={'Busca una ficha'} icon iconClick={handleFilter} />
+          <Search searchStudent={searchCourses} searchFilter placeholder={'Busca una ficha'} icon iconClick={handleFilter} />
           <ul className={`absolute right-48  mt-1 top-4 w-40 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
             <li>
               <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('etapa')}>
@@ -304,12 +343,23 @@ export const Courses = () => {
         </header>
         <section className='flex flex-col h-full gap-3'>
           <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>
-            {courses.length > 0 ? (
+            {searchedCourses.length > 0 && !error ? (
+              searchedCourses.slice(startIndex, endIndex).map((course, i) => {
+                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva.split('T')[0]} item4={course.fecha_inicio_practica.split('T')[0]} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
+              })
+            ) : courses.length > 0 ? (
               courses.slice(startIndex, endIndex).map((course, i) => {
                 return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva.split('T')[0]} item4={course.fecha_inicio_practica.split('T')[0]} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
               })
             ) : loading ? (
               <SkeletonLoading number={6} />
+            ) : error ? (
+              <section className='absolute flex justify-center w-full top-32'>
+                <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
+                  <p>¡Oops! No hay ningún curso con este número.</p>
+                  <BiSad className='text-2xl' />
+                </section>
+              </section>
             ) : (
               <section className='absolute flex justify-center w-full top-32'>
                 <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
