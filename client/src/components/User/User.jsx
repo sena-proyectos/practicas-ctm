@@ -23,17 +23,10 @@ const User = () => {
    * @returns {void}
    *
    * @example
-   * earlyReturn();
    */
-  const earlyReturn = async () => {
-    if (idRol && cookie) goto('/home', { replace: true })
-  }
-
   useEffect(() => {
-    earlyReturn()
+    if (idRol && cookie) goto('/home', { replace: true })
   }, [])
-
-  if (idRol && cookie) return null
 
   const divRef = useRef(null)
 
