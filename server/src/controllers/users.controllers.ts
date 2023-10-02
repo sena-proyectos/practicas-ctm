@@ -9,6 +9,7 @@ import { comparePassword } from '../middlewares/users.middlewares.js'
 import { type RowDataPacket } from 'mysql2/promise'
 import { type CustomError, DbErrorNotFound, DataNotValid } from '../errors/customErrors.js'
 import { errorCodes } from '../models/errorCodes.enums.js'
+import { ResultSetHeader } from 'mysql2'
 
 export const getUsers = async (_req: Request, res: Response): Promise<Response> => {
   try {
@@ -67,7 +68,7 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 OR id_rol = 4 AND id_usuario = ?', [idNumber])
+    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_usuario = ?', [idNumber])
     if (!Array.isArray(teacher) || teacher.length === 0) throw new DbErrorNotFound('No se encontró el profesor.', errorCodes.ERROR_GET_TEACHER)
     return res.status(httpStatus.OK).json({ data: teacher })
   } catch (error) {
@@ -91,9 +92,9 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
   try {
     const hashPassword: string = await bycrypt.hash(contrasena, 10)
 
-    await connection.query('INSERT INTO usuarios (nombres_usuario, apellidos_usuario, tipo_documento_usuario, numero_documento_usuario, email_usuario, numero_celular_usuario, id_rol, contrasena_usuario) VALUE (?, ?, IFNULL(?, "cc"), ?, ?, ?, IFNULL(?, 3), ?)', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword])
+    const [query] = await connection.query<ResultSetHeader>('INSERT INTO usuarios (nombres_usuario, apellidos_usuario, tipo_documento_usuario, numero_documento_usuario, email_usuario, numero_celular_usuario, id_rol, contrasena_usuario) VALUE (?, ?, IFNULL(?, "cc"), ?, ?, ?, IFNULL(?, 3), ?)', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword])
 
-    return res.status(httpStatus.CREATED).json({ message: 'Usuario creado exitosamente.' })
+    return res.status(httpStatus.CREATED).json({ message: 'Usuario creado exitosamente.', id: query.insertId })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }

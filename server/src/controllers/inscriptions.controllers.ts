@@ -217,7 +217,6 @@ export const getInscriptionsDetailsByName: RequestHandler<{ nombreCompleto: stri
     if (!Array.isArray(inscription) || inscription?.length === 0) throw new DbErrorNotFound('No se encontró el registro.')
     return res.status(httpStatus.OK).json({ data: inscription })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
