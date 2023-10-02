@@ -67,7 +67,7 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, icon = fa
             <Button bg={'bg-transparent'} rounded='rounded-md' font='font-semibold' textSize='text-lg' px='px-3' textColor='text-black' className='absolute right-[6px]'>
               <IoSearchOutline />
             </Button>
-            <input type='text' placeholder={placeholder} className='flex-1 py-1 bg-transparent outline-none w-fit rounded-3xl focus:placeholder-transparent' ref={search} name='nombreCompleto' autoComplete='off' />
+            <input type='text' placeholder={placeholder} className='flex-1 py-1 bg-transparent outline-none w-fit focus:placeholder-transparent' ref={search} name='nombreCompleto' autoComplete='off' />
             {icon && (
               <article className='absolute right-[8px] w-fit flex items-center'>
                 <Button bg={'bg-transparent'} px={'px-3'} textColor='text-black' onClick={iconClick}>
