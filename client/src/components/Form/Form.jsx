@@ -3,13 +3,14 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom'
 
 import { Button, LoadingButton } from '../Utils/Button/Button'
-import { Login } from '../../api/httpRequest'
+import { Login, registerUser } from '../../api/httpRequest'
+import { randomNumberGenerator } from '../Utils/randomNumberGenerator'
 
 import Cookie from 'js-cookie'
 import Swal from 'sweetalert2'
 import jwtDecode from 'jwt-decode'
 
-const Form = ({ inputs }) => {
+const Form = ({ inputs, isLoginForm }) => {
   const navigate = useNavigate()
   const [loadingBtn, setLoadingBtn] = useState(false)
 
@@ -93,7 +94,7 @@ const Form = ({ inputs }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     const dataToSend = flattenObject(formValuesRef.current)
-    sendData(dataToSend)
+    isLoginForm ? sendData(dataToSend) : sendRegisterData(dataToSend)
   }
 
   /**
@@ -143,6 +144,29 @@ const Form = ({ inputs }) => {
       localStorage.setItem('idRol', id_rol)
 
       navigate('/home')
+    } catch (error) {
+      setLoadingBtn(false)
+      const message = error?.response?.data?.error?.info?.message
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: message ?? 'Ha ocurrido un error, intentelo de nuevo'
+      })
+    }
+  }
+  const sendRegisterData = async (data) => {
+    const num_celular = randomNumberGenerator(8)
+    data.num_celular = num_celular.toString()
+    setLoadingBtn(true)
+    try {
+      await registerUser(data)
+      Swal.fire({
+        icon: 'success',
+        title: '!Registro exitoso¡',
+        text: 'Usuario creado correctamente'
+      })
+      setLoadingBtn(false)
+      // navigate('/')
     } catch (error) {
       setLoadingBtn(false)
       const message = error?.response?.data?.error?.info?.message
