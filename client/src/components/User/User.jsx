@@ -5,14 +5,8 @@ import { BiLockAlt } from 'react-icons/bi'
 import { IoPersonOutline } from 'react-icons/io5'
 
 import { Form } from '../Form/Form'
-import { useNavigate } from 'react-router-dom'
-import Cookies from 'js-cookie'
 
 const User = () => {
-  const goto = useNavigate()
-  const idRol = Number(localStorage.getItem('idRol'))
-  const cookie = Cookies.get('token')
-
   /**
    * Función asincrónica para redirigir al usuario a la página de inicio si ya está autenticado.
    *
@@ -24,9 +18,6 @@ const User = () => {
    *
    * @example
    */
-  useEffect(() => {
-    if (idRol && cookie) goto('/home', { replace: true })
-  }, [])
 
   const divRef = useRef(null)
 
