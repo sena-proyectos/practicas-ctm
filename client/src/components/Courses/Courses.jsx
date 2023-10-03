@@ -243,6 +243,100 @@ export const Courses = () => {
       const filterMap = coursesOriginal.filter((course) => course.nivel_formacion === filter)
       setCourses(filterMap)
     }
+    if (filterType === 'finLectiva') {
+      let filterMap = []
+
+      if (filter === 'Hoy') {
+        const today = new Date()
+        filterMap = coursesOriginal.filter((course) => {
+          const courseDate = new Date(course.fecha_fin_lectiva)
+          return courseDate.toDateString() === today.toDateString()
+        })
+      } else if (filter === 'Esta Semana') {
+        const today = new Date()
+        const nextWeek = new Date(today)
+        nextWeek.setDate(today.getDate() + 7)
+        filterMap = coursesOriginal.filter((course) => {
+          const courseDate = new Date(course.fecha_fin_lectiva)
+          return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
+        })
+      } else if (filter === 'Próxima Semana') {
+        const today = new Date()
+        const nextWeek = new Date(today)
+        nextWeek.setDate(today.getDate() + 7)
+        const weekAfterNext = new Date(nextWeek)
+        weekAfterNext.setDate(nextWeek.getDate() + 7)
+        filterMap = coursesOriginal.filter((course) => {
+          const courseDate = new Date(course.fecha_fin_lectiva)
+          return courseDate >= nextWeek && courseDate <= weekAfterNext
+        })
+      } else if (filter === 'Este Mes') {
+        const today = new Date()
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+        filterMap = coursesOriginal.filter((course) => {
+          const courseDate = new Date(course.fecha_fin_lectiva)
+          return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
+        })
+      } else if (filter === 'Próximo Mes') {
+        const today = new Date()
+        const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+        const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0)
+        filterMap = coursesOriginal.filter((course) => {
+          const courseDate = new Date(course.fecha_fin_lectiva)
+          return courseDate >= nextMonth && courseDate <= endOfMonth
+        })
+      }
+
+      setCourses(filterMap)
+    }
+    if (filterType === 'inicioPractica') {
+      let filterMap = []
+
+      if (filter === 'Hoy') {
+        const today = new Date()
+        filterMap = coursesOriginal.filter((course) => {
+          const courseDate = new Date(course.fecha_inicio_practica)
+          return courseDate.toDateString() === today.toDateString()
+        })
+      } else if (filter === 'Esta Semana') {
+        const today = new Date()
+        const nextWeek = new Date(today)
+        nextWeek.setDate(today.getDate() + 7)
+        filterMap = coursesOriginal.filter((course) => {
+          const courseDate = new Date(course.fecha_inicio_practica)
+          return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
+        })
+      } else if (filter === 'Próxima Semana') {
+        const today = new Date()
+        const nextWeek = new Date(today)
+        nextWeek.setDate(today.getDate() + 7)
+        const weekAfterNext = new Date(nextWeek)
+        weekAfterNext.setDate(nextWeek.getDate() + 7)
+        filterMap = coursesOriginal.filter((course) => {
+          const courseDate = new Date(course.fecha_inicio_practica)
+          return courseDate >= nextWeek && courseDate <= weekAfterNext
+        })
+      } else if (filter === 'Este Mes') {
+        const today = new Date()
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+        filterMap = coursesOriginal.filter((course) => {
+          const courseDate = new Date(course.fecha_inicio_practica)
+          return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
+        })
+      } else if (filter === 'Próximo Mes') {
+        const today = new Date()
+        const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+        const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0)
+        filterMap = coursesOriginal.filter((course) => {
+          const courseDate = new Date(course.fecha_inicio_practica)
+          return courseDate >= nextMonth && courseDate <= endOfMonth
+        })
+      }
+
+      setCourses(filterMap)
+    }
     disableShowFiltros()
     setActiveFilter(true)
   }
@@ -311,23 +405,51 @@ export const Courses = () => {
                 Fin Lectiva
                 <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.finLectiva ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
                 {filtersButtons.finLectiva && (
-                  <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg h-10 flex items-center'>
-                    <form action=''>
-                      <input type='date' className='w-full py-1 pl-2 pr-3 text-sm text-black focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-400' />
-                    </form>
+                  <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
+                    <ul className='flex flex-col w-40 gap-1 py-2'>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('finLectiva', 'Hoy')}>
+                        Hoy
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('finLectiva', 'Esta Semana')}>
+                        Esta Semana
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('finLectiva', 'Próxima Semana')}>
+                        Próxima Semana
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('finLectiva', 'Este Mes')}>
+                        Este Mes
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('finLectiva', 'Próximo Mes')}>
+                        Próximo Mes
+                      </li>
+                    </ul>
                   </section>
                 )}
               </button>
             </li>
             <li>
               <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('inicioPractica')}>
-                Inicio Práctica
+                Inicio Productiva
                 <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.inicioPractica ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
                 {filtersButtons.inicioPractica && (
-                  <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg h-10 flex items-center'>
-                    <form action=''>
-                      <input type='date' className='w-full py-1 pl-2 pr-3 text-sm text-black focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-400' />
-                    </form>
+                  <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
+                    <ul className='flex flex-col w-40 gap-1 py-2'>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('inicioPractica', 'Hoy')}>
+                        Hoy
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('inicioPractica', 'Esta Semana')}>
+                        Esta Semana
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('inicioPractica', 'Próxima Semana')}>
+                        Próxima Semana
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('inicioPractica', 'Este Mes')}>
+                        Este Mes
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('inicioPractica', 'Próximo Mes')}>
+                        Próximo Mes
+                      </li>
+                    </ul>
                   </section>
                 )}
               </button>
