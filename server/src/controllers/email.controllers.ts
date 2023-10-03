@@ -10,7 +10,7 @@ export const sendEmail = async (req: Request, res: Response): Promise<Response> 
   const { nombre_inscripcion, apellido_inscripcion, observations } = textContent
 
   try {
-    const emailBody = `<p>Querido ${nombre_inscripcion} ${apellido_inscripcion}, su solicitud de inscripción de etapa práctica ha sido rechazada por la siguiente/s <strong>observación/es</strong>: <br/> ${observations}.</p> ${htmlContent ?? ''} <br/> <h5>Revisado por Juan Esteban</h5>`
+    const emailBody = `<p>Querido ${nombre_inscripcion as string} ${apellido_inscripcion as string}, su solicitud de inscripción de etapa práctica ha sido modificada por la siguiente/s <strong>observación/es</strong>: <br/> ${observations as string}.</p> ${htmlContent as string ?? ''} <br/> <h5>Revisado por Juan Esteban</h5>`
 
     await emailConfig.sendMail({
       from: process.env.MAIL_USER,

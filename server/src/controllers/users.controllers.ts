@@ -9,7 +9,7 @@ import { comparePassword } from '../middlewares/users.middlewares.js'
 import { type RowDataPacket } from 'mysql2/promise'
 import { type CustomError, DbErrorNotFound, DataNotValid } from '../errors/customErrors.js'
 import { errorCodes } from '../models/errorCodes.enums.js'
-import { ResultSetHeader } from 'mysql2'
+import { type ResultSetHeader } from 'mysql2'
 
 export const getUsers = async (_req: Request, res: Response): Promise<Response> => {
   try {
@@ -88,6 +88,27 @@ export const getTeacherByName: RequestHandler<{ nombreCompleto: string }, Respon
   }
 }
 
+export const getCoordinators = async (_req: Request, res: Response): Promise<Response<object>> => {
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('SELECT id_usuario, CONCAT(nombres_usuario, " ", apellidos_usuario) AS nombre_completo FROM usuarios WHERE id_rol = 2')
+    if (Array.isArray(query) && query.length === 0) throw new DbErrorNotFound('No se encontró el coordinador.', errorCodes.ERROR_GET_USERS)
+    return res.status(200).json(query)
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const getCoordinatorById = async (req: Request, res: Response): Promise<Response<object>> => {
+  const { id } = req.params
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('SELECT CONCAT(nombres_usuario, " ", apellidos_usuario) AS nombre_completo FROM usuarios WHERE id_usuario = ? AND id_rol = 2', [id])
+    if (Array.isArray(query) && query.length === 0) throw new DbErrorNotFound('No se encontró el coordinador.', errorCodes.ERROR_GET_USER)
+    return res.status(200).json(query[0])
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 export const createUser: RequestHandler<{}, Response, userForm> = async (req: Request, res: Response): Promise<Response> => {
   const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
   try {
@@ -101,7 +122,7 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
   }
 }
 
-export const login: RequestHandler<{ num_documento: string; contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string; contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
+export const login: RequestHandler<{ num_documento: string, contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
   const { num_documento, contrasena } = req.body
   try {
     const [user] = await connection.query('SELECT * FROM usuarios WHERE numero_documento_usuario = ?', [num_documento])

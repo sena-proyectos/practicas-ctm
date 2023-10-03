@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, Fragment } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Slide, toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -16,7 +16,7 @@ import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { colorTextStatus, keysRoles } from '../../import/staticData'
 
-import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById, registerUser, getInfoTeacherByID } from '../../api/httpRequest'
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById, registerUser, getInfoTeacherByID, getCoordinators, getCoordinatorNameByID } from '../../api/httpRequest'
 import { AiFillEdit, AiOutlineFullscreen } from 'react-icons/ai'
 import { checkApprovementData } from '../../validation/approvementValidation'
 import Cookies from 'js-cookie'
@@ -131,7 +131,7 @@ export const RegisterDetails = () => {
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
-      <ToastContainer transition={Slide} />
+      <ToastContainer transition={Slide} theme='colored' />
       <Siderbar />
       <section className='relative grid flex-auto gap-2 w-min grid-rows-3-10-75-15'>
         <header className='border-b-1 w-[70%] mx-auto border-b-zinc-300 h-[9vh]'>
@@ -304,6 +304,13 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   const [disableSubmitButton, setDisableSubmitButton] = useState(true)
   const descriptionRef = useRef(null)
   const formRef = useRef(null)
+  const [dataAprendiz, setDataAprendiz] = useState([])
+  const [dataEmpresa, setDataEmpresa] = useState([])
+  const [dataAdmins, setDataAdmins] = useState([{ id_usuario: Number(), nombre_completo: String() }])
+  const [coordinatorFullName, setCoordinatorFullName] = useState(null)
+  const [idUser, setIdUser] = useState(0)
+  const [user, setUser] = useState(0)
+  const prevUserIdRef = useRef()
 
   const { inscriptionData } = inscriptionStore()
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
@@ -320,15 +327,29 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
    * fetchInfo();
    */
   const fetchInfo = async () => {
-    const res = await getAvalById(avalCoordinador)
-    const { data } = res.data
-    setAvalInfo(data)
+    try {
+      const res = await getAvalById(avalCoordinador)
+      const { data } = res.data
+      const idPayload = data[0].responsable_aval
+      if (idPayload !== null) {
+        getCoordinatorName(idPayload)
+      }
+      setAvalInfo(data)
+    } catch (error) {
+      toast.error('Error al conseguir los datos del aval')
+    }
   }
-  const [dataAprendiz, setDataAprendiz] = useState([])
-  const [dataEmpresa, setDataEmpresa] = useState([])
-  const [idUser, setIdUser] = useState(0)
-  const [user, setUser] = useState(0)
-  const prevUserIdRef = useRef()
+
+  const getCoordinatorName = async (payload) => {
+    try {
+      const res = await getCoordinatorNameByID(payload)
+      const { nombre_completo } = res.data
+      setCoordinatorFullName(nombre_completo)
+    } catch (error) {
+      console.log(error)
+      toast.error('Error al conseguir los datos del aval')
+    }
+  }
 
   /**
    * Efecto para almacenar el ID de usuario previo.
@@ -400,7 +421,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       const res = response.data.data
       setDataAprendiz(res)
     } catch (error) {
-      console.error('Ha ocurrido un error al mostrar los datos del usuario')
+      toast.error('Error al conseguir los datos del aprendiz')
     }
   }
 
@@ -425,7 +446,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       setDataEmpresa(res)
       setIdUser(res2)
     } catch (error) {
-      console.error(error)
+      toast.error('Error al conseguir los detalles de la inscripción')
     }
   }
 
@@ -470,6 +491,25 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     if (avalCoordinador) fetchInfo()
   }, [avalCoordinador])
 
+  const saveAllAdmins = async () => {
+    try {
+      const { data } = await getCoordinators()
+      const payload = data.map((admin) => {
+        return {
+          key: admin.id_usuario,
+          value: admin.nombre_completo
+        }
+      })
+      setDataAdmins(payload)
+    } catch (error) {
+      toast.error('Error al conseguir los administradores')
+    }
+  }
+
+  useEffect(() => {
+    saveAllAdmins()
+  }, [])
+
   /**
    * Función para validar y habilitar el botón de envío del formulario.
    *
@@ -483,6 +523,10 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   const handleSubmitButton = () => {
     if (!selectedApproveButton) return
     if (descriptionRef.current.value.length === 0) {
+      setDisableSubmitButton(true)
+      return
+    }
+    if (coordinatorFullName === null) {
       setDisableSubmitButton(true)
       return
     }
@@ -577,11 +621,22 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
+      await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion: dataAprendiz[0].nombre_inscripcion, apellido_inscripcion: dataAprendiz[0].apellido_inscripcion, observations: payload.observations }], subject: 'Aceptado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchInfo()
     } catch (error) {
       throw new Error(error)
+    }
+  }
+
+  const saveSelectOnChange = async (e) => {
+    try {
+      await inscriptionDetailsUpdate(avalCoordinador, { responsable_aval: e })
+      toast.success('Instructor guardado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      fetchInfo()
+    } catch (error) {
+      toast.error('Error al guardar el coordinador asignado')
     }
   }
 
@@ -630,15 +685,9 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
    * @example
    * const opcionesSeleccion = option;
    */
-  const option = [
-    { value: 'Sergio Soto Henao', key: 'Sergio Soto Henao' },
-    { value: 'Marianela Henao Atehortúa', key: 'Marianela Henao Atehortúa' },
-    { value: 'Jaime León Vergara Areiza', key: 'Jaime León Vergara Areiza' },
-    { value: 'Mauro Isaías Arango Vanegas', key: 'Mauro Isaías Arango Vanegas' }
-  ]
 
   return (
-    <section className={`flex flex-col   w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
+    <section className={`flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
       <section className='text-md'>
         {dataAprendiz.map((item) => (
           <div key={item.id_inscripcion} className='grid grid-cols-2'>
@@ -674,7 +723,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
           </div>
         ))}
       </section>
-      <section></section>
       <div className={` w-[95%] mx-auto`}>
         {avalInfo.map((aval) => {
           return (
@@ -683,7 +731,20 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                 <label htmlFor='' className='text-sm font-light'>
                   Coordinador Asignado
                 </label>
-                <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} onChange={(e) => console.log(e)} />
+                {coordinatorFullName === null ? (
+                  <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={dataAdmins} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} onChange={saveSelectOnChange} />
+                ) : (
+                  <Fragment>
+                    <p className='flex gap-2'>
+                      {coordinatorFullName}
+                      <span className='flex items-center'>
+                        <Button type='button' bg='transparent' onClick={() => setCoordinatorFullName(null)}>
+                          <AiFillEdit className='text-blue-500' />
+                        </Button>
+                      </span>
+                    </p>
+                  </Fragment>
+                )}
               </div>
               {idRol && (
                 <div className='flex flex-row gap-2 place-self-center'>
@@ -1008,12 +1069,8 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
    */
   const handleSelectChange = (optionKey) => {
     setSelectedOptionKey(optionKey)
+    setApprovalDetailUser(optionKey)
   }
-
-  useEffect(() => {
-    if (selectedOptionKey.length === 0) return
-    setApprovalDetailUser(selectedOptionKey)
-  }, [selectedOptionKey])
 
   const handleSubmitButton = () => {
     if (!selectedApproveButton) return
@@ -1027,6 +1084,10 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
   const selectButtonToSubmit = (value) => {
     setSelectedApproveButton(value)
     if (descriptionRef.current.value.length === 0 || !value) {
+      setDisableSubmitButton(true)
+      return
+    }
+    if (fullNameInstructor === null) {
       setDisableSubmitButton(true)
       return
     }
@@ -1058,7 +1119,6 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     try {
       await checkApprovementData({ observations, approveOption })
       const loadingToast = toast.loading('Enviando...')
-      console.log(selectedApproveButton)
       if (selectedApproveButton === approveOptions.Si) return acceptFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
       if (selectedApproveButton === approveOptions.No) return denyFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
     } catch (err) {
@@ -1127,7 +1187,6 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
    * @name acceptFunctionsApprove
    */
   const acceptFuntionsApprove = async (payload, toastId) => {
-    console.log(payload)
     const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
     const id = payload.avalFunciones
     const cookie = Cookies.get('token')

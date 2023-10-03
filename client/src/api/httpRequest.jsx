@@ -244,3 +244,13 @@ export const EditUser = async (id, payload) => {
   const response = await axios.patch(URL, payload)
   return response
 }
+
+export const getCoordinators = async () => {
+  const URL = `${baseUrl}${api}/coordinators`
+  return await axios.get(URL)
+}
+
+export const getCoordinatorNameByID = async (id) => {
+  const URL = `${baseUrl}${api}/coordinator/${id}`
+  return await axios.get(URL)
+}
