@@ -1,6 +1,5 @@
 import express, { type IRouter, type Application, type Response, type Request } from 'express'
 import cors, { type CorsOptions } from 'cors'
-
 import { indexRoutes, roleRoutes, userRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes, unableRoutes, studentRoutes, emailRoutes } from './routes/routes.js'
 import { httpStatus } from './models/httpStatus.enums.js'
 import bodyParser from 'body-parser'
