@@ -40,11 +40,11 @@ export const checkRegisterData: RequestHandler<{}, Response, LoginData> = (req: 
   const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
   const idNumberParsed = Number(num_documento)
   const phoneParsed = Number(num_celular)
-  const roleParsed = Number(String(id_rol))
+  // const roleParsed = Number(String(id_rol))
   try {
     if (isNaN(idNumberParsed)) throw new NumberIsNaN('El número de documento no es un número válido.')
     if (isNaN(phoneParsed)) throw new NumberIsNaN('El número de celular no es un número válido.')
-    if (isNaN(roleParsed)) throw new NumberIsNaN('El rol no es un número válido.')
+    // if (isNaN(roleParsed)) throw new NumberIsNaN('El rol no es un número válido.')
     const { error } = registerDataSchema.validate({ nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados no son válidos, verifícalos.')
     next()

@@ -407,6 +407,41 @@ export const RegisterList = () => {
       const filterMap = inscriptionOriginal.filter((inscription) => inscription.estado_general_inscripcion === filter)
       setInscriptions(filterMap)
     }
+    if (filterType === 'fecha') {
+      let filterMap = []
+
+      if (filter === 'Hoy') {
+        const today = new Date()
+        filterMap = inscriptionOriginal.filter((inscription) => {
+          const inscriptionDate = new Date(inscription.fecha_creacion) // Asegúrate de que la columna 'fecha' sea de tipo fecha
+          return inscriptionDate.toDateString() === today.toDateString()
+        })
+      } else if (filter === 'Semana') {
+        const today = new Date()
+        const lastWeek = new Date(today)
+        lastWeek.setDate(today.getDate() - 7)
+        filterMap = inscriptionOriginal.filter((inscription) => {
+          const inscriptionDate = new Date(inscription.fecha_creacion)
+          return inscriptionDate >= lastWeek && inscriptionDate <= today
+        })
+      } else if (filter === 'Mes') {
+        const today = new Date()
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+        filterMap = inscriptionOriginal.filter((inscription) => {
+          const inscriptionDate = new Date(inscription.fecha_creacion)
+          return inscriptionDate >= firstDayOfMonth && inscriptionDate <= lastDayOfMonth
+        })
+      } else if (filter === 'Más Antiguos') {
+        filterMap = inscriptionOriginal.slice().sort((a, b) => {
+          const dateA = new Date(a.fecha_creacion)
+          const dateB = new Date(b.fecha_creacion)
+          return dateA - dateB
+        })
+      }
+
+      setInscriptions(filterMap)
+    }
     disableShowFiltros()
     setActiveFilter(true)
   }
@@ -491,10 +526,21 @@ export const RegisterList = () => {
                 Fecha
                 <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.fecha ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
                 {filtersButtons.fecha && (
-                  <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg h-10 flex items-center'>
-                    <form action=''>
-                      <input type='date' className='w-full py-1 pl-2 pr-3 text-sm text-black focus:text-gray-900 rounded-xl focus:bg-white focus:outline-none placeholder:text-slate-400' />
-                    </form>
+                  <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
+                    <ul className='flex flex-col w-40 gap-1 py-2'>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('fecha', 'Hoy')}>
+                        Hoy
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('fecha', 'Semana')}>
+                        Semana
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('fecha', 'Mes')}>
+                        Mes
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleTypeFilter('fecha', 'Más Antiguos')}>
+                        Más Antiguos
+                      </li>
+                    </ul>
                   </section>
                 )}
               </button>
