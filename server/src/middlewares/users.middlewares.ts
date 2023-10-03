@@ -23,7 +23,7 @@ export const checkExistingUser: RequestHandler<{}, Response, userForm> = async (
   }
 }
 
-export const checkLoginData: RequestHandler<{ num_documento: string; contrasena: string }, Response, LoginData> = (req: Request<{ num_documento: string; contrasena: string }>, res: Response, next: NextFunction) => {
+export const checkLoginData: RequestHandler<{ num_documento: string, contrasena: string }, Response, LoginData> = (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction) => {
   const { num_documento, contrasena } = req.body as LoginData
   const numberParsed = Number(num_documento)
   try {

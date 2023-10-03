@@ -1,5 +1,5 @@
 import { type IRouter, Router } from 'express'
-import { createUser, editUser, getTeacherByName, getTeachers, getTeachersById, getUserById, getUsers, login } from '../controllers/users.controllers.js'
+import { createUser, editUser, getCoordinatorById, getCoordinators, getTeacherByName, getTeachers, getTeachersById, getUserById, getUsers, login } from '../controllers/users.controllers.js'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
 import { checkEditData, checkExistingUser, checkLoginData, checkName, checkRegisterData, generateToken } from '../middlewares/users.middlewares.js'
 
@@ -12,6 +12,8 @@ userRoutes.get('/teacherName', checkName, getTeacherByName)
 userRoutes.get('/teachers', getTeachers)
 userRoutes.get('/teacher/:id', checkIdReq, getTeachersById)
 userRoutes.get('/teacherName', checkName, getTeacherByName)
+userRoutes.get('/coordinators', getCoordinators)
+userRoutes.get('/coordinator/:id', checkIdReq, getCoordinatorById)
 
 // * POST
 userRoutes.post('/register', checkRegisterData, checkExistingUser, createUser)

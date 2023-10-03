@@ -70,7 +70,7 @@ export const getInscriptionsDetailsById: RequestHandler<{ id: string }, Response
 
   try {
     const [inscriptions] = await connection.query('SELECT detalles_inscripciones.*, inscripciones.fecha_creacion FROM detalles_inscripciones LEFT JOIN inscripciones ON inscripciones.id_inscripcion = detalles_inscripciones.id_inscripcion WHERE detalles_inscripciones.id_detalle_inscripcion = ?', [idNumber])
-    const formattedInscriptions = (inscriptions as Array<{ fecha_modificacion: Date; fecha_creacion: Date }>).map((inscription) => {
+    const formattedInscriptions = (inscriptions as Array<{ fecha_modificacion: Date, fecha_creacion: Date }>).map((inscription) => {
       const formattedDate = new Date(inscription.fecha_modificacion).toLocaleString()
       const formattedDateCreation = new Date(inscription.fecha_creacion).toLocaleDateString()
       return { ...inscription, fecha_modificacion: formattedDate, fecha_creacion: formattedDateCreation }
@@ -158,10 +158,11 @@ export const editInscriptionDetail: RequestHandler<{}, Response, inscripcionDeta
   const { id } = req.params
   const { estado_aval, observaciones, responsable_aval } = req.body
   try {
-    const [result] = await connection.query('UPDATE detalles_inscripciones SET estado_aval = IFNULL(?, estado_aval),     observaciones = IFNULL(?, observaciones), responsable_aval = IFNULL(?, responsable_aval) WHERE id_detalle_inscripcion = ?', [estado_aval, observaciones, responsable_aval, id])
+    const [result] = await connection.query('UPDATE detalles_inscripciones SET estado_aval = IFNULL(?, estado_aval), observaciones = IFNULL(?, observaciones), responsable_aval = IFNULL(?, responsable_aval) WHERE id_detalle_inscripcion = ?', [estado_aval, observaciones, responsable_aval, id])
     if (!Array.isArray(result) && result?.affectedRows === 0) throw new DbError('No se pudo actualizar la modalidad de etapa práctica')
     return res.status(httpStatus.OK).json({ message: 'Aval de inscripción actualizada con éxito' })
   } catch (error) {
+    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
