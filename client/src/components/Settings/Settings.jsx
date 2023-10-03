@@ -1,18 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Cookies from 'js-cookie'
+import jwtDecode from 'jwt-decode'
+import Swal from 'sweetalert2'
 
 // Icons
 import { IoSettingsOutline } from 'react-icons/io5'
+import { LuSave } from 'react-icons/lu'
+import { HiOutlinePencil } from 'react-icons/hi'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
-import { LuSave } from 'react-icons/lu'
-import { HiOutlinePencil } from 'react-icons/hi'
 import { PasswordModal } from '../Utils/Modals/Modals'
+import { getUserById, EditUser } from '../../api/httpRequest'
 
 export const Settings = () => {
   const [mostrarModal, setMostrarModal] = useState(false)
+  const [user, setUser] = useState({})
+  const [password, setPassword] = useState('')
+  const [edit, setEdit] = useState(false)
 
   const handleEditModal = () => {
     setMostrarModal(!mostrarModal)
@@ -21,9 +28,56 @@ export const Settings = () => {
   const handleModal = () => {
     setMostrarModal(!mostrarModal)
   }
+
+  const handleEdit = () => {
+    setEdit(!edit)
+  }
+
+  useEffect(() => {
+    const token = Cookies.get('token')
+
+    const tokenData = jwtDecode(token)
+    const { id_usuario } = tokenData.data.user
+    getUser(id_usuario)
+  }, [])
+
+  const getUser = async (id) => {
+    try {
+      const response = await getUserById(id)
+      const { data } = response.data
+      setUser(data[0])
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+  const handleChangePassword = (formPassword) => {
+    formPassword.newPassword === formPassword.confirmPassword ? setPassword(formPassword.newPassword) : Swal.fire({ icon: 'error', title: 'Error', text: 'Las contraseñas no coinciden' })
+  }
+
+  const handleSettingsForm = async (e) => {
+    e.preventDefault()
+    const id_rol = user.id_rol
+    const formValues = Object.fromEntries(new FormData(e.target))
+    formValues.id_rol = id_rol
+    password === '' ? (formValues.contrasena = user.contrasena_usuario) : (formValues.contrasena = password)
+    const id_usuario = user.id_usuario
+    setEdit(false)
+    setPassword('')
+    try {
+      await EditUser(id_usuario, formValues)
+      Swal.fire({
+        icon: 'success',
+        title: '!Exitoso¡',
+        text: 'Datos editados correctamente'
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <>
-      {mostrarModal && <PasswordModal bodyPassword title={'Cambiar Contraseña'} closeModal={handleModal} />}
+      {mostrarModal && <PasswordModal bodyPassword title={'Cambiar Contraseña'} onSavePassword={handleChangePassword} closeModal={handleModal} />}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-2-93-6'>
@@ -32,51 +86,54 @@ export const Settings = () => {
               <header className='flex flex-row items-center w-11/12 h-full gap-2 mx-auto'>
                 <IoSettingsOutline className='text-5xl text-fifth' />
                 <div>
-                  <h2>Admin Admin</h2>
-                  <p>CC 1082882294</p>
+                  <h2>{user.nombres_usuario + ' ' + user.apellidos_usuario}</h2>
+                  <p>{user.tipo_documento_usuario + ' ' + user.numero_documento_usuario}</p>
                 </div>
               </header>
               <section className='h-full'>
                 <hr className='w-11/12 mx-auto border-1.5 rounded-lg' />
-                <form className='flex flex-col justify-center h-full gap-8 px-14'>
+                <form onSubmit={handleSettingsForm} className='flex flex-col justify-center h-full gap-8 px-14'>
                   <section className='grid grid-cols-2 gap-8'>
                     <div className='flex flex-col'>
-                      <label htmlFor=''>Nombres</label>
-                      <input type='text' className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2' />
+                      <label htmlFor='nombre'>Nombres</label>
+                      <input name='nombre' type='text' defaultValue={user.nombres_usuario} className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2 disabled:bg-gray-200' disabled={!edit} />
                     </div>
                     <div className='flex flex-col'>
-                      <label htmlFor=''>Apellidos</label>
-                      <input type='text' className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2' />
+                      <label htmlFor='apellidos'>Apellidos</label>
+                      <input name='apellido' type='text' defaultValue={user.apellidos_usuario} className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2 disabled:bg-gray-200' disabled={!edit} />
                     </div>
                     <div className='flex flex-col'>
-                      <label htmlFor=''>Correo electrónico</label>
-                      <input type='text' className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2' />
+                      <label htmlFor='email'>Correo electrónico</label>
+                      <input name='correo_electronico' type='text' defaultValue={user.email_usuario} className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2 disabled:bg-gray-200' disabled={!edit} />
                     </div>
                     <div className='flex flex-col'>
-                      <label htmlFor=''>No. Documento</label>
-                      <input type='text' className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2' />
+                      <label htmlFor='contacto'>No. Contacto</label>
+                      <input name='num_celular' type='text' defaultValue={user.numero_celular_usuario} className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2 disabled:bg-gray-200' disabled={!edit} />
                     </div>
                     <div className='flex flex-col'>
-                      <label htmlFor=''>No. Contacto</label>
-                      <input type='text' className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2' />
+                      <label htmlFor='documento'>No. Documento</label>
+                      <input name='num_documento' type='text' defaultValue={user.numero_documento_usuario} className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2 disabled:bg-gray-200' disabled={!edit} />
                     </div>
                     <div className='flex flex-col'>
                       <label htmlFor=''>Contraseña</label>
-                      <div className='relative w-full'>
-                        <HiOutlinePencil className='absolute inset-y-0 left-[80%] md:left-[92%] flex transform cursor-pointer items-center pr-3 hover:scale-125 text-2xl hover:text-purple-500' onClick={handleEditModal} />
+                      <div className='relative w-full '>
+                        {edit && <HiOutlinePencil className='absolute inset-y-0 left-[80%] md:left-[93%] flex transform cursor-pointer items-center pr-3 hover:scale-125 text-2xl hover:text-purple-500' onClick={handleEditModal} />}
 
-                        <input type='text' className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2 w-full' />
+                        <input type='text' placeholder='**********' className={`rounded-[10px] border-1 border-gray-300 focus:outline-none pl-2 pr-8  px-2 w-full ${!edit ? 'disabled:bg-gray-200' : 'disabled:bg-white'}`} disabled={true} />
                       </div>
                     </div>
                   </section>
+
                   <div className='flex flex-row gap-5 w-fit'>
-                    <Button name='edit' type='button' bg={'bg-[#ffba00]'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
+                    <Button name='edit' type='button' bg={'bg-[#ffba00]'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={handleEdit}>
                       <HiOutlinePencil />
                       Modificar
                     </Button>
-                    <Button name='save' type='button' bg={'bg-[#16a34a]'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
-                      <LuSave /> Guardar
-                    </Button>
+                    {edit && (
+                      <Button bg={'bg-[#16a34a]'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
+                        <LuSave /> Guardar
+                      </Button>
+                    )}
                   </div>
                 </form>
               </section>
