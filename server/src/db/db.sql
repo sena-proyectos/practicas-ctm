@@ -61,6 +61,215 @@ INSERT INTO `aprendices` VALUES (1,'Lorena','Quiceno Giraldo','CC','1028882894',
 UNLOCK TABLES;
 
 --
+-- Table structure for table `aprendices_bitacoras`
+--
+
+DROP TABLE IF EXISTS `aprendices_bitacoras`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `aprendices_bitacoras` (
+  `id_bitacora` int NOT NULL AUTO_INCREMENT,
+  `fecha_bitacora` date NOT NULL,
+  `calificacion_bitacora` varchar(45) DEFAULT NULL,
+  `observaciones_bitacora` varchar(45) DEFAULT NULL,
+  `numero_bitacora` int NOT NULL,
+  `usuario_responsable` int NOT NULL,
+  `fecha_modificacion` timestamp NOT NULL,
+  PRIMARY KEY (`id_bitacora`),
+  KEY `fk_usuario_responsable_edita_idx` (`usuario_responsable`),
+  CONSTRAINT `fk_usuario_responsable_edita` FOREIGN KEY (`usuario_responsable`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_bitacoras`
+--
+
+LOCK TABLES `aprendices_bitacoras` WRITE;
+/*!40000 ALTER TABLE `aprendices_bitacoras` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_bitacoras` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `aprendices_bitacoras_detalles`
+--
+
+DROP TABLE IF EXISTS `aprendices_bitacoras_detalles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `aprendices_bitacoras_detalles` (
+  `id_aprendiz_bitacora_detalle` int NOT NULL,
+  `id_aprendiz` int NOT NULL,
+  `id_bitacora` int DEFAULT NULL,
+  PRIMARY KEY (`id_aprendiz_bitacora_detalle`),
+  KEY `fk_idaprendiz_bitacoraD_idx` (`id_aprendiz`),
+  KEY `fk_idbitacora_bitacoraD_idx` (`id_bitacora`),
+  CONSTRAINT `fk_idaprendiz_bitacoraD` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_idbitacora_bitacoraD` FOREIGN KEY (`id_bitacora`) REFERENCES `aprendices_bitacoras` (`id_bitacora`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_bitacoras_detalles`
+--
+
+LOCK TABLES `aprendices_bitacoras_detalles` WRITE;
+/*!40000 ALTER TABLE `aprendices_bitacoras_detalles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_bitacoras_detalles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `aprendices_cartas`
+--
+
+DROP TABLE IF EXISTS `aprendices_cartas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `aprendices_cartas` (
+  `id_carta_aprendiz` int NOT NULL,
+  `tipo_carta_aprendiz` varchar(45) NOT NULL,
+  `calificacion_carta_aprendiz` varchar(45) DEFAULT NULL,
+  `observaciones_carta_aprendiz` varchar(500) DEFAULT NULL,
+  `fecha_modificacion` timestamp NOT NULL,
+  `usuario_responsable` int NOT NULL,
+  PRIMARY KEY (`id_carta_aprendiz`),
+  KEY `usuario_responsable_Fk_idx` (`usuario_responsable`),
+  CONSTRAINT `usuario_responsable_Fk` FOREIGN KEY (`usuario_responsable`) REFERENCES `usuarios` (`id_usuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_cartas`
+--
+
+LOCK TABLES `aprendices_cartas` WRITE;
+/*!40000 ALTER TABLE `aprendices_cartas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_cartas` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `actualizar_fecha_modificacion` BEFORE INSERT ON `aprendices_cartas` FOR EACH ROW BEGIN
+	SET @fecha_actual = current_timestamp();
+    SET NEW.fecha_modificacion = @fecha_actual;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `aprendices_cartas_detalles`
+--
+
+DROP TABLE IF EXISTS `aprendices_cartas_detalles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `aprendices_cartas_detalles` (
+  `id_aprendiz_carta_detalle` int NOT NULL,
+  `id_aprendiz` int NOT NULL,
+  `id_carta_aprendiz` int DEFAULT NULL,
+  PRIMARY KEY (`id_aprendiz_carta_detalle`),
+  KEY `fk_idaprendiz_cartasD_idx` (`id_aprendiz`),
+  KEY `fk_idcarta_aprendiz_cartasD_idx` (`id_carta_aprendiz`),
+  CONSTRAINT `fk_idaprendiz_cartasD` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_idcarta_aprendiz_cartasD` FOREIGN KEY (`id_carta_aprendiz`) REFERENCES `aprendices_cartas` (`id_carta_aprendiz`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_cartas_detalles`
+--
+
+LOCK TABLES `aprendices_cartas_detalles` WRITE;
+/*!40000 ALTER TABLE `aprendices_cartas_detalles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_cartas_detalles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `aprendices_visitas`
+--
+
+DROP TABLE IF EXISTS `aprendices_visitas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `aprendices_visitas` (
+  `id_visita` int NOT NULL AUTO_INCREMENT,
+  `fecha_visita` date NOT NULL,
+  `numero_visita` varchar(100) NOT NULL,
+  `calificacion_visita` varchar(45) DEFAULT NULL,
+  `observaciones_visita` longtext,
+  `usuario_responsale` int NOT NULL,
+  `fecha_modificacion` timestamp NOT NULL,
+  PRIMARY KEY (`id_visita`),
+  KEY `usuario_responsable_fk_idx` (`usuario_responsale`),
+  CONSTRAINT `fk_usuario_responsable` FOREIGN KEY (`usuario_responsale`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_visitas`
+--
+
+LOCK TABLES `aprendices_visitas` WRITE;
+/*!40000 ALTER TABLE `aprendices_visitas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_visitas` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprendices_visitas_BEFORE_INSERT` BEFORE INSERT ON `aprendices_visitas` FOR EACH ROW BEGIN
+	SET @fecha_actual = current_timestamp();
+		SET NEW.fecha_modificacion = @fecha_actual;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `aprendices_visitas_detalles`
+--
+
+DROP TABLE IF EXISTS `aprendices_visitas_detalles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `aprendices_visitas_detalles` (
+  `id_aprendiz_visita_detalle` int NOT NULL,
+  `id_aprendiz` int NOT NULL,
+  `id_visita` int DEFAULT NULL,
+  PRIMARY KEY (`id_aprendiz_visita_detalle`),
+  KEY `fk_idaprendiz_visitasD_idx` (`id_aprendiz`),
+  KEY `fk_idvisita_visitasD_idx` (`id_visita`),
+  CONSTRAINT `fk_idaprendiz_visitasD` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_idvisita_visitasD` FOREIGN KEY (`id_visita`) REFERENCES `aprendices_visitas` (`id_visita`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_visitas_detalles`
+--
+
+LOCK TABLES `aprendices_visitas_detalles` WRITE;
+/*!40000 ALTER TABLE `aprendices_visitas_detalles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_visitas_detalles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `arl`
 --
 
@@ -82,32 +291,6 @@ LOCK TABLES `arl` WRITE;
 /*!40000 ALTER TABLE `arl` DISABLE KEYS */;
 INSERT INTO `arl` VALUES (1,'SENA'),(2,'Empresa'),(3,'No aplica');
 /*!40000 ALTER TABLE `arl` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `bitacoras`
---
-
-DROP TABLE IF EXISTS `bitacoras`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `bitacoras` (
-  `id_bitacora` int NOT NULL AUTO_INCREMENT,
-  `fecha_bitacora` date NOT NULL,
-  `estado_bitacora` varchar(200) NOT NULL,
-  `numero_bitacora` varchar(100) NOT NULL,
-  `calificacion_bitacora` double NOT NULL,
-  PRIMARY KEY (`id_bitacora`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `bitacoras`
---
-
-LOCK TABLES `bitacoras` WRITE;
-/*!40000 ALTER TABLE `bitacoras` DISABLE KEYS */;
-/*!40000 ALTER TABLE `bitacoras` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -184,7 +367,8 @@ CREATE TABLE `detalles_inscripciones` (
   KEY `id_inscripcion` (`id_inscripcion`),
   KEY `fk_detalles_inscripciones_2_idx` (`rol_responsable`),
   CONSTRAINT `detalles_inscripciones_ibfk_1` FOREIGN KEY (`id_inscripcion`) REFERENCES `inscripciones` (`id_inscripcion`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_detalles_inscripciones_2` FOREIGN KEY (`rol_responsable`) REFERENCES `roles` (`id_rol`) ON UPDATE CASCADE
+  CONSTRAINT `fk_detalles_inscripciones_2` FOREIGN KEY (`rol_responsable`) REFERENCES `roles` (`id_rol`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_rol_responsable_aval` FOREIGN KEY (`rol_responsable`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=893 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -692,39 +876,6 @@ INSERT INTO `roles` VALUES (1,'Instructor líder de prácticas'),(2,'Coordinador
 UNLOCK TABLES;
 
 --
--- Table structure for table `seguimientos`
---
-
-DROP TABLE IF EXISTS `seguimientos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `seguimientos` (
-  `id_seguimiento` int NOT NULL AUTO_INCREMENT,
-  `administracion_educativa` varchar(500) NOT NULL,
-  `observacion` longtext,
-  `id_aprendiz` int NOT NULL,
-  `id_visita` int NOT NULL,
-  `id_bitacora` int NOT NULL,
-  PRIMARY KEY (`id_seguimiento`),
-  KEY `id_aprendiz` (`id_aprendiz`),
-  KEY `id_visita` (`id_visita`),
-  KEY `id_bitacora` (`id_bitacora`),
-  CONSTRAINT `seguimientos_ibfk_1` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `seguimientos_ibfk_2` FOREIGN KEY (`id_visita`) REFERENCES `visitas` (`id_visita`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `seguimientos_ibfk_3` FOREIGN KEY (`id_bitacora`) REFERENCES `bitacoras` (`id_bitacora`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `seguimientos`
---
-
-LOCK TABLES `seguimientos` WRITE;
-/*!40000 ALTER TABLE `seguimientos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `seguimientos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `usuarios`
 --
 
@@ -758,34 +909,6 @@ INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanlestar12
 UNLOCK TABLES;
 
 --
--- Table structure for table `visitas`
---
-
-DROP TABLE IF EXISTS `visitas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `visitas` (
-  `id_visita` int NOT NULL AUTO_INCREMENT,
-  `fecha_visita` date NOT NULL,
-  `numero_visita` varchar(100) NOT NULL,
-  `observaciones_visita` longtext,
-  `id_instructor_seguimiento` int NOT NULL,
-  PRIMARY KEY (`id_visita`),
-  KEY `fk_visitas_1` (`id_instructor_seguimiento`),
-  CONSTRAINT `fk_visitas_1` FOREIGN KEY (`id_instructor_seguimiento`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `visitas`
---
-
-LOCK TABLES `visitas` WRITE;
-/*!40000 ALTER TABLE `visitas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `visitas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping events for database 'sena_practicas'
 --
 
@@ -802,4 +925,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-04  9:32:10
+-- Dump completed on 2023-10-04 13:13:22
