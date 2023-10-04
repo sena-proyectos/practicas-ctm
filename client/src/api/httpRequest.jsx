@@ -237,6 +237,14 @@ export const getInfoTeacherByID = async (id) => {
   return await axios.get(URL)
 }
 
+/* Edit User */
+export const EditUser = async (id, payload) => {
+  const URL = `${baseUrl}${api}/edit-user/${id}`
+
+  const response = await axios.patch(URL, payload)
+  return response
+}
+
 export const getCoordinators = async () => {
   const URL = `${baseUrl}${api}/coordinators`
   return await axios.get(URL)

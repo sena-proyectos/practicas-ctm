@@ -113,7 +113,7 @@ const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
   )
 }
 
-const PasswordModal = ({ closeModal, title }) => {
+const PasswordModal = ({ closeModal, title, onSavePassword }) => {
   /**
    * Función para manejar el cierre del modal.
    *
@@ -161,7 +161,6 @@ const PasswordModal = ({ closeModal, title }) => {
   const [showOldPassword, setShowOldPassword] = useState(passwordStatus.hidden)
   const [showNewPassword, setShowNewPassword] = useState(passwordStatus.hidden)
   const [showConfirmPassword, setShowConfirmPassword] = useState(passwordStatus.hidden)
-  const formValuesRef = useRef({})
 
   /**
    * Función para manejar el cambio de visibilidad de la antigua contraseña.
@@ -197,27 +196,13 @@ const PasswordModal = ({ closeModal, title }) => {
    */
   const handleConfirmPassword = () => (showConfirmPassword === passwordStatus.shown ? setShowConfirmPassword(passwordStatus.hidden) : setShowConfirmPassword(passwordStatus.shown))
 
-  /**
-   * Función para manejar el cambio en la entrada de datos del formulario.
-   *
-   * @function
-   * @name handleInputChange
-   * @param {Event} e - Evento de cambio de entrada de datos.
-   * @param {number} index - Índice del elemento en el formulario.
-   * @returns {void}
-   *
-   * @example
-   * handleInputChange(event, 0);
-   */
-  const handleInputChange = (e, index) => {
-    const { name, value } = e.target
-    formValuesRef.current = {
-      ...formValuesRef.current,
-      [index]: {
-        ...formValuesRef.current[index],
-        [name]: value
-      }
-    }
+  const handleSavePassword = async (e) => {
+    e.preventDefault()
+
+    const formPassword = Object.fromEntries(new FormData(e.target))
+    onSavePassword(formPassword)
+
+    closeModal()
   }
 
   return (
@@ -230,7 +215,7 @@ const PasswordModal = ({ closeModal, title }) => {
         </header>
         <section className='flex justify-center'>
           <section className='w-11/12 p-4'>
-            <form action='' className='flex flex-col gap-3 pt-6'>
+            <form onSubmit={handleSavePassword} className='flex flex-col gap-3 pt-6'>
               <section className='grid grid-cols-2'>
                 <label className='font-semibold w-fit whitespace-nowrap' htmlFor=''>
                   Contraseña Anterior
@@ -239,7 +224,7 @@ const PasswordModal = ({ closeModal, title }) => {
                   <span onClick={handleOldPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                     {showOldPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                   </span>
-                  <input type={showOldPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' onChange={(e) => handleInputChange(e)} />
+                  <input name='oldPassword' type={showOldPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                 </div>
               </section>
               <section className='grid grid-cols-2-50-50'>
@@ -251,7 +236,7 @@ const PasswordModal = ({ closeModal, title }) => {
                     <span onClick={handleNewPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                       {showNewPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                     </span>
-                    <input type={showNewPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' onChange={(e) => handleInputChange(e)} />
+                    <input name='newPassword' type={showNewPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                   </div>
                 </div>
               </section>
@@ -264,7 +249,7 @@ const PasswordModal = ({ closeModal, title }) => {
                     <span onClick={handleConfirmPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                       {showConfirmPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                     </span>
-                    <input type={showConfirmPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' onChange={(e) => handleInputChange(e)} />
+                    <input name='confirmPassword' type={showConfirmPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                   </div>
                 </div>
               </section>
