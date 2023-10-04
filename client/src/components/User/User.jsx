@@ -5,26 +5,32 @@ import { BiLockAlt } from 'react-icons/bi'
 import { IoPersonOutline } from 'react-icons/io5'
 
 import { Form } from '../Form/Form'
-import { useNavigate } from 'react-router-dom'
-import Cookies from 'js-cookie'
 
 const User = () => {
-  const goto = useNavigate()
-  const idRol = Number(localStorage.getItem('idRol'))
-  const cookie = Cookies.get('token')
-
-  const earlyReturn = async () => {
-    if (idRol && cookie) goto('/home', { replace: true })
-  }
-
-  useEffect(() => {
-    earlyReturn()
-  }, [])
-
-  if (idRol && cookie) return null
+  /**
+   * Función asincrónica para redirigir al usuario a la página de inicio si ya está autenticado.
+   *
+   * @async
+   * @function
+   * @name earlyReturn
+   * @throws {Error} Redirección si el usuario ya está autenticado.
+   * @returns {void}
+   *
+   * @example
+   */
 
   const divRef = useRef(null)
 
+  /**
+   * Configuración del formulario de inicio de sesión.
+   *
+   * @constant
+   * @name loginForm
+   * @type {Array}
+   *
+   * @example
+   * const configuracionFormularioLogin = loginForm;
+   */
   const loginForm = [
     {
       icon: <AiOutlineIdcard />,
@@ -39,6 +45,16 @@ const User = () => {
       nameInput: 'contrasena'
     }
   ]
+  /**
+   * Configuración del formulario de registro.
+   *
+   * @constant
+   * @name registerForm
+   * @type {Array}
+   *
+   * @example
+   * const configuracionFormularioRegistro = registerForm;
+   */
   const registerForm = [
     { icon: <AiOutlineIdcard />, placeholder: '1017924888', type: 'text', nameInput: 'num_documento' },
     { icon: <IoPersonOutline />, placeholder: 'Juan', type: 'text', nameInput: 'nombre' },
@@ -47,8 +63,29 @@ const User = () => {
     { icon: <BiLockAlt />, placeholder: '********', type: 'password', nameInput: 'contrasena' }
   ]
 
+  /**
+   * Estado para controlar el botón seleccionado ('login' o 'register').
+   *
+   * @state
+   * @name selectedButton
+   * @type {string}
+   *
+   * @example
+   * const botonSeleccionado = selectedButton;
+   */
   const [selectedButton, setSelectedButton] = useState('login')
 
+  /**
+   * Función para manejar el cambio de botón seleccionado ('login' o 'register').
+   *
+   * @function
+   * @name handleButtonClick
+   * @param {string} button - Botón seleccionado.
+   * @returns {void}
+   *
+   * @example
+   * handleButtonClick('login');
+   */
   const handleButtonClick = (button) => {
     setSelectedButton(button)
   }
@@ -61,6 +98,16 @@ const User = () => {
     }
   }, [selectedButton])
 
+  /**
+   * Títulos para las secciones de inicio de sesión y registro.
+   *
+   * @constant
+   * @name title
+   * @type {Object}
+   *
+   * @example
+   * const titulos = title;
+   */
   const title = {
     login: 'Bienvenido de vuelta',
     register: 'Bienvenido a SENA'
@@ -94,12 +141,12 @@ const User = () => {
           <div className='z-10 flex flex-col p-8 bg-white border shadow-xl justify-self-center rounded-2xl border-neutral-400 '>
             {selectedButton === 'login' ? <h2 className='text-xl font-bold text-center'>{title.login}</h2> : <h2 className='text-xl font-bold text-center'>{title.register}</h2>}
             <span className='text-lg font-light '>Es un placer para nosotros tenerte aquí</span>
-            <div className={`flex w-72 flex-row justify-items-center rounded-lg bg-gray ${selectedButton === 'register'}  relative mx-auto my-2.5 `}>
+            <div className={`flex w-72 flex-row justify-items-center rounded-lg border border-gray-400 ${selectedButton === 'register'}  relative mx-auto my-2.5 `}>
               <div className={`absolute ml-2 mt-1 h-6 w-32 rounded-md bg-white transition-all `} ref={divRef}></div>
-              <button className='z-10 w-32 h-8 m-auto text-sm text-black rounded-md' onClick={() => handleButtonClick('login')}>
+              <button className='z-10 w-full h-8 m-auto text-sm text-black transition-colors rounded-l-md hover:bg-gray-200' onClick={() => handleButtonClick('login')}>
                 Iniciar sesión
               </button>
-              <button className='z-10 w-32 h-8 m-auto text-sm text-black rounded-md' onClick={() => handleButtonClick('register')}>
+              <button className='z-10 w-full h-8 m-auto text-sm text-black transition-colors rounded-r-md hover:bg-gray-200' onClick={() => handleButtonClick('register')}>
                 Registrarse
               </button>
             </div>

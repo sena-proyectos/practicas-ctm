@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx'
 import { type Request, type NextFunction, type RequestHandler, type Response } from 'express'
 import { type inscripcionDetailData, type inscriptionData } from '../interfaces/inscriptions.interfaces.js'
 import { inscriptionDetailSchema, inscriptionSchema } from '../schemas/inscriptions.schemas.js'
-import { type CustomError, DataNotValid, NumberIsNaN } from '../errors/customErrors.js'
+import { type CustomError, DataNotValid } from '../errors/customErrors.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { connection } from '../config/db.js'
 
@@ -21,20 +21,8 @@ export const checkInscriptionData: RequestHandler<{}, Response, inscriptionData>
     for (const inscription of inscriptions) {
       const { nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion } = inscription
 
-      // * Parseo de datos de forma Number para ver si los datos que vienen string son numeros
-      const numberParsed = Number(documento_inscripcion)
-      const phoneStudentParsed = Number(inscripcion_celular)
-      const fichaNumber = Number(numero_ficha_inscripcion)
-      const nitEmpresaNumber = Number(nit_empresa_inscripcion)
-      const phoneBossParsed = Number(telefono_jefe_empresa_inscripcion)
-      if (isNaN(numberParsed)) throw new NumberIsNaN('El número de documento no es un número.')
-      if (isNaN(phoneStudentParsed)) throw new NumberIsNaN('El número de celular del estudiante no es un número.')
-      if (isNaN(fichaNumber)) throw new NumberIsNaN('El número de la ficha no es un número.')
-      if (isNaN(nitEmpresaNumber)) throw new NumberIsNaN('El nit de la empresa no es un número.')
-      if (isNaN(phoneBossParsed)) throw new NumberIsNaN('El número de celular del jefe inmediato no es un número.')
-
       const { error } = inscriptionSchema.validate({
-        nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion: numberParsed, email_inscripcion, inscripcion_celular: phoneStudentParsed, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion: fichaNumber, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion: nitEmpresaNumber, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion: phoneBossParsed, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
+        nombre_inscripcion, apellido_inscripcion, tipo_documento_inscripcion, documento_inscripcion, email_inscripcion, inscripcion_celular, etapa_actual_inscripcion, modalidad_inscripcion, nombre_programa_inscripcion, nivel_formacion_inscripcion, numero_ficha_inscripcion, fecha_fin_lectiva_inscripcion, nombre_instructor_lider_inscripcion, email_instructor_lider_inscripcion, apoyo_sostenimiento_inscripcion, nit_empresa_inscripcion, nombre_empresa_inscripcion, direccion_empresa_inscripcion, nombre_jefe_empresa_inscripcion, cargo_jefe_empresa_inscripcion, telefono_jefe_empresa_inscripcion, email_jefe_empresa_inscripcion, arl, link_documentos, observaciones, responsable_inscripcion
       })
       if (error !== undefined) throw new DataNotValid(`Los datos ingresados del id ${inscriptionLength} no son válidos, verifícalos.`)
       inscriptionLength += 1
@@ -51,15 +39,11 @@ export const checkInscriptionData: RequestHandler<{}, Response, inscriptionData>
  * @param res La respuesta HTTP.
  * @param next Función para pasar al siguiente middleware.
  */
-export const checkInscriptionDetailData: RequestHandler<{ }, Response, inscripcionDetailData> = (req: Request, res: Response, next: NextFunction): void => {
-  const { responsable_aval } = req.params
-  const { estado_aval, observaciones, id_inscripcion } = req.body
+export const checkInscriptionDetailData: RequestHandler<{}, Response, inscripcionDetailData> = (req: Request, res: Response, next: NextFunction): void => {
+  const { id } = req.params
+  const { estado_aval, observaciones, responsable_aval } = req.body
   try {
-    const idUserNumber = Number(responsable_aval)
-    const idInscriptionNumber = Number(id_inscripcion)
-    if (isNaN(idInscriptionNumber)) throw new NumberIsNaN('El id del usuario no es un nÃ®mero.')
-    if (isNaN(idUserNumber)) throw new NumberIsNaN('El id del usuario no es un número.')
-    const { error } = inscriptionDetailSchema.validate({ id_inscripcion, responsable_aval, estado_aval, observaciones })
+    const { error } = inscriptionDetailSchema.validate({ id, responsable_aval, estado_aval, observaciones })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados no son válidos, verifícalos.')
     next()
   } catch (error) {
@@ -74,6 +58,25 @@ export const configureMulterExcel = (): RequestHandler => {
   return upload.single('excelFile')
 }
 
+function extractLinksFromExcel (worksheet: any, columnLetter: string): any[] {
+  const linksArray = []
+  for (const cell in worksheet) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (worksheet.hasOwnProperty(cell) && cell !== '!ref') {
+      const cellValue = worksheet[cell]
+      const columnIndex = XLSX.utils.decode_cell(cell).c
+      if (columnIndex === columnLetter.charCodeAt(0) - 'A'.charCodeAt(0)) {
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+        if (cellValue && cellValue?.l && cellValue?.l?.Target) {
+          linksArray.push(cellValue.l.Target)
+        }
+      }
+    }
+  }
+
+  return linksArray
+}
+
 export const readExcelFile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { file } = req
   try {
@@ -84,27 +87,81 @@ export const readExcelFile = async (req: Request, res: Response, next: NextFunct
     const worksheet = workbook.Sheets[sheetName]
     const excelData = XLSX.utils.sheet_to_json(worksheet, {
       raw: false,
-      dateNF: 'dd-mm-yyyy'
+      dateNF: 'dd-mm-yyyy',
+      blankrows: false
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const columnLetter = 'Z'
+    const linksArray = extractLinksFromExcel(worksheet, columnLetter)
+
     const dataToSend = await Promise.all(excelData.map(async (item: any) => {
-      const modalidad = item['Modalidad etapa practica']
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (item['Seleccione la Alternativa de Etapa Productiva que desea registrar'] === undefined || item['Seleccione la Alternativa de Etapa Productiva que desea registrar'].length === 0) return null
+      const modalidad = item['Seleccione la Alternativa de Etapa Productiva que desea registrar']
       const [result]: any[] = await connection.query('SELECT id_modalidad FROM modalidades where nombre_modalidad like ?', [`%${modalidad as string}%`])
-      const fechaTerminacionLectiva = item['Fecha de terminacion de la etapa lectiva']
-      const parts = fechaTerminacionLectiva.split('-')
 
-      if (parts.length !== 3) throw new DataNotValid('La fecha de terminación de la etapa lectiva no es válida, verifícalo.')
+      let fecha_lectiva_terminacion = item['Fecha de terminación de la etapa lectiva']
 
-      const dateParsed = new Date(parts[2], parts[1] - 1, parts[0]).toISOString().split('T')[0]
+      if (fecha_lectiva_terminacion) {
+        const partesFecha = fecha_lectiva_terminacion.split('/')
+
+        const mes: string = partesFecha[0].padStart(2, '0')
+        const dia: string = partesFecha[1].padStart(2, '0')
+        const año: string = partesFecha[2].padStart(4, '20')
+
+        const fechaFormateada = `${año}-${mes}-${dia}`
+
+        fecha_lectiva_terminacion = fechaFormateada
+      }
 
       return {
-        ...item,
-        'Modalidad etapa practica': result[0].id_modalidad,
-        'Fecha de terminacion de la etapa lectiva': dateParsed
+        nombre_inscripcion: item['Nombre Completo'] ?? null,
+        apellido_inscripcion: item['Apellidos completos'] ?? null,
+        tipo_documento_inscripcion: item['Tipo de Documento de Identidad'] ?? null,
+        documento_inscripcion: item['Numero de documento del aprendiz'] ?? null,
+        email_inscripcion: item['Correo electrónico del aprendiz'] ?? null,
+        inscripcion_celular: item['Número de celular del aprendiz'] ?? null,
+        etapa_actual_inscripcion: item['Seleccione la Etapa de Formación en la que se encuentra '] ?? null,
+        modalidad_inscripcion: result[0]?.id_modalidad ?? null,
+        nombre_programa_inscripcion: item['Nombre del Programa'] ?? null,
+        nivel_formacion_inscripcion: item['Nivel de formación'] ?? null,
+        numero_ficha_inscripcion: item['Número de ficha'] ?? null,
+        fecha_fin_lectiva_inscripcion: fecha_lectiva_terminacion ?? null,
+        nombre_instructor_lider_inscripcion: item['Nombre completo del instructor líder'] ?? null,
+        email_instructor_lider_inscripcion: item['Correo del instructor líder'] ?? null,
+        apoyo_sostenimiento_inscripcion: item['Recibe alguno de estos apoyos de sostenimiento'] ?? null,
+        nit_empresa_inscripcion: item['NIT de la Empresa'] ?? null,
+        nombre_empresa_inscripcion: item['Razón Social (Nombre de la Empresa)'] ?? null,
+        direccion_empresa_inscripcion: item['Direcciòn de la empresa '] ?? null,
+        nombre_jefe_empresa_inscripcion: item['Nombre Completo del Contacto en la Empresa (Jefe inmediato)'] ?? null,
+        cargo_jefe_empresa_inscripcion: item['Cargo del Contacto en la Empresa '] ?? null,
+        telefono_jefe_empresa_inscripcion: item['Teléfono de la Empresa o Jefe inmediato'] ?? null,
+        email_jefe_empresa_inscripcion: item['Correo Electrónico Contacto en la Empresa'] ?? null,
+        arl: item['Si su modalidad de práctica es Pasantía o Monitoria, quién asume el pago de la ARL?'] ?? null,
+        observaciones: item['Observaciones - Comentarios'] ?? null
       }
     }))
-    req.body.excelData = dataToSend
+
+    const filteredArray = dataToSend.filter((item) => item !== null).map((item, i) => {
+      const originalLink = linksArray[i]
+      const regex = /(?:\/open\?id=|\/file\/d\/|id=)([^/]+)/
+
+      const match = originalLink.match(regex)
+
+      // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+      if (match && match[1]) {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        const linkDrive = `https://drive.google.com/file/d/${match[1]}/preview`
+        return {
+          ...item,
+          link_documentos: linkDrive
+        }
+      }
+      return {
+        ...item,
+        link_documentos: originalLink
+      }
+    })
+
+    req.body.excelData = filteredArray
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)

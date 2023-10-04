@@ -1,7 +1,7 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { getClasses, getClassById, getClassByClassNumber, createClass, editClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber } from '../controllers/classes.controllers.js'
-import { checkClassData, checkClassDate, checkClassNumber, checkPracticalTeacherId } from '../middlewares/classes.middlewares.js'
+import { getClasses, getClassById, getClassByClassNumber, createClass, editClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber, getClassesFree, getClassByInstructorId, editLiderInstructorClass } from '../controllers/classes.controllers.js'
+import { checkClassData, checkClassDate, checkClassNumber, checkLiderTeacherId, checkPracticalTeacherId } from '../middlewares/classes.middlewares.js'
 
 const classRoutes: IRouter = Router()
 
@@ -11,6 +11,9 @@ const classRoutes: IRouter = Router()
 '/classes'. Cuando se realiza una solicitud GET a este punto final, se ejecutará la función
 `getClasses` del archivo 'classes.controllers.js'. */
 classRoutes.get('/classes', getClasses)
+
+/* `classRoutes.get('/studentsClassByClassNumber/:classNumber', checkClassNumber, getStudentsClassByClassNumber)` */
+classRoutes.get('/classesFree', getClassesFree)
 
 /* `classRoutes.get('/classesDetail', getClassDetail)` está definiendo una ruta GET para el punto final
 '/classesDetail'. Cuando se realiza una solicitud GET a este punto final, ejecutará la función del
@@ -29,6 +32,8 @@ GET para el punto final '/teacherClasses/:id'. Cuando se realiza una solicitud G
 final, ejecutará la función de middleware `checkIdReq` seguida de la función del controlador
 `getClassByTeacherId`. */
 classRoutes.get('/teacherClasses/:id', checkIdReq, getClassByPracticalInstructorId)
+
+classRoutes.get('/teacherLiderClasses/:id', checkIdReq, getClassByInstructorId)
 
 /* `classRoutes.get('/classNumber', checkClassNumber, getClassByClassNumber)` está definiendo una ruta
 GET para el punto final '/classNumber'. Cuando se realiza una solicitud GET a este punto final,
@@ -61,6 +66,8 @@ editPracticalInstructorClass)` define una ruta para el método PATCH en el extre
 de middleware `checkClassNumber`, seguida de la función de middleware `checkPracticalTeacherId` y,
 finalmente, la función de controlador `editPracticalInstructorClass`. */
 classRoutes.patch('/teacherClass', checkClassNumber, checkPracticalTeacherId, editPracticalInstructorClass)
+
+classRoutes.patch('/teacherLiderClass', checkClassNumber, checkLiderTeacherId, editLiderInstructorClass)
 
 /* La línea `classRoutes.patch('/dateClass', checkClassNumber, checkClassDate, editClassDates)` define
 una ruta para el método PATCH en el punto final '/dateClass'. Cuando se realiza una solicitud PATCH

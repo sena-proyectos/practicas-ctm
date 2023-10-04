@@ -8,7 +8,7 @@ export const mapValues = () => {
     'Numero de celular del aprendiz': 'inscripcion_celular',
     'Numero de ficha': 'numero_ficha_inscripcion',
     'Tipo de Documento de Identidad': 'tipo_documento_inscripcion',
-    'Nombre del programa': 'programa_formacion_inscripcion',
+    'Nombre del programa': 'nombre_programa_inscripcion',
     'Etapa de formacion': 'etapa_actual_inscripcion',
     'Nivel de formacion': 'nivel_formacion_inscripcion',
     'Nombre completo del instructor lider': 'nombre_instructor_lider_inscripcion',
@@ -23,7 +23,7 @@ export const mapValues = () => {
     'Teléfono de la Empresa o Jefe inmediato': 'telefono_jefe_empresa_inscripcion',
     'Correo electronico de la empresa o jefe inmediato': 'email_jefe_empresa_inscripcion',
     '¿Quién asume el pago de la ARL?': 'arl',
-    Observaciones: 'observaciones'
+    'Observaciones': 'observaciones'
   }
 
   return data

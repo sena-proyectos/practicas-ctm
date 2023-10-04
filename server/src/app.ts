@@ -1,8 +1,8 @@
 import express, { type IRouter, type Application, type Response, type Request } from 'express'
 import cors, { type CorsOptions } from 'cors'
-
-import { indexRoutes, roleRoutes, userRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes, unableRoutes, studentRoutes } from './routes/routes.js'
+import { indexRoutes, roleRoutes, userRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes, unableRoutes, studentRoutes, emailRoutes } from './routes/routes.js'
 import { httpStatus } from './models/httpStatus.enums.js'
+import bodyParser from 'body-parser'
 
 const app: Application = express()
 
@@ -14,13 +14,13 @@ const options: CorsOptions = {
 }
 
 app.use(cors(options))
-app.use(express.json())
+app.use(bodyParser.json({ limit: '10mb' }))
 
 const APILINK = '/api'
 
 app.use(indexRoutes)
 
-const routes: IRouter[] = [userRoutes, roleRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes, unableRoutes, studentRoutes]
+const routes: IRouter[] = [userRoutes, roleRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes, unableRoutes, studentRoutes, emailRoutes]
 
 for (const route of routes) {
   app.use(APILINK, route)

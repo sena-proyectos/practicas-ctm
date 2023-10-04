@@ -23,7 +23,7 @@ export interface inscriptionData {
   email_jefe_empresa_inscripcion?: string
   arl?: string
   link_documentos: string
-  observaciones: string
+  observaciones?: string
   estado_general_inscripcion?: string
   fecha_creacion?: Date
   responsable_inscripcion: string

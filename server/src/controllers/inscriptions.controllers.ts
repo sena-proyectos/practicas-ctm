@@ -15,7 +15,7 @@ import { errorCodes } from '../models/errorCodes.enums.js'
  */
 export const getInscriptions = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const [inscriptions] = await connection.query('SELECT i.*, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" GROUP BY i.id_inscripcion')
+    const [inscriptions] = await connection.query('SELECT i.*, m.nombre_modalidad, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i INNER JOIN modalidades m ON i.modalidad_inscripcion = m.id_modalidad LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END, i.fecha_creacion DESC;')
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -59,6 +59,24 @@ export const getInscriptionsDetailsByInscription: RequestHandler<{ id: string },
     // ! El limit y el offset son obligatorios, de esta forma evitar tantos datos en una busqueda grande.
     const [inscriptions] = await connection.query('SELECT * FROM detalles_inscripciones WHERE id_inscripcion = ? LIMIT ? OFFSET ?', [idNumber, limitNumber, offsetNumber])
     return res.status(httpStatus.OK).json({ data: inscriptions })
+  } catch (err) {
+    return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
+  }
+}
+
+export const getInscriptionsDetailsById: RequestHandler<{ id: string }, Response, unknown> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id: id_inscripcion } = req.params
+  const idNumber = Number(id_inscripcion)
+
+  try {
+    const [inscriptions] = await connection.query('SELECT detalles_inscripciones.*, inscripciones.fecha_creacion FROM detalles_inscripciones LEFT JOIN inscripciones ON inscripciones.id_inscripcion = detalles_inscripciones.id_inscripcion WHERE detalles_inscripciones.id_detalle_inscripcion = ?', [idNumber])
+    const formattedInscriptions = (inscriptions as Array<{ fecha_modificacion: Date, fecha_creacion: Date }>).map((inscription) => {
+      const formattedDate = new Date(inscription.fecha_modificacion).toLocaleString()
+      const formattedDateCreation = new Date(inscription.fecha_creacion).toLocaleDateString()
+      return { ...inscription, fecha_modificacion: formattedDate, fecha_creacion: formattedDateCreation }
+    })
+
+    return res.status(httpStatus.OK).json({ data: formattedInscriptions })
   } catch (err) {
     return handleHTTP(res, new DbErrorNotFound('No se encontraron datos'))
   }
@@ -137,13 +155,14 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
  * @returns Respuesta JSON con mensaje de éxito o un error.
  */
 export const editInscriptionDetail: RequestHandler<{}, Response, inscripcionDetailData> = async (req: Request, res: Response) => {
-  const { responsable_aval } = req.params
-  const { estado_aval, observaciones, id_inscripcion } = req.body
+  const { id } = req.params
+  const { estado_aval, observaciones, responsable_aval } = req.body
   try {
-    const [result] = await connection.query('UPDATE detalles_inscripciones SET estado_aval = ?, observaciones = ? WHERE id_inscripcion = ? AND responsable_aval = ?', [estado_aval, observaciones, id_inscripcion, responsable_aval])
+    const [result] = await connection.query('UPDATE detalles_inscripciones SET estado_aval = IFNULL(?, estado_aval), observaciones = IFNULL(?, observaciones), responsable_aval = IFNULL(?, responsable_aval) WHERE id_detalle_inscripcion = ?', [estado_aval, observaciones, responsable_aval, id])
     if (!Array.isArray(result) && result?.affectedRows === 0) throw new DbError('No se pudo actualizar la modalidad de etapa práctica')
-    return res.status(httpStatus.OK).json({ message: 'Modalidad de etapa práctica actualizada con éxito' })
+    return res.status(httpStatus.OK).json({ message: 'Aval de inscripción actualizada con éxito' })
   } catch (error) {
+    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
@@ -175,12 +194,10 @@ export const returnExcelData = async (req: Request, res: Response): Promise<Resp
     const [rows] = await connection.query('SELECT documento_inscripcion FROM inscripciones WHERE estado_general_inscripcion <> "Rechazado"')
 
     if (Array.isArray(rows)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const existingDocumentos = rows.map((row: any) => row.documento_inscripcion)
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const filteredDataArray = excelData.filter((item: any) => {
-        const documentoAprendiz = String(item['Numero de documento del aprendiz'])
+        const documentoAprendiz = item?.documento_inscripcion
         const shouldInclude = !existingDocumentos.includes(documentoAprendiz)
         return shouldInclude
       })
@@ -189,6 +206,17 @@ export const returnExcelData = async (req: Request, res: Response): Promise<Resp
     } else {
       throw new DataNotValid('Excel no válido')
     }
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const getInscriptionsDetailsByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
+  const { nombreCompleto } = req.query
+  try {
+    const [inscription] = await connection.query('SELECT i.*, m.nombre_modalidad, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i INNER JOIN modalidades m ON i.modalidad_inscripcion = m.id_modalidad LEFT JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.estado_aval = "Aprobado" WHERE CONCAT(i.nombre_inscripcion, " ", i.apellido_inscripcion) LIKE ? GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END, i.fecha_creacion DESC', [`%${nombreCompleto as string}%`])
+    if (!Array.isArray(inscription) || inscription?.length === 0) throw new DbErrorNotFound('No se encontró el registro.')
+    return res.status(httpStatus.OK).json({ data: inscription })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }

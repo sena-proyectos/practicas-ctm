@@ -1,394 +1,1935 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef, useState, Fragment } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { Slide, toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 // icons
-import { BsCheck2Circle } from 'react-icons/bs'
-import { LuArrowRight, LuChevronDown, LuArrowLeft } from 'react-icons/lu'
-import { AiOutlineCloudUpload } from 'react-icons/ai'
+import { LuSave } from 'react-icons/lu'
 import { IoReturnDownBack } from 'react-icons/io5'
+import { PiCheckCircleBold, PiXCircleBold } from 'react-icons/pi'
+import { FaGoogleDrive } from 'react-icons/fa'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
-import { idTypes, modalities, etapasFormacion, nivelFormacion, apoyoSostenimiento, pagoArl, dataInscription, keysRoles } from '../../import/staticData'
-import { getInscriptionById, getInscriptionDetails } from '../../api/httpRequest'
+import { colorTextStatus, keysRoles } from '../../import/staticData'
+
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById, registerUser, getInfoTeacherByID, getCoordinators, getCoordinatorNameByID } from '../../api/httpRequest'
+import { AiFillEdit, AiOutlineFullscreen } from 'react-icons/ai'
+import { checkApprovementData } from '../../validation/approvementValidation'
+import Cookies from 'js-cookie'
+import decode from 'jwt-decode'
+import { inscriptionStore } from '../../store/config'
+import { Card3D } from '../Utils/Card/Card'
+import { randomNumberGenerator } from '../Utils/randomNumberGenerator'
 
 export const RegisterDetails = () => {
-  const [showDataEmpresa, setShowDataEmpresa] = useState(false)
-  const [showDataAprendiz, setShowDataAprendiz] = useState(true)
-  const [showDataAvales, setShowDataAvales] = useState(false)
-  const [inscriptionById, setInscriptionById] = useState()
-  const [inscriptionDetails, setInscriptionDetails] = useState()
   const { id } = useParams()
+  const { setInscriptionData } = inscriptionStore()
 
   const idRol = Number(localStorage.getItem('idRol'))
+  const [inscriptionAprendiz, setInscriptionAprendiz] = useState([])
+  const [details, setDetails] = useState({})
+  const [linkDocs, setLinkDocs] = useState('')
 
   useEffect(() => {
     getInscriptionAprendiz(id)
     getDetallesInscripcion(id)
   }, [id])
 
-  const handleChangeSection = (section) => {
-    setShowDataEmpresa(section === 'empresa')
-    setShowDataAprendiz(section === 'aprendiz')
-    setShowDataAvales(section === 'avales')
+  /**
+   * Función para obtener la pestaña seleccionada actualmente.
+   *
+   * @function
+   * @name getSelectedTab
+   * @returns {string} - Nombre de la pestaña seleccionada.
+   *
+   * @example
+   * const pestañaSeleccionada = getSelectedTab();
+   */
+  const getSelectedTab = () => {
+    const savedTab = JSON.parse(sessionStorage.getItem('currentDetailTab'))
+    if (!savedTab) return 'infoAprendiz'
+    if (savedTab.paramLink !== id) return 'infoAprendiz'
+    return savedTab.lastTab
   }
 
-  const inputRefs = {
-    apellido_inscripcion: useRef(null),
-    nombre_inscripcion: useRef(null),
-    documento_inscripcion: useRef(null),
-    email_inscripcion: useRef(null),
-    inscripcion_celular: useRef(null),
-    numero_ficha_inscripcion: useRef(null),
-    nombre_programa_inscripcion: useRef(null),
-    nombre_instructor_lider_inscripcion: useRef(null),
-    email_instructor_lider_inscripcion: useRef(null),
-    tipo_documento_inscripcion: useRef(null),
-    modalidad_inscripcion: useRef(null),
-    fecha_fin_lectiva_inscripcion: useRef(null),
-    apoyo_sostenimiento_inscripcion: useRef(null),
-    etapa_actual_inscripcion: useRef(null),
-    nivel_formacion_inscripcion: useRef(null),
-    nit_empresa_inscripcion: useRef(null),
-    telefono_jefe_empresa_inscripcion: useRef(null),
-    email_jefe_empresa_inscripcion: useRef(null),
-    nombre_empresa_inscripcion: useRef(null),
-    direccion_empresa_inscripcion: useRef(null),
-    nombre_jefe_empresa_inscripcion: useRef(null),
-    cargo_jefe_empresa_inscripcion: useRef(null),
-    arl: useRef(null),
-    observaciones: useRef(null)
-  }
+  /**
+   * Estado local para almacenar la pestaña seleccionada.
+   *
+   * @constant
+   * @name selectedTab
+   * @type {string}
+   *
+   * @example
+   * const pestañaActual = selectedTab;
+   */
+  const [selectedTab, setSelectedTab] = useState(getSelectedTab)
 
+  /**
+   * Función para actualizar la pestaña seleccionada en el almacenamiento de sesión.
+   *
+   * @function
+   * @returns {void}
+   *
+   */
+  useEffect(() => {
+    const payload = JSON.stringify({ lastTab: selectedTab, paramLink: id })
+    sessionStorage.setItem('currentDetailTab', payload)
+  }, [selectedTab])
+
+  /**
+   * Función para obtener los datos de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getInscriptionAprendiz
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getInscriptionAprendiz(idAprendiz);
+   */
   const getInscriptionAprendiz = async (id) => {
     try {
       const response = await getInscriptionById(id)
-      const res = response.data.data[0]
-      setInscriptionById(res)
-
-      Object.keys(res).forEach((fieldName) => {
-        if (inputRefs[fieldName] && inputRefs[fieldName].current) {
-          inputRefs[fieldName].current.value = res[fieldName]
-        }
-      })
+      const res = response.data.data
+      setInscriptionData(res[0])
+      const { link_documentos } = res[0]
+      setLinkDocs(link_documentos)
+      setInscriptionAprendiz(res)
     } catch (error) {
-      console.log('Ha ocurrido un error al mostrar los datos del usuario')
+      console.error('Ha ocurrido un error al mostrar los datos del usuario')
     }
   }
 
+  /**
+   * Función para obtener los detalles de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getDetallesInscripcion
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getDetallesInscripcion(idAprendiz);
+   */
   const getDetallesInscripcion = async (id) => {
     try {
       const response = await getInscriptionDetails(id)
-      // id === Cookies.id => habilitado ? desha
-      setInscriptionDetails(response)
+      const res = response.data.data
+      setDetails({ documentosId: res[0].id_detalle_inscripcion, rapsId: res[1].id_detalle_inscripcion, funcionesId: res[2].id_detalle_inscripcion, avalId: res[3].id_detalle_inscripcion })
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
-  const option = [
-    { value: 'Sergio Soto Henao', key: 'Sergio Soto Henao' },
-    { value: 'Marianela Henao Atehortúa', key: 'Marianela Henao Atehortúa' },
-    { value: 'Jaime León Vergara Areiza', key: 'Jaime León Vergara Areiza' },
-    { value: 'Mauro Isaías Arango Vanegas', key: 'Mauro Isaías Arango Vanegas' }
-  ]
-
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
+      <ToastContainer transition={Slide} theme='colored' />
       <Siderbar />
-      <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
-        <header className='grid place-items-center'>
-          <h1 className='text-2xl font-bold text-center place-self-center'>{showDataAprendiz === true ? 'Datos del aprendiz' : showDataEmpresa === true ? 'Datos de la empresa' : 'Avales'}</h1>
+      <section className='relative grid flex-auto gap-2 w-min grid-rows-3-10-75-15'>
+        <header className='border-b-1 w-[70%] mx-auto border-b-zinc-300 h-[9vh]'>
+          <ul className='flex flex-row items-center justify-around h-full'>
+            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoAprendiz' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoAprendiz')}>
+              Info. Aprendiz
+            </li>
+            <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoEmpresa' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoEmpresa')}>
+              Info. Empresa
+            </li>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''} hover:text-purple-800`} onClick={() => setSelectedTab('raps')}>
+                RAPS
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
+              <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
+                Documentos
+              </li>
+            )}
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <li className={`text-sm font-light cursor-pointer ${selectedTab === 'coordinador' ? 'font-medium text-purple-800' : ''} hover:text-purple-800`} onClick={() => setSelectedTab('coordinador')}>
+                Coordinador
+              </li>
+            )}
+          </ul>
         </header>
         <section>
-          <form action='' className='flex flex-col mt-3 gap-y-6'>
-            <div className={showDataAprendiz ? 'visible' : 'hidden'}>
-              <section className='grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
-                {dataInscription.dataAprendiz.map((item, i) => {
-                  const inputRef = inputRefs[item.name]
-                  const isDisabled = idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[3])
-                  return (
-                    <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
-                      <label htmlFor='nombre' className='text-sm font-normal'>
-                        {item.label} {item.required && <span className='font-medium text-red-600'>*</span>}
-                      </label>
-                      {item.type === 'number' ? (
-                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
-                      ) : item.type === 'select' ? (
-                        <div className='relative'>
-                          <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                            <LuChevronDown />
-                          </span>
-                          <select name={item.name} ref={inputRef} className={`border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none ${isDisabled && 'bg-zinc-200 border-zinc-300 text-zinc-500'}`} disabled={isDisabled}>
-                            <option value={''}>Sin seleccionar</option>
-                            {item.name === 'tipo_documento_inscripcion'
-                              ? idTypes.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : item.name === 'modalidad_inscripcion'
-                              ? modalities.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : item.name === 'etapa_actual_inscripcion'
-                              ? etapasFormacion.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : item.name === 'nivel_formacion_inscripcion'
-                              ? nivelFormacion.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : item.name === 'apoyo_sostenimiento_inscripcion'
-                              ? apoyoSostenimiento.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : null}
-                          </select>
-                        </div>
-                      ) : item.type === 'date' ? (
-                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
-                      ) : (
-                        <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
-                      )}
-                    </div>
-                  )
-                })}
-              </section>
-            </div>
-            <div className={showDataEmpresa ? 'visible' : 'hidden'}>
-              <section className='grid w-11/12 mx-auto gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
-                {dataInscription.dataEmpresa.map((item, i) => {
-                  const inputRef = inputRefs[item.name]
-                  const isDisabled = idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[3])
-                  return (
-                    <div className='flex flex-col w-full m-auto text-gray-400' key={i}>
-                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                        {item.label} {item.required && <span className='font-medium text-red-600'>*</span>}
-                      </label>
-                      {item.type === 'number' ? (
-                        <div className='relative'>
-                          <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
-                        </div>
-                      ) : item.type === 'file' ? (
-                        <div className='relative'>
-                          <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                            <AiOutlineCloudUpload />
-                          </span>
-                          <div className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2'>
-                            <input type={item.type} accept={item.accept} name={item.name} className='w-5/6 text-xs cursor-pointer file:hidden whitespace-break-spaces' disabled={isDisabled} />
-                          </div>
-                        </div>
-                      ) : item.type === 'select' ? (
-                        <div className='relative'>
-                          <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                            <LuChevronDown />
-                          </span>
-                          <select name={item.name} ref={inputRef} className={`border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1.5 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none ${isDisabled && 'bg-zinc-200 border-zinc-300 text-zinc-500'}`} disabled={isDisabled}>
-                            <option value={''}>Sin seleccionar</option>
-                            {item.name === 'arl'
-                              ? pagoArl.map((item, i) => {
-                                  return (
-                                    <option value={item.value} key={i}>
-                                      {item.name}
-                                    </option>
-                                  )
-                                })
-                              : null}
-                          </select>
-                        </div>
-                      ) : item.type === 'textarea' ? (
-                        <div className='relative'>
-                          <textarea id='editor' rows='3' ref={inputRef} className={`block w-full px-0 max-h-[5.5rem] overflow-y-auto resize-none rounded-md border-[1.2px]  py-[0.9px] pl-3 text-sm focus:outline-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} placeholder={item.placeholder} required disabled={isDisabled} />
-                        </div>
-                      ) : (
-                        <div className='relative'>
-                          <input type={item.type} name={item.name} ref={inputRef} className={`w-full rounded-md border-[1.2px]  py-1 pl-2 text-sm focus:outline-none [appearance:textfield] [&::-webit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isDisabled ? 'bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2]' : 'bg-white border-gray-400 focus:text-gray-900 text-black focus:bg-white focus:outline-none'}`} autoComplete='on' placeholder={item.placeholder} disabled={isDisabled} />
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </section>
-            </div>
-            <div className={`w-11/12 mx-auto flex flex-col gap-5 ${showDataAvales ? 'visible' : 'hidden'}`}>
-              <section className='grid gap-y-3 gap-x-6 sm:grid-cols-2 md:grid-cols-3'>
-                {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-                  <>
-                    <div className='flex flex-col w-full m-auto text-gray-400'>
-                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                        Coordinador Responsable
-                      </label>
-                      <Select placeholder='Coordinador' rounded='rounded-md' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} />
-                    </div>
+          <div className={`${selectedTab === 'infoAprendiz' ? 'visible' : 'hidden'}`}>
+            <InfoAprendiz inscriptionAprendiz={inscriptionAprendiz} />
+          </div>
+          <div className={`${selectedTab === 'infoEmpresa' ? 'visible' : 'hidden'}`}>
+            <InfoEmpresa inscriptionAprendiz={inscriptionAprendiz} />
+          </div>
+          <div className={`${selectedTab === 'documentos' ? 'visible h-full' : 'hidden'}`}>
+            <Docs idRol={idRol} linkDocs={linkDocs} avalDocumentos={details.documentosId} avalFunciones={details.funcionesId} />
+          </div>
+          <div className={`${selectedTab === 'raps' ? 'visible' : 'hidden'}`}>
+            <RAPS idRol={idRol} avalRaps={details.rapsId} />
+          </div>
+          <div className={`${selectedTab === 'coordinador' ? 'visible' : 'hidden'}`}>
+            <Coordinador idRol={idRol} avalCoordinador={details.avalId} />
+          </div>
 
-                    <div className='flex flex-col w-full m-auto text-gray-400'>
-                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                        Instructor de Seguimiento
-                      </label>
-                      <div className='relative'>
-                        <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                          <LuChevronDown />
-                        </span>
-                        <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                          <option value=''>Sin seleccionar</option>
-                          <option value=''>Instructor 1</option>
-                          <option value=''>Instructor 2</option>
-                          <option value=''>Instructor 3</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className='flex flex-col w-full m-auto text-gray-400'>
-                      <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                        Instructor Líder
-                      </label>
-                      <div className='relative'>
-                        <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                          <LuChevronDown />
-                        </span>
-                        <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                          <option value=''>Sin seleccionar</option>
-                          <option value=''>Instructor 1</option>
-                          <option value=''>Instructor 2</option>
-                          <option value=''>Instructor 3</option>
-                        </select>
-                      </div>
-                    </div>
-                    {/* <div className="flex flex-col w-full m-auto text-gray-400">
-                      <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
-                        Instructor de Seguimiento
-                      </label>
-                      <div className="relative">
-                        <input type="text" className="w-full rounded-md border-[1.2px] bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2] py-1 pl-2 text-sm  focus:outline-none" autoComplete="on" disabled />
-                      </div>
-                    </div>
-                    <div className="flex flex-col w-full m-auto text-gray-400">
-                      <label htmlFor="nombre" className="text-sm font-normal whitespace-nowrap">
-                        Instructor Líder
-                      </label>
-                      <div className="relative">
-                        <input type="text" className="w-full rounded-md border-[1.2px] bg-[#ececee] border-[#e0e0e3] text-[#9b9ba2] py-1 pl-2 text-sm  focus:outline-none" autoComplete="on" disabled />
-                      </div>
-                    </div> */}
-                  </>
-                )}
-                {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-                  <div className='flex flex-col w-full m-auto text-gray-400'>
-                    <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                      Aval Coordinador
-                    </label>
-                    <div className='relative'>
-                      <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                        <LuChevronDown />
-                      </span>
-                      <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                        <option value={''}>Sin seleccionar</option>
-                        <option value=''>Si</option>
-                        <option value=''>No</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-                {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
-                  <div className='flex flex-col w-full m-auto text-gray-400'>
-                    <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                      Aval Instructor Seguimiento
-                    </label>
-                    <div className='relative'>
-                      <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                        <LuChevronDown />
-                      </span>
-                      <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                        <option value={''}>Sin seleccionar</option>
-                        <option value=''>Si</option>
-                        <option value=''>No</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-                {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
-                  <div className='flex flex-col w-full m-auto text-gray-400'>
-                    <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                      Aval Instructor Líder
-                    </label>
-                    <div className='relative'>
-                      <span className='absolute inset-y-0 flex items-center text-xl font-bold pointer-events-none right-3'>
-                        <LuChevronDown />
-                      </span>
-                      <select className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-1 pl-2 text-sm text-black focus:bg-white focus:outline-none appearance-none'>
-                        <option value={''}>Sin seleccionar</option>
-                        <option value=''>Si</option>
-                        <option value=''>No</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-              </section>
-              <div className='flex flex-col text-gray-400'>
-                <label htmlFor='nombre' className='text-sm font-normal whitespace-nowrap'>
-                  Observaciones
-                </label>
-                <div className='relative'>
-                  <textarea className='w-full h-16 border-gray-400 min-h-[6rem] resize-none focus:text-gray-900 rounded-md border-[1.2px] bg-white py-1 px-3 text-sm text-black focus:bg-white focus:outline-none' placeholder='Deja aquí cualquier observación...' />
-                </div>
-              </div>
-            </div>
-          </form>
-          <div className='absolute top-7 left-11'>
+          <div className='absolute top-4 left-8'>
             <Link to='/registros' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
               <IoReturnDownBack />
               Salir
             </Link>
           </div>
-          <div className='flex flex-row justify-center mx-auto'>
-            <div className='absolute bottom-20 '>
-              <Button value={'Guardar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' icon={<BsCheck2Circle className='text-xl' />} />
-            </div>
-            {showDataEmpresa && (
-              <>
-                <div className='absolute left-12 bottom-20'>
-                  <Button value={'Regresar'} rounded='rounded-full' bg='bg-sky-600' px='px-4' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('aprendiz')} icon={<LuArrowLeft className='text-xl' />} />
-                </div>
-                <div className='absolute right-12 bottom-20'>
-                  <Button value={'Continuar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('avales')} icon={<LuArrowRight className='text-xl' />} />
-                </div>
-              </>
-            )}
-            {showDataAprendiz && (
-              <div className='absolute right-12 bottom-20'>
-                <Button value={'Continuar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('empresa')} icon={<LuArrowRight className='text-xl' />} />
-              </div>
-            )}
-            {showDataAvales && (
-              <div className='absolute left-12 bottom-20'>
-                <Button value={'Regresar'} rounded='rounded-full' bg='bg-sky-600' px='px-4' py='py-[6px]' textSize='text-base' font='font-medium' textColor='text-white' clickeame={() => handleChangeSection('empresa')} icon={<LuArrowLeft className='text-xl' />} />
-              </div>
-            )}
-          </div>
         </section>
         <Footer />
       </section>
     </main>
+  )
+}
+
+const InfoAprendiz = ({ inscriptionAprendiz }) => {
+  return (
+    <section className={`w-[85%] p-2 mx-auto`}>
+      {inscriptionAprendiz.map((x) => {
+        return (
+          <section className='flex flex-col gap-4' key={x.id_inscripcion}>
+            <div>
+              <h2 className='text-lg font-semibold text-center uppercase'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</h2>
+              <h5 className='font-light text-center'>{x.email_inscripcion}</h5>
+              <h5 className='font-light text-center'>{`${x.tipo_documento_inscripcion} ${x.documento_inscripcion}`}</h5>
+              <p className='font-light text-center'>{x.inscripcion_celular}</p>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Información Acádemica</h2>
+            <div className='grid grid-cols-2 gap-2'>
+              <div className='flex flex-col gap-2'>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Tipo Modalidad:</h4>
+                  <p>{x.modalidad_inscripcion === '1' ? 'Pasantías' : x.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : x.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : x.modalidad_inscripcion === '4' ? 'Monitoría' : x.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</p>
+                </article>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Fin Lectiva:</h4>
+                  <p>{x.fecha_fin_lectiva_inscripcion}</p>
+                </article>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Etapa Formación:</h4>
+                  <p>{x.etapa_actual_inscripcion}</p>
+                </article>
+              </div>
+              <div className='flex flex-col gap-2'>
+                <p className='text-right'>{x.numero_ficha_inscripcion}</p>
+                <p className='text-right'>{x.nivel_formacion_inscripcion}</p>
+                <p className='text-right'>{x.nombre_programa_inscripcion}</p>
+              </div>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Responsable de la Inscripción</h2>
+            <div className='flex flex-row justify-around gap-9'>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Fecha Creación:</h4>
+                <p>{x.fecha_creacion.split('T')[0]}</p>
+              </article>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Encargado:</h4>
+                <p>{x.responsable_inscripcion}</p>
+              </article>
+            </div>
+          </section>
+        )
+      })}
+    </section>
+  )
+}
+
+const InfoEmpresa = ({ inscriptionAprendiz }) => {
+  return (
+    <section className={`w-[85%] p-2 mx-auto`}>
+      {inscriptionAprendiz.map((x) => {
+        return (
+          <section className='flex flex-col gap-3' key={x.id_inscripcion}>
+            <div>
+              <h2 className='text-lg font-semibold text-center uppercase'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</h2>
+              <h5 className='font-light text-center'>{x.email_inscripcion}</h5>
+              <h5 className='font-light text-center'>{`${x.tipo_documento_inscripcion} ${x.documento_inscripcion}`}</h5>
+              <p className='font-light text-center'>{x.inscripcion_celular}</p>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Información Empresa</h2>
+            <div className={`${!x.nit_empresa_inscripcion ? 'flex flex-col' : 'grid grid-cols-2 gap-2'}`}>
+              <div className={`flex ${!x.nit_empresa_inscripcion ? 'flex-row justify-between' : ' flex-col gap-3'}`}>
+                <div className={`${!x.nit_empresa_inscripcion ? 'hidden' : 'flex flex-row justify-start gap-5'}`}>
+                  <p className='text-left'>{x.nit_empresa_inscripcion}</p>
+                  <p className='text-left'>{x.nombre_empresa_inscripcion}</p>
+                </div>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>¿Quién asume el ARL?</h4>
+                  <p>{x.arl}</p>
+                </article>
+                <article className='flex flex-row gap-2'>
+                  <h4 className='font-medium'>Observaciones</h4>
+                  <p>{x.observaciones}</p>
+                </article>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <p className='text-right'>{x.nombre_jefe_empresa_inscripcion}</p>
+                <p className='text-right'>{x.cargo_jefe_empresa_inscripcion}</p>
+                <p className='text-right'>{x.telefono_jefe_empresa_inscripcion}</p>
+                <p className='text-right'>{x.email_jefe_empresa_inscripcion}</p>
+              </div>
+            </div>
+            <hr className='border-[1px] border-slate-300' />
+            <h2 className='text-lg font-medium text-center'>Responsable de la Inscripción</h2>
+            <div className='flex flex-row justify-around gap-9'>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Fecha Creación:</h4>
+                <p>{x.fecha_creacion.split('T')[0]}</p>
+              </article>
+              <article className='flex flex-row gap-2'>
+                <h4 className='font-medium'>Encargado:</h4>
+                <p>{x.responsable_inscripcion}</p>
+              </article>
+            </div>
+          </section>
+        )
+      })}
+    </section>
+  )
+}
+
+const Coordinador = ({ idRol, avalCoordinador }) => {
+  const { id } = useParams()
+  const [avalInfo, setAvalInfo] = useState([])
+  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
+  const descriptionRef = useRef(null)
+  const formRef = useRef(null)
+  const [dataAprendiz, setDataAprendiz] = useState([])
+  const [dataEmpresa, setDataEmpresa] = useState([])
+  const [dataAdmins, setDataAdmins] = useState([{ id_usuario: Number(), nombre_completo: String() }])
+  const [coordinatorFullName, setCoordinatorFullName] = useState(null)
+  const [idUser, setIdUser] = useState(0)
+  const [user, setUser] = useState(0)
+  const prevUserIdRef = useRef()
+
+  const { inscriptionData } = inscriptionStore()
+  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
+
+  /**
+   * Función para obtener la información de un aval por su ID.
+   *
+   * @async
+   * @function
+   * @name fetchInfo
+   * @returns {void}
+   *
+   * @example
+   * fetchInfo();
+   */
+  const fetchInfo = async () => {
+    try {
+      const res = await getAvalById(avalCoordinador)
+      const { data } = res.data
+      const idPayload = data[0].responsable_aval
+      if (idPayload !== null) {
+        getCoordinatorName(idPayload)
+      }
+      setAvalInfo(data)
+    } catch (error) {
+      toast.error('Error al conseguir los datos del aval')
+    }
+  }
+
+  const getCoordinatorName = async (payload) => {
+    try {
+      const res = await getCoordinatorNameByID(payload)
+      const { nombre_completo } = res.data
+      setCoordinatorFullName(nombre_completo)
+    } catch (error) {
+      toast.error('Error al conseguir los datos del aval')
+    }
+  }
+
+  /**
+   * Efecto para almacenar el ID de usuario previo.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
+  useEffect(() => {
+    prevUserIdRef.current = idUser
+  }, [idUser])
+
+  /**
+   * Efecto para realizar acciones cuando el ID de usuario cambia después de la primera vez.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
+  useEffect(() => {
+    if (prevUserIdRef.current !== 0) {
+      // Realiza la lógica que necesitas cuando idUser cambia después de la primera vez.
+      getUser(idUser)
+    }
+  }, [idUser])
+
+  /**
+   * Efecto para realizar acciones cuando se actualiza el valor de `avalCoordinador`.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
+  useEffect(() => {
+    if (avalCoordinador) fetchRaps()
+  }, [avalCoordinador])
+
+  /**
+   * Efecto para obtener los datos de inscripción del aprendiz y sus detalles.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
+  useEffect(() => {
+    const fetchData = async () => {
+      await getInscriptionAprendiz(id)
+      await getDetallesInscripcion(id)
+    }
+    fetchData()
+  }, [id])
+
+  /**
+   * Función para obtener los datos de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getInscriptionAprendiz
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getInscriptionAprendiz(idAprendiz);
+   */
+  const getInscriptionAprendiz = async (id) => {
+    try {
+      const response = await getInscriptionById(id)
+      const res = response.data.data
+      setDataAprendiz(res)
+    } catch (error) {
+      toast.error('Error al conseguir los datos del aprendiz')
+    }
+  }
+
+  /**
+   * Función para obtener los detalles de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getDetallesInscripcion
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getDetallesInscripcion(idAprendiz);
+   */
+  const getDetallesInscripcion = async (id) => {
+    try {
+      const response = await getInscriptionDetails(id)
+      const res = response.data.data
+      const res2 = response.data.data[1].responsable_aval
+      setDataEmpresa(res)
+      setIdUser(res2)
+    } catch (error) {
+      toast.error('Error al conseguir los detalles de la inscripción')
+    }
+  }
+
+  /**
+   * Función para obtener los datos de un usuario por su ID.
+   *
+   * @async
+   * @function
+   * @name getUser
+   * @param {string} id - ID del usuario.
+   * @returns {void}
+   *
+   * @example
+   * const idUsuario = '123456';
+   * getUser(idUsuario);
+   */
+  const getUser = async (id) => {
+    const response = await getUserById(id)
+    const res = response.data.data[0].nombres_usuario
+    const res2 = response.data.data[0].apellidos_usuario
+    setUser(res + ' ' + res2)
+  }
+
+  /**
+   * Función para obtener los datos de raps.
+   *
+   * @async
+   * @function
+   * @name fetchRaps
+   * @returns {void}
+   *
+   * @example
+   * fetchRaps();
+   */
+  const fetchRaps = async () => {
+    const res = await getAvalById(avalCoordinador)
+    const { data } = res.data
+    setAvalInfo(data)
+  }
+
+  useEffect(() => {
+    if (avalCoordinador) fetchInfo()
+  }, [avalCoordinador])
+
+  const saveAllAdmins = async () => {
+    try {
+      const { data } = await getCoordinators()
+      const payload = data.map((admin) => {
+        return {
+          key: admin.id_usuario,
+          value: admin.nombre_completo
+        }
+      })
+      setDataAdmins(payload)
+    } catch (error) {
+      toast.error('Error al conseguir los administradores')
+    }
+  }
+
+  useEffect(() => {
+    saveAllAdmins()
+  }, [])
+
+  /**
+   * Función para validar y habilitar el botón de envío del formulario.
+   *
+   * @function
+   * @name handleSubmitButton
+   * @returns {void}
+   *
+   * @example
+   * handleSubmitButton();
+   */
+  const handleSubmitButton = () => {
+    if (!selectedApproveButton) return
+    if (descriptionRef.current.value.length === 0) {
+      setDisableSubmitButton(true)
+      return
+    }
+    if (coordinatorFullName === null) {
+      setDisableSubmitButton(true)
+      return
+    }
+    setDisableSubmitButton(false)
+  }
+
+  /**
+   * Función para seleccionar el botón de aprobación.
+   *
+   * @function
+   * @name selectButtonToSubmit
+   * @param {string} value - Valor del botón de aprobación.
+   * @returns {void}
+   *
+   * @example
+   * selectButtonToSubmit('Si');
+   */
+  const selectButtonToSubmit = (value) => {
+    setSelectedApproveButton(value)
+    if (descriptionRef.current.value.length === 0 || !value) {
+      setDisableSubmitButton(true)
+      return
+    }
+    setDisableSubmitButton(false)
+  }
+
+  /**
+   * Función para manejar el envío del formulario de aval.
+   *
+   * @async
+   * @function
+   * @name handleAvalForm
+   * @param {object} e - Evento del formulario.
+   * @returns {void}
+   *
+   * @example
+   * const eventoFormulario = { target: { value: 'Valor' } };
+   * handleAvalForm(eventoFormulario);
+   */
+  const handleAvalForm = async (e) => {
+    e.preventDefault()
+    const approveOptions = { Si: 'Si', No: 'No' }
+
+    const formData = new FormData(formRef.current)
+    formData.append('approveOption', approveOptions[selectedApproveButton])
+    const observations = formData.get('observations')
+    const approveOption = formData.get('approveOption')
+    try {
+      await checkApprovementData({ observations, approveOption })
+      const loadingToast = toast.loading('Enviando...')
+      if (selectedApproveButton === approveOptions.Si) return acceptApprove({ observations, approveOption, avalCoordinador }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyApprove({ observations, approveOption, avalCoordinador }, loadingToast)
+    } catch (err) {
+      if (toast.isActive('loadingToast')) return
+      toast.error('Los campos son incorrectos, corríjalos.', {
+        toastId: 'error-full-docs',
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeButton: true,
+        type: 'error',
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored'
+      })
+    }
+  }
+
+  /**
+   * Función para aceptar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name acceptApprove
+   * @param {object} payload - Datos para la aprobación.
+   * @param {string} toastId - ID del toast.
+   * @returns {void}
+   *
+   * @example
+   * const datosAprobacion = { observations: 'Observaciones', approveOption: 'Si', avalCoordinador: 123 };
+   * const toastId = 'toast-id';
+   * acceptApprove(datosAprobacion, toastId);
+   */
+  const acceptApprove = async (payload, toastId) => {
+    const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
+    const id = payload.avalCoordinador
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion: dataAprendiz[0].nombre_inscripcion, apellido_inscripcion: dataAprendiz[0].apellido_inscripcion, observations: payload.observations }], subject: 'Aceptado de solicitud de inscripción de etapa práctica' })
+      toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchInfo()
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const saveSelectOnChange = async (e) => {
+    try {
+      await inscriptionDetailsUpdate(avalCoordinador, { responsable_aval: e })
+      toast.success('Instructor guardado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      fetchInfo()
+    } catch (error) {
+      toast.error('Error al guardar el coordinador asignado')
+    }
+  }
+
+  /**
+   * Función para denegar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name denyApprove
+   * @param {object} payload - Datos para la aprobación.
+   * @param {string} toastId - ID del toast.
+   * @returns {void}
+   *
+   * @example
+   * const datosAprobacion = { observations: 'Observaciones', approveOption: 'No', avalCoordinador: 123 };
+   * const toastId = 'toast-id';
+   * denyApprove(datosAprobacion, toastId);
+   */
+  const denyApprove = async (payload, toastId) => {
+    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const estado_aval = { No: 'Rechazado' }
+    const id = payload.avalCoordinador
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+
+      await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchInfo()
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  /**
+   * Opciones de selección de los coordinadores.
+   *
+   * @constant
+   * @name option
+   * @type {Array}
+   *
+   * @example
+   * const opcionesSeleccion = option;
+   */
+
+  return (
+    <section className={`flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
+      <section className='text-md'>
+        {dataAprendiz.map((item) => (
+          <div key={item.id_inscripcion} className='grid grid-cols-2'>
+            <div className='text-center'>
+              <h1 className='text-center'>INFORMACION DEL APRENDIZ </h1>
+              <div className='my-11'>
+                <p className='my-3'>
+                  {item.nombre_inscripcion} {item.apellido_inscripcion}
+                </p>
+                <p className='my-3'>Ficha: {item.numero_ficha_inscripcion}</p>
+                <p className='my-3'>{item.nombre_programa_inscripcion}</p>
+                <p className='my-3'>{item.email_inscripcion}</p>
+                <p className='my-3'>
+                  {item.tipo_documento_inscripcion}: {item.documento_inscripcion}
+                </p>
+                <p className='my-3'>{item.modalidad_inscripcion === '1' ? 'Pasantías' : item.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : item.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : item.modalidad_inscripcion === '4' ? 'Monitoría' : item.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</p>
+              </div>
+            </div>
+            <div className='px-4 border-l-2 border-violet-800 '>
+              <h1 className='text-center'>AVALES</h1>
+              <div className='flex'>
+                <div className='flex justify-center w-full p-4 overflow-y-auto h-60 justify-items-center'>
+                  <div className='w-3/4 mx-10'>
+                    {dataEmpresa.map((item) => (
+                      <div className='justify-center my-4 justify-items-center' key={item.id_detalle_inscripcion}>
+                        <Card3D title={item.descripcion_detalle} header={item.estado_aval} item1={item.observaciones} item2={user} item1text={'Observaciones'} item2text={'Responsable del aval'} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
+      <div className={` w-[95%] mx-auto`}>
+        {avalInfo.map((aval) => {
+          return (
+            <form onSubmit={handleAvalForm} ref={formRef} className='flex flex-col gap-4 ' key={aval.id_detalle_inscripcion}>
+              <div>
+                <label htmlFor='' className='text-sm font-light'>
+                  Coordinador Asignado
+                </label>
+                {coordinatorFullName === null ? (
+                  <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={dataAdmins} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} onChange={saveSelectOnChange} />
+                ) : (
+                  <Fragment>
+                    <p className='flex gap-2'>
+                      {coordinatorFullName}
+                      <span className='flex items-center'>
+                        <Button type='button' bg='transparent' onClick={() => setCoordinatorFullName(null)}>
+                          <AiFillEdit className='text-blue-500' />
+                        </Button>
+                      </span>
+                    </p>
+                  </Fragment>
+                )}
+              </div>
+              {idRol && (
+                <div className='flex flex-row gap-2 place-self-center'>
+                  {!selectedApproveButton ? (
+                    <>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  ) : selectedApproveButton === 'No' ? (
+                    <>
+                      <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  )}
+                </div>
+              )}
+              <div>
+                <label htmlFor='observations' className='text-sm font-light'>
+                  Observaciones
+                </label>
+                <textarea name='observations' id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
+              </div>
+              {disableSubmitButton ? (
+                <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                  <LuSave />
+                  Guardar
+                </Button>
+              ) : (
+                <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                  <LuSave />
+                  Guardar
+                </Button>
+              )}
+            </form>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
+  const iFrameRef = useRef(null)
+  const [showDriveButton, setShowDriveButton] = useState(null)
+
+  const [notify, setNotify] = useState(false)
+
+  /**
+   * Función para verificar si el enlace es de Google Drive.
+   *
+   * @function
+   * @name checkDriveLink
+   * @param {string} linkDocs - Enlace a verificar.
+   * @returns {boolean} - Devuelve `true` si el enlace es de Google Drive, de lo contrario, `false`.
+   *
+   * @example
+   * const esEnlaceDrive = checkDriveLink('https://drive.google.com/folders/...');
+   */
+  const checkDriveLink = (linkDocs) => {
+    const regex = /folders/i
+    const testRegex = regex.test(linkDocs)
+    if (testRegex) {
+      setShowDriveButton(true)
+      return true
+    }
+    return false
+  }
+
+  /**
+   * Efecto para verificar si el enlace es de Google Drive al cambiar el valor de `linkDocs`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (linkDocs) {
+   *     checkDriveLink(linkDocs);
+   *   }
+   * }, [linkDocs]);
+   */
+  useEffect(() => {
+    if (linkDocs) {
+      checkDriveLink(linkDocs)
+    }
+  }, [linkDocs])
+
+  /**
+   * Efecto para mostrar una notificación de éxito cuando `notify` es `true`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (notify) {
+   *     toast.success('Se ha rechazado correctamente', { ... });
+   *   }
+   *   setNotify(false);
+   * }, [notify]);
+   */
+  useEffect(() => {
+    if (notify) {
+      toast.success('Se ha rechazado correctamente', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        className: 'text-sm'
+      })
+    }
+    setNotify(false)
+  }, [notify])
+
+  /**
+   * Función para poner el iframe en pantalla completa.
+   *
+   * @function
+   * @name handleFullScreenIFrame
+   * @returns {void}
+   *
+   * @example
+   * handleFullScreenIFrame();
+   */
+  const handleFullScreenIFrame = () => {
+    const iframe = iFrameRef.current
+    if (!iframe) return
+    if (iframe.requestFullscreen) return iframe.requestFullscreen()
+    if (iframe.mozRequestFullScreen) return iframe.mozRequestFullScreen()
+    if (iframe.webkitRequestFullscreen) return iframe.webkitRequestFullscreen()
+    if (iframe.msRequestFullscreen) return iframe.msRequestFullscreen()
+  }
+
+  return (
+    <>
+      <section className='grid grid-cols-2 w-[95%] h-full gap-3 mx-auto'>
+        {showDriveButton === true ? (
+          <section className='flex flex-col gap-3'>
+            <header className='grid grid-cols-2'>
+              <section className='flex items-center'>
+                <h2>Documentación </h2>
+              </section>
+            </header>
+            <section className='flex items-center justify-center gap-3 h-5/6'>
+              <Link target='_blank' to={linkDocs} className='flex items-center justify-around gap-2 px-3 py-1 text-base font-medium text-white bg-[#4688F4] shadow-lg rounded-xl shadow-[#4688F4]/50'>
+                Ir a la carpeta <FaGoogleDrive />
+              </Link>
+            </section>
+          </section>
+        ) : (
+          <section className='flex flex-col gap-3'>
+            <header className='grid grid-cols-2'>
+              <section className='flex items-center'>
+                <h2>Documentación </h2>
+              </section>
+              <section className='grid items-center justify-end'>
+                <Button textSize='text-base' bg='bg-gray-400' px='px-[2px]' py='py-[2px]' rounded='rounded-2xl' hover hoverConfig='bg-gray-600' type='button' onClick={handleFullScreenIFrame}>
+                  <AiOutlineFullscreen />
+                </Button>
+              </section>
+            </header>
+            <section className='flex flex-col justify-center gap-3 h-5/6'>
+              <iframe src={linkDocs} className='w-full h-full' loading='lazy' allowFullScreen ref={iFrameRef}></iframe>
+            </section>
+          </section>
+        )}
+        <section className='flex flex-col w-[95%] gap-6 mx-auto'>
+          <FullDocsApproval idRol={idRol} avalDocumentos={avalDocumentos} />
+          <hr className='w-3/4 mx-auto border-[1px] text-neutral-400' />
+          <FunctionsApproval idRol={idRol} avalFunciones={avalFunciones} />
+        </section>
+      </section>
+    </>
+  )
+}
+
+const FunctionsApproval = ({ idRol, avalFunciones }) => {
+  const functionApproval = useRef(null)
+  const descriptionRef = useRef(null)
+  const { inscriptionData } = inscriptionStore()
+
+  const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
+  const [teachers, setTeacher] = useState([])
+  const [selectedOptionKey, setSelectedOptionKey] = useState('')
+  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
+  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
+  const [fullNameInstructor, setFullNameInstructor] = useState(null)
+
+  const handleUseState = (setState, value) => setState(value)
+
+  /**
+   * Función para obtener y almacenar información del aval de funciones.
+   *
+   * @function
+   * @name fetchDataFunciones
+   * @param {string|number} payload - Identificador del aval de funciones.
+   * @returns {void}
+   *
+   * @example
+   * fetchDataFunciones(1);
+   */
+  const fetchDataFunciones = async (payload) => {
+    if (!payload) return
+    try {
+      const res = await getAvalById(payload)
+      const response = await res.data.data[0]
+      setAvalInfoFunciones(response)
+      if (response.responsable_aval === null) return
+      fetchFullNameInstructor(response.responsable_aval)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const fetchFullNameInstructor = async (payload) => {
+    try {
+      const { data } = await getInfoTeacherByID(payload)
+      const { nombres_usuario, apellidos_usuario } = data.data[0]
+      const fullName = `${nombres_usuario} ${apellidos_usuario}`
+      setFullNameInstructor(fullName)
+    } catch (error) {
+      toast.error('Error al buscar el instructor asignado', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+    }
+  }
+
+  /**
+   * Efecto para obtener información del aval de funciones al cambiar el valor de `avalFunciones`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (avalFunciones !== undefined) {
+   *     fetchDataFunciones(avalFunciones);
+   *   }
+   * }, [avalFunciones]);
+   */
+  useEffect(() => {
+    if (avalFunciones !== undefined) {
+      fetchDataFunciones(avalFunciones)
+    }
+  }, [avalFunciones])
+
+  /**
+   * Función para obtener y almacenar información de los instructores.
+   *
+   * @function
+   * @name getInstructores
+   * @returns {void}
+   *
+   * @example
+   * getInstructores();
+   */
+  const getInstructores = async () => {
+    try {
+      const response = await getTeachers()
+      const { data } = response.data
+      setTeacher(data)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  useEffect(() => {
+    getInstructores()
+  }, [])
+
+  /**
+   * Variable que almacena opciones de los instructores para utilizar en el select.
+   *
+   * @constant
+   * @name option
+   * @type {array}
+   *
+   * @example
+   * const opcionesInstructores = option;
+   */
+  const option = teachers.map((teacher) => ({
+    value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario + ' - ' + teacher.email_usuario,
+    key: teacher.id_usuario
+  }))
+
+  /**
+   * Función para actualizar la clave de la opción seleccionada en el select.
+   *
+   * @function
+   * @name handleSelectChange
+   * @param {string|number} optionKey - Clave de la opción seleccionada.
+   * @returns {void}
+   *
+   * @example
+   * handleSelectChange(1);
+   */
+  const handleSelectChange = (optionKey) => {
+    setSelectedOptionKey(optionKey)
+    setApprovalDetailUser(optionKey)
+  }
+
+  const handleSubmitButton = () => {
+    if (!selectedApproveButton) return
+    if (descriptionRef.current.value.length === 0) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  const selectButtonToSubmit = (value) => {
+    setSelectedApproveButton(value)
+    if (descriptionRef.current.value.length === 0 || !value) {
+      setDisableSubmitButton(true)
+      return
+    }
+    if (fullNameInstructor === null) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  /**
+   * Descripción: Esta función maneja la aprobación o rechazo de funciones por parte del usuario.
+   *
+   * @param {Event} e - El evento del formulario.
+   * @throws {Error} Si ocurre un error durante el proceso de aprobación o rechazo.
+   * @returns {void}
+   * @name handleFunctionsApproval
+   */
+  const handleFunctionsApproval = async (e) => {
+    e.preventDefault()
+    const approveOptions = { Si: 'Si', No: 'No' }
+
+    const formData = new FormData(functionApproval.current)
+    formData.append('approveOption', approveOptions[selectedApproveButton])
+
+    // * Check if it's saving an user or saving an approval
+    const names = formData.get('name')
+    const lastNames = formData.get('lastname')
+    if (names && lastNames) return saveNewUserApproval({ names, lastNames })
+
+    const observations = formData.get('functionsApprovalObservations')
+    const approveOption = formData.get('approveOption')
+    try {
+      await checkApprovementData({ observations, approveOption })
+      const loadingToast = toast.loading('Enviando...')
+      if (selectedApproveButton === approveOptions.Si) return acceptFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
+    } catch (err) {
+      if (toast.isActive('loadingToast')) return
+      toast.error('Los campos son incorrectos, corríjalos.', {
+        toastId: 'error-full-docs',
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored'
+      })
+    }
+  }
+
+  /**
+   * Función asincrónica para guardar la aprobación de un usuario.
+   *
+   * @param {Object} payload - Los datos del usuario a aprobar.
+   * @param {string} payload.names - El nombre del usuario.
+   * @param {string} payload.lastNames - Los apellidos del usuario.
+   *
+   * @throws {Error} - Lanza un error si no se puede guardar el usuario.
+   */
+  const saveNewUserApproval = async (payload) => {
+    const randomNumber = randomNumberGenerator(8)
+    const data = {
+      nombre: payload.names,
+      apellido: payload.lastNames,
+      tipo_documento: 'cc',
+      num_documento: randomNumber,
+      correo_electronico: `fakeemail+${randomNumber}@email.com`,
+      num_celular: randomNumber,
+      id_rol: '5',
+      contrasena: '2vF$6RX5@MMbTqG%'
+    }
+    try {
+      const { data: resData } = await registerUser(data)
+      setApprovalDetailUser(resData.id)
+    } catch (error) {
+      toast.error('Error al guardar el instructor', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+    }
+  }
+
+  const setApprovalDetailUser = async (id) => {
+    const idApprovalDetail = avalInfoFunciones.id_detalle_inscripcion
+    try {
+      await inscriptionDetailsUpdate(idApprovalDetail, { responsable_aval: id })
+      toast.success('Instructor guardado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      fetchDataFunciones(avalFunciones)
+    } catch (error) {
+      toast.error('Error al guardar el instructor', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+    }
+  }
+
+  /**
+   * Descripción: Esta función maneja la aceptación de la aprobación de funciones.
+   *
+   * @param {object} payload - Los datos necesarios para realizar la aceptación.
+   * @param {string} toastId - El ID del toast de carga.
+   * @throws {Error} Si ocurre un error durante la aceptación de la aprobación.
+   * @returns {void}
+   * @name acceptFunctionsApprove
+   */
+  const acceptFuntionsApprove = async (payload, toastId) => {
+    const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
+    const id = payload.avalFunciones
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchDataFunciones()
+    } catch (error) {
+      toast.error('Error al guardar el aval', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+    }
+  }
+
+  /**
+   * Descripción: Esta función maneja el rechazo de la aprobación de funciones.
+   *
+   * @param {object} payload - Los datos necesarios para realizar el rechazo.
+   * @param {string} toastId - El ID del toast de carga.
+   * @throws {Error} Si ocurre un error durante el rechazo de la aprobación.
+   * @returns {void}
+   * @name denyFunctionsApprove
+   */
+  const denyFuntionsApprove = async (payload, toastId) => {
+    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const estado_aval = { No: 'Rechazado' }
+    const id = payload.avalFunciones
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      await sendEmail({ to: 'blandon0207s@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchDataFunciones()
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  return (
+    <div className='w-[95%] mx-auto'>
+      <form action='' className='flex flex-col gap-2' ref={functionApproval} onSubmit={handleFunctionsApproval}>
+        <section className='grid items-center grid-cols-2 gap-2'>
+          <section className='flex flex-col gap-1'>
+            <span className='text-sm font-semibold'>
+              Encargado <span className='text-red-800'>(Funciones)</span>
+            </span>
+            <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
+          </section>
+          <section>
+            {fullNameInstructor === null ? (
+              <Select name='name_instructor' placeholder='Nombre instructor' isSearch hoverColor='hover:bg-teal-600' hoverTextColor='hover:text-white' selectedColor='bg-teal-600 text-white' characters='25' placeholderSearch='Nombre instructor' rounded='rounded-xl' textSearch='text-sm' shadow='shadow-md' textSize='text-sm' options={option} selectedKey={selectedOptionKey} manual onChange={handleSelectChange} />
+            ) : (
+              <div className='flex flex-col flex-wrap items-center py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+                <section className='flex'>
+                  <h3 className='flex flex-row flex-wrap flex-grow-0 text-sm flex-shrink-1'>
+                    <span className='pr-1 font-semibold'>Encargado:</span>
+                    {fullNameInstructor}
+                    <Button type='button' bg='transparent' onClick={() => setFullNameInstructor(null)}>
+                      <AiFillEdit className='text-blue-500' />
+                    </Button>
+                  </h3>
+                </section>
+                <h3 className='text-sm'>{avalInfoFunciones.fecha_modificacion}</h3>
+                <h5 className='text-sm'>
+                  Estado: <span className={`font-semibold ${colorTextStatus[avalInfoFunciones.estado_aval]}`}>{avalInfoFunciones.estado_aval}</span>
+                </h5>
+              </div>
+            )}
+          </section>
+        </section>
+        <div>
+          <label htmlFor='functionsApprovalObservations' className='text-sm font-light'>
+            Observaciones
+          </label>
+          <textarea name='functionsApprovalObservations' id='editor' defaultValue={avalInfoFunciones.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
+        </div>
+        <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
+          {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) && (
+            <div className='flex flex-row gap-2 place-self-center'>
+              {!selectedApproveButton ? (
+                <>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              ) : selectedApproveButton === 'No' ? (
+                <>
+                  <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
+          {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) &&
+            (disableSubmitButton ? (
+              <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                <LuSave />
+                Guardar
+              </Button>
+            ) : (
+              <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                <LuSave />
+                Guardar
+              </Button>
+            ))}
+        </div>
+      </form>
+    </div>
+  )
+}
+
+const FullDocsApproval = ({ idRol, avalDocumentos }) => {
+  const fullDocsRef = useRef(null)
+  const descriptionRef = useRef(null)
+  const { inscriptionData } = inscriptionStore()
+
+  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
+  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
+  const [avalInfoDocumentos, setAvalInfoDocumentos] = useState([])
+  const [nameResponsableDocumentos, setNameResponsableDocumentos] = useState('')
+  const { id } = useParams()
+  const [modalidad, setModalidad] = useState([])
+
+  /**
+   * Función para actualizar el estado usando setState.
+   *
+   * @function
+   * @name handleUseState
+   * @param {function} setState - Función para actualizar el estado.
+   * @param {any} value - Valor para actualizar el estado.
+   * @returns {void}
+   *
+   * @example
+   * handleUseState(setStateFuncion, valorActualizado);
+   */
+  const handleUseState = (setState, value) => setState(value)
+
+  /**
+   * Función para obtener y almacenar información de documentos.
+   *
+   * @function
+   * @name fetchDataDocuments
+   * @returns {void}
+   *
+   * @example
+   * fetchDataDocuments();
+   */
+  const fetchDataDocuments = async () => {
+    const res = await getAvalById(avalDocumentos)
+    const { data } = res.data
+    const response = await getUserById(data[0].responsable_aval)
+    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
+    const fullName = `${nombres_usuario} ${apellidos_usuario}`
+    setNameResponsableDocumentos(fullName)
+    setAvalInfoDocumentos(data[0])
+  }
+
+  /**
+   * Efecto para obtener información de documentos cuando cambia el valor de `avalDocumentos`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (avalDocumentos) fetchDataDocuments();
+   * }, [avalDocumentos]);
+   */
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getInscriptionById(id)
+        const res = response.data.data[0].modalidad_inscripcion
+        // Llamar a getCourses con el valor actualizado de ficha
+        await getModalities(res)
+        if (avalDocumentos) fetchDataDocuments()
+      } catch (error) {
+        console.error('Ha ocurrido un error al mostrar los datos del usuario')
+      }
+    }
+
+    fetchData() // Llamar a fetchData cuando el componente se monte o cuando id cambie
+  }, [id, avalDocumentos])
+
+  const getModalities = async (id) => {
+    const res = await getModalitiesById(id)
+    setModalidad(res.data.data)
+  }
+
+  const handleSubmitButton = () => {
+    if (!selectedApproveButton) return
+    if (descriptionRef.current.value.length === 0) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  const selectButtonToSubmit = (value) => {
+    setSelectedApproveButton(value)
+    if (descriptionRef.current.value.length === 0 || !value) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  /**
+   * Función para manejar el envío de formularios de documentos.
+   *
+   * @function
+   * @name handleFullDocsForm
+   * @param {object} e - Evento del formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleFullDocsForm(evento);
+   */
+  const handleFullDocsForm = async (e) => {
+    e.preventDefault()
+    const approveOptions = { Si: 'Si', No: 'No' }
+
+    const formData = new FormData(fullDocsRef.current)
+    formData.append('approveOption', approveOptions[selectedApproveButton])
+    const observations = formData.get('fullDocsObservations')
+    const approveOption = formData.get('approveOption')
+    try {
+      await checkApprovementData({ observations, approveOption })
+      const loadingToast = toast.loading('Enviando...')
+      if (selectedApproveButton === approveOptions.Si) return acceptFullDocsApprove({ observations, approveOption, avalDocumentos }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyFullDocsApprove({ observations, approveOption, avalDocumentos }, loadingToast)
+    } catch (err) {
+      if (toast.isActive('loadingToast')) return
+      toast.error('Los campos son incorrectos, corríjalos.', {
+        toastId: 'error-full-docs',
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored'
+      })
+    }
+  }
+
+  /**
+   * Función para aceptar la aprobación de documentos.
+   *
+   * @function
+   * @name acceptFullDocsApprove
+   * @param {object} payload - Datos para la aprobación.
+   * @param {string} toastId - Identificador del Toast.
+   * @returns {void}
+   *
+   * @example
+   * acceptFullDocsApprove({ observations, approveOption, avalDocumentos }, 'toastId');
+   */
+  const acceptFullDocsApprove = async (payload, toastId) => {
+    const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
+    const id = payload.avalDocumentos
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchDataDocuments()
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  /**
+   * Función para denegar la aprobación de documentos.
+   *
+   * @function
+   * @name denyFullDocsApprove
+   * @param {object} payload - Datos para la denegación.
+   * @param {string} toastId - Identificador del Toast.
+   * @returns {void}
+   *
+   * @example
+   * denyFullDocsApprove({ observations, approveOption, avalDocumentos }, 'toastId');
+   */
+  const denyFullDocsApprove = async (payload, toastId) => {
+    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const estado_aval = { No: 'Rechazado' }
+    const id = payload.avalDocumentos
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)('inscripcion updated')
+      await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchDataDocuments()
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  return (
+    <div className='w-[95%] mx-auto'>
+      <form className='flex flex-col gap-2' ref={fullDocsRef} onSubmit={handleFullDocsForm}>
+        <section className='grid items-center grid-cols-2 gap-2'>
+          <section className='flex flex-col'>
+            <span className='text-sm font-semibold'>Líder Prácticas:</span>
+            <span className='text-sm font-semibold'>Última fecha de modificación:</span>
+            <span className='text-sm font-medium'>Fecha Registro: {avalInfoDocumentos.fecha_creacion}</span>
+            {modalidad.map((item) => (
+              <div key={item.id_modalidad}>
+                <span className='text-sm font-medium'>{item.nombre_modalidad}</span>
+              </div>
+            ))}
+          </section>
+          <div className='flex flex-col flex-wrap py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+            <h3 className='text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
+            <h3 className='text-sm whitespace-nowrap'>{avalInfoDocumentos.fecha_modificacion}</h3>
+            <h5 className='text-sm whitespace-nowrap'>
+              Estado: <span className={`font-semibold ${colorTextStatus[avalInfoDocumentos.estado_aval]}`}>{avalInfoDocumentos.estado_aval}</span>
+            </h5>
+          </div>
+        </section>
+        <div>
+          <label htmlFor='fullDocsObservations' className='text-sm font-light'>
+            Observaciones <span className='font-bold text-red-500'>*</span>
+          </label>
+          <textarea name='fullDocsObservations' id='editor' defaultValue={avalInfoDocumentos.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
+        </div>
+        <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
+          {idRol === Number(keysRoles[0]) && (
+            <div className='flex flex-row gap-2 place-self-center'>
+              {!selectedApproveButton ? (
+                <>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              ) : selectedApproveButton === 'No' ? (
+                <>
+                  <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
+          {idRol === Number(keysRoles[0]) &&
+            (disableSubmitButton ? (
+              <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                <LuSave />
+                Guardar
+              </Button>
+            ) : (
+              <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                <LuSave />
+                Guardar
+              </Button>
+            ))}
+        </div>
+      </form>
+    </div>
+  )
+}
+
+const RAPS = ({ idRol, avalRaps }) => {
+  const { id } = useParams()
+  const formRef = useRef(null)
+  const descriptionRef = useRef(null)
+
+  const { inscriptionData } = inscriptionStore()
+
+  const [avalInfo, setAvalInfo] = useState({})
+  const [htmlContent, setHtmlContent] = useState('')
+  const [nameResponsable, setNameResponsable] = useState('')
+  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
+  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
+
+  /**
+   * Función para manejar la actualización de un estado utilizando useState.
+   *
+   * @function
+   * @name handleUseState
+   * @param {function} setState - Función de estado para actualizar el valor.
+   * @param {*} value - Nuevo valor para el estado.
+   * @returns {void}
+   *
+   * @example
+   * handleUseState(setDisableSubmitButton, false);
+   */
+  const handleUseState = (setState, value) => setState(value)
+
+  /**
+   * Función para manejar el envío de formulario.
+   *
+   * @function
+   * @name handleSubmitButton
+   * @returns {void}
+   *
+   * @example
+   * handleSubmitButton();
+   */
+  const handleSubmitButton = () => {
+    if (!selectedApproveButton) return
+    if (descriptionRef.current.value.length === 0) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  /**
+   * Función para seleccionar un botón de aprobación para enviar.
+   *
+   * @function
+   * @name selectButtonToSubmit
+   * @param {string} value - Valor del botón seleccionado ('Si' o 'No').
+   * @returns {void}
+   *
+   * @example
+   * selectButtonToSubmit('Si');
+   */
+  const selectButtonToSubmit = (value) => {
+    setSelectedApproveButton(value)
+    if (descriptionRef.current.value.length === 0 || !value) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  /**
+   * Función asincrónica para obtener información de instructores.
+   *
+   * @async
+   * @function
+   * @name fetchRaps
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * fetchRaps();
+   */
+  const fetchRaps = async () => {
+    const res = await getAvalById(avalRaps)
+    const { data } = res.data
+    const response = await getUserById(data[0].responsable_aval)
+    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
+    const fullName = `${nombres_usuario} ${apellidos_usuario}`
+    setNameResponsable(fullName)
+    setAvalInfo(data[0])
+  }
+
+  /**
+   * Función para manejar el envío de formulario.
+   *
+   * @function
+   * @name handleSubmit
+   * @param {Event} e - Evento del formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleSubmit(event);
+   */
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const approveOptions = { Si: 'Si', No: 'No' }
+
+    const formData = new FormData(formRef.current)
+    formData.append('approveOption', approveOptions[selectedApproveButton])
+    const observations = formData.get('description')
+    const approveOption = formData.get('approveOption')
+    try {
+      await checkApprovementData({ observations, approveOption })
+      if (toast.isActive('loadingToast')) return
+      const loadingToast = toast.loading('Enviando...', {
+        toastId: 'loadingToast'
+      })
+      if (selectedApproveButton === approveOptions.Si) return acceptApprove({ observations, approveOption, avalRaps, htmlContent }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyApprove({ observations, approveOption, avalRaps, htmlContent }, loadingToast)
+    } catch (err) {
+      if (toast.isActive('loadingToast')) return
+      toast.update('loadingToast', { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+    }
+  }
+
+  /**
+   * Función para manejar la acción de pegar contenido en un elemento.
+   *
+   * @function
+   * @name handleContentPaste
+   * @param {Event} e - Evento de pegado de contenido.
+   * @returns {void}
+   *
+   * @example
+   * handleContentPaste(event);
+   */
+  const handleContentPaste = (e) => {
+    const pastedContent = e.clipboardData.getData('text/html')
+    setHtmlContent(pastedContent)
+    e.preventDefault()
+  }
+
+  /**
+   * Función para manejar la entrada de texto en un elemento.
+   *
+   * @function
+   * @name handleInputText
+   * @param {Event} e - Evento de entrada de texto.
+   * @returns {void}
+   *
+   * @example
+   * handleInputText(event);
+   */
+  const handleInputText = (e) => {
+    const content = e.target.innerHTML
+    if (content.length === 0) {
+      setHtmlContent('')
+    }
+    setHtmlContent(content)
+  }
+
+  /**
+   * Función asincrónica para aceptar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name acceptApprove
+   * @param {Object} payload - Datos necesarios para la aprobación.
+   * @param {string} toastId - Identificador del toast.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * acceptApprove({ observations: 'Aprobado', approveOption: 'Si', avalRaps: 123, htmlContent: '<html>...</html>' }, 'loadingToast');
+   */
+  const acceptApprove = async (payload, toastId) => {
+    const estado_aval = { Si: 'Aprobado' }
+    const id = payload.avalRaps
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchRaps()
+    } catch (error) {
+      toast.update(toastId, { render: 'Ha ocurrido un error. Inténtelo más tarde', isLoading: false, type: 'error', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      throw new Error(error)
+    }
+  }
+
+  /**
+   * Función asincrónica para denegar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name denyApprove
+   * @param {Object} payload - Datos necesarios para la denegación.
+   * @param {string} toastId - Identificador del toast.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * denyApprove({ observations: 'Rechazado', approveOption: 'No', avalRaps: 456, htmlContent: '<html>...</html>' }, 'loadingToast');
+   */
+  const denyApprove = async (payload, toastId) => {
+    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const estado_aval = { No: 'Rechazado' }
+    const id = payload.avalRaps
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      await sendEmail({ to: 'lorenquiceno@gmail.com', subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
+      toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchRaps()
+    } catch (error) {
+      toast.update(toastId, { render: 'Ha ocurrido un error. Inténtelo más tarde', isLoading: false, type: 'error', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      throw new Error(error)
+    }
+  }
+
+  const [info, setInfo] = useState([])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getInscriptionById(id)
+        const res = response.data.data
+        setInfo(res)
+        if (avalRaps) fetchRaps()
+      } catch (error) {
+        console.error('Ha ocurrido un error al mostrar los datos del usuario')
+      }
+    }
+
+    fetchData() // Llamar a fetchData cuando el componente se monte o cuando id cambie
+  }, [id, avalRaps])
+
+  return (
+    <section className='grid grid-cols-2 w-[95%] h-[70vh] gap-3 mx-auto'>
+      <section className='h-'>
+        <h2>RAPS</h2>
+        <section></section>
+      </section>
+      <section className='flex flex-col w-[95%] gap-2 mx-auto'>
+        <div className='w-[95%] mx-auto h-full'>
+          <form className='flex flex-col gap-2' onSubmit={handleSubmit} ref={formRef}>
+            <section className='grid items-center grid-cols-2 gap-2'>
+              <section className='flex flex-col'>
+                <span className='text-sm font-semibold'>Líder Prácticas:</span>
+                {info.map((item) => (
+                  <div key={item.id_inscripcion}>
+                    <p>{item.numero_ficha_inscripcion}</p>
+                    <p>{item.nombre_inscripcion + ' ' + item.apellido_inscripcion}</p>
+                  </div>
+                ))}
+                <span className='text-sm font-medium'>{avalInfo.fecha_creacion}</span>
+              </section>
+              <div className='flex flex-col py-1 rounded-lg cursor-default justify-items-center w-fit bg-gray place-self-center'>
+                <h3 className='text-sm whitespace-nowrap'>{nameResponsable}</h3>
+                <h3 className='text-sm whitespace-nowrap'>{avalInfo.fecha_modificacion}</h3>
+                <h5 className='text-sm whitespace-nowrap'>
+                  Estado: <span className={`font-semibold ${colorTextStatus[avalInfo.estado_aval]}`}>{avalInfo.estado_aval}</span>
+                </h5>
+                {info.map((item) => (
+                  <div key={item.id_inscripcion}>
+                    <p>{item.tipo_documento_inscripcion}:</p>
+                    <p>{item.documento_inscripcion}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+            <div className='flex flex-col gap-3'>
+              <section className='flex flex-col gap-2'>
+                <label htmlFor='description' className='text-sm font-light'>
+                  Observaciones <span className='font-medium text-red-500'>*</span>
+                </label>
+                <textarea name='description' id='editor' defaultValue={avalInfo.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' ref={descriptionRef} onInput={handleSubmitButton} />
+              </section>
+              <section className='flex flex-col gap-2'>
+                <p className='text-sm font-light'>Tabla de envidencia</p>
+                <div contentEditable onPaste={handleContentPaste} className='block w-full h-[30vh] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' onInput={handleInputText} dangerouslySetInnerHTML={{ __html: htmlContent }}></div>
+              </section>
+            </div>
+            <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
+              {idRol === Number(keysRoles[0]) && (
+                <div className='flex flex-row gap-2 place-self-center'>
+                  {!selectedApproveButton ? (
+                    <>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  ) : selectedApproveButton === 'No' ? (
+                    <>
+                      <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  )}
+                </div>
+              )}
+              {idRol === Number(keysRoles[0]) &&
+                (disableSubmitButton ? (
+                  <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} type='submit' isDisabled inline>
+                    <LuSave />
+                    Guardar
+                  </Button>
+                ) : (
+                  <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} type='submit' inline>
+                    <LuSave />
+                    Guardar
+                  </Button>
+                ))}
+            </div>
+          </form>
+        </div>
+      </section>
+    </section>
   )
 }

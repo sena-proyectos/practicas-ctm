@@ -1,84 +1,186 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { Pagination } from '@nextui-org/pagination'
 
 // icons
 import { HiOutlineUserAdd } from 'react-icons/hi'
 import { BsJournalBookmark } from 'react-icons/bs'
+import { IoReturnDownBack } from 'react-icons/io5'
 
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
-import { Modals } from '../Utils/Modals/Modals'
-import { Pagination } from '../Utils/Pagination/Pagination'
+import { AsignTeacherModal } from '../Utils/Modals/Modals'
+import { getClassFree, GetClassByNumber } from '../../api/httpRequest'
 
 export const AssignClass = () => {
   const [modalAsign, setModalAsign] = useState(false)
-  const [pageNumber, setPageNumber] = useState(-1)
+  const [pageNumber, setPageNumber] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [courses, setCourses] = useState([])
+  const [detailCourse, setDetailCourse] = useState([])
+  const [notify, setNotify] = useState(false)
 
-  const courses = {
-    data: [
-      {
-        ficha: 2473196,
-        name: 'Fabricación de muebles contemporaneos',
-        etapa: 'Lectiva'
-      },
-      {
-        ficha: 2689476,
-        name: 'Analisis y desarrollo de software',
-        etapa: 'Productiva'
-      },
-      {
-        ficha: 2869467,
-        name: 'Pan y Tomate',
-        etapa: 'Lectiva'
-      },
-      {
-        ficha: 1234567,
-        name: 'Fabricación de muebles contemporaneos',
-        etapa: 'Productiva'
-      },
-      {
-        ficha: 7654321,
-        name: 'Analisis y desarrollo de software',
-        etapa: 'Lectiva'
-      },
-      {
-        ficha: 1234765,
-        name: 'Pan y Tomate',
-        etapa: 'Productiva'
-      }
-    ]
-  }
+  /**
+   * Función asincrónica para obtener la lista de cursos que no tengan instructor asignado.
+   *
+   * @async
+   * @function
+   * @name getCursos
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getCursos();
+   */
+  const getCursos = async () => {
+    try {
+      const response = await getClassFree()
+      const { data } = response.data
 
-  const coursesPerPage = 6
-  const pageCount = Math.ceil(courses.data.length / coursesPerPage)
-  const startIndex = (pageNumber + 1) * coursesPerPage
-  const endIndex = startIndex + coursesPerPage
-
-  const handleAsign = () => {
-    setModalAsign(!modalAsign)
+      setCourses(data)
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    }, 2000)
+    getCursos()
   }, [])
+
+  /**
+   * Función para manejar el cierre del modal de asignación.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
+  const handleModal = () => setModalAsign(false)
+
+  /**
+   * Función asincrónica para obtener y establecer los detalles de un curso.
+   *
+   * @async
+   * @function
+   * @name handleDetailCourse
+   * @param {string} numero_ficha - Número de ficha del curso.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * handleDetailCourse('12345');
+   */
+  const handleDetailCourse = async (numero_ficha) => {
+    try {
+      setModalAsign(true)
+      const response = await GetClassByNumber(numero_ficha)
+      const { data } = response.data
+      setDetailCourse(data[0])
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  /**
+   * Número de cursos a mostrar por página.
+   *
+   * @constant
+   * @name coursesPerPage
+   * @type {number}
+   * @default 6
+   *
+   * @example
+   * const cursosPorPagina = coursesPerPage;
+   */
+  const coursesPerPage = 6
+  /**
+   * Calcula el número de páginas necesarias para la paginación de cursos.
+   *
+   * @constant
+   * @name pageCount
+   * @type {number}
+   *
+   * @example
+   * const numeroDePaginas = pageCount;
+   */
+  const pageCount = Math.ceil(courses.length / coursesPerPage)
+  /**
+   * Índice de inicio de la lista de cursos a mostrar en la página actual.
+   *
+   * @constant
+   * @name startIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceInicio = startIndex;
+   */
+  const startIndex = (pageNumber - 1) * coursesPerPage
+  /**
+   * Índice de fin de la lista de cursos a mostrar en la página actual.
+   *
+   * @constant
+   * @name endIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
+  const endIndex = startIndex + coursesPerPage
+
+  useEffect(() => {
+    setLoading(false)
+  }, [])
+
+  /**
+   * Efecto secundario para mostrar una notificación de asignación de instructor y actualizar la lista de cursos.
+   *
+   * @function
+   * @name useEffectMostrarNotificacionYActualizarCursos
+   * @param {boolean} notify - Estado de notificación.
+   * @returns {void}
+   *
+   * @example
+   * useEffectMostrarNotificacionYActualizarCursos(true);
+   */
+  useEffect(() => {
+    if (notify) {
+      toast.success('Se ha asignado el instructor', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        className: 'text-sm'
+      })
+    }
+    setNotify(false)
+    getCursos()
+  }, [notify])
 
   return (
     <>
-      {modalAsign && <Modals bodyAsign title={'Asignar Instructor'} closeModal={handleAsign} />}
+      {modalAsign && <AsignTeacherModal title={'Asignar Instructor'} numero_ficha={detailCourse.numero_ficha} programa_formacion={detailCourse.nombre_programa_formacion} setNotify={setNotify} closeModal={handleModal} />}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
+        <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
           <header className='grid place-items-center'>
-            <Search searchFilter />
+            <Search searchFilter placeholder={'Busca una ficha'} />
           </header>
           <section>
-            <section className='grid grid-cols-1 px-10 pt-5 pb-2 gap-x-4 gap-y-6 sm:grid-cols-2 md:grid-cols-3'>
+            <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>
               {loading ? (
                 <>
                   <SkeletonLoading />
@@ -89,31 +191,39 @@ export const AssignClass = () => {
                   <SkeletonLoading />
                 </>
               ) : (
-                courses.data.slice(startIndex, endIndex).map((course, i) => {
+                courses.slice(startIndex, endIndex).map((course, i) => {
                   return (
-                    <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 shadow-lg border-slate-100 border-1' key={i}>
+                    <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 bg-white shadow-lg border-slate-100 border-1' key={i}>
                       <header className='flex flex-row w-fit '>
                         <div className='z-10 bg-teal-200 border-2 border-teal-800 rounded-full w-14 h-14'>
                           <BsJournalBookmark className='w-full h-full scale-50' />
                         </div>
                         <div className='relative w-24 h-5 my-auto text-center bg-teal-200 border-2 border-teal-800 rounded-r-full right-2'>
-                          <p className='text-xs font-medium'>{course.ficha}</p>
+                          <p className='text-xs font-medium'>{course.numero_ficha}</p>
                         </div>
                       </header>
                       <section>
-                        <p className='text-sm font-medium'>{course.name}</p>
-                        <span className='text-xs font-light'>{course.etapa}</span>
+                        <p className='text-sm font-medium'>{course.nombre_programa_formacion}</p>
+                        <span className='text-xs font-light'>{course.estado}</span>
                       </section>
                       <div className='relative ml-auto bottom-2 w-fit'>
-                        <Button value={'Asignar'} rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' clickeame={handleAsign} textColor='text-slate-600' icon={<HiOutlineUserAdd className='text-xl' />} />
+                        <Button rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' inline>
+                          <HiOutlineUserAdd className='text-xl' /> Asignar
+                        </Button>
                       </div>
                     </div>
                   )
                 })
               )}
             </section>
+            <div className='absolute top-4 left-8'>
+              <Link to='/fichas' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors'>
+                <IoReturnDownBack />
+                Regresar
+              </Link>
+            </div>
             <div className='flex justify-center h-[13vh] relative bottom-0'>
-              <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
             </div>
           </section>
           <Footer />

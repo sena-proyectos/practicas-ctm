@@ -9,37 +9,48 @@
 
 ### Server y Client
 
-```sh
-> npm i
+```bash
+> npm i 
 ```
+
+### Instalación de la base de datos
+
+Para poder importar la base correctamente debes tener <a href="https://dev.mysql.com/downloads/" target="_blank">MySQL Community</a> descargado. Luego de eso deberás abrir los servicios de tu sistema operativo (añadir imagen de los servicios). Luego, abrirás **MySQL Community** y entrarás a tu servidor local (añadir imágen). Irás a ```Server -> Data Import``` y seleccionarás los el archivo **.sql** alojado en ```server/src/db/db.sql```. Le das a **Import data** y listo.
+
+<hr />
 
 ## Uso
 
 ### Server
 
-```sh
+```bash
 > npm run dev
 > npm run tsc
 ```
 
 ### Cliente
 
-```sh
+```bash
 > npm run dev
-> npm run tailwind
 ```
 
 ## Notas en el API
 
 En api crear un archivo llamado: .env que tenga la siguiente forma:
 
-```sh
-PORT=3000 // Ruta del servidor de express
-DB_USER=root // Usuario del usuario MySQL
-DB_PASSWORD=passwordRoot123 // Contraseña del usuario MySQL
-DB_HOST=localhost // Host del usuario MySQL
-DB_DATABASE=db_root // nombre de la base de datos MySQL
-DB_PORT=3306 // Puerto de conexión de SQL
+```env
+# Ruta del servidor de express
+PORT=3000
+# Usuario del usuario MySQL
+DB_USER=root
+# Contraseña del usuario MySQL
+DB_PASSWORD=root
+# Host del usuario MySQL
+DB_HOST=localhost
+# nombre de la base de datos MySQL
+DB_DATABASE=practicas_sena
+# Puerto de conexión de SQL
+DB_PORT=3306
 ```
 
 Reemplazar credenciales para conectarte a MySQL. Este archivo va ser ignorado en la subida a github, ya que contiene información sensible.

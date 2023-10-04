@@ -6,6 +6,7 @@ import { handleHTTP } from '../errors/errorsHandler.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { type id } from '../interfaces/users.interfaces.js'
 import { type classes } from '../interfaces/classes.interfaces.js'
+import { type ResultSetHeader } from 'mysql2'
 
 /**
  * La función `getClasses` recupera una lista de clases de una base de datos y las devuelve como una
@@ -19,9 +20,18 @@ import { type classes } from '../interfaces/classes.interfaces.js'
  */
 export const getClasses = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const [classes] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" end as estado, CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario) as seguimiento_nombre_completo, CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario) as lider_nombre_completo FROM fichas INNER JOIN usuarios as usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario INNER JOIN usuarios as usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario;')
+    const [classes] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica,niveles_formacion.nivel_formacion, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas INNER JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion  LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario')
     if (!Array.isArray(classes) || classes?.length === 0) throw new DbErrorNotFound('No hay fichas registradas.', errorCodes.ERROR_GET_CLASSES)
+    return res.status(httpStatus.OK).json({ data: classes })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
 
+export const getClassesFree = async (_req: Request, res: Response): Promise<Response> => {
+  try {
+    const [classes] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica,  fichas.id_instructor_lider, fichas.id_instructor_seguimiento, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario WHERE id_instructor_seguimiento IS NULL OR id_instructor_lider IS NULL')
+    if (!Array.isArray(classes) || classes?.length === 0) throw new DbErrorNotFound('No hay fichas sin instructores.', errorCodes.ERROR_GET_CLASSES)
     return res.status(httpStatus.OK).json({ data: classes })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -85,7 +95,19 @@ export const getClassByPracticalInstructorId: RequestHandler<{ id: string }, Res
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [classData] = await connection.query('SELECT * FROM fichas WHERE id_instructor_seguimiento = ?', [idNumber])
+    const [classData] = await connection.query('SELECT fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica,  fichas.id_instructor_lider, fichas.id_instructor_seguimiento, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario WHERE id_instructor_seguimiento = ?', [idNumber])
+    if (!Array.isArray(classData) || classData?.length === 0) throw new DbErrorNotFound('No se encontraron clases del instructor de seguimiento.', errorCodes.ERROR_GET_CLASS)
+    return res.status(httpStatus.OK).json({ data: classData })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const getClassByInstructorId: RequestHandler<{ id: string }, Response, id> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  const { id } = req.params
+  const idNumber = Number(id)
+  try {
+    const [classData] = await connection.query('SELECT fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica,  fichas.id_instructor_lider, fichas.id_instructor_seguimiento, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario WHERE id_instructor_lider = ?', [idNumber])
     if (!Array.isArray(classData) || classData?.length === 0) throw new DbErrorNotFound('No se encontraron clases del instructor de seguimiento.', errorCodes.ERROR_GET_CLASS)
     return res.status(httpStatus.OK).json({ data: classData })
   } catch (error) {
@@ -107,15 +129,16 @@ export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Res
   const { numero_ficha } = req.query
   const classNumber = Number(numero_ficha)
   try {
-    const [classQuery] = await connection.query('SELECT * FROM fichas WHERE numero_ficha = ?', [classNumber])
+    const [classQuery] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_fin_lectiva, fichas.fecha_inicio_practica,niveles_formacion.nivel_formacion, CASE WHEN curdate() > fichas.fecha_fin_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas INNER JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion  LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario WHERE fichas.numero_ficha = ?', [classNumber])
     if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se encontró la ficha.', errorCodes.ERROR_GET_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
+    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
 
-export const getStudentsClassByClassNumber: RequestHandler<{numero_ficha: string}, Response, classes> = async (req: Request, res: Response) => {
+export const getStudentsClassByClassNumber: RequestHandler<{ numero_ficha: string }, Response, classes> = async (req: Request, res: Response) => {
   const { numero_ficha } = req.query
   const classNumber = Number(numero_ficha)
   try {
@@ -216,8 +239,22 @@ export const editPracticalInstructorClass: RequestHandler<{}, Response, classes>
   const idNumber = Number(id_instructor_seguimiento)
   const classNumberNumber = Number(numero_ficha)
   try {
-    const [classQuery] = await connection.query('UPDATE fichas SET id_instructor_seguimiento = ? WHERE numero_ficha LIKE ?', [idNumber, classNumberNumber])
-    if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se pudo editar el instructor de prácticas de la ficha.', errorCodes.ERROR_EDIT_CLASS)
+    const [classQuery]: [ResultSetHeader, unknown] = await connection.query('UPDATE fichas SET id_instructor_seguimiento = IFNULL(?, id_instructor_seguimiento) WHERE numero_ficha = ?', [idNumber, classNumberNumber])
+    if (Object.keys(classQuery).length === 0 && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo editar el instructor de prácticas de la ficha.', errorCodes.ERROR_EDIT_CLASS)
+    return res.status(httpStatus.OK).json({ data: classQuery })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const editLiderInstructorClass: RequestHandler<{}, Response, classes> = async (req: Request, res: Response): Promise<Response> => {
+  const { numero_ficha } = req.query
+  const { id_instructor_lider } = req.body
+  const idNumber = Number(id_instructor_lider)
+  const classNumberNumber = Number(numero_ficha)
+  try {
+    const [classQuery]: [ResultSetHeader, unknown] = await connection.query('UPDATE fichas SET id_instructor_lider = IFNULL(?, id_instructor_lider) WHERE numero_ficha = ?', [idNumber, classNumberNumber])
+    if (Object.keys(classQuery).length === 0 && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo editar el instructor líder de la ficha.', errorCodes.ERROR_EDIT_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
     return handleHTTP(res, error as CustomError)

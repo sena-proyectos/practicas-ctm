@@ -2,22 +2,22 @@ import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Pagination } from '@nextui-org/pagination'
 
 // Icons
 import { AiOutlineEye } from 'react-icons/ai'
 import { PiCaretRightBold } from 'react-icons/pi'
 import { TiDelete } from 'react-icons/ti'
+import { BiSad } from 'react-icons/bi'
 
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
-import { Pagination } from '../Utils/Pagination/Pagination'
 import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById } from '../../api/httpRequest'
-import { Modals } from '../Utils/Modals/Modals'
-import { BiSad } from 'react-icons/bi'
+import { InfoStudentModal } from '../Utils/Modals/Modals'
 
 export const Students = () => {
-  const [pageNumber, setPageNumber] = useState(-1)
+  const [pageNumber, setPageNumber] = useState(1)
   const [detailCourse, setDetailCourse] = useState([])
   const [studentsCourse, setStudentsCourse] = useState([])
   const [studentsCourseOriginal, setStudentsCourseOriginal] = useState([])
@@ -30,14 +30,25 @@ export const Students = () => {
   const [activeFilter, setActiveFilter] = useState(false)
   const [loadingData, setLoadingData] = useState({ course: true, students: true })
 
+  /**
+   * Función asincrónica para obtener la lista de estudiantes por curso.
+   *
+   * @async
+   * @function
+   * @name getStudents
+   * @param {number} payload - Número de curso.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getStudents(123);
+   */
   const getStudents = async (payload) => {
     try {
       const response = await GetStudentsByCourse(payload)
       const { data } = response.data
-      setTimeout(() => {
-        setStudentsCourse(data)
-        setStudentsCourseOriginal(data)
-      }, 3000)
+      setStudentsCourse(data)
+      setStudentsCourseOriginal(data)
     } catch (err) {
       throw new Error(err)
     }
@@ -48,14 +59,25 @@ export const Students = () => {
     getCourseData(courseNumber)
   }, [])
 
+  /**
+   * Función asincrónica para obtener los detalles del curso.
+   *
+   * @async
+   * @function
+   * @name getCourseData
+   * @param {number} payload - Número de curso.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getCourseData(123);
+   */
   const getCourseData = async (payload) => {
     try {
       const response = await GetClassByNumber(payload)
       const { data } = response.data
-      setTimeout(() => {
-        setDetailCourse(data[0])
-        setLoadingData({ course: false })
-      }, 3000)
+      setDetailCourse(data[0])
+      setLoadingData({ course: false })
     } catch (error) {
       throw new Error(error)
     }
@@ -63,6 +85,19 @@ export const Students = () => {
 
   const handleStateModal = () => setShowModalStudent(false)
 
+  /**
+   * Función asincrónica para obtener la información detallada de un estudiante por su ID.
+   *
+   * @async
+   * @function
+   * @name handleDetailInfoStudent
+   * @param {number} id - ID del estudiante.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * handleDetailInfoStudent(456);
+   */
   const handleDetailInfoStudent = async (id) => {
     try {
       setShowModalStudent(true)
@@ -76,12 +111,62 @@ export const Students = () => {
     }
   }
 
+  /**
+   * Número de estudiantes a mostrar por página.
+   *
+   * @constant
+   * @name studentsPerPage
+   * @type {number}
+   * @default 5
+   *
+   * @example
+   * const estudiantesPorPagina = studentsPerPage;
+   */
   const studentsPerPage = 5
+  /**
+   * Calcula el número de páginas necesarias para la paginación.
+   *
+   * @constant
+   * @name pageCount
+   * @type {number}
+   *
+   * @example
+   * const numeroDePaginas = pageCount;
+   */
   const pageCount = Math.ceil(studentsCourse.length / studentsPerPage)
-
-  const startIndex = (pageNumber + 1) * studentsPerPage
+  /**
+   * Índice de inicio de la lista de estudiantes a mostrar en la página actual.
+   *
+   * @constant
+   * @name startIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceInicio = startIndex;
+   */
+  const startIndex = (pageNumber - 1) * studentsPerPage
+  /**
+   * Índice de fin de la lista de estudiantes a mostrar en la página actual.
+   *
+   * @constant
+   * @name endIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
   const endIndex = startIndex + studentsPerPage
 
+  /**
+   * Deshabilita la visualización de los filtros después de un breve retraso.
+   *
+   * @function
+   * @name disableShowFiltros
+   * @returns {void}
+   *
+   * @example
+   * disableShowFiltros();
+   */
   const disableShowFiltros = () => {
     setTimeout(() => {
       setShowFiltros(false)
@@ -89,15 +174,48 @@ export const Students = () => {
     }, 100)
   }
 
+  /**
+   * Maneja la visualización de los filtros.
+   *
+   * @function
+   * @name handleShowFiltros
+   * @returns {void}
+   *
+   * @example
+   * handleShowFiltros();
+   */
   const handleShowFiltros = () => {
     setShowFiltros(!showFiltros)
   }
 
+  /**
+   * Muestra u oculta el filtro especificado.
+   *
+   * @function
+   * @name ShowFilter
+   * @param {string} filterType - Tipo de filtro ('modalidad' o 'estado').
+   * @returns {void}
+   *
+   * @example
+   * ShowFilter('modalidad');
+   */
   const ShowFilter = (filterType) => {
     if (filterType === 'modalidad') setFiltersButtons({ modalidad: !filtersButtons.modalidad, etapa: false })
     if (filterType === 'estado') setFiltersButtons({ etapa: !filtersButtons.etapa, modalidad: false })
   }
 
+  /**
+   * Maneja la selección de filtro de modalidad o estado y actualiza la lista de estudiantes.
+   *
+   * @function
+   * @name handleModalidadFilter
+   * @param {string} filterType - Tipo de filtro ('modalidad' o 'estado').
+   * @param {string} filter - Valor del filtro seleccionado.
+   * @returns {void}
+   *
+   * @example
+   * handleModalidadFilter('modalidad', 'Presencial');
+   */
   const handleModalidadFilter = (filterType, filter) => {
     if (filterType === 'modalidad') {
       const filterMap = studentsCourseOriginal.filter((student) => student.nombre_modalidad === filter)
@@ -111,6 +229,16 @@ export const Students = () => {
     setActiveFilter(true)
   }
 
+  /**
+   * Restablece los filtros y muestra la lista original de estudiantes.
+   *
+   * @function
+   * @name handleResetFilter
+   * @returns {void}
+   *
+   * @example
+   * handleResetFilter();
+   */
   const handleResetFilter = () => {
     setStudentsCourse(studentsCourseOriginal)
     disableShowFiltros()
@@ -119,37 +247,39 @@ export const Students = () => {
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
-      {showModalStudent && <Modals closeModal={handleStateModal} bodyStudent title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} celStudent={userInfoById.celular_aprendiz} trainingProgram={userInfoById.nombre_programa_formacion} ficha={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} trainingStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} finLectiva={dates.fin_lectiva} inicioProductiva={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} workstation={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />}
+      {showModalStudent && (
+        <InfoStudentModal closeModal={handleStateModal} title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} cellPhoneNumber={userInfoById.celular_aprendiz} program={userInfoById.nombre_programa_formacion} courseNumber={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} formationStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} lectivaEnd={dates.fin_lectiva} productiveStart={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} positionSuperior={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celphoneSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />
+      )}
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-2-85-15'>
         <section className='w-[95%] h-[95%] m-auto'>
           <div className='relative h-full bg-white shadow-md sm:rounded-lg'>
-            <div className='grid grid-cols-3 items-center justify-between h-16 px-3'>
-              <div className='relative flex w-full items-center'>
-                <button className='flex items-center justify-between gap-1 text-gray-500 border border-gray focus:outline-none  font-medium rounded-lg text-sm px-3 py-1.5 w-36 bg-white relative text-slate-800 hover:bg-[#ffd6a5]/30' onClick={handleShowFiltros} type='button'>
+            <div className='grid items-center justify-between h-16 grid-cols-3 px-3'>
+              <div className='relative flex items-center w-full'>
+                <button className='flex items-center justify-between gap-1 border border-gray focus:outline-none  font-medium rounded-lg text-sm px-3 py-1.5 w-36 bg-white relative text-slate-800 hover:bg-[#ffd6a5]/30' onClick={handleShowFiltros} type='button'>
                   Filtros
                   <PiCaretRightBold className={`text-md mt-[1px] ${showFiltros ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
                 </button>
                 <ul className={`absolute left-0 mt-1 top-full w-36 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
                   <li>
-                    <button type='button' className='hover:bg-whitesmoke text-slate-800 h-full w-full px-3 py-1 flex items-center justify-between relative' onClick={() => ShowFilter('modalidad')}>
+                    <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('modalidad')}>
                       Modalidad <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.modalidad ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
                       {filtersButtons.modalidad && (
                         <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
-                          <ul className='w-40 py-2 flex flex-col gap-1'>
-                            <li className='px-3 hover:bg-whitesmoke w-full py-1 text-left hover:text-black transition-colors' onClick={() => handleModalidadFilter('modalidad', 'Pasantías')}>
+                          <ul className='flex flex-col w-40 gap-1 py-2'>
+                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Pasantías')}>
                               Pasantías
                             </li>
-                            <li className='px-3 hover:bg-whitesmoke w-full py-1 text-left hover:text-black transition-colors' onClick={() => handleModalidadFilter('modalidad', 'Contrato de aprendizaje')}>
+                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Contrato de aprendizaje')}>
                               Contrato de aprendizaje
                             </li>
-                            <li className='px-3 hover:bg-whitesmoke w-full py-1 text-left hover:text-black transition-colors' onClick={() => handleModalidadFilter('modalidad', 'Proyecto Productivo')}>
+                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Proyecto Productivo')}>
                               Proyecto Productivo
                             </li>
-                            <li className='px-3 hover:bg-whitesmoke w-full py-1 text-left hover:text-black transition-colors' onClick={() => handleModalidadFilter('modalidad', 'Monitoría')}>
+                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Monitoría')}>
                               Monitoría
                             </li>
-                            <li className='px-3 hover:bg-whitesmoke w-full py-1 text-left hover:text-black transition-colors' onClick={() => handleModalidadFilter('modalidad', 'Vinculación laboral')}>
+                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Vinculación laboral')}>
                               Vinculación laboral
                             </li>
                           </ul>
@@ -158,18 +288,18 @@ export const Students = () => {
                     </button>
                   </li>
                   <li>
-                    <button type='button' className='hover:bg-whitesmoke text-slate-800 h-full w-full px-3 py-1 flex items-center justify-between relative' onClick={() => ShowFilter('estado')}>
+                    <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('estado')}>
                       Estado <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.etapa ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
                       {filtersButtons.etapa && (
                         <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
-                          <ul className='w-40 py-2 flex flex-col gap-1'>
-                            <li className='px-3 hover:bg-whitesmoke w-full py-1 text-left hover:text-black transition-colors' onClick={() => handleModalidadFilter('estado', 'Lectiva')}>
+                          <ul className='flex flex-col w-40 gap-1 py-2'>
+                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('estado', 'Lectiva')}>
                               Lectiva
                             </li>
-                            <li className='px-3 hover:bg-whitesmoke w-full py-1 text-left hover:text-black transition-colors' onClick={() => handleModalidadFilter('estado', 'Prácticas')}>
+                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('estado', 'Prácticas')}>
                               Prácticas
                             </li>
-                            <li className='px-3 hover:bg-whitesmoke w-full py-1 text-left hover:text-black transition-colors' onClick={() => handleModalidadFilter('estado', 'Finalizada')}>
+                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('estado', 'Finalizada')}>
                               Finalizada
                             </li>
                           </ul>
@@ -181,13 +311,13 @@ export const Students = () => {
                 {activeFilter && (
                   <section className='ml-2 justify-self-end '>
                     <button type='button' className='text-sm font-light flex items-center gap-[2px] hover:text-red-500 transition-colors' onClick={handleResetFilter}>
-                      <TiDelete className='text-red-500 text-lg' /> Borrar Filtro
+                      <TiDelete className='text-lg text-red-500' /> Borrar Filtro
                     </button>
                   </section>
                 )}
               </div>
 
-              <div className='flex flex-row mx-auto gap-3 text-sm font-light '>
+              <div className='flex flex-row gap-3 mx-auto text-sm font-light '>
                 <div className='flex flex-row items-center'>
                   <div className='h-2.5 w-2.5 rounded-full bg-red-500 mr-2' />
                   Lectiva
@@ -258,8 +388,8 @@ export const Students = () => {
                 ) : loadingData.course ? (
                   <LoadingDataStudents number={5} />
                 ) : (
-                  <tr className='grid place-content-center h-full'>
-                    <th scope='row' className='text-red-500 text-xl flex items-center gap-1'>
+                  <tr className='grid h-full place-content-center'>
+                    <th scope='row' className='flex items-center gap-1 text-xl text-red-500'>
                       <p>¡Oops! No hay ningún aprendiz con este filtro.</p>
                       <BiSad className='text-2xl' />
                     </th>
@@ -268,7 +398,7 @@ export const Students = () => {
               </tbody>
             </table>
             <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0'>
-              <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
+              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
             </div>
           </div>
         </section>
@@ -302,4 +432,3 @@ const LoadingDataStudents = ({ number = 6 }) =>
       </td>
     </tr>
   ))
-

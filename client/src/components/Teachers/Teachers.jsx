@@ -1,81 +1,230 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+import { Pagination } from '@nextui-org/pagination'
 
 // Icons
 import { FaAngleRight } from 'react-icons/fa'
-import { LuBookPlus } from 'react-icons/lu'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
-import { Pagination } from '../Utils/Pagination/Pagination'
-import { colorsOddRow, instructores } from '../../import/staticData'
-import { Button } from '../Utils/Button/Button'
+import { colorsOddRow } from '../../import/staticData'
+import { getTeachers, GetTeacherByName } from '../../api/httpRequest'
 
 export const Teachers = () => {
-  const [pageNumber, setPageNumber] = useState(-1)
+  const [pageNumber, setPageNumber] = useState(1)
   const [loading, setLoading] = useState(true)
+  const [teacher, setTeacher] = useState([])
+  const [searchedTeachers, setSearchedTeachers] = useState([])
+  const [error, setError] = useState(null)
 
+  /**
+   * Función asincrónica para buscar aprendices por nombre de usuario.
+   *
+   * @async
+   * @function
+   * @name searchTeachers
+   * @param {string} searchTerm - Término de búsqueda para el aprendiz.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * searchTeachers('John Doe');
+   */
+  const searchTeachers = async (searchTerm) => {
+    if (searchTerm.trim() === '') {
+      setError(null)
+      setSearchedTeachers([])
+      return
+    }
+    try {
+      const response = await GetTeacherByName(searchTerm)
+      const { data } = response.data
+      if (searchTerm.trim() === '') {
+        setError(null)
+        setSearchedTeachers([])
+      } else {
+        setError(null)
+        setSearchedTeachers(data)
+      }
+    } catch (error) {
+      const message = error?.response?.data?.error?.info?.message
+
+      setError(message ?? 'Usuario no existente')
+      setSearchedTeachers([])
+    }
+  }
+
+  /**
+   * Función asincrónica para obtener la lista de instructores.
+   *
+   * @async
+   * @function
+   * @name getInstructores
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getInstructores();
+   */
+  const getInstructores = async () => {
+    try {
+      const response = await getTeachers()
+      const { data } = response.data
+      setTeacher(data)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  useEffect(() => {
+    getInstructores()
+  }, [])
+
+  /**
+   * Número de instructores a mostrar por página.
+   *
+   * @constant
+   * @name instructoresPerPage
+   * @type {number}
+   * @default 8
+   *
+   * @example
+   * const instructoresPorPagina = instructoresPerPage;
+   */
   const instructoresPerPage = 8
-  const pageCount = Math.ceil(instructores.length / instructoresPerPage)
-
-  const allColors = instructores.map((_, index) => ({
+  /**
+   * Calcula el número de páginas necesarias para la paginación de instructores.
+   *
+   * @constant
+   * @name pageCount
+   * @type {number}
+   *
+   * @example
+   * const numeroDePaginas = pageCount;
+   */
+  const pageCount = Math.ceil(teacher.length / instructoresPerPage)
+  /**
+   * Mapea los colores para las filas impares de la lista de instructores.
+   *
+   * @constant
+   * @name allColors
+   * @type {Array<Object>}
+   *
+   * @example
+   * const coloresFilasImpares = allColors;
+   */
+  const allColors = teacher.map((_, index) => ({
     ...colorsOddRow[index % colorsOddRow.length]
   }))
-
-  const startIndex = (pageNumber + 1) * instructoresPerPage
+  /**
+   * Índice de inicio de la lista de instructores a mostrar en la página actual.
+   *
+   * @constant
+   * @name startIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceInicio = startIndex;
+   */
+  const startIndex = (pageNumber - 1) * instructoresPerPage
+  /**
+   * Índice de fin de la lista de instructores a mostrar en la página actual.
+   *
+   * @constant
+   * @name endIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
   const endIndex = startIndex + instructoresPerPage
 
   const navigate = useNavigate()
-  const handleAsign = () => {
-    return navigate('/asignar-ficha')
-  }
 
   useEffect(() => {
     setLoading(false)
   }, [])
+
+  /**
+   * Función para navegar a la página de fichas de instructor por su ID.
+   *
+   * @function
+   * @name handleCourse
+   * @param {number} id - ID del instructor.
+   * @returns {void}
+   *
+   * @example
+   * handleCourse(123);
+   */
+  const handleCourse = (id) => {
+    return navigate(`/fichas-instructor/${id}`)
+  }
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
-          <Search searchFilter />
+          <Search searchFilter placeholder={'Busca un instructor'} searchStudent={searchTeachers} />
         </header>
         <section className='flex flex-col h-full gap-3'>
-          <section className='grid grid-cols-1 gap-x-3 gap-y-4 md:grid-cols-4 px-8 md:px-12 pt-6 md:gap-y-2 md:gap-x-8 h-fit md:h-[85%] st1:grid-cols-3 st1:gap-y-4 st2:gap-y-4 st2:grid-cols-2'>
-            {loading ? (
-              <>
-                <SkeletonLoading />
-              </>
-            ) : (
-              allColors.slice(startIndex, endIndex).map((color, index) =>
-                instructores[startIndex + index] ? (
+          {searchedTeachers.length > 0 && !error ? (
+            <section className='grid grid-cols-1 gap-x-3 gap-y-4 md:grid-cols-4 px-8 md:px-12 pt-6 md:gap-y-2 md:gap-x-8 h-fit md:h-[85%] st1:grid-cols-3 st1:gap-y-4 st2:gap-y-4 st2:grid-cols-2'>
+              {allColors.slice(startIndex, endIndex).map((color, index) =>
+                searchedTeachers[startIndex + index] ? (
                   <div className='rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[9rem] bg-white' key={index} {...color}>
                     <div className='flex flex-col w-4/5 gap-2 mx-auto my-auto'>
-                      <h6 className='font-medium text-center text-[0.9rem]'>{instructores[startIndex + index].nombre}</h6>
+                      <h6 className='font-medium text-center text-[0.9rem]'>{`${searchedTeachers[startIndex + index].nombres_usuario} ${searchedTeachers[startIndex + index].apellidos_usuario}`}</h6>
                       <hr className={`font-bold ${color.hrcolor} border-1`} />
-                      <p className='text-[0.8rem] font-light text-center'>{instructores[startIndex + index].rol}</p>
+                      <p className='text-[0.8rem] font-light text-center'>{searchedTeachers[startIndex + index].id_rol === 3 && 'Instructor Seguimiento'}</p>
                     </div>
                     <div className={`w-full h-full rounded-r-[2rem] ${color.sidecolor}`}>
                       <div className={`w-full h-[3rem] rounded-tr-[2rem] text-white text-xl ${color.linkcolor}`}>
-                        <Link to='/fichas'>
+                        <button className='w-full h-full' onClick={() => handleCourse(searchedTeachers[startIndex + index].id_usuario)}>
                           <FaAngleRight className='h-full py-3 mx-auto' />
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </div>
                 ) : null
-              )
-            )}
-          </section>
+              )}
+            </section>
+          ) : (
+            <section className='grid grid-cols-1 gap-x-3 gap-y-4 md:grid-cols-4 px-8 md:px-12 pt-6 md:gap-y-2 md:gap-x-8 h-fit md:h-[85%] st1:grid-cols-3 st1:gap-y-4 st2:gap-y-4 st2:grid-cols-2'>
+              {loading ? (
+                <>
+                  <SkeletonLoading />
+                </>
+              ) : error ? (
+                <h2 className='text-red-500'>{error}</h2>
+              ) : (
+                allColors.slice(startIndex, endIndex).map((color, index) =>
+                  teacher[startIndex + index] ? (
+                    <div className='rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[9rem] bg-white' key={index} {...color}>
+                      <div className='flex flex-col w-4/5 gap-2 mx-auto my-auto'>
+                        <h6 className='font-medium text-center text-[0.9rem]'>{`${teacher[startIndex + index].nombres_usuario} ${teacher[startIndex + index].apellidos_usuario}`}</h6>
+                        <hr className={`font-bold ${color.hrcolor} border-1`} />
+                        <p className='text-[0.8rem] font-light text-center'>{teacher[startIndex + index].id_rol === 3 && 'Instructor Seguimiento'}</p>
+                      </div>
+                      <div className={`w-full h-full rounded-r-[2rem] ${color.sidecolor}`}>
+                        <div className={`w-full h-[3rem] rounded-tr-[2rem] text-white text-xl ${color.linkcolor}`}>
+                          <button className='w-full h-full' onClick={() => handleCourse(teacher[startIndex + index].id_usuario)}>
+                            <FaAngleRight className='h-full py-3 mx-auto' />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null
+                )
+              )}
+            </section>
+          )}
+
           <div className='flex justify-center h-[13vh] relative st1:bottom-[-1.5rem] st2:bottom-[-3rem] bottom-[-4rem] md:bottom-0'>
-            <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageCount={pageCount} />
-          </div>
-          <div className='absolute right-12 bottom-20'>
-            <Button value={'Agregar'} rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' clickeame={handleAsign} icon={<LuBookPlus className='text-xl' />} />
+            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
           </div>
         </section>
         <Footer />

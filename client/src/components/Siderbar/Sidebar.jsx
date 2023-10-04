@@ -6,17 +6,30 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 // Icons
-import { IoCalendarClearOutline, IoDocumentTextOutline, IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoPeopleOutline, IoPersonAddOutline, IoBookOutline } from 'react-icons/io5'
+import { IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoPeopleOutline, IoPersonAddOutline, IoBookOutline } from 'react-icons/io5'
 
 // Componentes
 import { colorIcon, rolesNames, keysRoles } from '../../import/staticData'
+import { userStore } from '../../store/config'
 
 const Siderbar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [open, setOpen] = useState(true)
   const [dataFullName, setDataFullName] = useState(null)
+  const { setUserId } = userStore()
+  const { userId } = userStore()
 
+  /**
+   * Efecto para manejar el redimensionamiento de la ventana y la apertura/cierre del menú en pantallas pequeñas.
+   *
+   * @function
+   * @name handleResize
+   * @returns {void}
+   *
+   * @example
+   * handleResize();
+   */
   useEffect(() => {
     const handleResize = () => {
       const isSmallScreen = window.innerWidth < 640
@@ -31,11 +44,41 @@ const Siderbar = () => {
     }
   }, [])
 
+  /**
+   * Obtener el ID de rol almacenado en el almacenamiento local.
+   *
+   * @constant
+   * @name idRol
+   * @type {number}
+   *
+   * @example
+   * const idRol = idRol;
+   */
   const idRol = Number(localStorage.getItem('idRol'))
+  /**
+   * Función para eliminar el ID de rol del almacenamiento local.
+   *
+   * @function
+   * @name removeIdRolFromLocalStorage
+   * @returns {void}
+   *
+   * @example
+   * removeIdRolFromLocalStorage();
+   */
   const removeIdRolFromLocalStorage = () => {
     localStorage.removeItem('idRol')
   }
 
+  /**
+   * Efecto para manejar la autenticación del usuario y cargar sus datos.
+   *
+   * @function
+   * @name handleAuthentication
+   * @returns {void}
+   *
+   * @example
+   * handleAuthentication();
+   */
   useEffect(() => {
     const token = Cookies.get('token')
 
@@ -48,6 +91,8 @@ const Siderbar = () => {
     try {
       const tokenData = jwtDecode(token)
       const { nombres_usuario, apellidos_usuario } = tokenData.data.user
+      const { id_usuario } = tokenData.data.user
+      setUserId(id_usuario)
       const fullName = `${nombres_usuario} ${apellidos_usuario}`
       setDataFullName(fullName)
     } catch (error) {
@@ -56,16 +101,48 @@ const Siderbar = () => {
     }
   }, [])
 
+  /**
+   * Función para cerrar la sesión del usuario.
+   *
+   * @function
+   * @name logout
+   * @returns {void}
+   *
+   * @example
+   * logout();
+   */
   const logout = () => {
     Cookies.remove('token')
     removeIdRolFromLocalStorage()
     navigate('/')
   }
 
+  /**
+   * Función para aplicar estilos a un elemento en función de la ruta actual.
+   *
+   * @function
+   * @name styles
+   * @param {string} path - Ruta de destino.
+   * @returns {string} - Clases CSS aplicadas.
+   *
+   * @example
+   * const className = styles('/ruta');
+   */
   const styles = (path) => {
     return location.pathname === path ? 'flex items-center relative pl-10 py-2 font-semibold bg-white rounded-s-2xl w-[115%] h-8' : 'flex items-center relative pl-10 py-2 hover:bg-white rounded-s-2xl w-[115%] h-8 transition '
   }
 
+  /**
+   * Función para aplicar estilos a un elemento span en función de la ruta actual.
+   *
+   * @function
+   * @name spanStyle
+   * @param {string} path - Ruta de destino.
+   * @returns {string} - Clases CSS aplicadas.
+   *
+   * @example
+   * const spanClassName = spanStyle('/ruta');
+   */
   const spanStyle = (path) => {
     const color = colorIcon[path]
     return location.pathname === path ? `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-md' : 'pl-5 text-lg'} font-bold ${color}` : `absolute inset-y-0 left-0 flex items-center ${open === true ? 'pl-3 text-sm' : 'pl-5 text-md'} `
@@ -120,14 +197,26 @@ const Siderbar = () => {
                 </Link>
               </li>
             )}
-            <li>
-              <Link to='/fichas' className={styles('/fichas')}>
-                <span className={spanStyle('/fichas')}>
-                  <IoBookOutline />
-                </span>
-                {open && (idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) ? 'Fichas' : 'Mis fichas')}
-              </Link>
-            </li>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <li>
+                <Link to='/fichas' className={styles('/fichas')}>
+                  <span className={spanStyle('/fichas')}>
+                    <IoBookOutline />
+                  </span>
+                  {open && 'Fichas'}
+                </Link>
+              </li>
+            )}
+            {idRol === Number(keysRoles[2]) && (
+              <li>
+                <Link to={`/fichas-instructor/${userId}`} className={styles('/fichas')}>
+                  <span className={spanStyle('/fichas')}>
+                    <IoBookOutline />
+                  </span>
+                  {open && 'Mis fichas'}
+                </Link>
+              </li>
+            )}
             {/* {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
               <li>
                 <Link to="/bitacoras" className={styles('/bitacoras')}>

@@ -1,46 +1,132 @@
 import { useRef, useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom'
-import LoadingUI from 'react-loading'
 
-import { Button } from '../Utils/Button/Button'
-import { Login } from '../../api/httpRequest'
+import { Button, LoadingButton } from '../Utils/Button/Button'
+import { Login, registerUser } from '../../api/httpRequest'
+import { randomNumberGenerator } from '../Utils/randomNumberGenerator'
 
 import Cookie from 'js-cookie'
 import Swal from 'sweetalert2'
 import jwtDecode from 'jwt-decode'
 
-const Form = ({ inputs }) => {
+const Form = ({ inputs, isLoginForm }) => {
   const navigate = useNavigate()
   const [loadingBtn, setLoadingBtn] = useState(false)
 
+  /**
+   * Iconos para mostrar y ocultar la contraseña.
+   *
+   * @constant
+   * @name passwordIcons
+   * @type {Object}
+   *
+   * @example
+   * const iconosPassword = passwordIcons;
+   */
   const passwordIcons = {
     openEye: <AiOutlineEye />,
     closeEye: <AiOutlineEyeInvisible />
   }
 
+  /**
+   * Estados para controlar la visibilidad de la contraseña.
+   *
+   * @constant
+   * @name passwordStatus
+   * @type {Object}
+   *
+   * @example
+   * const estadosContraseña = passwordStatus;
+   */
   const passwordStatus = {
     shown: 'text',
     hidden: 'password'
   }
 
+  /**
+   * Estado para controlar la visibilidad de la contraseña.
+   *
+   * @state
+   * @name showPassword
+   * @type {string}
+   *
+   * @example
+   * const mostrarContraseña = showPassword;
+   */
   const [showPassword, setShowPassword] = useState(passwordStatus.hidden)
+
+  /**
+   * Referencia a los valores del formulario.
+   *
+   * @ref
+   * @name formValuesRef
+   * @type {Object}
+   *
+   * @example
+   * const referenciaValoresFormulario = formValuesRef;
+   */
   const formValuesRef = useRef({})
 
+  /**
+   * Función para manejar la visibilidad de la contraseña.
+   *
+   * @function
+   * @name handlePassword
+   * @returns {void}
+   *
+   * @example
+   * handlePassword();
+   */
   const handlePassword = () => (showPassword === passwordStatus.shown ? setShowPassword(passwordStatus.hidden) : setShowPassword(passwordStatus.shown))
 
+  /**
+   * Función para manejar el envío del formulario.
+   *
+   * @function
+   * @name handleSubmit
+   * @param {Event} e - Evento del formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleSubmit(evento);
+   */
   const handleSubmit = (e) => {
     e.preventDefault()
     const dataToSend = flattenObject(formValuesRef.current)
-    sendData(dataToSend)
+    isLoginForm ? sendData(dataToSend) : sendRegisterData(dataToSend)
   }
 
+  /**
+   * Función para aplanar un objeto anidado.
+   *
+   * @function
+   * @name flattenObject
+   * @param {Object} obj - Objeto a aplanar.
+   * @returns {Object} Objeto aplanado.
+   *
+   * @example
+   * const objetoAplanado = flattenObject(objetoAnidado);
+   */
   const flattenObject = (obj) => {
     return Object.values(obj).reduce((result, current) => {
       return { ...result, ...current }
     }, {})
   }
 
+  /**
+   * Función asincrónica para enviar datos al servidor.
+   *
+   * @async
+   * @function
+   * @name sendData
+   * @param {Object} data - Datos a enviar.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * sendData(datos);
+   */
   const sendData = async (data) => {
     setLoadingBtn(true)
     try {
@@ -68,7 +154,42 @@ const Form = ({ inputs }) => {
       })
     }
   }
+  const sendRegisterData = async (data) => {
+    const num_celular = randomNumberGenerator(8)
+    data.num_celular = num_celular.toString()
+    setLoadingBtn(true)
+    try {
+      await registerUser(data)
+      Swal.fire({
+        icon: 'success',
+        title: '!Registro exitoso¡',
+        text: 'Usuario creado correctamente'
+      })
+      setLoadingBtn(false)
+      // navigate('/')
+    } catch (error) {
+      setLoadingBtn(false)
+      const message = error?.response?.data?.error?.info?.message
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: message ?? 'Ha ocurrido un error, intentelo de nuevo'
+      })
+    }
+  }
 
+  /**
+   * Función para manejar el cambio en la entrada del formulario.
+   *
+   * @function
+   * @name handleInputChange
+   * @param {Event} e - Evento de cambio en la entrada.
+   * @param {string} index - Índice del formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleInputChange(evento, 'index');
+   */
   const handleInputChange = (e, index) => {
     const { name, value } = e.target
     formValuesRef.current = {
@@ -100,7 +221,19 @@ const Form = ({ inputs }) => {
         )
       })}
       <hr className='mx-auto my-2 h-[1px] w-4/5 bg-slate-300' />
-      {inputs.length === 2 ? loadingBtn ? <Button isDisabled={true} icon={<LoadingUI className='mx-[3px]' width={25} height={25} type='spin' />} value={'Cargando'} bg={'bg-[#2864b5]'} /> : <Button value={'Iniciar Sesión'} bg={'bg-[#438EF2]'} hover={'transition ease-in delay-75 hover:bg-[#2d61a5] duration-150'} /> : <Button value={'Registrarse'} bg={'bg-[#438EF2]'} hover={'transition ease-in delay-75 hover:bg-[#2d61a5] duration-150'} />}
+      {inputs.length === 2 ? (
+        loadingBtn ? (
+          <LoadingButton bgColor='[#438EF2]' classNames='rounded-md text-white flex gap-3 font-semibold text-lg py-1.5 justify-center w-5/6 mx-auto items-center' />
+        ) : (
+          <Button bg={'bg-[#438EF2]'} px='px-[5rem]' rounded='rounded-md' textColor='text-white' font='font-semibold' textSize='text-lg' py='py-1.5' type={'submit'} hover hoverConfig='bg-[#2d61a5] ease-in delay-75 duration-150'>
+            Iniciar Sesión
+          </Button>
+        )
+      ) : (
+        <Button bg='bg-[#438EF2]' type='submit' px='px-[5rem]' rounded='rounded-md' textColor='text-white' font='font-semibold' textSize='text-lg' py='py-1.5' hover hoverConfig='bg-[#2d61a5] ease-in delay-75 duration-150'>
+          Registrarse
+        </Button>
+      )}
     </form>
   )
 }
