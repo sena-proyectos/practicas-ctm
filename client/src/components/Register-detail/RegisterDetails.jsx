@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, Fragment } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Slide, toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -16,13 +16,14 @@ import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { colorTextStatus, keysRoles } from '../../import/staticData'
 
-import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById } from '../../api/httpRequest'
-import { AiOutlineFullscreen } from 'react-icons/ai'
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById, registerUser, getInfoTeacherByID, getCoordinators, getCoordinatorNameByID } from '../../api/httpRequest'
+import { AiFillEdit, AiOutlineFullscreen } from 'react-icons/ai'
 import { checkApprovementData } from '../../validation/approvementValidation'
 import Cookies from 'js-cookie'
 import decode from 'jwt-decode'
 import { inscriptionStore } from '../../store/config'
 import { Card3D } from '../Utils/Card/Card'
+import { randomNumberGenerator } from '../Utils/randomNumberGenerator'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
@@ -38,6 +39,16 @@ export const RegisterDetails = () => {
     getDetallesInscripcion(id)
   }, [id])
 
+  /**
+   * Función para obtener la pestaña seleccionada actualmente.
+   *
+   * @function
+   * @name getSelectedTab
+   * @returns {string} - Nombre de la pestaña seleccionada.
+   *
+   * @example
+   * const pestañaSeleccionada = getSelectedTab();
+   */
   const getSelectedTab = () => {
     const savedTab = JSON.parse(sessionStorage.getItem('currentDetailTab'))
     if (!savedTab) return 'infoAprendiz'
@@ -45,13 +56,43 @@ export const RegisterDetails = () => {
     return savedTab.lastTab
   }
 
+  /**
+   * Estado local para almacenar la pestaña seleccionada.
+   *
+   * @constant
+   * @name selectedTab
+   * @type {string}
+   *
+   * @example
+   * const pestañaActual = selectedTab;
+   */
   const [selectedTab, setSelectedTab] = useState(getSelectedTab)
 
+  /**
+   * Función para actualizar la pestaña seleccionada en el almacenamiento de sesión.
+   *
+   * @function
+   * @returns {void}
+   *
+   */
   useEffect(() => {
     const payload = JSON.stringify({ lastTab: selectedTab, paramLink: id })
     sessionStorage.setItem('currentDetailTab', payload)
   }, [selectedTab])
 
+  /**
+   * Función para obtener los datos de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getInscriptionAprendiz
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getInscriptionAprendiz(idAprendiz);
+   */
   const getInscriptionAprendiz = async (id) => {
     try {
       const response = await getInscriptionById(id)
@@ -61,23 +102,36 @@ export const RegisterDetails = () => {
       setLinkDocs(link_documentos)
       setInscriptionAprendiz(res)
     } catch (error) {
-      console.log('Ha ocurrido un error al mostrar los datos del usuario')
+      console.error('Ha ocurrido un error al mostrar los datos del usuario')
     }
   }
 
+  /**
+   * Función para obtener los detalles de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getDetallesInscripcion
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getDetallesInscripcion(idAprendiz);
+   */
   const getDetallesInscripcion = async (id) => {
     try {
       const response = await getInscriptionDetails(id)
       const res = response.data.data
       setDetails({ documentosId: res[0].id_detalle_inscripcion, rapsId: res[1].id_detalle_inscripcion, funcionesId: res[2].id_detalle_inscripcion, avalId: res[3].id_detalle_inscripcion })
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
-      <ToastContainer transition={Slide} />
+      <ToastContainer transition={Slide} theme='colored' />
       <Siderbar />
       <section className='relative grid flex-auto gap-2 w-min grid-rows-3-10-75-15'>
         <header className='border-b-1 w-[70%] mx-auto border-b-zinc-300 h-[9vh]'>
@@ -88,12 +142,12 @@ export const RegisterDetails = () => {
             <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoEmpresa' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoEmpresa')}>
               Info. Empresa
             </li>
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[3])) && (
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <li className={`text-sm font-light cursor-pointer ${selectedTab === 'raps' ? 'font-medium text-purple-800' : ''} hover:text-purple-800`} onClick={() => setSelectedTab('raps')}>
                 RAPS
               </li>
             )}
-            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
               <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'documentos' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('documentos')}>
                 Documentos
               </li>
@@ -250,51 +304,140 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   const [disableSubmitButton, setDisableSubmitButton] = useState(true)
   const descriptionRef = useRef(null)
   const formRef = useRef(null)
-
-  const { inscriptionData } = inscriptionStore()
-  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
-
-   const fetchInfo = async () => {
-    const res = await getAvalById(avalCoordinador)
-    const { data } = res.data
-    setAvalInfo(data)
-  }
   const [dataAprendiz, setDataAprendiz] = useState([])
   const [dataEmpresa, setDataEmpresa] = useState([])
+  const [dataAdmins, setDataAdmins] = useState([{ id_usuario: Number(), nombre_completo: String() }])
+  const [coordinatorFullName, setCoordinatorFullName] = useState(null)
   const [idUser, setIdUser] = useState(0)
   const [user, setUser] = useState(0)
   const prevUserIdRef = useRef()
 
+  const { inscriptionData } = inscriptionStore()
+  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
+
+  /**
+   * Función para obtener la información de un aval por su ID.
+   *
+   * @async
+   * @function
+   * @name fetchInfo
+   * @returns {void}
+   *
+   * @example
+   * fetchInfo();
+   */
+  const fetchInfo = async () => {
+    try {
+      const res = await getAvalById(avalCoordinador)
+      const { data } = res.data
+      const idPayload = data[0].responsable_aval
+      if (idPayload !== null) {
+        getCoordinatorName(idPayload)
+      }
+      setAvalInfo(data)
+    } catch (error) {
+      toast.error('Error al conseguir los datos del aval')
+    }
+  }
+
+  const getCoordinatorName = async (payload) => {
+    try {
+      const res = await getCoordinatorNameByID(payload)
+      const { nombre_completo } = res.data
+      setCoordinatorFullName(nombre_completo)
+    } catch (error) {
+      console.log(error)
+      toast.error('Error al conseguir los datos del aval')
+    }
+  }
+
+  /**
+   * Efecto para almacenar el ID de usuario previo.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
   useEffect(() => {
     prevUserIdRef.current = idUser
   }, [idUser])
+
+  /**
+   * Efecto para realizar acciones cuando el ID de usuario cambia después de la primera vez.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
   useEffect(() => {
     if (prevUserIdRef.current !== 0) {
       // Realiza la lógica que necesitas cuando idUser cambia después de la primera vez.
       getUser(idUser)
     }
   }, [idUser])
+
+  /**
+   * Efecto para realizar acciones cuando se actualiza el valor de `avalCoordinador`.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
   useEffect(() => {
     if (avalCoordinador) fetchRaps()
   }, [avalCoordinador])
 
+  /**
+   * Efecto para obtener los datos de inscripción del aprendiz y sus detalles.
+   *
+   * @function
+   * @name useEffect
+   *
+   */
   useEffect(() => {
     const fetchData = async () => {
       await getInscriptionAprendiz(id)
       await getDetallesInscripcion(id)
     }
     fetchData()
-  }, [id],)
+  }, [id])
 
+  /**
+   * Función para obtener los datos de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getInscriptionAprendiz
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getInscriptionAprendiz(idAprendiz);
+   */
   const getInscriptionAprendiz = async (id) => {
     try {
       const response = await getInscriptionById(id)
       const res = response.data.data
       setDataAprendiz(res)
     } catch (error) {
-      console.log('Ha ocurrido un error al mostrar los datos del usuario')
+      toast.error('Error al conseguir los datos del aprendiz')
     }
   }
+
+  /**
+   * Función para obtener los detalles de inscripción de un aprendiz por su ID.
+   *
+   * @async
+   * @function
+   * @name getDetallesInscripcion
+   * @param {string} id - ID del aprendiz.
+   * @returns {void}
+   *
+   * @example
+   * const idAprendiz = '123456';
+   * getDetallesInscripcion(idAprendiz);
+   */
   const getDetallesInscripcion = async (id) => {
     try {
       const response = await getInscriptionDetails(id)
@@ -303,9 +446,23 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       setDataEmpresa(res)
       setIdUser(res2)
     } catch (error) {
-      console.log(error)
+      toast.error('Error al conseguir los detalles de la inscripción')
     }
   }
+
+  /**
+   * Función para obtener los datos de un usuario por su ID.
+   *
+   * @async
+   * @function
+   * @name getUser
+   * @param {string} id - ID del usuario.
+   * @returns {void}
+   *
+   * @example
+   * const idUsuario = '123456';
+   * getUser(idUsuario);
+   */
   const getUser = async (id) => {
     const response = await getUserById(id)
     const res = response.data.data[0].nombres_usuario
@@ -313,6 +470,17 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     setUser(res + ' ' + res2)
   }
 
+  /**
+   * Función para obtener los datos de raps.
+   *
+   * @async
+   * @function
+   * @name fetchRaps
+   * @returns {void}
+   *
+   * @example
+   * fetchRaps();
+   */
   const fetchRaps = async () => {
     const res = await getAvalById(avalCoordinador)
     const { data } = res.data
@@ -323,15 +491,59 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     if (avalCoordinador) fetchInfo()
   }, [avalCoordinador])
 
+  const saveAllAdmins = async () => {
+    try {
+      const { data } = await getCoordinators()
+      const payload = data.map((admin) => {
+        return {
+          key: admin.id_usuario,
+          value: admin.nombre_completo
+        }
+      })
+      setDataAdmins(payload)
+    } catch (error) {
+      toast.error('Error al conseguir los administradores')
+    }
+  }
+
+  useEffect(() => {
+    saveAllAdmins()
+  }, [])
+
+  /**
+   * Función para validar y habilitar el botón de envío del formulario.
+   *
+   * @function
+   * @name handleSubmitButton
+   * @returns {void}
+   *
+   * @example
+   * handleSubmitButton();
+   */
   const handleSubmitButton = () => {
     if (!selectedApproveButton) return
     if (descriptionRef.current.value.length === 0) {
       setDisableSubmitButton(true)
       return
     }
+    if (coordinatorFullName === null) {
+      setDisableSubmitButton(true)
+      return
+    }
     setDisableSubmitButton(false)
   }
 
+  /**
+   * Función para seleccionar el botón de aprobación.
+   *
+   * @function
+   * @name selectButtonToSubmit
+   * @param {string} value - Valor del botón de aprobación.
+   * @returns {void}
+   *
+   * @example
+   * selectButtonToSubmit('Si');
+   */
   const selectButtonToSubmit = (value) => {
     setSelectedApproveButton(value)
     if (descriptionRef.current.value.length === 0 || !value) {
@@ -341,6 +553,19 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     setDisableSubmitButton(false)
   }
 
+  /**
+   * Función para manejar el envío del formulario de aval.
+   *
+   * @async
+   * @function
+   * @name handleAvalForm
+   * @param {object} e - Evento del formulario.
+   * @returns {void}
+   *
+   * @example
+   * const eventoFormulario = { target: { value: 'Valor' } };
+   * handleAvalForm(eventoFormulario);
+   */
   const handleAvalForm = async (e) => {
     e.preventDefault()
     const approveOptions = { Si: 'Si', No: 'No' }
@@ -355,7 +580,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       if (selectedApproveButton === approveOptions.Si) return acceptApprove({ observations, approveOption, avalCoordinador }, loadingToast)
       if (selectedApproveButton === approveOptions.No) return denyApprove({ observations, approveOption, avalCoordinador }, loadingToast)
     } catch (err) {
-      console.log(err)
       if (toast.isActive('loadingToast')) return
       toast.error('Los campos son incorrectos, corríjalos.', {
         toastId: 'error-full-docs',
@@ -373,6 +597,21 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     }
   }
 
+  /**
+   * Función para aceptar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name acceptApprove
+   * @param {object} payload - Datos para la aprobación.
+   * @param {string} toastId - ID del toast.
+   * @returns {void}
+   *
+   * @example
+   * const datosAprobacion = { observations: 'Observaciones', approveOption: 'Si', avalCoordinador: 123 };
+   * const toastId = 'toast-id';
+   * acceptApprove(datosAprobacion, toastId);
+   */
   const acceptApprove = async (payload, toastId) => {
     const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
     const id = payload.avalCoordinador
@@ -382,6 +621,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
+      await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion: dataAprendiz[0].nombre_inscripcion, apellido_inscripcion: dataAprendiz[0].apellido_inscripcion, observations: payload.observations }], subject: 'Aceptado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchInfo()
@@ -390,6 +630,31 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     }
   }
 
+  const saveSelectOnChange = async (e) => {
+    try {
+      await inscriptionDetailsUpdate(avalCoordinador, { responsable_aval: e })
+      toast.success('Instructor guardado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      fetchInfo()
+    } catch (error) {
+      toast.error('Error al guardar el coordinador asignado')
+    }
+  }
+
+  /**
+   * Función para denegar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name denyApprove
+   * @param {object} payload - Datos para la aprobación.
+   * @param {string} toastId - ID del toast.
+   * @returns {void}
+   *
+   * @example
+   * const datosAprobacion = { observations: 'Observaciones', approveOption: 'No', avalCoordinador: 123 };
+   * const toastId = 'toast-id';
+   * denyApprove(datosAprobacion, toastId);
+   */
   const denyApprove = async (payload, toastId) => {
     const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
     const estado_aval = { No: 'Rechazado' }
@@ -410,15 +675,19 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     }
   }
 
-  const option = [
-    { value: 'Sergio Soto Henao', key: 'Sergio Soto Henao' },
-    { value: 'Marianela Henao Atehortúa', key: 'Marianela Henao Atehortúa' },
-    { value: 'Jaime León Vergara Areiza', key: 'Jaime León Vergara Areiza' },
-    { value: 'Mauro Isaías Arango Vanegas', key: 'Mauro Isaías Arango Vanegas' }
-  ]
+  /**
+   * Opciones de selección de los coordinadores.
+   *
+   * @constant
+   * @name option
+   * @type {Array}
+   *
+   * @example
+   * const opcionesSeleccion = option;
+   */
 
   return (
-    <section className={`flex flex-col   w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
+    <section className={`flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
       <section className='text-md'>
         {dataAprendiz.map((item) => (
           <div key={item.id_inscripcion} className='grid grid-cols-2'>
@@ -437,13 +706,13 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                 <p className='my-3'>{item.modalidad_inscripcion === '1' ? 'Pasantías' : item.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : item.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : item.modalidad_inscripcion === '4' ? 'Monitoría' : item.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</p>
               </div>
             </div>
-            <div className='border-l-2 border-violet-800 px-4 '>
+            <div className='px-4 border-l-2 border-violet-800 '>
               <h1 className='text-center'>AVALES</h1>
               <div className='flex'>
-                <div className='w-full p-4 overflow-y-auto h-60 justify-center justify-items-center flex'>
+                <div className='flex justify-center w-full p-4 overflow-y-auto h-60 justify-items-center'>
                   <div className='w-3/4 mx-10'>
                     {dataEmpresa.map((item) => (
-                      <div className='my-4 justify-center justify-items-center' key={item.id_detalle_inscripcion}>
+                      <div className='justify-center my-4 justify-items-center' key={item.id_detalle_inscripcion}>
                         <Card3D title={item.descripcion_detalle} header={item.estado_aval} item1={item.observaciones} item2={user} item1text={'Observaciones'} item2text={'Responsable del aval'} />
                       </div>
                     ))}
@@ -454,7 +723,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
           </div>
         ))}
       </section>
-      <section></section>
       <div className={` w-[95%] mx-auto`}>
         {avalInfo.map((aval) => {
           return (
@@ -463,7 +731,20 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                 <label htmlFor='' className='text-sm font-light'>
                   Coordinador Asignado
                 </label>
-                <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={option} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} />
+                {coordinatorFullName === null ? (
+                  <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={dataAdmins} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} onChange={saveSelectOnChange} />
+                ) : (
+                  <Fragment>
+                    <p className='flex gap-2'>
+                      {coordinatorFullName}
+                      <span className='flex items-center'>
+                        <Button type='button' bg='transparent' onClick={() => setCoordinatorFullName(null)}>
+                          <AiFillEdit className='text-blue-500' />
+                        </Button>
+                      </span>
+                    </p>
+                  </Fragment>
+                )}
               </div>
               {idRol && (
                 <div className='flex flex-row gap-2 place-self-center'>
@@ -521,13 +802,24 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     </section>
   )
 }
+
 const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
   const iFrameRef = useRef(null)
   const [showDriveButton, setShowDriveButton] = useState(null)
-  const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
 
   const [notify, setNotify] = useState(false)
 
+  /**
+   * Función para verificar si el enlace es de Google Drive.
+   *
+   * @function
+   * @name checkDriveLink
+   * @param {string} linkDocs - Enlace a verificar.
+   * @returns {boolean} - Devuelve `true` si el enlace es de Google Drive, de lo contrario, `false`.
+   *
+   * @example
+   * const esEnlaceDrive = checkDriveLink('https://drive.google.com/folders/...');
+   */
   const checkDriveLink = (linkDocs) => {
     const regex = /folders/i
     const testRegex = regex.test(linkDocs)
@@ -538,11 +830,43 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
     return false
   }
 
+  /**
+   * Efecto para verificar si el enlace es de Google Drive al cambiar el valor de `linkDocs`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (linkDocs) {
+   *     checkDriveLink(linkDocs);
+   *   }
+   * }, [linkDocs]);
+   */
   useEffect(() => {
     if (linkDocs) {
       checkDriveLink(linkDocs)
     }
   }, [linkDocs])
+
+  /**
+   * Efecto para mostrar una notificación de éxito cuando `notify` es `true`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (notify) {
+   *     toast.success('Se ha rechazado correctamente', { ... });
+   *   }
+   *   setNotify(false);
+   * }, [notify]);
+   */
   useEffect(() => {
     if (notify) {
       toast.success('Se ha rechazado correctamente', {
@@ -561,6 +885,16 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
     setNotify(false)
   }, [notify])
 
+  /**
+   * Función para poner el iframe en pantalla completa.
+   *
+   * @function
+   * @name handleFullScreenIFrame
+   * @returns {void}
+   *
+   * @example
+   * handleFullScreenIFrame();
+   */
   const handleFullScreenIFrame = () => {
     const iframe = iFrameRef.current
     if (!iframe) return
@@ -614,33 +948,85 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
 }
 
 const FunctionsApproval = ({ idRol, avalFunciones }) => {
-  const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
-  // const [nameResponsableFunciones, setNameResponsableFunciones] = useState('')
+  const functionApproval = useRef(null)
+  const descriptionRef = useRef(null)
+  const { inscriptionData } = inscriptionStore()
 
+  const [avalInfoFunciones, setAvalInfoFunciones] = useState([])
+  const [teachers, setTeacher] = useState([])
+  const [selectedOptionKey, setSelectedOptionKey] = useState('')
+  const [selectedApproveButton, setSelectedApproveButton] = useState(null)
+  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
+  const [fullNameInstructor, setFullNameInstructor] = useState(null)
+
+  const handleUseState = (setState, value) => setState(value)
+
+  /**
+   * Función para obtener y almacenar información del aval de funciones.
+   *
+   * @function
+   * @name fetchDataFunciones
+   * @param {string|number} payload - Identificador del aval de funciones.
+   * @returns {void}
+   *
+   * @example
+   * fetchDataFunciones(1);
+   */
   const fetchDataFunciones = async (payload) => {
     if (!payload) return
     try {
       const res = await getAvalById(payload)
       const response = await res.data.data[0]
-      // const { responsable_aval } = await response
-      // const responseData = await getUserById(responsable_aval)
-      // const { nombres_usuario, apellidos_usuario } = await responseData.data.data[0]
-      // const fullName = `${nombres_usuario} ${apellidos_usuario}`
-      // setNameResponsableFunciones(fullName)
       setAvalInfoFunciones(response)
+      if (response.responsable_aval === null) return
+      fetchFullNameInstructor(response.responsable_aval)
     } catch (error) {
       throw new Error(error)
     }
   }
 
+  const fetchFullNameInstructor = async (payload) => {
+    try {
+      const { data } = await getInfoTeacherByID(payload)
+      const { nombres_usuario, apellidos_usuario } = data.data[0]
+      const fullName = `${nombres_usuario} ${apellidos_usuario}`
+      setFullNameInstructor(fullName)
+    } catch (error) {
+      toast.error('Error al buscar el instructor asignado', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+    }
+  }
+
+  /**
+   * Efecto para obtener información del aval de funciones al cambiar el valor de `avalFunciones`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (avalFunciones !== undefined) {
+   *     fetchDataFunciones(avalFunciones);
+   *   }
+   * }, [avalFunciones]);
+   */
   useEffect(() => {
     if (avalFunciones !== undefined) {
       fetchDataFunciones(avalFunciones)
     }
   }, [avalFunciones])
 
-  const [teachers, setTeacher] = useState([])
-
+  /**
+   * Función para obtener y almacenar información de los instructores.
+   *
+   * @function
+   * @name getInstructores
+   * @returns {void}
+   *
+   * @example
+   * getInstructores();
+   */
   const getInstructores = async () => {
     try {
       const response = await getTeachers()
@@ -655,20 +1041,199 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     getInstructores()
   }, [])
 
+  /**
+   * Variable que almacena opciones de los instructores para utilizar en el select.
+   *
+   * @constant
+   * @name option
+   * @type {array}
+   *
+   * @example
+   * const opcionesInstructores = option;
+   */
   const option = teachers.map((teacher) => ({
     value: teacher.nombres_usuario + ' ' + teacher.apellidos_usuario + ' - ' + teacher.email_usuario,
     key: teacher.id_usuario
   }))
 
-  const [selectedOptionKey, setSelectedOptionKey] = useState('')
-
+  /**
+   * Función para actualizar la clave de la opción seleccionada en el select.
+   *
+   * @function
+   * @name handleSelectChange
+   * @param {string|number} optionKey - Clave de la opción seleccionada.
+   * @returns {void}
+   *
+   * @example
+   * handleSelectChange(1);
+   */
   const handleSelectChange = (optionKey) => {
     setSelectedOptionKey(optionKey)
+    setApprovalDetailUser(optionKey)
+  }
+
+  const handleSubmitButton = () => {
+    if (!selectedApproveButton) return
+    if (descriptionRef.current.value.length === 0) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  const selectButtonToSubmit = (value) => {
+    setSelectedApproveButton(value)
+    if (descriptionRef.current.value.length === 0 || !value) {
+      setDisableSubmitButton(true)
+      return
+    }
+    if (fullNameInstructor === null) {
+      setDisableSubmitButton(true)
+      return
+    }
+    handleUseState(setDisableSubmitButton, false)
+  }
+
+  /**
+   * Descripción: Esta función maneja la aprobación o rechazo de funciones por parte del usuario.
+   *
+   * @param {Event} e - El evento del formulario.
+   * @throws {Error} Si ocurre un error durante el proceso de aprobación o rechazo.
+   * @returns {void}
+   * @name handleFunctionsApproval
+   */
+  const handleFunctionsApproval = async (e) => {
+    e.preventDefault()
+    const approveOptions = { Si: 'Si', No: 'No' }
+
+    const formData = new FormData(functionApproval.current)
+    formData.append('approveOption', approveOptions[selectedApproveButton])
+
+    // * Check if it's saving an user or saving an approval
+    const names = formData.get('name')
+    const lastNames = formData.get('lastname')
+    if (names && lastNames) return saveNewUserApproval({ names, lastNames })
+
+    const observations = formData.get('functionsApprovalObservations')
+    const approveOption = formData.get('approveOption')
+    try {
+      await checkApprovementData({ observations, approveOption })
+      const loadingToast = toast.loading('Enviando...')
+      if (selectedApproveButton === approveOptions.Si) return acceptFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
+    } catch (err) {
+      if (toast.isActive('loadingToast')) return
+      toast.error('Los campos son incorrectos, corríjalos.', {
+        toastId: 'error-full-docs',
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored'
+      })
+    }
+  }
+
+  /**
+   * Función asincrónica para guardar la aprobación de un usuario.
+   *
+   * @param {Object} payload - Los datos del usuario a aprobar.
+   * @param {string} payload.names - El nombre del usuario.
+   * @param {string} payload.lastNames - Los apellidos del usuario.
+   *
+   * @throws {Error} - Lanza un error si no se puede guardar el usuario.
+   */
+  const saveNewUserApproval = async (payload) => {
+    const randomNumber = randomNumberGenerator(8)
+    const data = {
+      nombre: payload.names,
+      apellido: payload.lastNames,
+      tipo_documento: 'cc',
+      num_documento: randomNumber,
+      correo_electronico: `fakeemail+${randomNumber}@email.com`,
+      num_celular: randomNumber,
+      id_rol: '5',
+      contrasena: '2vF$6RX5@MMbTqG%'
+    }
+    try {
+      const { data: resData } = await registerUser(data)
+      setApprovalDetailUser(resData.id)
+    } catch (error) {
+      toast.error('Error al guardar el instructor', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+    }
+  }
+
+  const setApprovalDetailUser = async (id) => {
+    const idApprovalDetail = avalInfoFunciones.id_detalle_inscripcion
+    try {
+      await inscriptionDetailsUpdate(idApprovalDetail, { responsable_aval: id })
+      toast.success('Instructor guardado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      fetchDataFunciones(avalFunciones)
+    } catch (error) {
+      toast.error('Error al guardar el instructor', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+    }
+  }
+
+  /**
+   * Descripción: Esta función maneja la aceptación de la aprobación de funciones.
+   *
+   * @param {object} payload - Los datos necesarios para realizar la aceptación.
+   * @param {string} toastId - El ID del toast de carga.
+   * @throws {Error} Si ocurre un error durante la aceptación de la aprobación.
+   * @returns {void}
+   * @name acceptFunctionsApprove
+   */
+  const acceptFuntionsApprove = async (payload, toastId) => {
+    const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
+    const id = payload.avalFunciones
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchDataFunciones()
+    } catch (error) {
+      toast.error('Error al guardar el aval', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+    }
+  }
+
+  /**
+   * Descripción: Esta función maneja el rechazo de la aprobación de funciones.
+   *
+   * @param {object} payload - Los datos necesarios para realizar el rechazo.
+   * @param {string} toastId - El ID del toast de carga.
+   * @throws {Error} Si ocurre un error durante el rechazo de la aprobación.
+   * @returns {void}
+   * @name denyFunctionsApprove
+   */
+  const denyFuntionsApprove = async (payload, toastId) => {
+    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const estado_aval = { No: 'Rechazado' }
+    const id = payload.avalFunciones
+    const cookie = Cookies.get('token')
+    const { id_usuario: responsable } = decode(cookie).data.user
+
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    try {
+      await inscriptionDetailsUpdate(id, data)
+      await sendEmail({ to: 'blandon0207s@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      selectButtonToSubmit(null)
+      fetchDataFunciones()
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   return (
     <div className='w-[95%] mx-auto'>
-      <form action='' className='flex flex-col gap-2' onSubmit={(e) => e.preventDefault()}>
+      <form action='' className='flex flex-col gap-2' ref={functionApproval} onSubmit={handleFunctionsApproval}>
         <section className='grid items-center grid-cols-2 gap-2'>
           <section className='flex flex-col gap-1'>
             <span className='text-sm font-semibold'>
@@ -677,47 +1242,78 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
             <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
           </section>
           <section>
-            <Select
-              name='name_instructor'
-              placeholder='Nombre instructor'
-              isSearch
-              hoverColor='hover:bg-teal-600'
-              hoverTextColor='hover:text-white'
-              selectedColor='bg-teal-600 text-white'
-              characters='25'
-              placeholderSearch='Nombre instructor'
-              rounded='rounded-xl'
-              textSearch='text-sm'
-              shadow='shadow-md'
-              textSize='text-sm'
-              options={option}
-              selectedKey={selectedOptionKey}
-              onChange={handleSelectChange} // Pasar el manejador de cambio
-            />
-            {/* <input type='text' defaultValue={nameResponsableFunciones} className='w-full py-1 pl-2 pr-3 text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 shadow-slate-400 focus:text-gray-900 rounded-lg focus:outline-none placeholder:text-slate-400' autoComplete='on' /> */}
+            {fullNameInstructor === null ? (
+              <Select name='name_instructor' placeholder='Nombre instructor' isSearch hoverColor='hover:bg-teal-600' hoverTextColor='hover:text-white' selectedColor='bg-teal-600 text-white' characters='25' placeholderSearch='Nombre instructor' rounded='rounded-xl' textSearch='text-sm' shadow='shadow-md' textSize='text-sm' options={option} selectedKey={selectedOptionKey} manual onChange={handleSelectChange} />
+            ) : (
+              <div className='flex flex-col flex-wrap items-center py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+                <section className='flex'>
+                  <h3 className='flex flex-row flex-wrap flex-grow-0 text-sm flex-shrink-1'>
+                    <span className='pr-1 font-semibold'>Encargado:</span>
+                    {fullNameInstructor}
+                    <Button type='button' bg='transparent' onClick={() => setFullNameInstructor(null)}>
+                      <AiFillEdit className='text-blue-500' />
+                    </Button>
+                  </h3>
+                </section>
+                <h3 className='text-sm'>{avalInfoFunciones.fecha_modificacion}</h3>
+                <h5 className='text-sm'>
+                  Estado: <span className={`font-semibold ${colorTextStatus[avalInfoFunciones.estado_aval]}`}>{avalInfoFunciones.estado_aval}</span>
+                </h5>
+              </div>
+            )}
           </section>
         </section>
         <div>
-          <label htmlFor='observations' className='text-sm font-light'>
+          <label htmlFor='functionsApprovalObservations' className='text-sm font-light'>
             Observaciones
           </label>
-          <textarea name='observations' id='editor' defaultValue={avalInfoFunciones.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' />
+          <textarea name='functionsApprovalObservations' id='editor' defaultValue={avalInfoFunciones.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
         </div>
         <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
-          {idRol === Number(keysRoles[2]) ? (
-            <div className='flex flex-row gap-2 place-self-center'>
-              <Button value={'Sí'} bg={'bg-primary'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiCheckCircleBold className='text-xl' />} />
-              <Button value={'No'} bg={'bg-red-500'} px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} icon={<PiXCircleBold className='text-xl' />} />
-            </div>
-          ) : (
-            <h5 className={`text-sm font-medium text-center ${avalInfoFunciones.estado_aval === 'Pendiente' ? 'text-slate-600' : avalInfoFunciones.estado_aval === 'Rechazado' ? 'text-red-500' : avalInfoFunciones.estado_aval === 'Aprobado' ? 'text-green-500' : null}`}>{avalInfoFunciones.estado_aval}</h5>
-          )}
           {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) && (
-            <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
-              <LuSave />
-              Guardar
-            </Button>
+            <div className='flex flex-row gap-2 place-self-center'>
+              {!selectedApproveButton ? (
+                <>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              ) : selectedApproveButton === 'No' ? (
+                <>
+                  <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                    <PiCheckCircleBold className='text-xl' /> Sí
+                  </Button>
+                  <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                    <PiXCircleBold className='text-xl' /> No
+                  </Button>
+                </>
+              )}
+            </div>
           )}
+          {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) &&
+            (disableSubmitButton ? (
+              <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                <LuSave />
+                Guardar
+              </Button>
+            ) : (
+              <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                <LuSave />
+                Guardar
+              </Button>
+            ))}
         </div>
       </form>
     </div>
@@ -736,10 +1332,32 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
   const { id } = useParams()
   const [modalidad, setModalidad] = useState([])
 
+  /**
+   * Función para actualizar el estado usando setState.
+   *
+   * @function
+   * @name handleUseState
+   * @param {function} setState - Función para actualizar el estado.
+   * @param {any} value - Valor para actualizar el estado.
+   * @returns {void}
+   *
+   * @example
+   * handleUseState(setStateFuncion, valorActualizado);
+   */
   const handleUseState = (setState, value) => setState(value)
 
+  /**
+   * Función para obtener y almacenar información de documentos.
+   *
+   * @function
+   * @name fetchDataDocuments
+   * @returns {void}
+   *
+   * @example
+   * fetchDataDocuments();
+   */
   const fetchDataDocuments = async () => {
-    const res  = await getAvalById(avalDocumentos)
+    const res = await getAvalById(avalDocumentos)
     const { data } = res.data
     const response = await getUserById(data[0].responsable_aval)
     const { nombres_usuario, apellidos_usuario } = response.data.data[0]
@@ -748,6 +1366,19 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     setAvalInfoDocumentos(data[0])
   }
 
+  /**
+   * Efecto para obtener información de documentos cuando cambia el valor de `avalDocumentos`.
+   *
+   * @effect
+   * @name useEffect
+   * @param {function} callback - Función a ejecutar.
+   * @param {Array} dependencies - Dependencias que activarán el efecto.
+   *
+   * @example
+   * useEffect(() => {
+   *   if (avalDocumentos) fetchDataDocuments();
+   * }, [avalDocumentos]);
+   */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -757,18 +1388,18 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
         await getModalities(res)
         if (avalDocumentos) fetchDataDocuments()
       } catch (error) {
-        console.log('Ha ocurrido un error al mostrar los datos del usuario')
+        console.error('Ha ocurrido un error al mostrar los datos del usuario')
       }
     }
 
     fetchData() // Llamar a fetchData cuando el componente se monte o cuando id cambie
   }, [id, avalDocumentos])
 
-
   const getModalities = async (id) => {
     const res = await getModalitiesById(id)
     setModalidad(res.data.data)
   }
+
   const handleSubmitButton = () => {
     if (!selectedApproveButton) return
     if (descriptionRef.current.value.length === 0) {
@@ -787,6 +1418,17 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     handleUseState(setDisableSubmitButton, false)
   }
 
+  /**
+   * Función para manejar el envío de formularios de documentos.
+   *
+   * @function
+   * @name handleFullDocsForm
+   * @param {object} e - Evento del formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleFullDocsForm(evento);
+   */
   const handleFullDocsForm = async (e) => {
     e.preventDefault()
     const approveOptions = { Si: 'Si', No: 'No' }
@@ -801,7 +1443,6 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
       if (selectedApproveButton === approveOptions.Si) return acceptFullDocsApprove({ observations, approveOption, avalDocumentos }, loadingToast)
       if (selectedApproveButton === approveOptions.No) return denyFullDocsApprove({ observations, approveOption, avalDocumentos }, loadingToast)
     } catch (err) {
-      console.log(err)
       if (toast.isActive('loadingToast')) return
       toast.error('Los campos son incorrectos, corríjalos.', {
         toastId: 'error-full-docs',
@@ -817,6 +1458,18 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     }
   }
 
+  /**
+   * Función para aceptar la aprobación de documentos.
+   *
+   * @function
+   * @name acceptFullDocsApprove
+   * @param {object} payload - Datos para la aprobación.
+   * @param {string} toastId - Identificador del Toast.
+   * @returns {void}
+   *
+   * @example
+   * acceptFullDocsApprove({ observations, approveOption, avalDocumentos }, 'toastId');
+   */
   const acceptFullDocsApprove = async (payload, toastId) => {
     const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
     const id = payload.avalDocumentos
@@ -834,6 +1487,18 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     }
   }
 
+  /**
+   * Función para denegar la aprobación de documentos.
+   *
+   * @function
+   * @name denyFullDocsApprove
+   * @param {object} payload - Datos para la denegación.
+   * @param {string} toastId - Identificador del Toast.
+   * @returns {void}
+   *
+   * @example
+   * denyFullDocsApprove({ observations, approveOption, avalDocumentos }, 'toastId');
+   */
   const denyFullDocsApprove = async (payload, toastId) => {
     const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
     const estado_aval = { No: 'Rechazado' }
@@ -842,12 +1507,9 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     const { id_usuario: responsable } = decode(cookie).data.user
 
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
-    console.log(id, data)
     try {
-      await inscriptionDetailsUpdate(id, data)
-      console.log('inscripcion updated')
-      const resEmail = await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
-      console.log(resEmail)
+      await inscriptionDetailsUpdate(id, data)('inscripcion updated')
+      await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchDataDocuments()
@@ -870,7 +1532,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
               </div>
             ))}
           </section>
-          <div className='flex flex-col py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+          <div className='flex flex-col flex-wrap py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
             <h3 className='text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
             <h3 className='text-sm whitespace-nowrap'>{avalInfoDocumentos.fecha_modificacion}</h3>
             <h5 className='text-sm whitespace-nowrap'>
@@ -936,7 +1598,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
 }
 
 const RAPS = ({ idRol, avalRaps }) => {
-  const {id} = useParams()
+  const { id } = useParams()
   const formRef = useRef(null)
   const descriptionRef = useRef(null)
 
@@ -948,8 +1610,30 @@ const RAPS = ({ idRol, avalRaps }) => {
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
   const [disableSubmitButton, setDisableSubmitButton] = useState(true)
 
+  /**
+   * Función para manejar la actualización de un estado utilizando useState.
+   *
+   * @function
+   * @name handleUseState
+   * @param {function} setState - Función de estado para actualizar el valor.
+   * @param {*} value - Nuevo valor para el estado.
+   * @returns {void}
+   *
+   * @example
+   * handleUseState(setDisableSubmitButton, false);
+   */
   const handleUseState = (setState, value) => setState(value)
 
+  /**
+   * Función para manejar el envío de formulario.
+   *
+   * @function
+   * @name handleSubmitButton
+   * @returns {void}
+   *
+   * @example
+   * handleSubmitButton();
+   */
   const handleSubmitButton = () => {
     if (!selectedApproveButton) return
     if (descriptionRef.current.value.length === 0) {
@@ -959,6 +1643,17 @@ const RAPS = ({ idRol, avalRaps }) => {
     handleUseState(setDisableSubmitButton, false)
   }
 
+  /**
+   * Función para seleccionar un botón de aprobación para enviar.
+   *
+   * @function
+   * @name selectButtonToSubmit
+   * @param {string} value - Valor del botón seleccionado ('Si' o 'No').
+   * @returns {void}
+   *
+   * @example
+   * selectButtonToSubmit('Si');
+   */
   const selectButtonToSubmit = (value) => {
     setSelectedApproveButton(value)
     if (descriptionRef.current.value.length === 0 || !value) {
@@ -968,6 +1663,18 @@ const RAPS = ({ idRol, avalRaps }) => {
     handleUseState(setDisableSubmitButton, false)
   }
 
+  /**
+   * Función asincrónica para obtener información de instructores.
+   *
+   * @async
+   * @function
+   * @name fetchRaps
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * fetchRaps();
+   */
   const fetchRaps = async () => {
     const res = await getAvalById(avalRaps)
     const { data } = res.data
@@ -978,6 +1685,17 @@ const RAPS = ({ idRol, avalRaps }) => {
     setAvalInfo(data[0])
   }
 
+  /**
+   * Función para manejar el envío de formulario.
+   *
+   * @function
+   * @name handleSubmit
+   * @param {Event} e - Evento del formulario.
+   * @returns {void}
+   *
+   * @example
+   * handleSubmit(event);
+   */
   const handleSubmit = async (e) => {
     e.preventDefault()
     const approveOptions = { Si: 'Si', No: 'No' }
@@ -1000,21 +1718,56 @@ const RAPS = ({ idRol, avalRaps }) => {
     }
   }
 
+  /**
+   * Función para manejar la acción de pegar contenido en un elemento.
+   *
+   * @function
+   * @name handleContentPaste
+   * @param {Event} e - Evento de pegado de contenido.
+   * @returns {void}
+   *
+   * @example
+   * handleContentPaste(event);
+   */
   const handleContentPaste = (e) => {
     const pastedContent = e.clipboardData.getData('text/html')
     setHtmlContent(pastedContent)
     e.preventDefault()
   }
 
+  /**
+   * Función para manejar la entrada de texto en un elemento.
+   *
+   * @function
+   * @name handleInputText
+   * @param {Event} e - Evento de entrada de texto.
+   * @returns {void}
+   *
+   * @example
+   * handleInputText(event);
+   */
   const handleInputText = (e) => {
     const content = e.target.innerHTML
-    console.log(content)
     if (content.length === 0) {
       setHtmlContent('')
     }
     setHtmlContent(content)
   }
 
+  /**
+   * Función asincrónica para aceptar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name acceptApprove
+   * @param {Object} payload - Datos necesarios para la aprobación.
+   * @param {string} toastId - Identificador del toast.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * acceptApprove({ observations: 'Aprobado', approveOption: 'Si', avalRaps: 123, htmlContent: '<html>...</html>' }, 'loadingToast');
+   */
   const acceptApprove = async (payload, toastId) => {
     const estado_aval = { Si: 'Aprobado' }
     const id = payload.avalRaps
@@ -1033,6 +1786,20 @@ const RAPS = ({ idRol, avalRaps }) => {
     }
   }
 
+  /**
+   * Función asincrónica para denegar la aprobación de un aval.
+   *
+   * @async
+   * @function
+   * @name denyApprove
+   * @param {Object} payload - Datos necesarios para la denegación.
+   * @param {string} toastId - Identificador del toast.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * denyApprove({ observations: 'Rechazado', approveOption: 'No', avalRaps: 456, htmlContent: '<html>...</html>' }, 'loadingToast');
+   */
   const denyApprove = async (payload, toastId) => {
     const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
     const estado_aval = { No: 'Rechazado' }
@@ -1043,7 +1810,7 @@ const RAPS = ({ idRol, avalRaps }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
-      await sendEmail({ to: 'stevenbenjumea9@gmail.com', subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
+      await sendEmail({ to: 'lorenquiceno@gmail.com', subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchRaps()
@@ -1052,7 +1819,7 @@ const RAPS = ({ idRol, avalRaps }) => {
       throw new Error(error)
     }
   }
-  
+
   const [info, setInfo] = useState([])
   useEffect(() => {
     const fetchData = async () => {
@@ -1062,7 +1829,7 @@ const RAPS = ({ idRol, avalRaps }) => {
         setInfo(res)
         if (avalRaps) fetchRaps()
       } catch (error) {
-        console.log('Ha ocurrido un error al mostrar los datos del usuario')
+        console.error('Ha ocurrido un error al mostrar los datos del usuario')
       }
     }
 

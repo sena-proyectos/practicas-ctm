@@ -22,7 +22,6 @@ export const getPracticalStageById: RequestHandler<{ id: string }, Response, Pra
     const [practicalStage] = await connection.query('SELECT * FROM modalidades WHERE id_modalidad = ?', [idNumber])
     return res.status(httpStatus.OK).json({ data: practicalStage })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }

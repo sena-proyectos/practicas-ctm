@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { Pagination } from '@nextui-org/pagination'
 
 // icons
 import { HiOutlineUserAdd } from 'react-icons/hi'
@@ -15,7 +16,6 @@ import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
 import { AsignTeacherModal } from '../Utils/Modals/Modals'
-import { Pagination } from '../Utils/Pagination/Pagination'
 import { getClassFree, GetClassByNumber } from '../../api/httpRequest'
 
 export const AssignClass = () => {
@@ -24,7 +24,20 @@ export const AssignClass = () => {
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
   const [detailCourse, setDetailCourse] = useState([])
+  const [notify, setNotify] = useState(false)
 
+  /**
+   * Función asincrónica para obtener la lista de cursos que no tengan instructor asignado.
+   *
+   * @async
+   * @function
+   * @name getCursos
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getCursos();
+   */
   const getCursos = async () => {
     try {
       const response = await getClassFree()
@@ -40,8 +53,31 @@ export const AssignClass = () => {
     getCursos()
   }, [])
 
+  /**
+   * Función para manejar el cierre del modal de asignación.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
   const handleModal = () => setModalAsign(false)
 
+  /**
+   * Función asincrónica para obtener y establecer los detalles de un curso.
+   *
+   * @async
+   * @function
+   * @name handleDetailCourse
+   * @param {string} numero_ficha - Número de ficha del curso.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * handleDetailCourse('12345');
+   */
   const handleDetailCourse = async (numero_ficha) => {
     try {
       setModalAsign(true)
@@ -53,17 +89,67 @@ export const AssignClass = () => {
     }
   }
 
+  /**
+   * Número de cursos a mostrar por página.
+   *
+   * @constant
+   * @name coursesPerPage
+   * @type {number}
+   * @default 6
+   *
+   * @example
+   * const cursosPorPagina = coursesPerPage;
+   */
   const coursesPerPage = 6
+  /**
+   * Calcula el número de páginas necesarias para la paginación de cursos.
+   *
+   * @constant
+   * @name pageCount
+   * @type {number}
+   *
+   * @example
+   * const numeroDePaginas = pageCount;
+   */
   const pageCount = Math.ceil(courses.length / coursesPerPage)
-  const startIndex = pageNumber * coursesPerPage
+  /**
+   * Índice de inicio de la lista de cursos a mostrar en la página actual.
+   *
+   * @constant
+   * @name startIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceInicio = startIndex;
+   */
+  const startIndex = (pageNumber - 1) * coursesPerPage
+  /**
+   * Índice de fin de la lista de cursos a mostrar en la página actual.
+   *
+   * @constant
+   * @name endIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
   const endIndex = startIndex + coursesPerPage
 
   useEffect(() => {
     setLoading(false)
   }, [])
 
-  const [notify, setNotify] = useState(false)
-
+  /**
+   * Efecto secundario para mostrar una notificación de asignación de instructor y actualizar la lista de cursos.
+   *
+   * @function
+   * @name useEffectMostrarNotificacionYActualizarCursos
+   * @param {boolean} notify - Estado de notificación.
+   * @returns {void}
+   *
+   * @example
+   * useEffectMostrarNotificacionYActualizarCursos(true);
+   */
   useEffect(() => {
     if (notify) {
       toast.success('Se ha asignado el instructor', {
@@ -137,7 +223,7 @@ export const AssignClass = () => {
               </Link>
             </div>
             <div className='flex justify-center h-[13vh] relative bottom-0'>
-              <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
             </div>
           </section>
           <Footer />

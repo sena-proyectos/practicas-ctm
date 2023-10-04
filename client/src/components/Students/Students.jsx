@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Pagination } from '@nextui-org/pagination'
 
 // Icons
 import { AiOutlineEye } from 'react-icons/ai'
@@ -14,13 +15,12 @@ import { GrAddCircle } from 'react-icons/gr'
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
-import { Pagination } from '../Utils/Pagination/Pagination'
 import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById } from '../../api/httpRequest'
 import { InfoStudentModal, RegisterStudentModal } from '../Utils/Modals/Modals'
 import { Button } from '../Utils/Button/Button'
 
 export const Students = () => {
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
   const [detailCourse, setDetailCourse] = useState([])
   const [studentsCourse, setStudentsCourse] = useState([])
   const [studentsCourseOriginal, setStudentsCourseOriginal] = useState([])
@@ -34,6 +34,19 @@ export const Students = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [loadingData, setLoadingData] = useState({ course: true, students: true })
 
+  /**
+   * Función asincrónica para obtener la lista de estudiantes por curso.
+   *
+   * @async
+   * @function
+   * @name getStudents
+   * @param {number} payload - Número de curso.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getStudents(123);
+   */
   const getStudents = async (payload) => {
     try {
       const response = await GetStudentsByCourse(payload)
@@ -53,6 +66,19 @@ export const Students = () => {
     getCourseData(courseNumber)
   }, [])
 
+  /**
+   * Función asincrónica para obtener los detalles del curso.
+   *
+   * @async
+   * @function
+   * @name getCourseData
+   * @param {number} payload - Número de curso.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getCourseData(123);
+   */
   const getCourseData = async (payload) => {
     try {
       const response = await GetClassByNumber(payload)
@@ -67,6 +93,19 @@ export const Students = () => {
   const handleStateModal = () => setShowModalStudent(false)
   const handleCloseModal = () => setIsOpen(false)
 
+  /**
+   * Función asincrónica para obtener la información detallada de un estudiante por su ID.
+   *
+   * @async
+   * @function
+   * @name handleDetailInfoStudent
+   * @param {number} id - ID del estudiante.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * handleDetailInfoStudent(456);
+   */
   const handleDetailInfoStudent = async (id) => {
     try {
       setShowModalStudent(true)
@@ -80,12 +119,62 @@ export const Students = () => {
     }
   }
 
+  /**
+   * Número de estudiantes a mostrar por página.
+   *
+   * @constant
+   * @name studentsPerPage
+   * @type {number}
+   * @default 5
+   *
+   * @example
+   * const estudiantesPorPagina = studentsPerPage;
+   */
   const studentsPerPage = 5
+  /**
+   * Calcula el número de páginas necesarias para la paginación.
+   *
+   * @constant
+   * @name pageCount
+   * @type {number}
+   *
+   * @example
+   * const numeroDePaginas = pageCount;
+   */
   const pageCount = Math.ceil(studentsCourse.length / studentsPerPage)
-
-  const startIndex = pageNumber * studentsPerPage
+  /**
+   * Índice de inicio de la lista de estudiantes a mostrar en la página actual.
+   *
+   * @constant
+   * @name startIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceInicio = startIndex;
+   */
+  const startIndex = (pageNumber - 1) * studentsPerPage
+  /**
+   * Índice de fin de la lista de estudiantes a mostrar en la página actual.
+   *
+   * @constant
+   * @name endIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
   const endIndex = startIndex + studentsPerPage
 
+  /**
+   * Deshabilita la visualización de los filtros después de un breve retraso.
+   *
+   * @function
+   * @name disableShowFiltros
+   * @returns {void}
+   *
+   * @example
+   * disableShowFiltros();
+   */
   const disableShowFiltros = () => {
     setTimeout(() => {
       setShowFiltros(false)
@@ -93,15 +182,48 @@ export const Students = () => {
     }, 100)
   }
 
+  /**
+   * Maneja la visualización de los filtros.
+   *
+   * @function
+   * @name handleShowFiltros
+   * @returns {void}
+   *
+   * @example
+   * handleShowFiltros();
+   */
   const handleShowFiltros = () => {
     setShowFiltros(!showFiltros)
   }
 
+  /**
+   * Muestra u oculta el filtro especificado.
+   *
+   * @function
+   * @name ShowFilter
+   * @param {string} filterType - Tipo de filtro ('modalidad' o 'estado').
+   * @returns {void}
+   *
+   * @example
+   * ShowFilter('modalidad');
+   */
   const ShowFilter = (filterType) => {
     if (filterType === 'modalidad') setFiltersButtons({ modalidad: !filtersButtons.modalidad, etapa: false })
     if (filterType === 'estado') setFiltersButtons({ etapa: !filtersButtons.etapa, modalidad: false })
   }
 
+  /**
+   * Maneja la selección de filtro de modalidad o estado y actualiza la lista de estudiantes.
+   *
+   * @function
+   * @name handleModalidadFilter
+   * @param {string} filterType - Tipo de filtro ('modalidad' o 'estado').
+   * @param {string} filter - Valor del filtro seleccionado.
+   * @returns {void}
+   *
+   * @example
+   * handleModalidadFilter('modalidad', 'Presencial');
+   */
   const handleModalidadFilter = (filterType, filter) => {
     if (filterType === 'modalidad') {
       const filterMap = studentsCourseOriginal.filter((student) => student.nombre_modalidad === filter)
@@ -115,6 +237,16 @@ export const Students = () => {
     setActiveFilter(true)
   }
 
+  /**
+   * Restablece los filtros y muestra la lista original de estudiantes.
+   *
+   * @function
+   * @name handleResetFilter
+   * @returns {void}
+   *
+   * @example
+   * handleResetFilter();
+   */
   const handleResetFilter = () => {
     setStudentsCourse(studentsCourseOriginal)
     disableShowFiltros()
@@ -275,7 +407,7 @@ export const Students = () => {
               </tbody>
             </table>
             <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0'>
-              <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
             </div>
             <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleStudentModal}>
               <GrAddCircle className='text-white' />

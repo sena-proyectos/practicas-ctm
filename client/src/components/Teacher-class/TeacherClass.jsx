@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+import { Pagination } from '@nextui-org/pagination'
 
 // Icons
 import { IoReturnDownBack } from 'react-icons/io5'
@@ -10,7 +11,6 @@ import { getClassByTeacherId, getClassByLiderTeacherId, getUserById } from '../.
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
-import { Pagination } from '../Utils/Pagination/Pagination'
 import { Card3D } from '../Utils/Card/Card'
 import { keysRoles } from '../../import/staticData'
 
@@ -18,7 +18,7 @@ export const TeacherClass = () => {
   const { id } = useParams()
   const [loading, setLoading] = useState(true)
   const [teacherClass, setTeacherClass] = useState([])
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
   const [rol, setRol] = useState('')
   const idRol = Number(localStorage.getItem('idRol'))
 
@@ -26,6 +26,19 @@ export const TeacherClass = () => {
     getUser(id)
   }, [id])
 
+  /**
+   * Función asincrónica para obtener el rol del usuario por su ID.
+   *
+   * @async
+   * @function
+   * @name getUser
+   * @param {number} id - ID del usuario.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getUser(123);
+   */
   const getUser = async (id) => {
     try {
       const response = await getUserById(id)
@@ -36,6 +49,15 @@ export const TeacherClass = () => {
     }
   }
 
+  /**
+   * Efecto secundario para obtener y establecer la lista de clases del usuario según su rol.
+   *
+   * @function
+   * @name useEffect
+   * @param {number} rol - Rol del usuario (3 o 4).
+   * @param {number} id - ID del usuario.
+   * @returns {void}
+   */
   useEffect(() => {
     if (rol && (rol === 3 || rol === 4)) {
       const apiRoute = rol === 3 ? 'getClassByTeacherId' : 'getClassByLiderTeacherId'
@@ -54,6 +76,19 @@ export const TeacherClass = () => {
     }
   }, [rol, id])
 
+  /**
+   * Función para obtener los datos de las clases según el rol y el ID del usuario.
+   *
+   * @function
+   * @name getClassData
+   * @param {number} id - ID del usuario.
+   * @param {string} apiRoute - Ruta de la API para obtener los datos de las clases.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {Promise} Promesa que devuelve los datos de las clases.
+   *
+   * @example
+   * getClassData(123, 'getClassByTeacherId');
+   */
   const getClassData = async (id, apiRoute) => {
     return (await apiRoute) === 'getClassByTeacherId' ? getClassByTeacherId(id) : getClassByLiderTeacherId(id)
   }
@@ -62,9 +97,50 @@ export const TeacherClass = () => {
     setLoading(false)
   }, [])
 
+  /**
+   * Número de cursos a mostrar por página.
+   *
+   * @constant
+   * @name coursesPerPage
+   * @type {number}
+   * @default 6
+   *
+   * @example
+   * const cursosPorPagina = coursesPerPage;
+   */
   const coursesPerPage = 6
+  /**
+   * Calcula el número de páginas necesarias para la paginación de cursos.
+   *
+   * @constant
+   * @name pageCount
+   * @type {number}
+   *
+   * @example
+   * const numeroDePaginas = pageCount;
+   */
   const pageCount = Math.ceil(teacherClass.length / coursesPerPage)
-  const startIndex = pageNumber * coursesPerPage
+  /**
+   * Índice de inicio de la lista de cursos a mostrar en la página actual.
+   *
+   * @constant
+   * @name startIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceInicio = startIndex;
+   */
+  const startIndex = (pageNumber - 1) * coursesPerPage
+  /**
+   * Índice de fin de la lista de cursos a mostrar en la página actual.
+   *
+   * @constant
+   * @name endIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
   const endIndex = startIndex + coursesPerPage
 
   return (
@@ -82,7 +158,7 @@ export const TeacherClass = () => {
               </>
             ) : (
               teacherClass.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva.split('T')[0]} item4={course.fecha_inicio_practica.split('T')[0]} />
+                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva.split('T')[0]} item4={course.fecha_inicio_practica.split('T')[0]} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
               })
             )}
           </section>
@@ -95,7 +171,7 @@ export const TeacherClass = () => {
             </div>
           )}
           <div className='flex justify-center h-[13vh] relative bottom-0'>
-            <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
           </div>
         </section>
         <Footer />

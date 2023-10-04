@@ -1,7 +1,8 @@
 import { type IRouter, Router } from 'express'
-import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsById, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData } from '../controllers/inscriptions.controllers.js'
+import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsById, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData, getInscriptionsDetailsByName } from '../controllers/inscriptions.controllers.js'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
 import { checkInscriptionData, checkInscriptionDetailData, configureMulterExcel, readExcelFile } from '../middlewares/inscriptions.middlewares.js'
+import { checkName } from '../middlewares/users.middlewares.js'
 
 const multerFile = configureMulterExcel()
 const inscriptionRoutes: IRouter = Router()
@@ -36,6 +37,8 @@ inscriptionRoutes.get('/inscriptionDetails/:id', checkIdReq, getInscriptionsDeta
 inscriptionRoutes.get('/inscriptionDetailsUser/:id', checkIdReq, getInscriptionsDetailsByUser)
 
 inscriptionRoutes.get('/inscriptionDetail/:id', checkIdReq, getInscriptionsDetailsById)
+
+inscriptionRoutes.get('/inscriptionName', checkName, getInscriptionsDetailsByName)
 
 // * POST
 /**

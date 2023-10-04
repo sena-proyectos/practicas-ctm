@@ -9,6 +9,7 @@ import { comparePassword } from '../middlewares/users.middlewares.js'
 import { type RowDataPacket } from 'mysql2/promise'
 import { type CustomError, DbErrorNotFound, DataNotValid } from '../errors/customErrors.js'
 import { errorCodes } from '../models/errorCodes.enums.js'
+import { type ResultSetHeader } from 'mysql2'
 
 export const getUsers = async (_req: Request, res: Response): Promise<Response> => {
   try {
@@ -47,11 +48,11 @@ export const editUser: RequestHandler<{}, Response, userForm> = async (req: Requ
 
 export const getTeachers = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const page = !Number.isNaN(parseInt(req.query.page as string)) || 1
-    const limit = !Number.isNaN(parseInt(req.query.limit as string)) || 10
-    const offset = (Number(page) - 1) * Number(limit)
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || 10
+    const offset: number = (page - 1) * limit
 
-    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 OR id_rol = 4 LIMIT ? OFFSET ?', [limit, offset])
+    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 LIMIT ? OFFSET ?', [limit, offset])
     if (!Array.isArray(teachers) || teachers.length === 0) throw new DbErrorNotFound('No hay instructores registrados.', errorCodes.ERROR_GET_TEACHER)
 
     const [total] = (await connection.query('SELECT COUNT(*) as count FROM usuarios WHERE id_rol = 3')) as unknown as Array<{ count: number }>
@@ -67,7 +68,7 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 OR id_rol = 4 AND id_usuario = ?', [idNumber])
+    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_usuario = ?', [idNumber])
     if (!Array.isArray(teacher) || teacher.length === 0) throw new DbErrorNotFound('No se encontró el profesor.', errorCodes.ERROR_GET_TEACHER)
     return res.status(httpStatus.OK).json({ data: teacher })
   } catch (error) {
@@ -78,9 +79,30 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
 export const getTeacherByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
   const { nombreCompleto } = req.query
   try {
-    const [teacher] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3 OR id_rol = 4 AND CONCAT(nombres_usuario, " ", apellidos_usuario) LIKE ?', [`%${nombreCompleto as string}%`])
+    const [teacher] = await connection.query('SELECT CONCAT(nombres_usuario, " ", apellidos_usuario) AS nombre_completo, id_usuario, nombres_usuario, apellidos_usuario, tipo_documento_usuario, numero_documento_usuario, email_usuario, numero_celular_usuario, id_rol FROM usuarios WHERE id_rol = 3 AND CONCAT(nombres_usuario, " ", apellidos_usuario) LIKE ?', [`%${nombreCompleto as string}%`])
     if (!Array.isArray(teacher) || teacher?.length === 0) throw new DbErrorNotFound('No se encontró el instructor.', errorCodes.ERROR_GET_TEACHER)
     return res.status(httpStatus.OK).json({ data: teacher })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const getCoordinators = async (_req: Request, res: Response): Promise<Response<object>> => {
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('SELECT id_usuario, CONCAT(nombres_usuario, " ", apellidos_usuario) AS nombre_completo FROM usuarios WHERE id_rol = 2')
+    if (Array.isArray(query) && query.length === 0) throw new DbErrorNotFound('No se encontró el coordinador.', errorCodes.ERROR_GET_USERS)
+    return res.status(200).json(query)
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const getCoordinatorById = async (req: Request, res: Response): Promise<Response<object>> => {
+  const { id } = req.params
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('SELECT CONCAT(nombres_usuario, " ", apellidos_usuario) AS nombre_completo FROM usuarios WHERE id_usuario = ? AND id_rol = 2', [id])
+    if (Array.isArray(query) && query.length === 0) throw new DbErrorNotFound('No se encontró el coordinador.', errorCodes.ERROR_GET_USER)
+    return res.status(200).json(query[0])
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
@@ -91,9 +113,9 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
   try {
     const hashPassword: string = await bycrypt.hash(contrasena, 10)
 
-    await connection.query('INSERT INTO usuarios (nombres_usuario, apellidos_usuario, tipo_documento_usuario, numero_documento_usuario, email_usuario, numero_celular_usuario, id_rol, contrasena_usuario) VALUE (?, ?, IFNULL(?, "cc"), ?, ?, ?, IFNULL(?, 3), ?)', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword])
+    const [query] = await connection.query<ResultSetHeader>('INSERT INTO usuarios (nombres_usuario, apellidos_usuario, tipo_documento_usuario, numero_documento_usuario, email_usuario, numero_celular_usuario, id_rol, contrasena_usuario) VALUE (?, ?, IFNULL(?, "CC"), ?, ?, ?, IFNULL(?, 3), ?)', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword])
 
-    return res.status(httpStatus.CREATED).json({ message: 'Usuario creado exitosamente.' })
+    return res.status(httpStatus.CREATED).json({ message: 'Usuario creado exitosamente.', id: query.insertId })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }

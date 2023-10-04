@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Pagination } from '@nextui-org/pagination'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -8,8 +9,6 @@ import { Search } from '../Search/Search'
 import { CardStudent } from '../Utils/Card/Card'
 import { FilterModal, InfoStudentModal } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
-// import { filter } from '../../import/staticData'
-import { Pagination } from '../Utils/Pagination/Pagination'
 import { GetUserByName, detailInfoStudents, GetStudentsDetailById } from '../../api/httpRequest'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
@@ -23,26 +22,82 @@ export const StudentMonitoring = () => {
   const [infoStudent, setInfoStudent] = useState(false)
   const [userInfoById, setInfoUserById] = useState({})
   const [loading, setLoading] = useState(true)
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
   const [dates, setDates] = useState({})
 
+  /**
+   * Función para manejar el clic en el icono.
+   *
+   * @function
+   * @name handleIconClick
+   * @returns {void}
+   *
+   * @example
+   * handleIconClick();
+   */
   const handleIconClick = () => {
     setModalFilter(!modalFilter)
   }
 
+  /**
+   * Función para manejar el modal.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
   const handleModal = () => {
     setModalFilter(!modalFilter)
   }
 
+  /**
+   * Función asincrónica para mostrar el modal del estudiante y obtener sus datos.
+   *
+   * @async
+   * @function
+   * @name modalStudent
+   * @param {string} userID - ID del usuario del estudiante.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * modalStudent('12345');
+   */
   const modalStudent = async (userID) => {
     setInfoStudent(true)
     getUser(userID)
   }
 
+  /**
+   * Función para manejar el modal de información del estudiante.
+   *
+   * @function
+   * @name handleModalInfo
+   * @returns {void}
+   *
+   * @example
+   * handleModalInfo();
+   */
   const handleModalInfo = () => {
     setInfoStudent(!infoStudent)
   }
 
+  /**
+   * Función asincrónica para obtener los datos del usuario por su ID.
+   *
+   * @async
+   * @function
+   * @name getUser
+   * @param {string} userID - ID del usuario.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getUser('12345');
+   */
   const getUser = async (userID) => {
     try {
       const response = await GetStudentsDetailById(userID)
@@ -51,10 +106,23 @@ export const StudentMonitoring = () => {
       setDates({ fin_lectiva: fecha_fin_lectiva.split('T')[0], inicio_practicas: fecha_inicio_practica.split('T')[0] })
       setInfoUserById(res)
     } catch (error) {
-      console.log('Ha ocurrido un error al mostrar los datos del usuario')
+      console.error('Ha ocurrido un error al mostrar los datos del usuario')
     }
   }
 
+  /**
+   * Función asincrónica para buscar aprendices por nombre de usuario.
+   *
+   * @async
+   * @function
+   * @name searchApprentices
+   * @param {string} searchTerm - Término de búsqueda para el aprendiz.
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * searchApprentices('John Doe');
+   */
   const searchApprentices = async (searchTerm) => {
     if (searchTerm.trim() === '') {
       setError(null)
@@ -79,6 +147,18 @@ export const StudentMonitoring = () => {
     }
   }
 
+  /**
+   * Función asincrónica para obtener la lista de aprendices.
+   *
+   * @async
+   * @function
+   * @name getApprentices
+   * @throws {Error} Error en caso de fallo en la solicitud.
+   * @returns {void}
+   *
+   * @example
+   * getApprentices();
+   */
   const getApprentices = async () => {
     try {
       const response = await detailInfoStudents()
@@ -94,14 +174,62 @@ export const StudentMonitoring = () => {
     getApprentices()
   }, [])
 
-  // const filterStudents = filter.filterStudents
-
+  /**
+   * Número de aprendices a mostrar por página.
+   *
+   * @constant
+   * @name studentsPerPage
+   * @type {number}
+   * @default 6
+   *
+   * @example
+   * const aprendicesPorPagina = studentsPerPage;
+   */
   const studentsPerPage = 6
+  /**
+   * Calcula el número de páginas necesarias para la paginación de aprendices.
+   *
+   * @constant
+   * @name pageCount
+   * @type {number}
+   *
+   * @example
+   * const numeroDePaginas = pageCount;
+   */
   const pageCount = Math.ceil(apprentices.length / studentsPerPage)
-
-  const startIndex = pageNumber * studentsPerPage
+  /**
+   * Índice de inicio de la lista de aprendices a mostrar en la página actual.
+   *
+   * @constant
+   * @name startIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceInicio = startIndex;
+   */
+  const startIndex = (pageNumber - 1) * studentsPerPage
+  /**
+   * Índice de fin de la lista de aprendices a mostrar en la página actual.
+   *
+   * @constant
+   * @name endIndex
+   * @type {number}
+   *
+   * @example
+   * const indiceFin = endIndex;
+   */
   const endIndex = startIndex + studentsPerPage
 
+  /**
+   * Opciones de modalidades para filtrar aprendices.
+   *
+   * @constant
+   * @name option
+   * @type {Array<Object>}
+   *
+   * @example
+   * const opcionesModalidades = option;
+   */
   const option = modalities.map((modality) => ({
     value: modality.name,
     key: modality.value
@@ -169,7 +297,7 @@ export const StudentMonitoring = () => {
             </div>
           )}
           <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-[5.5rem]'>
-            <Pagination setPageNumber={setPageNumber} pageCount={pageCount} />
+            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
           </div>
           <Footer />
         </section>

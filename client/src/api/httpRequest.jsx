@@ -138,8 +138,8 @@ export const getClassById = async (id) => {
 }
 
 // OBTENER INSTRUCTORES
-export const getTeachers = async () => {
-  const URL = `${baseUrl}${api}/teachers`
+export const getTeachers = async (limit = 50) => {
+  const URL = `${baseUrl}${api}/teachers?limit=${limit}`
 
   const response = await axios.get(URL)
   return response
@@ -169,7 +169,7 @@ export const getAvalById = async (id) => {
   return response
 }
 
-// OBTENER USERS BY IDmm
+// OBTENER USERS BY ID
 export const getUserById = async (id) => {
   const URL = `${baseUrl}${api}/user/${id}`
 
@@ -219,3 +219,30 @@ export const getModalitiesById = async (id) => {
   return response
 }
 
+// Obtener inscripcion por nombre
+export const GetInscriptionByName = async (data) => {
+  const URL = `${baseUrl}${api}/inscriptionName?nombreCompleto=${data}`
+  const response = await axios.get(URL)
+
+  return response
+}
+
+export const registerUser = async (payload) => {
+  const URL = `${baseUrl}${api}/register`
+  return await axios.post(URL, payload)
+}
+
+export const getInfoTeacherByID = async (id) => {
+  const URL = `${baseUrl}${api}/teacher/${id}`
+  return await axios.get(URL)
+}
+
+export const getCoordinators = async () => {
+  const URL = `${baseUrl}${api}/coordinators`
+  return await axios.get(URL)
+}
+
+export const getCoordinatorNameByID = async (id) => {
+  const URL = `${baseUrl}${api}/coordinator/${id}`
+  return await axios.get(URL)
+}

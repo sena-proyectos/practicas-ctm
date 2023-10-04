@@ -1,6 +1,8 @@
+import { nextui } from '@nextui-org/theme'
+
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './node_modules/react-tailwindcss-select/dist/index.esm.js'],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './node_modules/react-tailwindcss-select/dist/index.esm.js', './node_modules/@nextui-org/theme/dist/components/pagination.js'],
   theme: {
     extend: {
       colors: {
@@ -38,6 +40,7 @@ export default {
         '2-20r-80': '20rem auto',
         '2-16r-84': '16rem auto',
         '2-45-55': '45% auto',
+        '2-40-60': '40% auto',
         '2-50-50': '50% 50%',
         '2-90-10': '80% 20%',
         '2-60-40': '60% 40%',
@@ -52,8 +55,9 @@ export default {
         '2-85-15': '92% 6.4vh',
         '2-25-75': '10rem auto',
         '2-50-50': '50% 50%',
-        '2-90-10': '90% 10%',
-        '2-80-20': '80% 20%'
+        '2-80-20': '80% 20%',
+        '2-20-80': '20% 80%',
+        '2-93-6': '93.5% 6.5%'
       },
       borderWidth: {
         1: '1.5px'
@@ -73,6 +77,5 @@ export default {
       }
     }
   },
-  plugins: []
+  plugins: [nextui()]
 }
-
