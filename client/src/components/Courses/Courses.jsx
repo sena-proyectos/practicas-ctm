@@ -16,6 +16,7 @@ import { Button } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
 import { getClass, GetClassByNumber } from '../../api/httpRequest'
+import { RegisterCourses } from '../Utils/Modals/Modals'
 
 export const Courses = () => {
   const [pageNumber, setPageNumber] = useState(1)
@@ -26,6 +27,7 @@ export const Courses = () => {
   const [filtersButtons, setFiltersButtons] = useState({ etapa: false, nivel: false, finLectiva: false, inicioPractica: false })
   const [activeFilter, setActiveFilter] = useState(false)
   const [error, setError] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
   const [searchedCourses, setSearchedCourses] = useState([])
 
   /**
@@ -65,6 +67,10 @@ export const Courses = () => {
     }
   }
 
+    const handleCoursesModal = () => {
+      setIsOpen(true)
+    }
+    const handleCloseModal = () => setIsOpen(false)
   /**
    * Función para manejar la visualización de los filtros.
    *
@@ -359,6 +365,7 @@ export const Courses = () => {
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
+      {isOpen && <RegisterCourses closedModal={handleCloseModal} title={'Agrega una ficha'} />}
       <Siderbar />
       <section className='relative grid flex-auto grid-rows-3-10-75-15'>
         <header className='grid place-items-center'>
@@ -494,9 +501,12 @@ export const Courses = () => {
           <div className='flex justify-center h-[13vh] relative bottom-0'>
             <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
           </div>
-          <div className='absolute right-12 bottom-20'>
+          <div className='absolute right-12 bottom-20 grid grid-cols-2'>
             <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
               <LuBookPlus className='text-xl' /> Asignar
+            </Button>
+            <Button rounded='rounded-full' bg='bg-blue-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleCoursesModal} inline>
+              <LuBookPlus className='text-xl'  /> agregar ficha
             </Button>
           </div>
         </section>

@@ -88,40 +88,56 @@ const RegisterStudentModal = ({ closedModal, title }) => {
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter'>
-        <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
-          <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
-          <header className='grid pt-5 place-items-center '>
-            <h3 className='text-2xl font-semibold'>
-              <i className='fi fi-rr-smile-plus text-green-600 px-3'></i>
-              {title}
-            </h3>
-          </header>
-          <section className='flex-auto w-5/6 mx-auto'>
-            <form action='' className='flex flex-col gap-3 pt-8'>
-              <section className='grid grid-cols-2 gap-2'>
-                <div className=''>
-                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem' placeholder='Nombres' />
-                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem]' placeholder='tipo de documento' />
-                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem]' placeholder='Email' />
-                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem]' placeholder='Estado del aprendiz' />
-                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem]' placeholder='Empresa' />
-                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem]' placeholder='modalidad' />
+        <div className='flex items-center justify-center h-full'>
+          <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+            <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
+            <header className='grid pt-5 place-items-center '>
+              <h3 className='text-2xl font-semibold'>
+                <i className='fi fi-rr-smile-plus text-green-600 px-3'></i>
+                {title}
+              </h3>
+            </header>
+            <section className='flex-auto w-5/6 mx-auto'>
+              <form action='' className='flex flex-col gap-3 pt-8'>
+                <div className='grid grid-cols-2 gap-2'>
+                  <div className=''>
+                    <input type='text' name='' id='' className='input-style my-2 border rounded-md' placeholder='Nombres' />
+                    <select name='tipoDocumento' className='input-style my-2 border rounded-md w-[87%]'>
+                      <option value='' disabled selected>
+                        Tipo de documento
+                      </option>
+                      <option value='T.I'>T.I</option>
+                      <option value='C.C'>C.C</option>
+                      <option value='C.E'>C.E</option>
+                    </select>
+                    <input type='text' name='' id='' className='input-style my-2 border rounded-md' placeholder='Email' />
+                    <input type='text' name='' id='' className='input-style my-2 border rounded-md' placeholder='Estado del aprendiz' />
+                    <input type='text' name='' id='' className='input-style my-2 border rounded-md' placeholder='Empresa' />
+                    <select name='modalidad' className='input-style my-2 border rounded-md w-[87%]'>
+                      <option value='' disabled selected>
+                        Modalidad
+                      </option>
+                      <option value='virtual'>Presensial</option>
+                      <option value='presencial'>Virtual</option>
+                    </select>
+                  </div>
+                  <div className=''>
+                    <input type='text' name='' id='' className='input-style my-2 border rounded-md' placeholder='Apellidos' />
+                    <input type='text' name='' id='' className='input-style my-2 border rounded-md' placeholder='Documento' />
+                    <input type='number' name='' id='' className='input-style my-2 border rounded-md' placeholder='Celular' />
+                    <br />
+                    <label>Fin de prácticas</label>
+                    <input type='date' name='' id='' className='input-style my-2 border rounded-md' />
+                    <input type='text' name='' id='' className='input-style my-2 border rounded-md' placeholder='Arl' />
+                  </div>
                 </div>
-                <div className=''>
-                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.37rem]' placeholder='Apellidos' />
-                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.37rem]' placeholder='Documento' />
-                  <input type='number' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.37rem]' placeholder='Celular' />
-                  <label>Fin de practicas</label>
-                  <input type='date' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.37rem]' />
-                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.37rem]' placeholder='Arl' />
-                </div>
-                <div className='grid grid-cols-2'>
-                  <div className='mx-3 '>
+                <div className='grid grid-cols-2 mb-5'>
+                  <div className='mx-3'>
                     <Button bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize='text-md' py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
                       Eliminar datos
                     </Button>
                   </div>
-                  <div className='mx-3 '>
+                  <div className='mx-3'>
                     <span className='absolute inset-y-0 flex items-center text-white left-3'>
                       <BsCheck2Circle />
                     </span>
@@ -130,14 +146,80 @@ const RegisterStudentModal = ({ closedModal, title }) => {
                     </Button>
                   </div>
                 </div>
-              </section>
-            </form>
+              </form>
+            </section>
           </section>
-        </section>
+        </div>
       </aside>
     </section>
   )
 }
+const RegisterCourses = ({closedModal, title}) => {
+  const handleModal = () => {
+    closedModal()
+  }
+  return (
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter'>
+        <div className='flex items-center justify-center h-full'>
+          <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+            <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
+            <header className='grid pt-5 place-items-center '>
+              <h3 className='text-2xl font-semibold'>
+                <i className='fi fi-rr-smile-plus text-green-600 px-3'></i>
+                {title}
+              </h3>
+            </header>
+            <section className='flex-auto w-5/6 mx-auto'>
+              <form action='' className='flex flex-col gap-3 pt-8'>
+                <div className='grid grid-cols-2 gap-2'>
+                  <div className=''>
+                    <input type='number' name='' id='' className='input-style border rounded-md my-2' placeholder='Numero de ficha' />
+                    <input type='text' name='' id='' className='input-style border rounded-md my-2' placeholder='Nombre del programa' />
+                    <input type='text' name='' id='' className='input-style border rounded-md my-2' placeholder='Instructor lider' />
+                    <input type='text' name='' id='' className='input-style border rounded-md my-2' placeholder='Instructor seguimiento' />
+                    <select name='modalidad' className='input-style border rounded-md w-[87%] my-2'>
+                      <option value='' disabled selected>
+                        Nivel de formacion
+                      </option>
+                      <option value='virtual'>Tecnologo</option>
+                      <option value='presencial'>Tecnico</option>
+                    </select>
+                  </div>
+                  <div className=''>
+                    <label>Inicio Lectiva</label>
+                    <input type='date' name='' id='' className='input-style my-2 border rounded-md w-[88%]' />
+                    <br />
+                    <label>Fin lectiva</label>
+                    <input type='date' name='' id='' className='input-style my-2 border rounded-md w-[88%]' />
+                    <br />
+                    <label>Inicio de prácticas</label>
+                    <input type='date' name='' id='' className='input-style my-2 border rounded-md w-[88%]' />
+                  </div>
+                </div>
+                <div className='grid grid-cols-2 mb-5'>
+                  <div className='mx-3'>
+                    <Button bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize='text-md' py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                      Eliminar datos
+                    </Button>
+                  </div>
+                  <div className='mx-3'>
+                    <span className='absolute inset-y-0 flex items-center text-white left-3'>
+                      <BsCheck2Circle />
+                    </span>
+                    <Button bg={'bg-lime-500'} px={'pl-10 pr-6'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                      Guardar
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </section>
+          </section>
+        </div>
+      </aside>
+    </section>
+  )
+} 
 
 const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
   /**
@@ -736,4 +818,4 @@ const LoadingModal = ({ children, title = 'Cargando' }) => {
   )
 }
 
-export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, RegisterStudentModal }
+export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, RegisterStudentModal, RegisterCourses }
