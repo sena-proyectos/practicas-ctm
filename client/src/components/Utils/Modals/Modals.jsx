@@ -71,6 +71,63 @@ const BitacoraModal = ({ closeModal, title }) => {
     </section>
   )
 }
+const RegisterStudentModal = ({ closedModal, title }) => {
+  const handleModal = () => {
+    closedModal()
+  }
+  return (
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter'>
+        <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+          <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
+          <header className='grid pt-5 place-items-center '>
+            <h3 className='text-2xl font-semibold'>
+              <i className='fi fi-rr-smile-plus text-green-600 px-3'></i>
+              {title}
+            </h3>
+          </header>
+          <section className='flex-auto w-5/6 mx-auto'>
+            <form action='' className='flex flex-col gap-3 pt-8'>
+              <section className='grid grid-cols-2 gap-2'>
+                <div className=''>
+                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem' placeholder='Nombres' />
+                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem]' placeholder='tipo de documento' />
+                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem]' placeholder='Email' />
+                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem]' placeholder='Estado del aprendiz' />
+                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem]' placeholder='Empresa' />
+                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.3rem]' placeholder='modalidad' />
+                </div>
+                <div className=''>
+                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.37rem]' placeholder='Apellidos' />
+                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.37rem]' placeholder='Documento' />
+                  <input type='number' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.37rem]' placeholder='Celular' />
+                  <label>Fin de practicas</label>
+                  <input type='date' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.37rem]' />
+                  <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none my-[0.37rem]' placeholder='Arl' />
+                </div>
+                <div className='grid grid-cols-2'>
+                  <div className='mx-3 '>
+                    <Button bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize='text-md' py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                      Eliminar datos
+                    </Button>
+                  </div>
+                  <div className='mx-3 '>
+                    <span className='absolute inset-y-0 flex items-center text-white left-3'>
+                      <BsCheck2Circle />
+                    </span>
+                    <Button bg={'bg-lime-500'} px={'pl-10 pr-6'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
+                      Guardar
+                    </Button>
+                  </div>
+                </div>
+              </section>
+            </form>
+          </section>
+        </section>
+      </aside>
+    </section>
+  )
+}
 
 const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
   const handleModal = () => {
@@ -485,4 +542,4 @@ const LoadingModal = ({ children, title = 'Cargando' }) => {
   )
 }
 
-export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal }
+export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, RegisterStudentModal }
