@@ -346,7 +346,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       const { nombre_completo } = res.data
       setCoordinatorFullName(nombre_completo)
     } catch (error) {
-      console.log(error)
       toast.error('Error al conseguir los datos del aval')
     }
   }
