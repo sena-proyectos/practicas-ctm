@@ -38,6 +38,7 @@ export const RegisterList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [inscriptions, setInscriptions] = useState([])
   const [pageNumber, setPageNumber] = useState(1)
+  const [searchPageNumber, setSearchPageNumber] = useState(1)
   const [fileName, setFileName] = useState(null)
   const [modalOption, setModalOption] = useState(modalOptionList.confirmModal)
   const [username, setUsername] = useState(null)
@@ -100,7 +101,7 @@ export const RegisterList = () => {
    */
   const inscriptionsPerPage = 6
   /**
-   * Número total de páginas para la paginación de inscripciones.
+   * Número total de páginas para la paginación de inscripciones y las busquedad de inscripciones
    *
    * @constant
    * @name pageCount
@@ -110,6 +111,8 @@ export const RegisterList = () => {
    * const totalPaginas = pageCount;
    */
   const pageCount = Math.ceil(inscriptions.length / inscriptionsPerPage)
+  const pageCountSearch = Math.ceil(searchedInscriptions.length / inscriptionsPerPage)
+
   /**
    * Índice de inicio de la página actual.
    *
@@ -121,6 +124,8 @@ export const RegisterList = () => {
    * const indiceInicio = startIndex;
    */
   const startIndex = (pageNumber - 1) * inscriptionsPerPage
+  const startIndexSearch = (searchPageNumber - 1) * inscriptionsPerPage
+
   /**
    * Índice de fin de la página actual.
    *
@@ -132,6 +137,8 @@ export const RegisterList = () => {
    * const indiceFin = endIndex;
    */
   const endIndex = startIndex + inscriptionsPerPage
+  const endIndexSearch = startIndexSearch + inscriptionsPerPage
+
   /**
    * Identificador del rol del usuario almacenado en el almacenamiento local.
    *
@@ -555,22 +562,26 @@ export const RegisterList = () => {
           )}
         </header>
         <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto justify-evenly'>
-          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
-          <div className='flex justify-center h-[11.5vh] relative bottom-0'>{(searchedInscriptions > 0 || !error || inscriptions > 0) && <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />}</div>
-          {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-            <div className='absolute flex flex-row-reverse gap-3 right-12 bottom-16'>
-              <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline>
-                <IoAddCircleOutline className='text-xl' /> Agregar
-              </Button>
-              <div className='rounded-full shadow-md bg-cyan-600'>
-                <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
-                  <AiOutlineFileAdd />
-                  <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
-                </label>
-                <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
+          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} startIndexSearch={startIndexSearch} endIndexSearch={endIndexSearch} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
+
+          <div className='flex flex-col items-center gap-1 py-1'>
+            <div className='flex justify-center w-full'>{searchedInscriptions.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <div className='grid w-full grid-flow-col-dense gap-3 place-content-end'>
+                <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline classNames='order-last'>
+                  <IoAddCircleOutline className='text-xl' />
+                  Agregar
+                </Button>
+                <div className='rounded-full shadow-md bg-cyan-600'>
+                  <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
+                    <AiOutlineFileAdd />
+                    <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
+                  </label>
+                  <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </section>
         <Footer />
       </section>
@@ -578,7 +589,7 @@ export const RegisterList = () => {
   )
 }
 
-const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData, searchedInscriptions, error }) => {
+const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, startIndexSearch = 0, endIndexSearch = 6, loadingData, searchedInscriptions, error }) => {
   const navigate = useNavigate()
   const handleAvales = (id) => {
     return navigate(`/registro-detalles/${id}`)
@@ -598,7 +609,7 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData, se
       </thead>
       <tbody className='grid grid-rows-6'>
         {searchedInscriptions.length > 0 && !error ? (
-          searchedInscriptions.slice(startIndex, endIndex).map((x) => (
+          searchedInscriptions.slice(startIndexSearch, endIndexSearch).map((x) => (
             <tr className='grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center' key={x.id_inscripcion}>
               <td className='max-w-[20ch] font-medium text-center break-words'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</td>
               <td className='font-light text-center max-w-[10ch] break-words'>{x.nombre_modalidad}</td>
