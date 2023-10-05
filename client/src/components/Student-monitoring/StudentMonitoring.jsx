@@ -115,7 +115,7 @@ export const StudentMonitoring = () => {
     getApprentices()
   }, [])
 
-  // Cambia el numero de paginas dependiendo de la cantidad de instructores
+  // Cambia el numero de paginas dependiendo de la cantidad de estudiantes
   useEffect(() => {
     if (searchedApprentices.length > 0 && !error) {
       setCurrentStudentList(searchedApprentices)
