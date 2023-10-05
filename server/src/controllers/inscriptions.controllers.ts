@@ -4,7 +4,7 @@ import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { type CustomError, DbErrorNotFound, DbError, DataNotValid } from '../errors/customErrors.js'
-import { type RowDataPacket } from 'mysql2'
+import { type ResultSetHeader, type RowDataPacket } from 'mysql2'
 import { errorCodes } from '../models/errorCodes.enums.js'
 
 /**
@@ -157,12 +157,25 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
 export const editInscriptionDetail: RequestHandler<{}, Response, inscripcionDetailData> = async (req: Request, res: Response) => {
   const { id } = req.params
   const { estado_aval, observaciones, responsable_aval } = req.body
+  if (responsable_aval !== undefined) {
+    await editInscriptionDetailUser(responsable_aval, id, res)
+    return
+  }
   try {
-    const [result] = await connection.query('UPDATE detalles_inscripciones SET estado_aval = IFNULL(?, estado_aval), observaciones = IFNULL(?, observaciones), responsable_aval = IFNULL(?, responsable_aval) WHERE id_detalle_inscripcion = ?', [estado_aval, observaciones, responsable_aval, id])
+    const [result] = await connection.query<ResultSetHeader>('UPDATE detalles_inscripciones SET estado_aval = IFNULL(?, estado_aval), observaciones = IFNULL(?, observaciones) WHERE id_detalle_inscripcion = ?', [estado_aval, observaciones, id])
     if (!Array.isArray(result) && result?.affectedRows === 0) throw new DbError('No se pudo actualizar la modalidad de etapa práctica')
     return res.status(httpStatus.OK).json({ message: 'Aval de inscripción actualizada con éxito' })
   } catch (error) {
-    console.log(error)
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const editInscriptionDetailUser = async (idUser: number, idInscriptionDetail: string, res: Response): Promise<Response> => {
+  try {
+    const [result] = await connection.query<ResultSetHeader>('UPDATE detalles_inscripciones SET responsable_aval = ? WHERE id_detalle_inscripcion = ?', [idUser, idInscriptionDetail])
+    if (result.affectedRows === 0) throw new DbError('No se actualizó con éxtio del responsable')
+    return res.status(httpStatus.OK).json({ message: 'Aval de inscripción actualizada con éxito' })
+  } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
 }
