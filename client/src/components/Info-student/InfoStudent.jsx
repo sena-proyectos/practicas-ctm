@@ -101,27 +101,27 @@ export const InfoStudent = () => {
               <section className='flex flex-col px-3 pb-3'>
                 <div className='grid grid-cols-2-40-60'>
                   <p className='font-medium'>Empresa:</p>
-                  <p>{nombre_empresa}</p>
+                  <p>{nombre_empresa ?? 'No aplica'}</p>
                 </div>
                 <div className='grid grid-cols-2-40-60'>
                   <p className='font-medium'>Jefe Inmediato:</p>
-                  <p>{nombre_jefe}</p>
+                  <p>{nombre_jefe ?? 'No aplica'}</p>
                 </div>
                 <div className='grid grid-cols-2-40-60'>
                   <p className='font-medium'>Cargo:</p>
-                  <p>{cargo_jefe}</p>
+                  <p>{cargo_jefe ?? 'No aplica'}</p>
                 </div>
                 <div className='grid grid-cols-2-40-60'>
                   <p className='font-medium'>Email:</p>
-                  <p>{email_jefe}</p>
+                  <p>{email_jefe ?? 'No aplica'}</p>
                 </div>
                 <div className='grid grid-cols-2-40-60'>
                   <p className='font-medium'>Contacto:</p>
-                  <p>{numero_contacto_jefe}</p>
+                  <p>{numero_contacto_jefe ?? 'No aplica'}</p>
                 </div>
                 <div className='grid grid-cols-2-40-60'>
                   <p className='font-medium'>ARL:</p>
-                  <p>{nombre_arl}</p>
+                  <p>{nombre_arl ?? 'No aplica'}</p>
                 </div>
               </section>
             </section>
@@ -132,4 +132,3 @@ export const InfoStudent = () => {
     </main>
   )
 }
-
