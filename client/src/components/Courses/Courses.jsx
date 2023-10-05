@@ -249,15 +249,15 @@ export const Courses = () => {
       if (filter === 'Hoy') {
         const today = new Date()
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_fin_lectiva)
-          return courseDate.toDateString() === today.toDateString()
+          const courseDate = new Date(course.fecha_fin_lectiva + 'T00:00:00')
+          return courseDate.getFullYear() === today.getFullYear() && courseDate.getMonth() === today.getMonth() && courseDate.getDate() === today.getDate()
         })
       } else if (filter === 'Esta Semana') {
         const today = new Date()
         const nextWeek = new Date(today)
         nextWeek.setDate(today.getDate() + 7)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_fin_lectiva)
+          const courseDate = new Date(course.fecha_fin_lectiva + 'T00:00:00')
           return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
         })
       } else if (filter === 'Próxima Semana') {
@@ -267,7 +267,7 @@ export const Courses = () => {
         const weekAfterNext = new Date(nextWeek)
         weekAfterNext.setDate(nextWeek.getDate() + 7)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_fin_lectiva)
+          const courseDate = new Date(course.fecha_fin_lectiva + 'T00:00:00')
           return courseDate >= nextWeek && courseDate <= weekAfterNext
         })
       } else if (filter === 'Este Mes') {
@@ -275,7 +275,7 @@ export const Courses = () => {
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_fin_lectiva)
+          const courseDate = new Date(course.fecha_fin_lectiva + 'T00:00:00')
           return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
         })
       } else if (filter === 'Próximo Mes') {
@@ -283,7 +283,7 @@ export const Courses = () => {
         const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
         const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_fin_lectiva)
+          const courseDate = new Date(course.fecha_fin_lectiva + 'T00:00:00')
           return courseDate >= nextMonth && courseDate <= endOfMonth
         })
       }
@@ -296,15 +296,15 @@ export const Courses = () => {
       if (filter === 'Hoy') {
         const today = new Date()
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica)
-          return courseDate.toDateString() === today.toDateString()
+          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+          return courseDate.getFullYear() === today.getFullYear() && courseDate.getMonth() === today.getMonth() && courseDate.getDate() === today.getDate()
         })
       } else if (filter === 'Esta Semana') {
         const today = new Date()
         const nextWeek = new Date(today)
         nextWeek.setDate(today.getDate() + 7)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica)
+          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
           return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
         })
       } else if (filter === 'Próxima Semana') {
@@ -314,7 +314,7 @@ export const Courses = () => {
         const weekAfterNext = new Date(nextWeek)
         weekAfterNext.setDate(nextWeek.getDate() + 7)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica)
+          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
           return courseDate >= nextWeek && courseDate <= weekAfterNext
         })
       } else if (filter === 'Este Mes') {
@@ -322,7 +322,7 @@ export const Courses = () => {
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica)
+          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
           return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
         })
       } else if (filter === 'Próximo Mes') {
@@ -330,7 +330,7 @@ export const Courses = () => {
         const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
         const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica)
+          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
           return courseDate >= nextMonth && courseDate <= endOfMonth
         })
       }
@@ -392,7 +392,7 @@ export const Courses = () => {
                       <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('nivel', 'Técnico')}>
                         Técnica
                       </li>
-                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('nivel', 'Tecnólogo')}>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('nivel', 'Tecnología')}>
                         Tecnólogo
                       </li>
                     </ul>
@@ -467,11 +467,11 @@ export const Courses = () => {
           <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>
             {searchedCourses.length > 0 && !error ? (
               searchedCourses.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva.split('T')[0]} item4={course.fecha_inicio_practica.split('T')[0]} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
+                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
               })
             ) : courses.length > 0 ? (
               courses.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva.split('T')[0]} item4={course.fecha_inicio_practica.split('T')[0]} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
+                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
               })
             ) : loading ? (
               <SkeletonLoading number={6} />
