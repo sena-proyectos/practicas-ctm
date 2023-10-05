@@ -231,11 +231,11 @@ export const Teachers = () => {
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
         <Siderbar />
-        <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
-          <header className='grid place-items-center'>
+        <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto]'>
+          <header className='grid place-items-center h-[10vh]'>
             <Search searchFilter placeholder={'Busca un instructor'} searchStudent={searchTeachers} />
           </header>
-          <section className='flex flex-col h-full gap-3'>
+          <section className='flex flex-col justify-around'>
             {searchedTeachers.length > 0 && !error ? (
               <section className='grid grid-cols-1 gap-x-3 gap-y-4 md:grid-cols-4 px-8 md:px-12 pt-6 md:gap-y-2 md:gap-x-8 h-fit md:h-[85%] st1:grid-cols-3 st1:gap-y-4 st2:gap-y-4 st2:grid-cols-2'>
                 {allColors.slice(startIndex, endIndex).map((color, index) =>

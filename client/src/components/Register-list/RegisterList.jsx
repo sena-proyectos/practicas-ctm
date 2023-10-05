@@ -469,8 +469,8 @@ export const RegisterList = () => {
       {isModalOpen && modalOption === modalOptionList.loadingExcelModal && <LoadingExcelFileModal />}
       {isModalOpen && modalOption === modalOptionList.uploadingExcelModal && <UploadingExcelFileModal />}
       <Siderbar />
-      <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
-        <header className='grid place-items-center'>
+      <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto]'>
+        <header className='grid h-[10vh] place-items-center'>
           <Search searchFilter placeholder={'Busca un aprendiz'} icon iconClick={handleFilter} searchStudent={searchInscriptions} />
           <ul className={`absolute right-80 mt-1 top-4 w-36 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
             <li>
@@ -554,7 +554,7 @@ export const RegisterList = () => {
             </section>
           )}
         </header>
-        <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto'>
+        <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto justify-evenly'>
           <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
           <div className='flex justify-center h-[11.5vh] relative bottom-0'>{(searchedInscriptions > 0 || !error || inscriptions > 0) && <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />}</div>
           {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (

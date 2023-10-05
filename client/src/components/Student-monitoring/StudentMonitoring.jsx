@@ -272,33 +272,35 @@ export const StudentMonitoring = () => {
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-3-10-75-15 gap-y-2 '>
-          <header className='grid place-items-center '>
+          <header className='grid place-items-center grid-rows-[1fr_auto]'>
             <Search searchFilter icon placeholder={'Busca un aprendiz'} iconClick={handleIconClick} searchStudent={searchApprentices} />
           </header>
-          {searchedApprentices.length > 0 && !error ? (
-            <div className='h-[80%] grid grid-cols-1 px-4 gap-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
-              {searchedApprentices.slice(startIndex, endIndex).map((apprentice, i) => (
-                <CardStudent key={i} userID={apprentice.id_aprendiz} modalClicked={modalStudent} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
-              ))}
+          <section className='flex flex-col justify-around'>
+            {searchedApprentices.length > 0 && !error ? (
+              <div className='h-[80%] grid grid-cols-1 px-4 gap-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+                {searchedApprentices.slice(startIndex, endIndex).map((apprentice, i) => (
+                  <CardStudent key={i} userID={apprentice.id_aprendiz} modalClicked={modalStudent} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
+                ))}
+              </div>
+            ) : (
+              <div className='h-[80%] grid grid-cols-1 px-4 gap-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+                {loading ? (
+                  <>
+                    <SkeletonLoading />
+                  </>
+                ) : error ? (
+                  <h2 className='text-red-500'>{error}</h2>
+                ) : (
+                  apprentices.slice(startIndex, endIndex).map((apprentice, i) => {
+                    return <CardStudent key={i} userID={apprentice.id_aprendiz} modalClicked={modalStudent} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
+                  })
+                )}
+              </div>
+            )}
+            <div className='flex justify-center h-[13vh]'>
+              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
             </div>
-          ) : (
-            <div className='h-[80%] grid grid-cols-1 px-4 gap-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
-              {loading ? (
-                <>
-                  <SkeletonLoading />
-                </>
-              ) : error ? (
-                <h2 className='text-red-500'>{error}</h2>
-              ) : (
-                apprentices.slice(startIndex, endIndex).map((apprentice, i) => {
-                  return <CardStudent key={i} userID={apprentice.id_aprendiz} modalClicked={modalStudent} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
-                })
-              )}
-            </div>
-          )}
-          <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-[5.5rem]'>
-            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
-          </div>
+          </section>
           <Footer />
         </section>
       </main>
