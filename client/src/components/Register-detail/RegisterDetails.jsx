@@ -328,12 +328,9 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
    */
   const fetchInfo = async () => {
     try {
-      console.log(test)
-      console.log(avalCoordinador)
       const res = await getAvalById(avalCoordinador)
       const { data } = res.data
       const idPayload = data[0].responsable_aval
-      console.log(idPayload, data)
       if (idPayload !== null) {
         getCoordinatorName(idPayload)
       }
@@ -344,14 +341,11 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   }
 
   const getCoordinatorName = async (payload) => {
-    console.log(payload)
     try {
       const res = await getCoordinatorNameByID(payload)
       const { nombre_completo } = res.data
-      console.log('nombre', nombre_completo)
       setCoordinatorFullName(nombre_completo)
     } catch (error) {
-      console.log('elll')
       toast.error('Error al conseguir los datos del aval')
     }
   }
@@ -633,15 +627,8 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     }
   }
 
-  const [test, setTest] = useState(null)
-
-  useEffect(() => {
-    console.log(test)
-  }, [test])
   const saveSelectOnChange = async (e) => {
     try {
-      console.log(e)
-      setTest(e)
       await inscriptionDetailsUpdate(avalCoordinador, { responsable_aval: e })
       toast.success('Instructor guardado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       fetchInfo()
