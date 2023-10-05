@@ -360,8 +360,8 @@ export const Courses = () => {
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
-      <section className='relative grid flex-auto grid-rows-3-10-75-15'>
-        <header className='grid place-items-center'>
+      <section className='relative grid flex-auto grid-rows-[auto_1fr_auto]'>
+        <header className='grid place-items-center h-[10vh]'>
           <Search searchStudent={searchCourses} searchFilter placeholder={'Busca una ficha'} icon iconClick={handleFilter} />
           <ul className={`absolute right-48  mt-1 top-4 w-40 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
             <li>
@@ -463,7 +463,7 @@ export const Courses = () => {
             </section>
           )}
         </header>
-        <section className='flex flex-col h-full gap-3'>
+        <section className='flex flex-col justify-around'>
           <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>
             {searchedCourses.length > 0 && !error ? (
               searchedCourses.slice(startIndex, endIndex).map((course, i) => {

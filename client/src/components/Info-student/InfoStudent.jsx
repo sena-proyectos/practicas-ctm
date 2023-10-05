@@ -4,6 +4,7 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { useEffect, useState } from 'react'
 import { GetStudentsDetailById } from '../../api/httpRequest'
 import { IoReturnDownBack } from 'react-icons/io5'
+import { Button } from '../Utils/Button/Button'
 
 export const InfoStudent = () => {
   const { id } = useParams()
@@ -30,7 +31,7 @@ export const InfoStudent = () => {
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
-      <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
+      <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_1fr_auto]'>
         <header className='grid place-items-center'>
           <Link to='/seguimiento-aprendices' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors absolute left-10'>
             <IoReturnDownBack />
@@ -126,6 +127,10 @@ export const InfoStudent = () => {
               </section>
             </section>
           </section>
+        </section>
+        <section className='flex justify-evenly'>
+          <Button>Seguimiento</Button>
+          <Button>Seguimiento</Button>
         </section>
         <Footer />
       </section>
