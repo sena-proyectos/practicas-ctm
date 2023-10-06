@@ -7,9 +7,9 @@ import { Pagination } from '@nextui-org/pagination'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
 import { CardStudent } from '../Utils/Card/Card'
-import { FilterModal, InfoStudentModal } from '../Utils/Modals/Modals'
+import { FilterModal } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
-import { GetUserByName, detailInfoStudents, GetStudentsDetailById } from '../../api/httpRequest'
+import { GetUserByName, detailInfoStudents } from '../../api/httpRequest'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { modalities } from '../../import/staticData'
@@ -19,11 +19,9 @@ export const StudentMonitoring = () => {
   const [searchedApprentices, setSearchedApprentices] = useState([])
   const [error, setError] = useState(null)
   const [modalFilter, setModalFilter] = useState(false)
-  const [infoStudent, setInfoStudent] = useState(false)
-  const [userInfoById, setInfoUserById] = useState({})
   const [loading, setLoading] = useState(true)
   const [pageNumber, setPageNumber] = useState(1)
-  const [dates, setDates] = useState({})
+  const [currentStudentList, setCurrentStudentList] = useState({})
 
   /**
    * Función para manejar el clic en el icono.
@@ -51,63 +49,6 @@ export const StudentMonitoring = () => {
    */
   const handleModal = () => {
     setModalFilter(!modalFilter)
-  }
-
-  /**
-   * Función asincrónica para mostrar el modal del estudiante y obtener sus datos.
-   *
-   * @async
-   * @function
-   * @name modalStudent
-   * @param {string} userID - ID del usuario del estudiante.
-   * @throws {Error} Error en caso de fallo en la solicitud.
-   * @returns {void}
-   *
-   * @example
-   * modalStudent('12345');
-   */
-  const modalStudent = async (userID) => {
-    setInfoStudent(true)
-    getUser(userID)
-  }
-
-  /**
-   * Función para manejar el modal de información del estudiante.
-   *
-   * @function
-   * @name handleModalInfo
-   * @returns {void}
-   *
-   * @example
-   * handleModalInfo();
-   */
-  const handleModalInfo = () => {
-    setInfoStudent(!infoStudent)
-  }
-
-  /**
-   * Función asincrónica para obtener los datos del usuario por su ID.
-   *
-   * @async
-   * @function
-   * @name getUser
-   * @param {string} userID - ID del usuario.
-   * @throws {Error} Error en caso de fallo en la solicitud.
-   * @returns {void}
-   *
-   * @example
-   * getUser('12345');
-   */
-  const getUser = async (userID) => {
-    try {
-      const response = await GetStudentsDetailById(userID)
-      const res = response.data.data[0]
-      const { fecha_fin_lectiva, fecha_inicio_practica } = res
-      setDates({ fin_lectiva: fecha_fin_lectiva.split('T')[0], inicio_practicas: fecha_inicio_practica.split('T')[0] })
-      setInfoUserById(res)
-    } catch (error) {
-      console.error('Ha ocurrido un error al mostrar los datos del usuario')
-    }
   }
 
   /**
@@ -174,6 +115,16 @@ export const StudentMonitoring = () => {
     getApprentices()
   }, [])
 
+  // Cambia el numero de paginas dependiendo de la cantidad de estudiantes
+  useEffect(() => {
+    if (searchedApprentices.length > 0 && !error) {
+      setCurrentStudentList(searchedApprentices)
+      setPageNumber(1)
+    } else {
+      setCurrentStudentList(apprentices)
+    }
+  }, [searchedApprentices, error, apprentices])
+
   /**
    * Número de aprendices a mostrar por página.
    *
@@ -196,7 +147,7 @@ export const StudentMonitoring = () => {
    * @example
    * const numeroDePaginas = pageCount;
    */
-  const pageCount = Math.ceil(apprentices.length / studentsPerPage)
+  const pageCount = Math.ceil(currentStudentList.length / studentsPerPage)
   /**
    * Índice de inicio de la lista de aprendices a mostrar en la página actual.
    *
@@ -266,24 +217,21 @@ export const StudentMonitoring = () => {
           </form>
         </FilterModal>
       )}
-      {infoStudent && (
-        <InfoStudentModal closeModal={handleModalInfo} bodyStudent title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} cellPhoneNumber={userInfoById.celular_aprendiz} program={userInfoById.nombre_programa_formacion} courseNumber={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} formationStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} lectivaEnd={dates.fin_lectiva} productiveStart={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} positionSuperior={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celphoneSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />
-      )}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <Siderbar />
-        <section className='relative grid flex-auto w-min grid-rows-3-10-75-15 gap-y-2 '>
-          <header className='grid place-items-center grid-rows-[1fr_auto]'>
+        <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto] '>
+          <header className='grid place-items-center h-[10vh]'>
             <Search searchFilter icon placeholder={'Busca un aprendiz'} iconClick={handleIconClick} searchStudent={searchApprentices} />
           </header>
           <section className='flex flex-col justify-around'>
             {searchedApprentices.length > 0 && !error ? (
-              <div className='h-[80%] grid grid-cols-1 px-4 gap-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+              <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
                 {searchedApprentices.slice(startIndex, endIndex).map((apprentice, i) => (
-                  <CardStudent key={i} userID={apprentice.id_aprendiz} modalClicked={modalStudent} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
+                  <CardStudent key={i} userID={apprentice.id_aprendiz} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
                 ))}
               </div>
             ) : (
-              <div className='h-[80%] grid grid-cols-1 px-4 gap-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+              <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
                 {loading ? (
                   <>
                     <SkeletonLoading />
@@ -292,14 +240,12 @@ export const StudentMonitoring = () => {
                   <h2 className='text-red-500'>{error}</h2>
                 ) : (
                   apprentices.slice(startIndex, endIndex).map((apprentice, i) => {
-                    return <CardStudent key={i} userID={apprentice.id_aprendiz} modalClicked={modalStudent} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
+                    return <CardStudent key={i} userID={apprentice.id_aprendiz} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
                   })
                 )}
               </div>
             )}
-            <div className='flex justify-center h-[13vh]'>
-              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
-            </div>
+            <div className='flex items-center justify-center py-3'>{loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
           </section>
           <Footer />
         </section>
@@ -311,6 +257,6 @@ export const StudentMonitoring = () => {
 const SkeletonLoading = ({ number = 6 }) =>
   [...Array(number)].map((_, i) => (
     <div key={i}>
-      <Skeleton height={'14rem'} className='scale-90 rounded-2xl' />
+      <Skeleton height={'11.5rem'} borderRadius={'0.5rem'} className='scale-100' />
     </div>
   ))
