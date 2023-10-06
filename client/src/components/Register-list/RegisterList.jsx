@@ -51,6 +51,7 @@ export const RegisterList = () => {
   const [inscriptionOriginal, setInscriptionOriginal] = useState([])
   const [error, setError] = useState(null)
   const [searchedInscriptions, setSearchedInscriptions] = useState([])
+  const [originalSearched, setOriginalSearched] = useState([])
 
   /**
    * Función asincrónica para buscar aprendices por nombre de usuario.
@@ -69,6 +70,7 @@ export const RegisterList = () => {
     if (searchTerm.trim() === '') {
       setError(null)
       setSearchedInscriptions([])
+      setOriginalSearched([])
       return
     }
     try {
@@ -77,9 +79,11 @@ export const RegisterList = () => {
       if (searchTerm.trim() === '') {
         setError(null)
         setSearchedInscriptions([])
+        setOriginalSearched([])
       } else {
         setError(null)
         setSearchedInscriptions(data)
+        setOriginalSearched(data)
       }
     } catch (error) {
       const message = error?.response?.data?.error?.info?.message
@@ -407,44 +411,88 @@ export const RegisterList = () => {
    */
   const handleTypeFilter = (filterType, filter) => {
     if (filterType === 'modalidad') {
-      const filterMap = inscriptionOriginal.filter((inscription) => inscription.nombre_modalidad === filter)
+      let filterMap
+      if (originalSearched.length > 0 && !error) {
+        filterMap = originalSearched.filter((inscription) => inscription.nombre_modalidad === filter)
+        setSearchedInscriptions({})
+      } else {
+        filterMap = inscriptionOriginal.filter((inscription) => inscription.nombre_modalidad === filter)
+      }
       setInscriptions(filterMap)
     }
     if (filterType === 'estado') {
-      const filterMap = inscriptionOriginal.filter((inscription) => inscription.estado_general_inscripcion === filter)
+      let filterMap
+      if (originalSearched.length > 0 && !error) {
+        filterMap = originalSearched.filter((inscription) => inscription.estado_general_inscripcion === filter)
+        setSearchedInscriptions({})
+      } else {
+        filterMap = inscriptionOriginal.filter((inscription) => inscription.estado_general_inscripcion === filter)
+      }
       setInscriptions(filterMap)
     }
     if (filterType === 'fecha') {
       let filterMap = []
-
       if (filter === 'Hoy') {
         const today = new Date()
-        filterMap = inscriptionOriginal.filter((inscription) => {
-          const inscriptionDate = new Date(inscription.fecha_creacion) // Asegúrate de que la columna 'fecha' sea de tipo fecha
-          return inscriptionDate.toDateString() === today.toDateString()
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((inscription) => {
+            setSearchedInscriptions({})
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate.toDateString() === today.toDateString()
+          })
+        } else {
+          filterMap = inscriptionOriginal.filter((inscription) => {
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate.toDateString() === today.toDateString()
+          })
+        }
       } else if (filter === 'Semana') {
         const today = new Date()
         const lastWeek = new Date(today)
         lastWeek.setDate(today.getDate() - 7)
-        filterMap = inscriptionOriginal.filter((inscription) => {
-          const inscriptionDate = new Date(inscription.fecha_creacion)
-          return inscriptionDate >= lastWeek && inscriptionDate <= today
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((inscription) => {
+            setSearchedInscriptions({})
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= lastWeek && inscriptionDate <= today
+          })
+        } else {
+          filterMap = inscriptionOriginal.filter((inscription) => {
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= lastWeek && inscriptionDate <= today
+          })
+        }
       } else if (filter === 'Mes') {
         const today = new Date()
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
-        filterMap = inscriptionOriginal.filter((inscription) => {
-          const inscriptionDate = new Date(inscription.fecha_creacion)
-          return inscriptionDate >= firstDayOfMonth && inscriptionDate <= lastDayOfMonth
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((inscription) => {
+            setSearchedInscriptions({})
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= firstDayOfMonth && inscriptionDate <= lastDayOfMonth
+          })
+        } else {
+          filterMap = inscriptionOriginal.filter((inscription) => {
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= firstDayOfMonth && inscriptionDate <= lastDayOfMonth
+          })
+        }
       } else if (filter === 'Más Antiguos') {
-        filterMap = inscriptionOriginal.slice().sort((a, b) => {
-          const dateA = new Date(a.fecha_creacion)
-          const dateB = new Date(b.fecha_creacion)
-          return dateA - dateB
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.slice().sort((a, b) => {
+            setSearchedInscriptions({})
+            const dateA = new Date(a.fecha_creacion)
+            const dateB = new Date(b.fecha_creacion)
+            return dateA - dateB
+          })
+        } else {
+          filterMap = inscriptionOriginal.slice().sort((a, b) => {
+            const dateA = new Date(a.fecha_creacion)
+            const dateB = new Date(b.fecha_creacion)
+            return dateA - dateB
+          })
+        }
       }
 
       setInscriptions(filterMap)
@@ -467,6 +515,7 @@ export const RegisterList = () => {
     setInscriptions(inscriptionOriginal)
     disableShowFiltros()
     setActiveFilter(false)
+    setSearchedInscriptions(originalSearched)
   }
 
   return (
@@ -565,7 +614,7 @@ export const RegisterList = () => {
           <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} startIndexSearch={startIndexSearch} endIndexSearch={endIndexSearch} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
 
           <div className='flex flex-col items-center gap-1 py-1'>
-            <div className='flex justify-center w-full'>{searchedInscriptions.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+            <div className='flex justify-center w-full'>{inscriptions.length === 0 || error || loadingData ? <></> : searchedInscriptions.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <div className='grid w-full grid-flow-col-dense gap-3 place-content-end'>
                 <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline classNames='order-last'>
