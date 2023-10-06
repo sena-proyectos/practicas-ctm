@@ -1,9 +1,15 @@
 import { Link, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+
+// Icons
+import { IoReturnDownBack } from 'react-icons/io5'
+import { LuScroll } from 'react-icons/lu'
+import { PiCalendarCheckBold, PiBooksBold } from 'react-icons/pi'
+
+// Components
 import { Footer } from '../Footer/Footer'
 import { Siderbar } from '../Siderbar/Sidebar'
-import { useEffect, useState } from 'react'
 import { GetStudentsDetailById } from '../../api/httpRequest'
-import { IoReturnDownBack } from 'react-icons/io5'
 import { Button } from '../Utils/Button/Button'
 
 export const InfoStudent = () => {
@@ -31,8 +37,8 @@ export const InfoStudent = () => {
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
-      <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_1fr_auto]'>
-        <header className='grid place-items-center'>
+      <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto]'>
+        <header className='grid place-items-center h-[12vh]'>
           <Link to='/seguimiento-aprendices' className='flex items-center gap-2 text-sm font-medium rounded-full text-white bg-slate-600 px-4 py-[2px] transition-colors absolute left-10'>
             <IoReturnDownBack />
             Regresar
@@ -40,7 +46,7 @@ export const InfoStudent = () => {
           <h1 className='text-2xl font-bold border-b-2 border-coffee'>{nombre_completo}</h1>
         </header>
         <section className='flex flex-col items-center gap-4 px-6 md:justify-center'>
-          <section className='grid w-full bg-white shadow-lg md:w-1/2 border-t-1 grid-rows-2-20-80 rounded-xl'>
+          <section className='grid w-full gap-2 bg-white shadow-lg md:w-1/2 border-t-1 grid-rows-3-rows rounded-xl'>
             <header className='flex items-center justify-center h-full pt-4'>
               <h2 className='text-lg font-medium'>Info. Personal</h2>
             </header>
@@ -127,10 +133,19 @@ export const InfoStudent = () => {
               </section>
             </section>
           </section>
-        </section>
-        <section className='flex justify-evenly'>
-          <Button>Seguimiento</Button>
-          <Button>Seguimiento</Button>
+          <section className='flex flex-row gap-6 justify-evenly'>
+            <Button bg={'bg-blue-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline>
+              <PiBooksBold className='text-xl' />
+              Bitácoras
+            </Button>
+            <Button bg={'bg-yellow-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline>
+              <LuScroll className='text-xl' /> Cartas
+            </Button>
+            <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline>
+              <PiCalendarCheckBold className='text-xl' />
+              Visitas
+            </Button>
+          </section>
         </section>
         <Footer />
       </section>
