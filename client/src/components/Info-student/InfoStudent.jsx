@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 // Icons
@@ -14,7 +14,7 @@ import { Button } from '../Utils/Button/Button'
 
 export const InfoStudent = () => {
   const { id } = useParams()
-
+  const Navigate = useNavigate()
   const [{ cargo_jefe, celular_aprendiz, email_aprendiz, email_jefe, etapa_formacion, fecha_fin_lectiva, fecha_inicio_practica, nivel_formacion, nombre_arl, nombre_completo, nombre_empresa, nombre_jefe, nombre_modalidad, nombre_programa_formacion, numero_contacto_jefe, numero_documento_aprendiz, numero_ficha }, setInfoStudent] = useState({})
 
   const getInfoStudent = async () => {
@@ -33,6 +33,10 @@ export const InfoStudent = () => {
   useEffect(() => {
     getInfoStudent()
   }, [])
+
+  const handleClick = (item) => {
+    item === 'Bitácoras' ? Navigate('/bitacoras') : item === 'Cartas' ? Navigate('/') : Navigate('/visitas')
+  }
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
@@ -134,14 +138,14 @@ export const InfoStudent = () => {
             </section>
           </section>
           <section className='flex flex-row gap-6 justify-evenly'>
-            <Button bg={'bg-blue-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline>
+            <Button bg={'bg-blue-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={() => handleClick('Bitácoras')}>
               <PiBooksBold className='text-xl' />
               Bitácoras
             </Button>
-            <Button bg={'bg-yellow-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline>
+            <Button bg={'bg-yellow-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={() => handleClick('Cartas')}>
               <LuScroll className='text-xl' /> Cartas
             </Button>
-            <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline>
+            <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={() => handleClick('Visitas')}>
               <PiCalendarCheckBold className='text-xl' />
               Visitas
             </Button>
