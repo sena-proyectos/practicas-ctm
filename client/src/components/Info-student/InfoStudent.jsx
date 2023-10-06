@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 
 // Icons
 import { IoReturnDownBack } from 'react-icons/io5'
-import { LuScroll } from 'react-icons/lu'
-import { PiCalendarCheckBold, PiBooksBold } from 'react-icons/pi'
+import { PiBooksLight, PiScrollLight, PiCalendarCheckLight } from 'react-icons/pi'
 
 // Components
 import { Footer } from '../Footer/Footer'
@@ -35,7 +34,7 @@ export const InfoStudent = () => {
   }, [])
 
   const handleClick = (item) => {
-    item === 'Bitácoras' ? Navigate('/bitacoras') : item === 'Cartas' ? Navigate('/') : Navigate('/visitas')
+    item === 'Bitácoras' ? Navigate(`/bitacoras/${id}`) : item === 'Cartas' ? Navigate('/') : Navigate('/visitas')
   }
 
   return (
@@ -47,7 +46,7 @@ export const InfoStudent = () => {
             <IoReturnDownBack />
             Regresar
           </Link>
-          <h1 className='text-2xl font-bold border-b-2 border-coffee'>{nombre_completo}</h1>
+          <h1 className='text-2xl font-light'>{nombre_completo}</h1>
         </header>
         <section className='flex flex-col items-center gap-4 px-6 md:justify-center'>
           <section className='grid w-full gap-2 bg-white shadow-lg md:w-1/2 border-t-1 grid-rows-3-rows rounded-xl'>
@@ -138,15 +137,15 @@ export const InfoStudent = () => {
             </section>
           </section>
           <section className='flex flex-row gap-6 justify-evenly'>
-            <Button bg={'bg-blue-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={() => handleClick('Bitácoras')}>
-              <PiBooksBold className='text-xl' />
+            <Button bg={'bg-blue-600'} px={'px-3'} font={'font-regular'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={() => handleClick('Bitácoras')}>
+              <PiBooksLight className='text-xl' />
               Bitácoras
             </Button>
-            <Button bg={'bg-yellow-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={() => handleClick('Cartas')}>
-              <LuScroll className='text-xl' /> Cartas
+            <Button bg={'bg-yellow-600'} px={'px-3'} font={'font-regular'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={() => handleClick('Cartas')}>
+              <PiScrollLight className='text-xl' /> Cartas
             </Button>
-            <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={() => handleClick('Visitas')}>
-              <PiCalendarCheckBold className='text-xl' />
+            <Button bg={'bg-green-600'} px={'px-3'} font={'font-regular'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={() => handleClick('Visitas')}>
+              <PiCalendarCheckLight className='text-xl' />
               Visitas
             </Button>
           </section>
