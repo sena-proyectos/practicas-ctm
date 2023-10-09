@@ -254,3 +254,13 @@ export const getCoordinatorNameByID = async (id) => {
   const URL = `${baseUrl}${api}/coordinator/${id}`
   return await axios.get(URL)
 }
+
+export const getLettersByStudentID = async (id) => {
+  const URL = `${baseUrl}${api}/getLetterByStudent/${id}`
+  return await axios.get(URL)
+}
+
+export const patchLetterByID = async (id, payload) => {
+  const URL = `${baseUrl}${api}/modifyLetter/${id}`
+  return await axios.patch(URL, payload)
+}

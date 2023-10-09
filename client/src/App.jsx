@@ -17,6 +17,7 @@ import { Courses } from './components/Courses/Courses'
 import { Students } from './components/Students/Students'
 import { TeacherClass } from './components/Teacher-class/TeacherClass'
 import { InfoStudent } from './components/Info-student/InfoStudent'
+import { Letters } from './components/Letters/Letters'
 
 const App = () => {
   const idRol = Number(localStorage.getItem('idRol'))
@@ -37,6 +38,7 @@ const App = () => {
           <Route path='/registro-detalles/:id' element={<RegisterDetails />} />
           <Route path='/asignar-ficha' element={<AssignClass />} />
           <Route path='/fichas' element={<Courses />} />
+          <Route path='/cartas/:id' element={<Letters />} />
           {/* No está bien hecho, deberia ser anidado */}
           <Route path='/fichas/aprendices/:id' element={<Students />} />
           <Route path='/fichas-instructor/:id' element={<TeacherClass />} />

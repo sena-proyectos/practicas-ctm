@@ -10,21 +10,23 @@ import { PiCalendarCheckBold, PiBooksBold } from 'react-icons/pi'
 import { Footer } from '../Footer/Footer'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { GetStudentsDetailById } from '../../api/httpRequest'
-import { Button } from '../Utils/Button/Button'
+import { apprenticeStore } from '../../store/config'
 
 export const InfoStudent = () => {
   const { id } = useParams()
+  const { setApprenticeData } = apprenticeStore()
 
   const [{ cargo_jefe, celular_aprendiz, email_aprendiz, email_jefe, etapa_formacion, fecha_fin_lectiva, fecha_inicio_practica, nivel_formacion, nombre_arl, nombre_completo, nombre_empresa, nombre_jefe, nombre_modalidad, nombre_programa_formacion, numero_contacto_jefe, numero_documento_aprendiz, numero_ficha }, setInfoStudent] = useState({})
 
   const getInfoStudent = async () => {
     try {
       const { data } = await GetStudentsDetailById(id)
-      const info = await data.data[0]
+      const info = data.data[0]
       let { fecha_fin_lectiva, fecha_inicio_practica } = info
       fecha_fin_lectiva = new Date(fecha_fin_lectiva).toLocaleDateString('es-ES')
       fecha_inicio_practica = new Date(fecha_inicio_practica).toLocaleDateString('es-ES')
       setInfoStudent({ ...info, fecha_fin_lectiva, fecha_inicio_practica })
+      setApprenticeData({ ...info, fecha_fin_lectiva, fecha_inicio_practica })
     } catch (error) {
       console.error(error)
     }
@@ -53,7 +55,7 @@ export const InfoStudent = () => {
             <section className='flex flex-col justify-center px-3 py-3'>
               <div className='grid grid-cols-2-40-60'>
                 <h3 className='font-medium'>Email:</h3>
-                <p>{email_aprendiz}</p>
+                <p className='break-words whitespace-pre-wrap'>{email_aprendiz}</p>
               </div>
               <div className='grid grid-cols-2-40-60'>
                 <p className='font-medium'>No. Documento:</p>
@@ -134,17 +136,17 @@ export const InfoStudent = () => {
             </section>
           </section>
           <section className='flex flex-row gap-6 justify-evenly'>
-            <Button bg={'bg-blue-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline>
+            <Link to={`/bitacoras/${id}`} className='flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-blue-600 shadow-md shadow-blue-600 rounded-xl'>
               <PiBooksBold className='text-xl' />
               Bitácoras
-            </Button>
-            <Button bg={'bg-yellow-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline>
+            </Link>
+            <Link to={`/cartas/${id}`} className='flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-yellow-600 shadow-md shadow-yellow-600 rounded-xl'>
               <LuScroll className='text-xl' /> Cartas
-            </Button>
-            <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-2'} rounded={'rounded-xl'} shadow={'lg'} inline>
+            </Link>
+            <Link to={`/visitas/${id}`} className='flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-green-600 shadow-md shadow-green-600 rounded-xl'>
               <PiCalendarCheckBold className='text-xl' />
               Visitas
-            </Button>
+            </Link>
           </section>
         </section>
         <Footer />
