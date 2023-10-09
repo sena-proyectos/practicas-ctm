@@ -16,12 +16,36 @@ export const getLettersByStudent = async (req: Request, res: Response): Promise<
   }
 }
 
+export const getBitacorasByStudent = async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.params
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('SELECT aprendices_bitacoras_detalles.id_aprendiz, aprendices_bitacoras.id_bitacora, aprendices_bitacoras.fecha_bitacora, aprendices_bitacoras.calificacion_bitacora, aprendices_bitacoras.observaciones_bitacora, aprendices_bitacoras.numero_bitacora, DATE_FORMAT(aprendices_bitacoras.fecha_modificacion, "%Y-%m-%d") as fecha_modificacion FROM aprendices_bitacoras_detalles INNER JOIN aprendices_bitacoras ON aprendices_bitacoras.id_bitacora = aprendices_bitacoras_detalles.id_aprendiz_bitacora_detalle WHERE aprendices_bitacoras_detalles.id_aprendiz = ?', [id])
+    if (query.length === 0) throw new DbError('No existen bitácoras para este aprendiz')
+    return res.status(httpStatus.OK).json(query)
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 export const modifyLetterByID = async (req: Request, res: Response): Promise<Response> => {
   const { tipo_carta_aprendiz, estado_carta_aprendiz, usuario_responsable } = req.body
   const { id } = req.params
   try {
     const [query] = await connection.query<ResultSetHeader[]>('UPDATE aprendices_cartas SET tipo_carta_aprendiz = IFNULL(?, tipo_carta_aprendiz), estado_carta_aprendiz = IFNULL(?, estado_carta_aprendiz), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_carta_aprendiz = ?', [tipo_carta_aprendiz, estado_carta_aprendiz, usuario_responsable, id])
     if (query.length === 0) throw new DbError('Error al modificar los datos de la carta')
+    return res.status(httpStatus.OK).json(query)
+  } catch (error) {
+    console.log(error)
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const modifyBitacoraById = async (req: Request, res: Response): Promise<Response> => {
+  const { calificacion_bitacora, observaciones_bitacora, usuario_responsable } = req.body
+  const { id } = req.params
+  try {
+    const [query] = await connection.query<ResultSetHeader[]>('UPDATE aprendices_bitacoras SET calificacion_bitacora = IFNULL(?, calificacion_bitacora), observaciones_bitacora = IFNULL(?, observaciones_bitacora), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_bitacora = ?', [calificacion_bitacora, observaciones_bitacora, usuario_responsable, id])
+    if (query.length === 0) throw new DbError('Error al modificar los datos de la bitácora')
     return res.status(httpStatus.OK).json(query)
   } catch (error) {
     console.log(error)
