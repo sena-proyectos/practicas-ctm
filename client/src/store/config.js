@@ -10,3 +10,10 @@ export const userStore = create((set) => ({
   setUserId: (data) => set({ userId: data })
 }))
 
+export const apprenticeStore = create((set) => ({
+  apprenticeData: {},
+  setApprenticeData: async (data) => {
+    sessionStorage.setItem('apprenticeData', JSON.stringify(data))
+    set({ apprenticeData: data })
+  }
+}))
