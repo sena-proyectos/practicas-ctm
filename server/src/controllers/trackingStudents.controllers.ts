@@ -15,3 +15,14 @@ export const getLettersByStudent = async (req: Request, res: Response): Promise<
     return handleHTTP(res, error as CustomError)
   }
 }
+
+export const getBitacorasByStudent = async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.params
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('SELECT aprendices_bitacoras_detalles.id_aprendiz, aprendices_bitacoras.id_bitacora, aprendices_bitacoras.fecha_bitacora, aprendices_bitacoras.calificacion_bitacora, aprendices_bitacoras.observaciones_bitacora, aprendices_bitacoras.numero_bitacora, DATE_FORMAT(aprendices_bitacoras.fecha_modificacion, "%Y-%m-%d") as fecha_modificacion FROM aprendices_bitacoras_detalles INNER JOIN aprendices_bitacoras ON aprendices_bitacoras.id_bitacora = aprendices_bitacoras_detalles.id_aprendiz_bitacora_detalle WHERE aprendices_bitacoras_detalles.id_aprendiz = ?', [id])
+    if (query.length === 0) throw new DbError('No existen bitácoras para este aprendiz')
+    return res.status(httpStatus.OK).json(query)
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
