@@ -38,7 +38,7 @@ export const Card = ({ title, titleColor, description, buttonText, bgColor = 'bg
 
 export const CardWithChildren = ({ children, classNames = '' }) => {
   return (
-    <section aria-describedby='card' className={`px-6 py-5 bg-white rounded-2xl ${classNames}`}>
+    <section aria-describedby='card' className={`px-6 py-5 bg-white rounded-2xl border-2 border-gray-300 ${classNames}`}>
       {children}
     </section>
   )
