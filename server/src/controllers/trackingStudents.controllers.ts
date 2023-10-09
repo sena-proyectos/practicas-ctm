@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express'
 import { connection } from '../config/db.js'
-import { type RowDataPacket } from 'mysql2'
+import { type ResultSetHeader, type RowDataPacket } from 'mysql2'
 import { type CustomError, DbError } from '../errors/customErrors.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
@@ -12,6 +12,19 @@ export const getLettersByStudent = async (req: Request, res: Response): Promise<
     if (query.length === 0) throw new DbError('No existe cartas para este aprendiz')
     return res.status(httpStatus.OK).json(query)
   } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const modifyLetterByID = async (req: Request, res: Response): Promise<Response> => {
+  const { tipo_carta_aprendiz, estado_carta_aprendiz, usuario_responsable } = req.body
+  const { id } = req.params
+  try {
+    const [query] = await connection.query<ResultSetHeader[]>('UPDATE aprendices_cartas SET tipo_carta_aprendiz = IFNULL(?, tipo_carta_aprendiz), estado_carta_aprendiz = IFNULL(?, estado_carta_aprendiz), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_carta_aprendiz = ?', [tipo_carta_aprendiz, estado_carta_aprendiz, usuario_responsable, id])
+    if (query.length === 0) throw new DbError('Error al modificar los datos de la carta')
+    return res.status(httpStatus.OK).json(query)
+  } catch (error) {
+    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
