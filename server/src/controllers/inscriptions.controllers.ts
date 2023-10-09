@@ -157,15 +157,16 @@ export const createInscriptions: RequestHandler<{}, Response, inscriptionData> =
 export const editInscriptionDetail: RequestHandler<{}, Response, inscripcionDetailData> = async (req: Request, res: Response) => {
   const { id } = req.params
   const { estado_aval, observaciones, responsable_aval } = req.body
-  if (responsable_aval !== undefined) {
-    await editInscriptionDetailUser(responsable_aval, id, res)
-    return
-  }
+  // if (responsable_aval !== undefined) {
+  //   await editInscriptionDetailUser(responsable_aval, id, res)
+  //   return
+  // }
   try {
-    const [result] = await connection.query<ResultSetHeader>('UPDATE detalles_inscripciones SET estado_aval = IFNULL(?, estado_aval), observaciones = IFNULL(?, observaciones) WHERE id_detalle_inscripcion = ?', [estado_aval, observaciones, id])
+    const [result] = await connection.query<ResultSetHeader>('UPDATE detalles_inscripciones SET estado_aval = IFNULL(?, estado_aval), observaciones = IFNULL(?, observaciones), responsable_aval = IFNULL(?, responsable_aval) WHERE id_detalle_inscripcion = ?', [estado_aval, observaciones, responsable_aval, id])
     if (!Array.isArray(result) && result?.affectedRows === 0) throw new DbError('No se pudo actualizar la modalidad de etapa práctica')
     return res.status(httpStatus.OK).json({ message: 'Aval de inscripción actualizada con éxito' })
   } catch (error) {
+    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }

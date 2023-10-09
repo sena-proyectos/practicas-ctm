@@ -254,3 +254,8 @@ export const getCoordinatorNameByID = async (id) => {
   const URL = `${baseUrl}${api}/coordinator/${id}`
   return await axios.get(URL)
 }
+
+export const getLettersByStudentID = async (id) => {
+  const URL = `${baseUrl}${api}/getLetterByStudent/${id}`
+  return await axios.get(URL)
+}

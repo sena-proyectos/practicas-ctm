@@ -36,6 +36,14 @@ export const Card = ({ title, titleColor, description, buttonText, bgColor = 'bg
   )
 }
 
+export const CardWithChildren = ({ children, classNames = '' }) => {
+  return (
+    <section aria-describedby='card' className={`px-6 py-5 bg-white rounded-2xl ${classNames}`}>
+      {children}
+    </section>
+  )
+}
+
 export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, item1text, item2text, item3text, item4text, onClick }) => {
   return (
     <div className='[perspective:1000px] group flex flex-col gap-1 rounded-xl md:h-[9.5rem] sm:h-[10rem] h-[8rem]' onClick={onClick}>
@@ -98,4 +106,3 @@ export const CardStudent = ({ nameStudent, emailStudent, programStudent, courseS
     </section>
   )
 }
-
