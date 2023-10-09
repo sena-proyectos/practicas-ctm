@@ -1,10 +1,9 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 // Icons
 import { IoReturnDownBack } from 'react-icons/io5'
-import { LuScroll } from 'react-icons/lu'
-import { PiCalendarCheckBold, PiBooksBold } from 'react-icons/pi'
+import { PiBooksLight, PiScrollLight, PiCalendarCheckLight } from 'react-icons/pi'
 
 // Components
 import { Footer } from '../Footer/Footer'
@@ -36,6 +35,7 @@ export const InfoStudent = () => {
     getInfoStudent()
   }, [])
 
+
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
@@ -45,7 +45,7 @@ export const InfoStudent = () => {
             <IoReturnDownBack />
             Regresar
           </Link>
-          <h1 className='text-2xl font-bold border-b-2 border-coffee'>{nombre_completo}</h1>
+          <h1 className='text-2xl font-light'>{nombre_completo}</h1>
         </header>
         <section className='flex flex-col items-center gap-4 px-6 md:justify-center'>
           <section className='grid w-full gap-2 bg-white shadow-lg md:w-1/2 border-t-1 grid-rows-3-rows rounded-xl'>
@@ -137,15 +137,14 @@ export const InfoStudent = () => {
           </section>
           <section className='flex flex-row gap-6 justify-evenly'>
             <Link to={`/bitacoras/${id}`} className='flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-blue-600 shadow-md shadow-blue-600 rounded-xl'>
-              <PiBooksBold className='text-xl' />
+              <PiBooksLight className='text-xl' />
               Bitácoras
             </Link>
             <Link to={`/cartas/${id}`} className='flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-yellow-600 shadow-md shadow-yellow-600 rounded-xl'>
-              <LuScroll className='text-xl' /> Cartas
+              <PiScrollLight className='text-xl' /> Cartas
             </Link>
             <Link to={`/visitas/${id}`} className='flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-green-600 shadow-md shadow-green-600 rounded-xl'>
-              <PiCalendarCheckBold className='text-xl' />
-              Visitas
+              <PiCalendarCheckLight className='text-xl' /> Visitas
             </Link>
           </section>
         </section>

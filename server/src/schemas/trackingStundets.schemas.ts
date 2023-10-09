@@ -11,10 +11,13 @@ enum LetterState {
 }
 
 export const letterSchema = Joi.object({
-  tipo_carta_aprendiz: Joi
-    .alternatives().try(Joi.string().valid(typeOfLetter.start), Joi.string().valid(typeOfLetter.end)),
-  estado_carta_aprendiz: Joi
-    .alternatives().try(Joi.string().valid(LetterState.presented), Joi.string().valid(LetterState.noPresented)),
-  usuario_responsable: Joi
-    .number().required()
+  tipo_carta_aprendiz: Joi.alternatives().try(Joi.string().valid(typeOfLetter.start), Joi.string().valid(typeOfLetter.end)),
+  estado_carta_aprendiz: Joi.alternatives().try(Joi.string().valid(LetterState.presented), Joi.string().valid(LetterState.noPresented)),
+  usuario_responsable: Joi.number().required()
+})
+
+export const bitacoraSchema = Joi.object({
+  calificacion_bitacora: Joi.string().required(),
+  observaciones_bitacora: Joi.string().required().min(5).max(200),
+  usuario_responsable: Joi.number().required()
 })

@@ -264,3 +264,13 @@ export const patchLetterByID = async (id, payload) => {
   const URL = `${baseUrl}${api}/modifyLetter/${id}`
   return await axios.patch(URL, payload)
 }
+
+export const getBitacorasByStudentId = async (id) => {
+  const URL = `${baseUrl}${api}/getBitacorasByStudent/${id}`
+  return await axios.get(URL)
+}
+
+export const patchBitacoraById = async (id, payload) => {
+  const URL = `${baseUrl}${api}/modifyBitacora/${id}`
+  return await axios.patch(URL, payload)
+}

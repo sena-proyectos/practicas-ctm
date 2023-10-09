@@ -50,7 +50,7 @@ const App = () => {
 
         <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[2])} redirectTo='/home' />}>
           <Route path='/visitas' element={<Visits />} />
-          <Route path='/bitacoras' element={<Bitacoras />} />
+          <Route path='/bitacoras/:id' element={<Bitacoras />} />
         </Route>
       </Routes>
     </>
