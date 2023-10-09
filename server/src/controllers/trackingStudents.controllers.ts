@@ -39,3 +39,16 @@ export const modifyLetterByID = async (req: Request, res: Response): Promise<Res
     return handleHTTP(res, error as CustomError)
   }
 }
+
+export const modifyBitacoraById = async (req: Request, res: Response): Promise<Response> => {
+  const { calificacion_bitacora, observaciones_bitacora, usuario_responsable } = req.body
+  const { id } = req.params
+  try {
+    const [query] = await connection.query<ResultSetHeader[]>('UPDATE aprendices_bitacoras SET calificacion_bitacora = IFNULL(?, calificacion_bitacora), observaciones_bitacora = IFNULL(?, observaciones_bitacora), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_bitacora = ?', [calificacion_bitacora, observaciones_bitacora, usuario_responsable, id])
+    if (query.length === 0) throw new DbError('Error al modificar los datos de la bitácora')
+    return res.status(httpStatus.OK).json(query)
+  } catch (error) {
+    console.log(error)
+    return handleHTTP(res, error as CustomError)
+  }
+}
