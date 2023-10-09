@@ -2,25 +2,27 @@ import { Link, useParams } from 'react-router-dom'
 import { Footer } from '../Footer/Footer'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { apprenticeStore } from '../../store/config'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { CardWithChildren } from '../Utils/Card/Card'
 import { Button } from '../Utils/Button/Button'
 import { Slide, ToastContainer, toast } from 'react-toastify'
-import { getLettersByStudentID } from '../../api/httpRequest'
+import { getLettersByStudentID, patchLetterByID } from '../../api/httpRequest'
 import { LuSave } from 'react-icons/lu'
+import { getUserID } from '../../import/getIDActualUser'
 
 export const Letters = () => {
   const { id } = useParams()
   const { apprenticeData } = apprenticeStore()
   const [lettersInfo, setLettersInfo] = useState([])
   const [modifyState, setModifyState] = useState({ 0: false, 1: false })
+  const formStartRef = useRef(null)
+  const formEndRef = useRef(null)
 
   const getDataLetters = async () => {
     try {
       const response = await getLettersByStudentID(id)
       setLettersInfo(response.data)
     } catch (error) {
-      console.log(error)
       const { message } = error.response.data.error.info
       toast.error(message ?? 'Error')
     }
@@ -39,6 +41,11 @@ export const Letters = () => {
     'No presentado': 'text-red-500'
   }
 
+  const typeOfLetter = {
+    start: 'inicio',
+    end: 'fin'
+  }
+
   const btnHandleState = (index) => {
     if (index === 1) {
       setModifyState({ ...modifyState, 0: true })
@@ -49,20 +56,35 @@ export const Letters = () => {
 
   const formHandleStateEnd = (e) => {
     e.preventDefault()
-    const formData = new FormData(e.target.current)
-    const selectedOption = formData.get(`option-fin`)
-    console.log(selectedOption)
+    const formData = new FormData(formEndRef.current)
+    const selectedOption = formData.get('option-fin')
+    const { id_carta_aprendiz } = lettersInfo[1]
+    const { id_usuario: usuario_responsable } = getUserID().user
+    modifyLetterState(id_carta_aprendiz, { tipo_carta_aprendiz: typeOfLetter.end, estado_carta_aprendiz: selectedOption, usuario_responsable })
 
     setModifyState({ ...modifyState, 1: false })
   }
 
   const formHandleStateStart = (e) => {
     e.preventDefault()
-    const formData = new FormData(e.target.current)
+    const formData = new FormData(formStartRef.current)
     const selectedOption = formData.get(`option-inicio`)
-    const a = Object.entries(formData)
-    console.log(selectedOption, a)
+    const { id_carta_aprendiz } = lettersInfo[0]
+    const { id_usuario: usuario_responsable } = getUserID().user
+    modifyLetterState(id_carta_aprendiz, { tipo_carta_aprendiz: typeOfLetter.start, estado_carta_aprendiz: selectedOption, usuario_responsable })
     setModifyState({ ...modifyState, 0: false })
+  }
+
+  const modifyLetterState = async (id, payload) => {
+    try {
+      const { data } = await patchLetterByID(id, payload)
+      if (data.affectedRows === 0) throw new Error()
+      toast.success('Se ha modificado correctamente la carta de inicio')
+      getDataLetters()
+    } catch (error) {
+      const message = error.response.data.error.info.message
+      toast.error(message ?? 'Error')
+    }
   }
 
   return (
@@ -115,11 +137,11 @@ export const Letters = () => {
                             Modificar estado
                           </Button>
                         ) : (
-                          <form onSubmit={formHandleStateStart}>
+                          <form className='flex flex-col gap-2' onSubmit={formHandleStateStart} ref={formStartRef}>
                             <label className='text-sm'>Selecciona una opción:</label>
                             <section className='flex justify-center gap-3'>
-                              <input type='radio' required name={`option-inicio`} id={`presentado-1-inicio`} value='Presentado' />
-                              <label htmlFor={`presentado-1-inicio`}>Presentado</label>
+                              <input type='radio' required name='option-inicio' id='presentado-1-inicio' value='Presentado' />
+                              <label htmlFor='presentado-1-inicio'>Presentado</label>
                             </section>
                             <section className='flex justify-center gap-3'>
                               <input type='radio' required name={`option-inicio`} id={`no_presentado-2-inicio`} value='No presentado' />
@@ -143,15 +165,15 @@ export const Letters = () => {
                             Modificar estado
                           </Button>
                         ) : (
-                          <form className='' onSubmit={formHandleStateEnd}>
+                          <form className='flex flex-col gap-2' onSubmit={formHandleStateEnd} ref={formEndRef}>
                             <label className='text-sm'>Selecciona una opción:</label>
                             <section className='flex justify-center gap-3'>
-                              <input type='radio' required name={`option-fin`} id={`presentado-1-fin`} value='Presentado' />
-                              <label htmlFor={`presentado-1`}>Presentado</label>
+                              <input type='radio' required name='option-fin' id={`presentado-1-fin`} value='Presentado' />
+                              <label htmlFor={`presentado-1-fin`}>Presentado</label>
                             </section>
                             <section className='flex justify-center gap-3'>
                               <input type='radio' required name={`option-fin`} id={`no_presentado-2-fin`} value='No presentado' />
-                              <label htmlFor={`no_presentado-2`}>No Presentado</label>
+                              <label htmlFor={`no_presentado-2-fin`}>No Presentado</label>
                             </section>
                             <Button name='save' type='submit' bg={'bg-[#16a34a]'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
                               <LuSave /> Guardar

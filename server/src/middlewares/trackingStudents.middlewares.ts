@@ -1,0 +1,15 @@
+import { type NextFunction, type Request, type Response } from 'express'
+import { handleHTTP } from '../errors/errorsHandler.js'
+import { type CustomError, DataNotValid } from '../errors/customErrors.js'
+import { letterSchema } from '../schemas/trackingStundets.schemas.js'
+
+export const checkLetterData = (req: Request, res: Response, next: NextFunction): void => {
+  const { tipo_carta_aprendiz, estado_carta_aprendiz, usuario_responsable } = req.body
+  try {
+    const { error } = letterSchema.validate({ tipo_carta_aprendiz, estado_carta_aprendiz, usuario_responsable })
+    if (error !== undefined) throw new DataNotValid('Los datos ingresados no son válidos, verifícalos')
+    next()
+  } catch (error) {
+    handleHTTP(res, error as CustomError)
+  }
+}

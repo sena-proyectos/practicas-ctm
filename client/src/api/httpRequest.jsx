@@ -260,6 +260,11 @@ export const getLettersByStudentID = async (id) => {
   return await axios.get(URL)
 }
 
+export const patchLetterByID = async (id, payload) => {
+  const URL = `${baseUrl}${api}/modifyLetter/${id}`
+  return await axios.patch(URL, payload)
+}
+
 export const getBitacorasByStudentId = async (id) => {
   const URL = `${baseUrl}${api}/getBitacorasByStudent/${id}`
   return await axios.get(URL)

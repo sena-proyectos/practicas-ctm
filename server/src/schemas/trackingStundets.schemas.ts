@@ -1,0 +1,20 @@
+import Joi from 'joi'
+
+enum typeOfLetter {
+  start = 'inicio',
+  end = 'fin'
+}
+
+enum LetterState {
+  presented = 'Presentado',
+  noPresented = 'No presentado'
+}
+
+export const letterSchema = Joi.object({
+  tipo_carta_aprendiz: Joi
+    .alternatives().try(Joi.string().valid(typeOfLetter.start), Joi.string().valid(typeOfLetter.end)),
+  estado_carta_aprendiz: Joi
+    .alternatives().try(Joi.string().valid(LetterState.presented), Joi.string().valid(LetterState.noPresented)),
+  usuario_responsable: Joi
+    .number().required()
+})
