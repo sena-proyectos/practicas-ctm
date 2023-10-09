@@ -259,3 +259,8 @@ export const getLettersByStudentID = async (id) => {
   const URL = `${baseUrl}${api}/getLetterByStudent/${id}`
   return await axios.get(URL)
 }
+
+export const getBitacorasByStudentId = async (id) => {
+  const URL = `${baseUrl}${api}/getBitacorasByStudent/${id}`
+  return await axios.get(URL)
+}
