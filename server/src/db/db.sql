@@ -242,10 +242,10 @@ CREATE TABLE `aprendices_cartas` (
   `tipo_carta_aprendiz` varchar(45) NOT NULL,
   `estado_carta_aprendiz` varchar(45) DEFAULT NULL,
   `fecha_modificacion` timestamp NOT NULL,
-  `usuario_responsable` int DEFAULT NULL,
+  `usuario_responsable` int DEFAULT NULL,
   PRIMARY KEY (`id_carta_aprendiz`),
-  KEY `usuario_responsable_Fk_idx` (`usuario_responsable`),
-  CONSTRAINT `usuario_responsable_Fk` FOREIGN KEY (`usuario_responsable`) REFERENCES `usuarios` (`id_usuario`)
+  KEY `usuario_responsable_Fk_idx` (`usuario_responsable`),
+  CONSTRAINT `usuario_responsable_Fk` FOREIGN KEY (`usuario_responsable`) REFERENCES `usuarios` (`id_usuario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -255,7 +255,7 @@ CREATE TABLE `aprendices_cartas` (
 
 LOCK TABLES `aprendices_cartas` WRITE;
 /*!40000 ALTER TABLE `aprendices_cartas` DISABLE KEYS */;
-INSERT INTO `aprendices_cartas` VALUES (5,'inicio','No presentado','2023-10-06 16:49:14',NULL),(6,'fin','No presentado','2023-10-06 16:49:14',NULL),(15,'inicio','No presentado','2023-10-06 19:10:13',NULL),(16,'fin','No presentado','2023-10-06 19:10:13',NULL),(19,'inicio','No presentado','2023-10-06 19:23:16',NULL),(20,'fin','No presentado','2023-10-06 19:23:16',NULL);
+INSERT INTO `aprendices_cartas` VALUES (5,'inicio','No presentado','2023-10-06 16:49:14',NULL),(6,'fin','No presentado','2023-10-06 16:49:14',NULL),(15,'inicio','No presentado','2023-10-06 19:10:13',NULL),(16,'fin','No presentado','2023-10-06 19:10:13',NULL),(19,'inicio','No presentado','2023-10-06 19:23:16',1),(20,'fin','Presentado','2023-10-06 19:23:16',1);
 /*!40000 ALTER TABLE `aprendices_cartas` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -1043,4 +1043,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-09  8:22:06
+-- Dump completed on 2023-10-09 10:36:01
