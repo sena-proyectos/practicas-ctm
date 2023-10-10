@@ -60,7 +60,7 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, icon = fa
   }, [])
 
   return (
-    <section className={` ${searchFilter === true ? 'w-[22rem]' : 'w-1/5'}  flex h-9 items-center justify-center`}>
+    <section className={` ${searchFilter === true ? 'w-2/6' : 'w-1/5'}  flex h-9 items-center justify-center`}>
       {searchFilter && (
         <>
           <search>

@@ -20,7 +20,7 @@ import { getClassFree, GetClassByNumber } from '../../api/httpRequest'
 
 export const AssignClass = () => {
   const [modalAsign, setModalAsign] = useState(false)
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
   const [detailCourse, setDetailCourse] = useState([])
@@ -42,8 +42,8 @@ export const AssignClass = () => {
     try {
       const response = await getClassFree()
       const { data } = response.data
-
       setCourses(data)
+      setLoading(false)
     } catch (error) {
       throw new Error(error)
     }
@@ -135,10 +135,6 @@ export const AssignClass = () => {
    */
   const endIndex = startIndex + coursesPerPage
 
-  useEffect(() => {
-    setLoading(false)
-  }, [])
-
   /**
    * Efecto secundario para mostrar una notificación de asignación de instructor y actualizar la lista de cursos.
    *
@@ -175,25 +171,20 @@ export const AssignClass = () => {
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
         <Siderbar />
-        <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
-          <header className='grid place-items-center'>
+        <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto]'>
+          <header className='grid place-items-center h-[10vh]'>
             <Search searchFilter placeholder={'Busca una ficha'} />
           </header>
-          <section>
-            <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>
+          <section className='flex flex-col justify-around'>
+            <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
               {loading ? (
                 <>
-                  <SkeletonLoading />
-                  <SkeletonLoading />
-                  <SkeletonLoading />
-                  <SkeletonLoading />
-                  <SkeletonLoading />
                   <SkeletonLoading />
                 </>
               ) : (
                 courses.slice(startIndex, endIndex).map((course, i) => {
                   return (
-                    <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 bg-white shadow-lg border-slate-100 border-1' key={i}>
+                    <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 bg-white shadow-lg ' key={i}>
                       <header className='flex flex-row w-fit '>
                         <div className='z-10 bg-teal-200 border-2 border-teal-800 rounded-full w-14 h-14'>
                           <BsJournalBookmark className='w-full h-full scale-50' />
@@ -222,9 +213,7 @@ export const AssignClass = () => {
                 Regresar
               </Link>
             </div>
-            <div className='flex justify-center h-[13vh] relative bottom-0'>
-              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
-            </div>
+            <div className='flex flex-col items-center py-2'>{courses.length === 0 || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />}</div>
           </section>
           <Footer />
         </section>
@@ -233,9 +222,9 @@ export const AssignClass = () => {
   )
 }
 
-const SkeletonLoading = () => {
-  return (
-    <div className=' group flex flex-col gap-3 rounded-xl md:h-[10.5rem] sm:h-[11.5rem] h-[9rem] justify-center p-3 shadow-lg border-slate-100 border-1'>
+const SkeletonLoading = ({ number = 6 }) =>
+  [...Array(number)].map((_, i) => (
+    <div className=' group flex flex-col gap-3 rounded-xl md:h-[10.5rem] sm:h-[11.5rem] h-[9rem] justify-center p-3 shadow-lg  bg-white ' key={i}>
       <header className='flex flex-row w-fit '>
         <div className='bg-teal-200 border-2 border-teal-800 rounded-full w-14 h-14'>
           <BsJournalBookmark className='w-full h-full scale-50' />
@@ -258,5 +247,4 @@ const SkeletonLoading = () => {
         <Skeleton />
       </div>
     </div>
-  )
-}
+  ))
