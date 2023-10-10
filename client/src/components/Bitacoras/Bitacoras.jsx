@@ -16,6 +16,7 @@ import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { GetStudentsDetailById, getBitacorasByStudentId, patchBitacoraById } from '../../api/httpRequest'
 import { getUserID } from '../../import/getIDActualUser'
+import { CardInfoStudent } from '../Card-info-student/CardInfoStudent'
 
 export const Bitacoras = () => {
   const { id } = useParams()
@@ -103,8 +104,9 @@ export const Bitacoras = () => {
             </Link>
             <h1 className='text-2xl font-light '>{dataStudent.nombre_completo}</h1>
           </header>
-          <section className='grid items-start h-full py-5'>
-            <div className='w-11/12 mx-auto bg-white border-gray-400 rounded-2xl border-[0.5px]'>
+          <section className='grid items-start w-11/12 h-full gap-3 py-5 mx-auto'>
+            <CardInfoStudent />
+            <div className='w-full mx-auto bg-white border-gray-400 rounded-2xl border-[0.5px]'>
               <Accordion>
                 {bitacorasInfo.map((x) => {
                   return (
