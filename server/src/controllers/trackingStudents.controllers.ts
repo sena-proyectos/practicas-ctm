@@ -27,12 +27,34 @@ export const getBitacorasByStudent = async (req: Request, res: Response): Promis
   }
 }
 
+export const getVisitID = async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.params
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('SELECT aprendices_visitas.id_visita FROM aprendices_visitas LEFT JOIN aprendices_visitas_detalles ON id_aprendiz = ? GROUP BY id_visita', [id])
+    if (query.length === 0) throw new DbError('Hubo un error al traer los datos')
+    return res.status(httpStatus.OK).json(query)
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const getVisitDataByID = async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.params
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('SELECT IFNULL(fecha_visita, "Sin fecha") as fecha_visita, numero_visita, estado_visita, IFNULL(observaciones_visita, "Sin observaciones") as observaciones_visita, fecha_modificacion FROM aprendices_visitas WHERE id_visita = ?', [id])
+    if (query.length === 0) throw new DbError('Hubo un error al traer los datos')
+    return res.status(httpStatus.OK).json(query)
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 export const modifyLetterByID = async (req: Request, res: Response): Promise<Response> => {
   const { tipo_carta_aprendiz, estado_carta_aprendiz, usuario_responsable } = req.body
   const { id } = req.params
   try {
-    const [query] = await connection.query<ResultSetHeader[]>('UPDATE aprendices_cartas SET tipo_carta_aprendiz = IFNULL(?, tipo_carta_aprendiz), estado_carta_aprendiz = IFNULL(?, estado_carta_aprendiz), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_carta_aprendiz = ?', [tipo_carta_aprendiz, estado_carta_aprendiz, usuario_responsable, id])
-    if (query.length === 0) throw new DbError('Error al modificar los datos de la carta')
+    const [query] = await connection.query<ResultSetHeader>('UPDATE aprendices_cartas SET tipo_carta_aprendiz = IFNULL(?, tipo_carta_aprendiz), estado_carta_aprendiz = IFNULL(?, estado_carta_aprendiz), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_carta_aprendiz = ?', [tipo_carta_aprendiz, estado_carta_aprendiz, usuario_responsable, id])
+    if (query.affectedRows === 0) throw new DbError('Error al modificar los datos de la carta')
     return res.status(httpStatus.OK).json(query)
   } catch (error) {
     console.log(error)
@@ -44,11 +66,22 @@ export const modifyBitacoraById = async (req: Request, res: Response): Promise<R
   const { calificacion_bitacora, observaciones_bitacora, usuario_responsable } = req.body
   const { id } = req.params
   try {
-    const [query] = await connection.query<ResultSetHeader[]>('UPDATE aprendices_bitacoras SET calificacion_bitacora = IFNULL(?, calificacion_bitacora), observaciones_bitacora = IFNULL(?, observaciones_bitacora), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_bitacora = ?', [calificacion_bitacora, observaciones_bitacora, usuario_responsable, id])
-    if (query.length === 0) throw new DbError('Error al modificar los datos de la bitácora')
+    const [query] = await connection.query<ResultSetHeader>('UPDATE aprendices_bitacoras SET calificacion_bitacora = IFNULL(?, calificacion_bitacora), observaciones_bitacora = IFNULL(?, observaciones_bitacora), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_bitacora = ?', [calificacion_bitacora, observaciones_bitacora, usuario_responsable, id])
+    if (query.affectedRows === 0) throw new DbError('Error al modificar los datos de la bitácora')
     return res.status(httpStatus.OK).json(query)
   } catch (error) {
-    console.log(error)
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const modifyVisitByID = async (req: Request, res: Response): Promise<Response> => {
+  const { estado_visita, fecha_visita, numero_visita, observaciones_visita, usuario_responsable } = req.body
+  const { id } = req.params
+  try {
+    const [query] = await connection.query<ResultSetHeader>('UPDATE aprendices_visitas SET estado_visita = IFNULL(?, estado_visita), fecha_visita = IFNULL(?, fecha_visita), numero_visita = IFNULL(?, numero_visita), observaciones_visita = IFNULL(?, observaciones_visita), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_visita = ?', [estado_visita, fecha_visita, numero_visita, observaciones_visita, usuario_responsable, id])
+    if (query.affectedRows === 0) throw new DbError('Error al modificar los datos de la visita')
+    return res.status(httpStatus.OK).json(query)
+  } catch (error) {
     return handleHTTP(res, error as CustomError)
   }
 }

@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `sena_practicas` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `sena_practicas`;
--- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
 -- Host: localhost    Database: sena_practicas
 -- ------------------------------------------------------
--- Server version	8.0.34
+-- Server version	8.0.33
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -255,7 +255,7 @@ CREATE TABLE `aprendices_cartas` (
 
 LOCK TABLES `aprendices_cartas` WRITE;
 /*!40000 ALTER TABLE `aprendices_cartas` DISABLE KEYS */;
-INSERT INTO `aprendices_cartas` VALUES (5,'inicio','No presentado','2023-10-06 16:49:14',NULL),(6,'fin','No presentado','2023-10-06 16:49:14',NULL),(15,'inicio','No presentado','2023-10-06 19:10:13',NULL),(16,'fin','No presentado','2023-10-06 19:10:13',NULL),(19,'inicio','No presentado','2023-10-06 19:23:16',1),(20,'fin','Presentado','2023-10-06 19:23:16',1);
+INSERT INTO `aprendices_cartas` VALUES (5,'inicio','No presentado','2023-10-06 16:49:14',NULL),(6,'fin','No presentado','2023-10-06 16:49:14',NULL),(15,'inicio','No presentado','2023-10-06 19:10:13',NULL),(16,'fin','No presentado','2023-10-06 19:10:13',NULL),(19,'inicio','Presentado','2023-10-06 19:23:16',1),(20,'fin','No presentado','2023-10-06 19:23:16',1);
 /*!40000 ALTER TABLE `aprendices_cartas` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -317,13 +317,13 @@ CREATE TABLE `aprendices_visitas` (
   `id_visita` int NOT NULL AUTO_INCREMENT,
   `fecha_visita` date DEFAULT NULL,
   `numero_visita` varchar(100) NOT NULL,
-  `calificacion_visita` varchar(45) DEFAULT NULL,
+  `estado_visita` varchar(45) DEFAULT 'Pendiente',
   `observaciones_visita` varchar(500) DEFAULT NULL,
-  `usuario_responsale` int DEFAULT NULL,
+  `usuario_responsable` int DEFAULT NULL,
   `fecha_modificacion` timestamp NOT NULL,
   PRIMARY KEY (`id_visita`),
-  KEY `usuario_responsable_fk_idx` (`usuario_responsale`),
-  CONSTRAINT `fk_usuario_responsable` FOREIGN KEY (`usuario_responsale`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE
+  KEY `usuario_responsable_fk_idx` (`usuario_responsable`),
+  CONSTRAINT `fk_usuario_responsable` FOREIGN KEY (`usuario_responsable`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -333,7 +333,7 @@ CREATE TABLE `aprendices_visitas` (
 
 LOCK TABLES `aprendices_visitas` WRITE;
 /*!40000 ALTER TABLE `aprendices_visitas` DISABLE KEYS */;
-INSERT INTO `aprendices_visitas` VALUES (1,NULL,'1',NULL,NULL,NULL,'2023-10-06 19:23:16'),(2,NULL,'2',NULL,NULL,NULL,'2023-10-06 19:23:16');
+INSERT INTO `aprendices_visitas` VALUES (1,'2023-10-09','1','Realizado','Todo malo pero ya que',1,'2023-10-10 17:48:34'),(2,'2023-10-09','2','Realizado','Lo hice Todo bien',1,'2023-10-10 17:51:30');
 /*!40000 ALTER TABLE `aprendices_visitas` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -346,8 +346,24 @@ UNLOCK TABLES;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprendices_visitas_BEFORE_INSERT` BEFORE INSERT ON `aprendices_visitas` FOR EACH ROW BEGIN
-	SET @fecha_actual = current_timestamp();
-		SET NEW.fecha_modificacion = @fecha_actual;
+  SET NEW.fecha_modificacion = current_timestamp();
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprendices_visitas_BEFORE_UPDATE` BEFORE UPDATE ON `aprendices_visitas` FOR EACH ROW BEGIN
+SET NEW.fecha_modificacion = current_timestamp();
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -406,6 +422,32 @@ LOCK TABLES `arl` WRITE;
 /*!40000 ALTER TABLE `arl` DISABLE KEYS */;
 INSERT INTO `arl` VALUES (1,'SENA'),(2,'Empresa'),(3,'No aplica');
 /*!40000 ALTER TABLE `arl` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `bitacoras`
+--
+
+DROP TABLE IF EXISTS `bitacoras`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bitacoras` (
+  `id_bitacora` int NOT NULL AUTO_INCREMENT,
+  `fecha_bitacora` date NOT NULL,
+  `estado_bitacora` varchar(200) NOT NULL,
+  `numero_bitacora` varchar(100) NOT NULL,
+  `calificacion_bitacora` double NOT NULL,
+  PRIMARY KEY (`id_bitacora`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bitacoras`
+--
+
+LOCK TABLES `bitacoras` WRITE;
+/*!40000 ALTER TABLE `bitacoras` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bitacoras` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -920,6 +962,31 @@ INSERT INTO `jefes` VALUES (1,'Alejandra Quecam','TAM','302124145','rousy@telepe
 UNLOCK TABLES;
 
 --
+-- Table structure for table `localidades`
+--
+
+DROP TABLE IF EXISTS `localidades`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `localidades` (
+  `id_localidad` int NOT NULL AUTO_INCREMENT,
+  `nombre_localidad` varchar(300) NOT NULL,
+  `region` varchar(300) NOT NULL,
+  PRIMARY KEY (`id_localidad`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `localidades`
+--
+
+LOCK TABLES `localidades` WRITE;
+/*!40000 ALTER TABLE `localidades` DISABLE KEYS */;
+INSERT INTO `localidades` VALUES (1,'Medellin','Colombia');
+/*!40000 ALTER TABLE `localidades` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `modalidades`
 --
 
@@ -994,6 +1061,39 @@ INSERT INTO `roles` VALUES (1,'Instructor líder de prácticas'),(2,'Coordinador
 UNLOCK TABLES;
 
 --
+-- Table structure for table `seguimientos`
+--
+
+DROP TABLE IF EXISTS `seguimientos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `seguimientos` (
+  `id_seguimiento` int NOT NULL AUTO_INCREMENT,
+  `administracion_educativa` varchar(500) NOT NULL,
+  `observacion` longtext,
+  `id_aprendiz` int NOT NULL,
+  `id_visita` int NOT NULL,
+  `id_bitacora` int NOT NULL,
+  PRIMARY KEY (`id_seguimiento`),
+  KEY `id_aprendiz` (`id_aprendiz`),
+  KEY `id_visita` (`id_visita`),
+  KEY `id_bitacora` (`id_bitacora`),
+  CONSTRAINT `seguimientos_ibfk_1` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `seguimientos_ibfk_2` FOREIGN KEY (`id_visita`) REFERENCES `visitas` (`id_visita`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `seguimientos_ibfk_3` FOREIGN KEY (`id_bitacora`) REFERENCES `bitacoras` (`id_bitacora`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `seguimientos`
+--
+
+LOCK TABLES `seguimientos` WRITE;
+/*!40000 ALTER TABLE `seguimientos` DISABLE KEYS */;
+/*!40000 ALTER TABLE `seguimientos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `usuarios`
 --
 
@@ -1027,6 +1127,34 @@ INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanlestar12
 UNLOCK TABLES;
 
 --
+-- Table structure for table `visitas`
+--
+
+DROP TABLE IF EXISTS `visitas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `visitas` (
+  `id_visita` int NOT NULL AUTO_INCREMENT,
+  `fecha_visita` date NOT NULL,
+  `numero_visita` varchar(100) NOT NULL,
+  `observaciones_visita` longtext,
+  `id_instructor_seguimiento` int NOT NULL,
+  PRIMARY KEY (`id_visita`),
+  KEY `fk_visitas_1` (`id_instructor_seguimiento`),
+  CONSTRAINT `fk_visitas_1` FOREIGN KEY (`id_instructor_seguimiento`) REFERENCES `usuarios` (`id_usuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `visitas`
+--
+
+LOCK TABLES `visitas` WRITE;
+/*!40000 ALTER TABLE `visitas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `visitas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping events for database 'sena_practicas'
 --
 
@@ -1043,4 +1171,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-09 10:36:01
+-- Dump completed on 2023-10-10 12:56:22
