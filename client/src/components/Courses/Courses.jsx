@@ -16,8 +16,10 @@ import { Button } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
 import { getClass, GetClassByNumber } from '../../api/httpRequest'
+import { keysRoles } from '../../import/staticData'
 
 export const Courses = () => {
+  const idRol = Number(localStorage.getItem('idRol'))
   const [pageNumber, setPageNumber] = useState(1)
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
@@ -97,6 +99,7 @@ export const Courses = () => {
       const { data } = response.data
       setCourses(data)
       setCoursesOriginal(data)
+      setLoading(false)
     } catch (error) {
       throw new Error(error)
     }
@@ -151,10 +154,6 @@ export const Courses = () => {
    * const indiceFin = endIndex;
    */
   const endIndex = startIndex + coursesPerPage
-
-  useEffect(() => {
-    setLoading(false)
-  }, [])
 
   const navigate = useNavigate()
 
@@ -464,40 +463,47 @@ export const Courses = () => {
           )}
         </header>
         <section className='flex flex-col justify-around'>
-          <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>
-            {searchedCourses.length > 0 && !error ? (
-              searchedCourses.slice(startIndex, endIndex).map((course, i) => {
+          {searchedCourses.length > 0 && !error ? (
+            <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+              {searchedCourses.slice(startIndex, endIndex).map((course, i) => {
                 return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
-              })
-            ) : courses.length > 0 ? (
-              courses.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
-              })
-            ) : loading ? (
-              <SkeletonLoading number={6} />
-            ) : error ? (
-              <section className='absolute flex justify-center w-full top-32'>
-                <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
-                  <p>¡Oops! No hay ningún curso con este número.</p>
-                  <BiSad className='text-2xl' />
+              })}
+            </section>
+          ) : (
+            <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+              {courses.length > 0 ? (
+                courses.slice(startIndex, endIndex).map((course, i) => {
+                  return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
+                })
+              ) : loading ? (
+                <SkeletonLoading number={6} />
+              ) : error ? (
+                <section className='absolute flex justify-center w-full top-32'>
+                  <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
+                    <p>¡Oops! No hay ningún curso con este número.</p>
+                    <BiSad className='text-2xl' />
+                  </section>
                 </section>
-              </section>
-            ) : (
-              <section className='absolute flex justify-center w-full top-32'>
-                <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
-                  <p>¡Oops! No hay ningún curso con este filtro.</p>
-                  <BiSad className='text-2xl' />
+              ) : (
+                <section className='absolute flex justify-center w-full top-32'>
+                  <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
+                    <p>¡Oops! No hay ningún curso con este filtro.</p>
+                    <BiSad className='text-2xl' />
+                  </section>
                 </section>
-              </section>
+              )}
+            </section>
+          )}
+
+          <div className='flex flex-col items-center gap-1 pt-2 pb-1'>
+            <div className='flex justify-center w-full'>{courses.length === 0 || error || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <div className='grid w-full pr-7 place-content-end'>
+                <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
+                  <LuBookPlus className='text-xl' /> Asignar
+                </Button>
+              </div>
             )}
-          </section>
-          <div className='flex justify-center h-[13vh] relative bottom-0'>
-            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
-          </div>
-          <div className='absolute right-12 bottom-20'>
-            <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
-              <LuBookPlus className='text-xl' /> Asignar
-            </Button>
           </div>
         </section>
         <Footer />
