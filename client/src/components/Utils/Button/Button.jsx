@@ -22,7 +22,7 @@ const colors = {
   gray: 'gray-500'
 }
 
-export const UIButton = ({ children = <Fragment />, bgColor = colors.green, hoverColor = colors.green, textColor = 'white', fontWeight = 'text-base', classNames = '', rounded = 'rounded-lg', type = 'submit' }) => {
+export const UIButton = ({ children = <Fragment />, bgColor = colors.green, hoverColor = colors.green, textColor = 'white', fontWeight = 'text-base', classNames = '', rounded = 'rounded-lg', type = 'submit', onClick = function () {} }) => {
   switch (type) {
     case 'submit':
       return (
@@ -44,7 +44,7 @@ export const UIButton = ({ children = <Fragment />, bgColor = colors.green, hove
       )
     default:
       return (
-        <button className={`bg-${bgColor} text-${textColor} ${rounded} ${fontWeight} hover:bg-${bgColor} px-3 py-2 w-fit flex justify-center ${classNames}`} type='button'>
+        <button className={`bg-${bgColor} text-${textColor} ${rounded} ${fontWeight} hover:bg-${bgColor} px-3 py-2 w-fit flex justify-center ${classNames}`} type='button' onClick={onClick}>
           {children}
         </button>
       )
@@ -58,3 +58,4 @@ export const LoadingButton = ({ bgColor = '', classNames = '' }) => {
     </button>
   )
 }
+

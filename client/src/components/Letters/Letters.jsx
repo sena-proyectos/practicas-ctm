@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { Footer } from '../Footer/Footer'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { apprenticeStore } from '../../store/config'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CardWithChildren } from '../Utils/Card/Card'
 import { Button } from '../Utils/Button/Button'
 import { Slide, ToastContainer, toast } from 'react-toastify'
@@ -109,9 +109,9 @@ export const Letters = () => {
             </header>
             <main className='grid gap-3 pb-5 auto-rows-max place-items-center'>
               <CardInfoStudent />
-              <section className='grid w-5/6 grid-cols-1 gap-y-3 md:grid-cols-2 place-items-center'>
+              <section className='grid items-start w-5/6 grid-cols-1 gap-y-3 md:grid-cols-2 justify-items-center'>
                 {lettersInfo.length > 0 ? (
-                  <Fragment>
+                  <>
                     <CardWithChildren classNames='flex flex-col gap-3 w-4/5'>
                       <header aria-roledescription='title'>
                         <h3 className='text-lg font-normal text-center'>Carta de {lettersInfo[0].tipo_carta}</h3>
@@ -168,7 +168,7 @@ export const Letters = () => {
                         )}
                       </section>
                     </CardWithChildren>
-                  </Fragment>
+                  </>
                 ) : (
                   <h2>Error al conseguir las cartas del aprendiz</h2>
                 )}
@@ -181,3 +181,4 @@ export const Letters = () => {
     </>
   )
 }
+
