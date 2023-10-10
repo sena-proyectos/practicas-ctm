@@ -93,6 +93,7 @@ export const Teachers = () => {
       const response = await getTeachers()
       const { data } = response.data
       setTeacher(data)
+      setLoading(false)
     } catch (error) {
       throw new Error(error)
     }
@@ -171,10 +172,6 @@ export const Teachers = () => {
   const endIndexSearch = startIndexSearch + instructoresPerPage
 
   const navigate = useNavigate()
-
-  useEffect(() => {
-    setLoading(false)
-  }, [])
 
   /**
    * Función para navegar a la página de fichas de instructor por su ID.
@@ -297,12 +294,13 @@ export const Teachers = () => {
                 )}
               </section>
             )}
-            <div className='relative flex items-center py-3 '>
-              <div className='flex justify-center w-full'>{searchedTeachers.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+            <div className='flex flex-col items-center gap-1 pt-2 pb-1'>
+              <div className='flex justify-center w-full'>{teacher.length === 0 || error || loading ? <></> : searchedTeachers.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
               {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-                <div className='absolute right-4'>
+                <div className='grid w-full pr-7 place-content-end'>
                   <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleModal} inline>
                     <HiOutlineUserAdd className='text-xl' />
+                    Agregar
                   </Button>
                 </div>
               )}
@@ -318,7 +316,7 @@ export const Teachers = () => {
 const SkeletonLoading = () => {
   return colorsOddRow.map((color, index) => {
     return (
-      <div className='rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[9rem]' key={index} {...color}>
+      <div className='rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl h-[9rem] bg-white' key={index} {...color}>
         <div className='flex flex-col w-4/5 gap-2 mx-auto my-auto'>
           <h6 className='font-medium text-center text-[0.9rem]'>
             <Skeleton />

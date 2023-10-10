@@ -67,6 +67,7 @@ export const TeacherClass = () => {
           const response = await getClassData(id, apiRoute)
           const { data } = response.data
           setTeacherClass(data)
+          setLoading(false)
         } catch (error) {
           throw new Error(error)
         }
@@ -92,10 +93,6 @@ export const TeacherClass = () => {
   const getClassData = async (id, apiRoute) => {
     return (await apiRoute) === 'getClassByTeacherId' ? getClassByTeacherId(id) : getClassByLiderTeacherId(id)
   }
-
-  useEffect(() => {
-    setLoading(false)
-  }, [])
 
   /**
    * Número de cursos a mostrar por página.
@@ -146,12 +143,12 @@ export const TeacherClass = () => {
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
-      <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
-        <header className='grid place-items-center'>
-          <Search searchFilter />
+      <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto]'>
+        <header className='grid place-items-center h-[10vh]'>
+          <Search searchFilter placeholder={'Busca una ficha'} />
         </header>
-        <section className='flex flex-col h-full gap-3'>
-          <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>
+        <section className='flex flex-col justify-around'>
+          <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
             {loading ? (
               <>
                 <SkeletonLoading number={6} />
@@ -170,9 +167,7 @@ export const TeacherClass = () => {
               </Link>
             </div>
           )}
-          <div className='flex justify-center h-[13vh] relative bottom-0'>
-            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
-          </div>
+          <div className='flex flex-col items-center py-2'>{teacherClass.length === 0 || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />}</div>
         </section>
         <Footer />
       </section>
