@@ -47,7 +47,7 @@ export const InfoStudent = () => {
           </Link>
           <h1 className='text-2xl font-light'>{nombre_completo}</h1>
         </header>
-        <section className='flex flex-col items-center gap-4 px-6 md:justify-center'>
+        <section className='flex flex-col items-center gap-4 px-6 pb-5 md:justify-center'>
           <section className='grid w-full gap-2 bg-white shadow-lg md:w-1/2 border-t-1 grid-rows-3-rows rounded-xl'>
             <header className='flex items-center justify-center h-full pt-4'>
               <h2 className='text-lg font-medium'>Info. Personal</h2>

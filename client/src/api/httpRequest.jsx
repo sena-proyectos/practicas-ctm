@@ -280,3 +280,19 @@ export const patchBitacoraById = async (id, payload) => {
   const URL = `${baseUrl}${api}/modifyBitacora/${id}`
   return await axios.patch(URL, payload)
 }
+
+export const patchVisitById = async (id, payload) => {
+  const URL = `${baseUrl}${api}/modifyVisit/${id}`
+  return await axios.patch(URL, payload)
+}
+
+export const getVisitsIDByStudent = async (id) => {
+  const URL = `${baseUrl}${api}/getVisitsIDStudents/${id}`
+  return await axios.get(URL)
+}
+
+export const getVisitDataById = async (id) => {
+  const URL = `${baseUrl}${api}/getVisitData/${id}`
+  return await axios.get(URL)
+}
+

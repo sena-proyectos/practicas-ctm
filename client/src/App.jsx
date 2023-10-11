@@ -38,7 +38,6 @@ const App = () => {
           <Route path='/registro-detalles/:id' element={<RegisterDetails />} />
           <Route path='/asignar-ficha' element={<AssignClass />} />
           <Route path='/fichas' element={<Courses />} />
-          <Route path='/cartas/:id' element={<Letters />} />
           {/* No está bien hecho, deberia ser anidado */}
           <Route path='/fichas/aprendices/:id' element={<Students />} />
           <Route path='/fichas-instructor/:id' element={<TeacherClass />} />
@@ -49,7 +48,8 @@ const App = () => {
         </Route>
 
         <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[2])} redirectTo='/home' />}>
-          <Route path='/visitas' element={<Visits />} />
+          <Route path='/visitas/:id' element={<Visits />} />
+          <Route path='/cartas/:id' element={<Letters />} />
           <Route path='/bitacoras/:id' element={<Bitacoras />} />
         </Route>
       </Routes>

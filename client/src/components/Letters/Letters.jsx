@@ -2,17 +2,19 @@ import { Link, useParams } from 'react-router-dom'
 import { Footer } from '../Footer/Footer'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { apprenticeStore } from '../../store/config'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CardWithChildren } from '../Utils/Card/Card'
 import { Button } from '../Utils/Button/Button'
 import { Slide, ToastContainer, toast } from 'react-toastify'
 import { getLettersByStudentID, patchLetterByID } from '../../api/httpRequest'
 import { LuSave } from 'react-icons/lu'
 import { getUserID } from '../../import/getIDActualUser'
+import { CardInfoStudent } from '../Card-info-student/CardInfoStudent'
 
 export const Letters = () => {
   const { id } = useParams()
   const { apprenticeData } = apprenticeStore()
+
   const [lettersInfo, setLettersInfo] = useState([])
   const [modifyState, setModifyState] = useState({ 0: false, 1: false })
   const formStartRef = useRef(null)
@@ -29,11 +31,14 @@ export const Letters = () => {
   }
 
   useEffect(() => {
-    getDataLetters()
     const cachedData = JSON.parse(sessionStorage.getItem('apprenticeData'))
     if (cachedData) {
       apprenticeStore.setState({ apprenticeData: cachedData })
     }
+  }, [])
+
+  useEffect(() => {
+    getDataLetters()
   }, [])
 
   const colorStates = {
@@ -102,30 +107,11 @@ export const Letters = () => {
                 Cartas del aprendiz <span className='font-semibold'>{apprenticeData.nombre_completo}</span>
               </h2>
             </header>
-            <main className='grid grid-rows-[auto_auto] place-items-center gap-8 pb-5'>
-              <CardWithChildren classNames='grid grid-rows-[auto_1fr] gap-3 text-center'>
-                <header aria-describedby='title'>
-                  <h3 className='text-lg font-semibold text-center'>Información del aprendiz</h3>
-                </header>
-                <section className='grid justify-center grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-                  {Object.entries(apprenticeData).map(([key, value]) => {
-                    return (
-                      <div key={key}>
-                        <p className='font-semibold capitalize whitespace-pre-wrap'>
-                          {key
-                            .split('_')
-                            .join(' ')
-                            .replace(/\b\w/g, (l) => l.toUpperCase())}
-                        </p>
-                        <p className='break-words whitespace-pre-wrap'>{value ?? 'N/A'}</p>
-                      </div>
-                    )
-                  })}
-                </section>
-              </CardWithChildren>
-              <section className='grid w-5/6 grid-cols-1 gap-y-3 md:grid-cols-2 place-items-center'>
+            <main className='grid gap-3 pb-5 auto-rows-max place-items-center'>
+              <CardInfoStudent />
+              <section className='grid items-start w-5/6 grid-cols-1 gap-y-3 md:grid-cols-2 justify-items-center'>
                 {lettersInfo.length > 0 ? (
-                  <Fragment>
+                  <>
                     <CardWithChildren classNames='flex flex-col gap-3 w-4/5'>
                       <header aria-roledescription='title'>
                         <h3 className='text-lg font-normal text-center'>Carta de {lettersInfo[0].tipo_carta}</h3>
@@ -182,7 +168,7 @@ export const Letters = () => {
                         )}
                       </section>
                     </CardWithChildren>
-                  </Fragment>
+                  </>
                 ) : (
                   <h2>Error al conseguir las cartas del aprendiz</h2>
                 )}
@@ -195,3 +181,4 @@ export const Letters = () => {
     </>
   )
 }
+
