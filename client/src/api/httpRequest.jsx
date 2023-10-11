@@ -52,7 +52,6 @@ export const GetStudentsByCourse = async (data) => {
 export const GetTeacherByName = async (data) => {
   const URL = `${baseUrl}${api}/teacherName?nombreCompleto=${data}`
   const response = await axios.get(URL)
-
   return response
 }
 
@@ -227,6 +226,11 @@ export const GetInscriptionByName = async (data) => {
   return response
 }
 
+export const createCourse = async (data) => {
+  const URL = `${baseUrl}${api}/class`
+  return await axios.post(URL, data)
+}
+
 export const registerUser = async (payload) => {
   const URL = `${baseUrl}${api}/register`
   return await axios.post(URL, payload)
@@ -245,4 +249,8 @@ export const getCoordinators = async () => {
 export const getCoordinatorNameByID = async (id) => {
   const URL = `${baseUrl}${api}/coordinator/${id}`
   return await axios.get(URL)
+}
+export const createStudent = async (data) => {
+  const URL = `${baseUrl}${api}/create-students`
+  return await axios.post(URL, data)
 }
