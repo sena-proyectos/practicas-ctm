@@ -2,12 +2,15 @@ import { useEffect, useRef, useState, Fragment } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Slide, toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Cookies from 'js-cookie'
+import decode from 'jwt-decode'
 
 // icons
 import { LuSave } from 'react-icons/lu'
 import { IoReturnDownBack } from 'react-icons/io5'
 import { PiCheckCircleBold, PiXCircleBold } from 'react-icons/pi'
 import { FaGoogleDrive } from 'react-icons/fa'
+import { AiFillEdit, AiOutlineFullscreen } from 'react-icons/ai'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -17,12 +20,8 @@ import { Select } from '../Utils/Select/Select'
 import { colorTextStatus, keysRoles } from '../../import/staticData'
 
 import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById, registerUser, getInfoTeacherByID, getCoordinators, getCoordinatorNameByID } from '../../api/httpRequest'
-import { AiFillEdit, AiOutlineFullscreen } from 'react-icons/ai'
 import { checkApprovementData } from '../../validation/approvementValidation'
-import Cookies from 'js-cookie'
-import decode from 'jwt-decode'
 import { inscriptionStore } from '../../store/config'
-import { Card3D } from '../Utils/Card/Card'
 import { randomNumberGenerator } from '../Utils/randomNumberGenerator'
 
 export const RegisterDetails = () => {
@@ -133,7 +132,7 @@ export const RegisterDetails = () => {
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <ToastContainer transition={Slide} theme='colored' />
       <Siderbar />
-      <section className='relative grid flex-auto gap-2 w-min grid-rows-3-10-75-15'>
+      <section className='relative grid flex-auto gap-2 w-min grid-rows-[auto_1fr_auto]'>
         <header className='border-b-1 w-[70%] mx-auto border-b-zinc-300 h-[9vh]'>
           <ul className='flex flex-row items-center justify-around h-full'>
             <li className={`text-sm font-light cursor-pointer hover:text-purple-800 ${selectedTab === 'infoAprendiz' ? 'font-medium text-purple-800' : ''}`} onClick={() => setSelectedTab('infoAprendiz')}>
@@ -159,7 +158,7 @@ export const RegisterDetails = () => {
             )}
           </ul>
         </header>
-        <section>
+        <section className='flex flex-col justify-around'>
           <div className={`${selectedTab === 'infoAprendiz' ? 'visible' : 'hidden'}`}>
             <InfoAprendiz inscriptionAprendiz={inscriptionAprendiz} />
           </div>
@@ -305,13 +304,9 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   const descriptionRef = useRef(null)
   const formRef = useRef(null)
   const [dataAprendiz, setDataAprendiz] = useState([])
-  const [dataEmpresa, setDataEmpresa] = useState([])
   const [dataAdmins, setDataAdmins] = useState([{ id_usuario: Number(), nombre_completo: String() }])
   const [coordinatorFullName, setCoordinatorFullName] = useState(null)
-  const [idUser, setIdUser] = useState(0)
-  const [user, setUser] = useState(0)
-  const prevUserIdRef = useRef()
-
+  const [infoAvales, setInfoAvales] = useState([])
   const { inscriptionData } = inscriptionStore()
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
 
@@ -349,31 +344,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       toast.error('Error al conseguir los datos del aval')
     }
   }
-
-  /**
-   * Efecto para almacenar el ID de usuario previo.
-   *
-   * @function
-   * @name useEffect
-   *
-   */
-  useEffect(() => {
-    prevUserIdRef.current = idUser
-  }, [idUser])
-
-  /**
-   * Efecto para realizar acciones cuando el ID de usuario cambia después de la primera vez.
-   *
-   * @function
-   * @name useEffect
-   *
-   */
-  useEffect(() => {
-    if (prevUserIdRef.current !== 0) {
-      // Realiza la lógica que necesitas cuando idUser cambia después de la primera vez.
-      getUser(idUser)
-    }
-  }, [idUser])
 
   /**
    * Efecto para realizar acciones cuando se actualiza el valor de `avalCoordinador`.
@@ -424,26 +394,32 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     }
   }
 
-  /**
-   * Función para obtener los detalles de inscripción de un aprendiz por su ID.
-   *
-   * @async
-   * @function
-   * @name getDetallesInscripcion
-   * @param {string} id - ID del aprendiz.
-   * @returns {void}
-   *
-   * @example
-   * const idAprendiz = '123456';
-   * getDetallesInscripcion(idAprendiz);
-   */
   const getDetallesInscripcion = async (id) => {
     try {
       const response = await getInscriptionDetails(id)
       const res = response.data.data
-      const res2 = response.data.data[1].responsable_aval
-      setDataEmpresa(res)
-      setIdUser(res2)
+
+      // Crear una copia de la respuesta para evitar mutar el estado directamente
+      const updatedInfoAvales = [...res]
+      console.log(updatedInfoAvales)
+
+      // Iterar sobre cada elemento en infoAvales
+      for (let i = 0; i < updatedInfoAvales.length; i++) {
+        const item = updatedInfoAvales[i]
+        const responsableId = item.responsable_aval
+
+        // Obtener el nombre del responsable usando la función getUser
+        const responsableResponse = await getUser(responsableId)
+
+        // Reemplazar el ID del responsable con el nombre en el objeto
+        updatedInfoAvales[i] = {
+          ...item,
+          responsable_aval: responsableResponse
+        }
+      }
+
+      // Actualizar el estado con los nombres del responsable
+      setInfoAvales(updatedInfoAvales)
     } catch (error) {
       toast.error('Error al conseguir los detalles de la inscripción')
     }
@@ -464,9 +440,8 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
    */
   const getUser = async (id) => {
     const response = await getUserById(id)
-    const res = response.data.data[0].nombres_usuario
-    const res2 = response.data.data[0].apellidos_usuario
-    setUser(res + ' ' + res2)
+    const { nombres_usuario, apellidos_usuario } = response.data.data[0]
+    return nombres_usuario + ' ' + apellidos_usuario
   }
 
   /**
@@ -672,55 +647,48 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     }
   }
 
-  /**
-   * Opciones de selección de los coordinadores.
-   *
-   * @constant
-   * @name option
-   * @type {Array}
-   *
-   * @example
-   * const opcionesSeleccion = option;
-   */
-
   return (
-    <section className={`flex flex-col w-[95%] gap-2 p-2 mx-auto mt-2 h-auto`}>
-      <section className='text-md'>
+    <section className='grid grid-cols-2 w-[95%] gap-3 mx-auto h-full'>
+      <section className='flex flex-col justify-center gap-3'>
         {dataAprendiz.map((item) => (
-          <div key={item.id_inscripcion} className='grid grid-cols-2'>
-            <div className='text-center'>
-              <h1 className='text-center'>INFORMACION DEL APRENDIZ </h1>
-              <div className='my-11'>
-                <p className='my-3'>
-                  {item.nombre_inscripcion} {item.apellido_inscripcion}
-                </p>
-                <p className='my-3'>Ficha: {item.numero_ficha_inscripcion}</p>
-                <p className='my-3'>{item.nombre_programa_inscripcion}</p>
-                <p className='my-3'>{item.email_inscripcion}</p>
-                <p className='my-3'>
-                  {item.tipo_documento_inscripcion}: {item.documento_inscripcion}
-                </p>
-                <p className='my-3'>{item.modalidad_inscripcion === '1' ? 'Pasantías' : item.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : item.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : item.modalidad_inscripcion === '4' ? 'Monitoría' : item.modalidad_inscripcion === '5' ? 'Vinculación laboral' : null}</p>
-              </div>
-            </div>
-            <div className='px-4 border-l-2 border-violet-800 '>
-              <h1 className='text-center'>AVALES</h1>
-              <div className='flex'>
-                <div className='flex justify-center w-full p-4 overflow-y-auto h-60 justify-items-center'>
-                  <div className='w-3/4 mx-10'>
-                    {dataEmpresa.map((item) => (
-                      <div className='justify-center my-4 justify-items-center' key={item.id_detalle_inscripcion}>
-                        <Card3D title={item.descripcion_detalle} header={item.estado_aval} item1={item.observaciones} item2={user} item1text={'Observaciones'} item2text={'Responsable del aval'} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <section key={item.id_inscripcion}>
+            <header className='h-[8vh]'>
+              <h2 className='font-semibold text-center pb-0.5'>Resúmen Aval</h2>
+              <hr className='w-1/2 mx-auto border-1.5 border-purple-400 rounded-lg' />
+            </header>
+            <section className='px-3 text-center'>
+              <p className='font-medium'>{item.nombre_inscripcion + ' ' + item.apellido_inscripcion}</p>
+              <p className='font-light'>{item.tipo_documento_inscripcion + ' ' + item.documento_inscripcion}</p>
+              <p className='font-light'>{item.email_inscripcion}</p>
+              <p className='font-light px-14 '>{item.numero_ficha_inscripcion + ' - ' + item.nombre_programa_inscripcion}</p>
+              <p className='font-light'>{item.modalidad_inscripcion === '1' ? 'Pasantías' : item.modalidad_inscripcion === '2' ? 'Contrato de aprendizaje' : item.modalidad_inscripcion === '3' ? 'Proyecto Productivo' : item.modalidad_inscripcion === '4' ? 'Monitoría' : item.modalidad_inscripcion === '5' ? 'Vinculación Laboral' : null}</p>
+            </section>
+          </section>
         ))}
+        <section className='flex flex-col justify-center'>
+          <header className='h-[8vh]'>
+            <h2 className='font-semibold text-center pb-0.5'>Avales</h2>
+            <hr className='w-1/2 mx-auto border-1.5 border-purple-400 rounded-lg' />
+          </header>
+          <section className='flex flex-col text-sm items-center gap-1.5 px-3'>
+            {infoAvales.slice(0, 3).map((item) => (
+              <div className='flex flex-col items-center w-1/2 ' key={item.id_detalle_inscripcion}>
+                <h3 className='font-semibold text-center'>{item.descripcion_detalle}</h3>
+                <p className='font-light'>
+                  <span className='font-medium'>Estado: </span>
+                  {item.estado_aval}
+                </p>
+                <p className='text-center'>
+                  <span className='font-medium'>Responsable: </span>
+                  {item.responsable_aval}
+                </p>
+                {item.descripcion_detalle !== 'Funciones' && <hr className='border-1.5 border-gray-400 w-3/4 rounded-xl' />}
+              </div>
+            ))}
+          </section>
+        </section>
       </section>
-      <div className={` w-[95%] mx-auto`}>
+      <div className='w-[95%] mx-auto'>
         {avalInfo.map((aval) => {
           return (
             <form onSubmit={handleAvalForm} ref={formRef} className='flex flex-col gap-4 ' key={aval.id_detalle_inscripcion}>
@@ -903,13 +871,11 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
 
   return (
     <>
-      <section className='grid grid-cols-2 w-[95%] h-full gap-3 mx-auto'>
+      <section className='grid grid-cols-2 w-[95%] gap-3 mx-auto h-full'>
         {showDriveButton === true ? (
-          <section className='flex flex-col gap-3'>
-            <header className='grid grid-cols-2'>
-              <section className='flex items-center'>
-                <h2>Documentación </h2>
-              </section>
+          <section className='flex flex-col justify-evenly'>
+            <header className='relative flex items-center'>
+              <h2 className='flex justify-start w-full'>Documentación</h2>
             </header>
             <section className='flex items-center justify-center gap-3 h-5/6'>
               <Link target='_blank' to={linkDocs} className='flex items-center justify-around gap-2 px-3 py-1 text-base font-medium text-white bg-[#4688F4] shadow-lg rounded-xl shadow-[#4688F4]/50'>
@@ -918,23 +884,21 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
             </section>
           </section>
         ) : (
-          <section className='flex flex-col gap-3'>
-            <header className='grid grid-cols-2'>
-              <section className='flex items-center'>
-                <h2>Documentación </h2>
-              </section>
-              <section className='grid items-center justify-end'>
+          <section className='flex flex-col justify-evenly'>
+            <header className='relative flex items-center'>
+              <h2 className='flex justify-start w-full'>Documentación</h2>
+              <section className='absolute right-2 top-0.5'>
                 <Button textSize='text-base' bg='bg-gray-400' px='px-[2px]' py='py-[2px]' rounded='rounded-2xl' hover hoverConfig='bg-gray-600' type='button' onClick={handleFullScreenIFrame}>
                   <AiOutlineFullscreen />
                 </Button>
               </section>
             </header>
-            <section className='flex flex-col justify-center gap-3 h-5/6'>
+            <section className='flex flex-col h-5/6'>
               <iframe src={linkDocs} className='w-full h-full' loading='lazy' allowFullScreen ref={iFrameRef}></iframe>
             </section>
           </section>
         )}
-        <section className='flex flex-col w-[95%] gap-6 mx-auto'>
+        <section className='flex flex-col w-[95%] gap-3 mx-auto justify-center'>
           <FullDocsApproval idRol={idRol} avalDocumentos={avalDocumentos} />
           <hr className='w-3/4 mx-auto border-[1px] text-neutral-400' />
           <FunctionsApproval idRol={idRol} avalFunciones={avalFunciones} />
@@ -1236,23 +1200,21 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
             <span className='text-sm font-semibold'>
               Encargado <span className='text-red-800'>(Funciones)</span>
             </span>
-            <span className='text-sm font-medium'>Fecha Registro: 31 Agosto 23</span>
+            <span className='text-sm'>{avalInfoFunciones.fecha_modificacion}</span>
           </section>
           <section>
             {fullNameInstructor === null ? (
               <Select name='name_instructor' placeholder='Nombre instructor' isSearch hoverColor='hover:bg-teal-600' hoverTextColor='hover:text-white' selectedColor='bg-teal-600 text-white' characters='25' placeholderSearch='Nombre instructor' rounded='rounded-xl' textSearch='text-sm' shadow='shadow-md' textSize='text-sm' options={option} selectedKey={selectedOptionKey} manual onChange={handleSelectChange} />
             ) : (
-              <div className='flex flex-col flex-wrap items-center py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+              <div className='flex flex-col flex-wrap items-center gap-1 py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
                 <section className='flex'>
                   <h3 className='flex flex-row flex-wrap flex-grow-0 text-sm flex-shrink-1'>
-                    <span className='pr-1 font-semibold'>Encargado:</span>
                     {fullNameInstructor}
-                    <Button type='button' bg='transparent' onClick={() => setFullNameInstructor(null)}>
+                    <Button type='button' bg='transparent' py='none' onClick={() => setFullNameInstructor(null)}>
                       <AiFillEdit className='text-blue-500' />
                     </Button>
                   </h3>
                 </section>
-                <h3 className='text-sm'>{avalInfoFunciones.fecha_modificacion}</h3>
                 <h5 className='text-sm'>
                   Estado: <span className={`font-semibold ${colorTextStatus[avalInfoFunciones.estado_aval]}`}>{avalInfoFunciones.estado_aval}</span>
                 </h5>
@@ -1266,7 +1228,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
           </label>
           <textarea name='functionsApprovalObservations' id='editor' defaultValue={avalInfoFunciones.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
         </div>
-        <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
+        <div className='grid grid-cols-2 gap-2 h-[6vh] items-center'>
           {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) && (
             <div className='flex flex-row gap-2 place-self-center'>
               {!selectedApproveButton ? (
@@ -1522,10 +1484,9 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
           <section className='flex flex-col'>
             <span className='text-sm font-semibold'>Líder Prácticas:</span>
             <span className='text-sm font-semibold'>Última fecha de modificación:</span>
-            <span className='text-sm font-medium'>Fecha Registro: {avalInfoDocumentos.fecha_creacion}</span>
             {modalidad.map((item) => (
               <div key={item.id_modalidad}>
-                <span className='text-sm font-medium'>{item.nombre_modalidad}</span>
+                <span className='text-sm '>{item.nombre_modalidad}</span>
               </div>
             ))}
           </section>
@@ -1543,7 +1504,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
           </label>
           <textarea name='fullDocsObservations' id='editor' defaultValue={avalInfoDocumentos.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
         </div>
-        <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
+        <div className='h-[6vh] grid items-center grid-cols-2 gap-2'>
           {idRol === Number(keysRoles[0]) && (
             <div className='flex flex-row gap-2 place-self-center'>
               {!selectedApproveButton ? (
@@ -1834,8 +1795,8 @@ const RAPS = ({ idRol, avalRaps }) => {
   }, [id, avalRaps])
 
   return (
-    <section className='grid grid-cols-2 w-[95%] h-[70vh] gap-3 mx-auto'>
-      <section className='h-'>
+    <section className='grid grid-cols-2 w-[95%] gap-3 mx-auto'>
+      <section>
         <h2>RAPS</h2>
         <section></section>
       </section>
@@ -1845,13 +1806,13 @@ const RAPS = ({ idRol, avalRaps }) => {
             <section className='grid items-center grid-cols-2 gap-2'>
               <section className='flex flex-col'>
                 <span className='text-sm font-semibold'>Líder Prácticas:</span>
+                <span className='text-sm'>{avalInfo.fecha_creacion}</span>
                 {info.map((item) => (
                   <div key={item.id_inscripcion}>
-                    <p>{item.numero_ficha_inscripcion}</p>
-                    <p>{item.nombre_inscripcion + ' ' + item.apellido_inscripcion}</p>
+                    <p className='text-sm'>{item.numero_ficha_inscripcion}</p>
+                    <p className='text-sm'>{item.nombre_inscripcion + ' ' + item.apellido_inscripcion}</p>
                   </div>
                 ))}
-                <span className='text-sm font-medium'>{avalInfo.fecha_creacion}</span>
               </section>
               <div className='flex flex-col py-1 rounded-lg cursor-default justify-items-center w-fit bg-gray place-self-center'>
                 <h3 className='text-sm whitespace-nowrap'>{nameResponsable}</h3>
@@ -1861,8 +1822,7 @@ const RAPS = ({ idRol, avalRaps }) => {
                 </h5>
                 {info.map((item) => (
                   <div key={item.id_inscripcion}>
-                    <p>{item.tipo_documento_inscripcion}:</p>
-                    <p>{item.documento_inscripcion}</p>
+                    <p className='text-sm'>{item.tipo_documento_inscripcion + ' ' + item.documento_inscripcion}</p>
                   </div>
                 ))}
               </div>
