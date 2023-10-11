@@ -18,11 +18,7 @@ import { handleHTTP } from '../errors/errorsHandler.js'
  */
 export const checkClassData = (req: Request, res: Response, next: NextFunction): void => {
   const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_lider, id_instructor_seguimiento, id_nivel_formacion } = req.body
-
-  const classNumber = Number(numero_ficha)
   try {
-    if (isNaN(classNumber)) throw new NumberIsNaN('el numero de la ficha no es un número.')
-
     const { error } = classSchema.validate({ numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_lider, id_instructor_seguimiento, id_nivel_formacion })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados para la ficha no son válidos')
     next()
