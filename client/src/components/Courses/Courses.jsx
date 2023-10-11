@@ -16,6 +16,7 @@ import { Button } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
 import { getClass, GetClassByNumber } from '../../api/httpRequest'
+import { RegisterCourses } from '../Utils/Modals/Modals'
 import { keysRoles } from '../../import/staticData'
 
 export const Courses = () => {
@@ -28,6 +29,7 @@ export const Courses = () => {
   const [filtersButtons, setFiltersButtons] = useState({ etapa: false, nivel: false, finLectiva: false, inicioPractica: false })
   const [activeFilter, setActiveFilter] = useState(false)
   const [error, setError] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
   const [searchedCourses, setSearchedCourses] = useState([])
 
   /**
@@ -67,6 +69,10 @@ export const Courses = () => {
     }
   }
 
+    const handleCoursesModal = () => {
+      setIsOpen(true)
+    }
+    const handleCloseModal = () => setIsOpen(false)
   /**
    * Función para manejar la visualización de los filtros.
    *
@@ -358,6 +364,7 @@ export const Courses = () => {
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
+      {isOpen && <RegisterCourses closedModal={handleCloseModal} title={'Agrega una ficha'} />}
       <Siderbar />
       <section className='relative grid flex-auto grid-rows-[auto_1fr_auto]'>
         <header className='grid place-items-center h-[10vh]'>
@@ -498,10 +505,13 @@ export const Courses = () => {
           <div className='flex flex-col items-center gap-1 pt-2 pb-1'>
             <div className='flex justify-center w-full'>{courses.length === 0 || error || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-              <div className='grid w-full pr-7 place-content-end'>
+              <div className='grid w-full pr-7 place-content-end grid-cols-2'>
                 <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
                   <LuBookPlus className='text-xl' /> Asignar
                 </Button>
+            <Button rounded='rounded-full' bg='bg-blue-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleCoursesModal} inline>
+              <LuBookPlus className='text-xl'  /> agregar ficha
+            </Button>
               </div>
             )}
           </div>
