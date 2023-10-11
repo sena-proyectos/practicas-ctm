@@ -505,7 +505,7 @@ export const Courses = () => {
           <div className='flex flex-col items-center gap-1 pt-2 pb-1'>
             <div className='flex justify-center w-full'>{courses.length === 0 || error || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-              <div className='grid w-full pr-7 place-content-endx| grid-cols-2'>
+              <div className='grid w-full pr-7 place-content-end grid-cols-2'>
                 <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
                   <LuBookPlus className='text-xl' /> Asignar
                 </Button>
