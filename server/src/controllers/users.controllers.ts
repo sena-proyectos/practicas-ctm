@@ -38,7 +38,8 @@ export const editUser: RequestHandler<{}, Response, userForm> = async (req: Requ
   const { nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena } = req.body as userForm
   const idNumber = Number(id)
   try {
-    const [user] = await connection.query('UPDATE usuarios SET nombres_usuario = IFNULL(?, nombres_usuario), apellidos_usuario = IFNULL(?, apellidos_usuario), tipo_documento_usuario = IFNULL(?, tipo_documento_usuario), numero_documento_usuario = IFNULL(?, numero_documento_usuario), email_usuario = IFNULL(?, email_usuario), numero_celular_usuario = IFNULL(?, numero_celular_usuario), id_rol = IFNULL(?, id_rol), contrasena_usuario = IFNULL(?, contrasena_usuario) WHERE id_usuario = ?', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, contrasena, idNumber])
+    const hashPassword: string = await bycrypt.hash(contrasena, 10)
+    const [user] = await connection.query('UPDATE usuarios SET nombres_usuario = IFNULL(?, nombres_usuario), apellidos_usuario = IFNULL(?, apellidos_usuario), tipo_documento_usuario = IFNULL(?, tipo_documento_usuario), numero_documento_usuario = IFNULL(?, numero_documento_usuario), email_usuario = IFNULL(?, email_usuario), numero_celular_usuario = IFNULL(?, numero_celular_usuario), id_rol = IFNULL(?, id_rol), contrasena_usuario = IFNULL(?, contrasena_usuario) WHERE id_usuario = ?', [nombre, apellido, tipo_documento, num_documento, correo_electronico, num_celular, id_rol, hashPassword, idNumber])
     if (!Array.isArray(user) && user?.affectedRows === 0) throw new DbErrorNotFound('No se pudo actualizar el usuario.')
     return res.status(httpStatus.OK).json({ message: 'Usuario actualizado exitosamente.' })
   } catch (error) {

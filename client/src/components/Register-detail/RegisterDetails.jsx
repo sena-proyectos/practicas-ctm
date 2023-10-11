@@ -346,7 +346,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       const { nombre_completo } = res.data
       setCoordinatorFullName(nombre_completo)
     } catch (error) {
-      console.log(error)
       toast.error('Error al conseguir los datos del aval')
     }
   }
@@ -615,10 +614,8 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   const acceptApprove = async (payload, toastId) => {
     const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
     const id = payload.avalCoordinador
-    const cookie = Cookies.get('token')
-    const { id_usuario: responsable } = decode(cookie).data.user
 
-    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations }
     try {
       await inscriptionDetailsUpdate(id, data)
       await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion: dataAprendiz[0].nombre_inscripcion, apellido_inscripcion: dataAprendiz[0].apellido_inscripcion, observations: payload.observations }], subject: 'Aceptado de solicitud de inscripción de etapa práctica' })

@@ -17,8 +17,10 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
 import { getClass, GetClassByNumber } from '../../api/httpRequest'
 import { RegisterCourses } from '../Utils/Modals/Modals'
+import { keysRoles } from '../../import/staticData'
 
 export const Courses = () => {
+  const idRol = Number(localStorage.getItem('idRol'))
   const [pageNumber, setPageNumber] = useState(1)
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
@@ -103,6 +105,7 @@ export const Courses = () => {
       const { data } = response.data
       setCourses(data)
       setCoursesOriginal(data)
+      setLoading(false)
     } catch (error) {
       throw new Error(error)
     }
@@ -157,10 +160,6 @@ export const Courses = () => {
    * const indiceFin = endIndex;
    */
   const endIndex = startIndex + coursesPerPage
-
-  useEffect(() => {
-    setLoading(false)
-  }, [])
 
   const navigate = useNavigate()
 
@@ -255,15 +254,15 @@ export const Courses = () => {
       if (filter === 'Hoy') {
         const today = new Date()
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_fin_lectiva)
-          return courseDate.toDateString() === today.toDateString()
+          const courseDate = new Date(course.fecha_fin_lectiva + 'T00:00:00')
+          return courseDate.getFullYear() === today.getFullYear() && courseDate.getMonth() === today.getMonth() && courseDate.getDate() === today.getDate()
         })
       } else if (filter === 'Esta Semana') {
         const today = new Date()
         const nextWeek = new Date(today)
         nextWeek.setDate(today.getDate() + 7)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_fin_lectiva)
+          const courseDate = new Date(course.fecha_fin_lectiva + 'T00:00:00')
           return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
         })
       } else if (filter === 'Próxima Semana') {
@@ -273,7 +272,7 @@ export const Courses = () => {
         const weekAfterNext = new Date(nextWeek)
         weekAfterNext.setDate(nextWeek.getDate() + 7)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_fin_lectiva)
+          const courseDate = new Date(course.fecha_fin_lectiva + 'T00:00:00')
           return courseDate >= nextWeek && courseDate <= weekAfterNext
         })
       } else if (filter === 'Este Mes') {
@@ -281,7 +280,7 @@ export const Courses = () => {
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_fin_lectiva)
+          const courseDate = new Date(course.fecha_fin_lectiva + 'T00:00:00')
           return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
         })
       } else if (filter === 'Próximo Mes') {
@@ -289,7 +288,7 @@ export const Courses = () => {
         const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
         const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_fin_lectiva)
+          const courseDate = new Date(course.fecha_fin_lectiva + 'T00:00:00')
           return courseDate >= nextMonth && courseDate <= endOfMonth
         })
       }
@@ -302,15 +301,15 @@ export const Courses = () => {
       if (filter === 'Hoy') {
         const today = new Date()
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica)
-          return courseDate.toDateString() === today.toDateString()
+          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+          return courseDate.getFullYear() === today.getFullYear() && courseDate.getMonth() === today.getMonth() && courseDate.getDate() === today.getDate()
         })
       } else if (filter === 'Esta Semana') {
         const today = new Date()
         const nextWeek = new Date(today)
         nextWeek.setDate(today.getDate() + 7)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica)
+          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
           return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
         })
       } else if (filter === 'Próxima Semana') {
@@ -320,7 +319,7 @@ export const Courses = () => {
         const weekAfterNext = new Date(nextWeek)
         weekAfterNext.setDate(nextWeek.getDate() + 7)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica)
+          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
           return courseDate >= nextWeek && courseDate <= weekAfterNext
         })
       } else if (filter === 'Este Mes') {
@@ -328,7 +327,7 @@ export const Courses = () => {
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica)
+          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
           return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
         })
       } else if (filter === 'Próximo Mes') {
@@ -336,7 +335,7 @@ export const Courses = () => {
         const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
         const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0)
         filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica)
+          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
           return courseDate >= nextMonth && courseDate <= endOfMonth
         })
       }
@@ -367,8 +366,8 @@ export const Courses = () => {
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       {isOpen && <RegisterCourses closedModal={handleCloseModal} title={'Agrega una ficha'} />}
       <Siderbar />
-      <section className='relative grid flex-auto grid-rows-3-10-75-15'>
-        <header className='grid place-items-center'>
+      <section className='relative grid flex-auto grid-rows-[auto_1fr_auto]'>
+        <header className='grid place-items-center h-[10vh]'>
           <Search searchStudent={searchCourses} searchFilter placeholder={'Busca una ficha'} icon iconClick={handleFilter} />
           <ul className={`absolute right-48  mt-1 top-4 w-40 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
             <li>
@@ -399,7 +398,7 @@ export const Courses = () => {
                       <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('nivel', 'Técnico')}>
                         Técnica
                       </li>
-                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('nivel', 'Tecnólogo')}>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('nivel', 'Tecnología')}>
                         Tecnólogo
                       </li>
                     </ul>
@@ -470,44 +469,51 @@ export const Courses = () => {
             </section>
           )}
         </header>
-        <section className='flex flex-col h-full gap-3'>
-          <section className='grid grid-cols-1 px-10 pt-3 pb-2 gap-x-4 gap-y-7 md:h-[85%] sm:grid-cols-2 md:grid-cols-3'>
-            {searchedCourses.length > 0 && !error ? (
-              searchedCourses.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva.split('T')[0]} item4={course.fecha_inicio_practica.split('T')[0]} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
-              })
-            ) : courses.length > 0 ? (
-              courses.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva.split('T')[0]} item4={course.fecha_inicio_practica.split('T')[0]} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
-              })
-            ) : loading ? (
-              <SkeletonLoading number={6} />
-            ) : error ? (
-              <section className='absolute flex justify-center w-full top-32'>
-                <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
-                  <p>¡Oops! No hay ningún curso con este número.</p>
-                  <BiSad className='text-2xl' />
+        <section className='flex flex-col justify-around'>
+          {searchedCourses.length > 0 && !error ? (
+            <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+              {searchedCourses.slice(startIndex, endIndex).map((course, i) => {
+                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
+              })}
+            </section>
+          ) : (
+            <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+              {courses.length > 0 ? (
+                courses.slice(startIndex, endIndex).map((course, i) => {
+                  return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_fin_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
+                })
+              ) : loading ? (
+                <SkeletonLoading number={6} />
+              ) : error ? (
+                <section className='absolute flex justify-center w-full top-32'>
+                  <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
+                    <p>¡Oops! No hay ningún curso con este número.</p>
+                    <BiSad className='text-2xl' />
+                  </section>
                 </section>
-              </section>
-            ) : (
-              <section className='absolute flex justify-center w-full top-32'>
-                <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
-                  <p>¡Oops! No hay ningún curso con este filtro.</p>
-                  <BiSad className='text-2xl' />
+              ) : (
+                <section className='absolute flex justify-center w-full top-32'>
+                  <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
+                    <p>¡Oops! No hay ningún curso con este filtro.</p>
+                    <BiSad className='text-2xl' />
+                  </section>
                 </section>
-              </section>
-            )}
-          </section>
-          <div className='flex justify-center h-[13vh] relative bottom-0'>
-            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
-          </div>
-          <div className='absolute right-12 bottom-20 grid grid-cols-2'>
-            <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
-              <LuBookPlus className='text-xl' /> Asignar
-            </Button>
+              )}
+            </section>
+          )}
+
+          <div className='flex flex-col items-center gap-1 pt-2 pb-1'>
+            <div className='flex justify-center w-full'>{courses.length === 0 || error || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <div className='grid w-full pr-7 place-content-endx| grid-cols-2'>
+                <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
+                  <LuBookPlus className='text-xl' /> Asignar
+                </Button>
             <Button rounded='rounded-full' bg='bg-blue-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleCoursesModal} inline>
               <LuBookPlus className='text-xl'  /> agregar ficha
             </Button>
+              </div>
+            )}
           </div>
         </section>
         <Footer />

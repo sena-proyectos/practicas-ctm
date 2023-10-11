@@ -123,7 +123,6 @@ export const readExcel = async (fileData) => {
 // OBTENER FICHAS
 export const getClass = async () => {
   const URL = `${baseUrl}${api}/classes`
-
   const response = await axios.get(URL)
   return response
 }
@@ -222,12 +221,15 @@ export const getModalitiesById = async (id) => {
 export const GetInscriptionByName = async (data) => {
   const URL = `${baseUrl}${api}/inscriptionName?nombreCompleto=${data}`
   const response = await axios.get(URL)
-
   return response
 }
 
 export const createCourse = async (data) => {
   const URL = `${baseUrl}${api}/class`
+  return await axios.post(URL, data)
+}
+export const createStudent = async (data) => {
+  const URL = `${baseUrl}${api}/create-students`
   return await axios.post(URL, data)
 }
 
@@ -241,6 +243,14 @@ export const getInfoTeacherByID = async (id) => {
   return await axios.get(URL)
 }
 
+/* Edit User */
+export const EditUser = async (id, payload) => {
+  const URL = `${baseUrl}${api}/edit-user/${id}`
+
+  const response = await axios.patch(URL, payload)
+  return response
+}
+
 export const getCoordinators = async () => {
   const URL = `${baseUrl}${api}/coordinators`
   return await axios.get(URL)
@@ -250,7 +260,23 @@ export const getCoordinatorNameByID = async (id) => {
   const URL = `${baseUrl}${api}/coordinator/${id}`
   return await axios.get(URL)
 }
-export const createStudent = async (data) => {
-  const URL = `${baseUrl}${api}/create-students`
-  return await axios.post(URL, data)
+
+export const getLettersByStudentID = async (id) => {
+  const URL = `${baseUrl}${api}/getLetterByStudent/${id}`
+  return await axios.get(URL)
+}
+
+export const patchLetterByID = async (id, payload) => {
+  const URL = `${baseUrl}${api}/modifyLetter/${id}`
+  return await axios.patch(URL, payload)
+}
+
+export const getBitacorasByStudentId = async (id) => {
+  const URL = `${baseUrl}${api}/getBitacorasByStudent/${id}`
+  return await axios.get(URL)
+}
+
+export const patchBitacoraById = async (id, payload) => {
+  const URL = `${baseUrl}${api}/modifyBitacora/${id}`
+  return await axios.patch(URL, payload)
 }

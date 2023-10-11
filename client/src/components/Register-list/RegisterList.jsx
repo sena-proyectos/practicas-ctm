@@ -38,6 +38,7 @@ export const RegisterList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [inscriptions, setInscriptions] = useState([])
   const [pageNumber, setPageNumber] = useState(1)
+  const [searchPageNumber, setSearchPageNumber] = useState(1)
   const [fileName, setFileName] = useState(null)
   const [modalOption, setModalOption] = useState(modalOptionList.confirmModal)
   const [username, setUsername] = useState(null)
@@ -50,6 +51,7 @@ export const RegisterList = () => {
   const [inscriptionOriginal, setInscriptionOriginal] = useState([])
   const [error, setError] = useState(null)
   const [searchedInscriptions, setSearchedInscriptions] = useState([])
+  const [originalSearched, setOriginalSearched] = useState([])
 
   /**
    * Función asincrónica para buscar aprendices por nombre de usuario.
@@ -68,6 +70,7 @@ export const RegisterList = () => {
     if (searchTerm.trim() === '') {
       setError(null)
       setSearchedInscriptions([])
+      setOriginalSearched([])
       return
     }
     try {
@@ -76,9 +79,11 @@ export const RegisterList = () => {
       if (searchTerm.trim() === '') {
         setError(null)
         setSearchedInscriptions([])
+        setOriginalSearched([])
       } else {
         setError(null)
         setSearchedInscriptions(data)
+        setOriginalSearched(data)
       }
     } catch (error) {
       const message = error?.response?.data?.error?.info?.message
@@ -100,7 +105,7 @@ export const RegisterList = () => {
    */
   const inscriptionsPerPage = 6
   /**
-   * Número total de páginas para la paginación de inscripciones.
+   * Número total de páginas para la paginación de inscripciones y las busquedad de inscripciones
    *
    * @constant
    * @name pageCount
@@ -110,6 +115,8 @@ export const RegisterList = () => {
    * const totalPaginas = pageCount;
    */
   const pageCount = Math.ceil(inscriptions.length / inscriptionsPerPage)
+  const pageCountSearch = Math.ceil(searchedInscriptions.length / inscriptionsPerPage)
+
   /**
    * Índice de inicio de la página actual.
    *
@@ -121,6 +128,8 @@ export const RegisterList = () => {
    * const indiceInicio = startIndex;
    */
   const startIndex = (pageNumber - 1) * inscriptionsPerPage
+  const startIndexSearch = (searchPageNumber - 1) * inscriptionsPerPage
+
   /**
    * Índice de fin de la página actual.
    *
@@ -132,6 +141,8 @@ export const RegisterList = () => {
    * const indiceFin = endIndex;
    */
   const endIndex = startIndex + inscriptionsPerPage
+  const endIndexSearch = startIndexSearch + inscriptionsPerPage
+
   /**
    * Identificador del rol del usuario almacenado en el almacenamiento local.
    *
@@ -400,44 +411,88 @@ export const RegisterList = () => {
    */
   const handleTypeFilter = (filterType, filter) => {
     if (filterType === 'modalidad') {
-      const filterMap = inscriptionOriginal.filter((inscription) => inscription.nombre_modalidad === filter)
+      let filterMap
+      if (originalSearched.length > 0 && !error) {
+        filterMap = originalSearched.filter((inscription) => inscription.nombre_modalidad === filter)
+        setSearchedInscriptions({})
+      } else {
+        filterMap = inscriptionOriginal.filter((inscription) => inscription.nombre_modalidad === filter)
+      }
       setInscriptions(filterMap)
     }
     if (filterType === 'estado') {
-      const filterMap = inscriptionOriginal.filter((inscription) => inscription.estado_general_inscripcion === filter)
+      let filterMap
+      if (originalSearched.length > 0 && !error) {
+        filterMap = originalSearched.filter((inscription) => inscription.estado_general_inscripcion === filter)
+        setSearchedInscriptions({})
+      } else {
+        filterMap = inscriptionOriginal.filter((inscription) => inscription.estado_general_inscripcion === filter)
+      }
       setInscriptions(filterMap)
     }
     if (filterType === 'fecha') {
       let filterMap = []
-
       if (filter === 'Hoy') {
         const today = new Date()
-        filterMap = inscriptionOriginal.filter((inscription) => {
-          const inscriptionDate = new Date(inscription.fecha_creacion) // Asegúrate de que la columna 'fecha' sea de tipo fecha
-          return inscriptionDate.toDateString() === today.toDateString()
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((inscription) => {
+            setSearchedInscriptions({})
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate.toDateString() === today.toDateString()
+          })
+        } else {
+          filterMap = inscriptionOriginal.filter((inscription) => {
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate.toDateString() === today.toDateString()
+          })
+        }
       } else if (filter === 'Semana') {
         const today = new Date()
         const lastWeek = new Date(today)
         lastWeek.setDate(today.getDate() - 7)
-        filterMap = inscriptionOriginal.filter((inscription) => {
-          const inscriptionDate = new Date(inscription.fecha_creacion)
-          return inscriptionDate >= lastWeek && inscriptionDate <= today
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((inscription) => {
+            setSearchedInscriptions({})
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= lastWeek && inscriptionDate <= today
+          })
+        } else {
+          filterMap = inscriptionOriginal.filter((inscription) => {
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= lastWeek && inscriptionDate <= today
+          })
+        }
       } else if (filter === 'Mes') {
         const today = new Date()
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
-        filterMap = inscriptionOriginal.filter((inscription) => {
-          const inscriptionDate = new Date(inscription.fecha_creacion)
-          return inscriptionDate >= firstDayOfMonth && inscriptionDate <= lastDayOfMonth
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((inscription) => {
+            setSearchedInscriptions({})
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= firstDayOfMonth && inscriptionDate <= lastDayOfMonth
+          })
+        } else {
+          filterMap = inscriptionOriginal.filter((inscription) => {
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= firstDayOfMonth && inscriptionDate <= lastDayOfMonth
+          })
+        }
       } else if (filter === 'Más Antiguos') {
-        filterMap = inscriptionOriginal.slice().sort((a, b) => {
-          const dateA = new Date(a.fecha_creacion)
-          const dateB = new Date(b.fecha_creacion)
-          return dateA - dateB
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.slice().sort((a, b) => {
+            setSearchedInscriptions({})
+            const dateA = new Date(a.fecha_creacion)
+            const dateB = new Date(b.fecha_creacion)
+            return dateA - dateB
+          })
+        } else {
+          filterMap = inscriptionOriginal.slice().sort((a, b) => {
+            const dateA = new Date(a.fecha_creacion)
+            const dateB = new Date(b.fecha_creacion)
+            return dateA - dateB
+          })
+        }
       }
 
       setInscriptions(filterMap)
@@ -460,6 +515,7 @@ export const RegisterList = () => {
     setInscriptions(inscriptionOriginal)
     disableShowFiltros()
     setActiveFilter(false)
+    setSearchedInscriptions(originalSearched)
   }
 
   return (
@@ -469,8 +525,8 @@ export const RegisterList = () => {
       {isModalOpen && modalOption === modalOptionList.loadingExcelModal && <LoadingExcelFileModal />}
       {isModalOpen && modalOption === modalOptionList.uploadingExcelModal && <UploadingExcelFileModal />}
       <Siderbar />
-      <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
-        <header className='grid place-items-center'>
+      <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto]'>
+        <header className='grid h-[10vh] place-items-center'>
           <Search searchFilter placeholder={'Busca un aprendiz'} icon iconClick={handleFilter} searchStudent={searchInscriptions} />
           <ul className={`absolute right-80 mt-1 top-4 w-36 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
             <li>
@@ -554,23 +610,27 @@ export const RegisterList = () => {
             </section>
           )}
         </header>
-        <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto'>
-          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
-          <div className='flex justify-center h-[11.5vh] relative bottom-0'>{(searchedInscriptions > 0 || !error || inscriptions > 0) && <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />}</div>
-          {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-            <div className='absolute flex flex-row-reverse gap-3 right-12 bottom-16'>
-              <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline>
-                <IoAddCircleOutline className='text-xl' /> Agregar
-              </Button>
-              <div className='rounded-full shadow-md bg-cyan-600'>
-                <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
-                  <AiOutlineFileAdd />
-                  <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
-                </label>
-                <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
+        <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto justify-evenly'>
+          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} startIndexSearch={startIndexSearch} endIndexSearch={endIndexSearch} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
+
+          <div className='flex flex-col items-center gap-1 py-1'>
+            <div className='flex justify-center w-full'>{inscriptions.length === 0 || error || loadingData ? <></> : searchedInscriptions.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <div className='grid w-full grid-flow-col-dense gap-3 place-content-end'>
+                <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline classNames='order-last'>
+                  <IoAddCircleOutline className='text-xl' />
+                  Agregar
+                </Button>
+                <div className='rounded-full shadow-md bg-cyan-600'>
+                  <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
+                    <AiOutlineFileAdd />
+                    <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
+                  </label>
+                  <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </section>
         <Footer />
       </section>
@@ -578,7 +638,7 @@ export const RegisterList = () => {
   )
 }
 
-const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData, searchedInscriptions, error }) => {
+const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, startIndexSearch = 0, endIndexSearch = 6, loadingData, searchedInscriptions, error }) => {
   const navigate = useNavigate()
   const handleAvales = (id) => {
     return navigate(`/registro-detalles/${id}`)
@@ -598,7 +658,7 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData, se
       </thead>
       <tbody className='grid grid-rows-6'>
         {searchedInscriptions.length > 0 && !error ? (
-          searchedInscriptions.slice(startIndex, endIndex).map((x) => (
+          searchedInscriptions.slice(startIndexSearch, endIndexSearch).map((x) => (
             <tr className='grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center' key={x.id_inscripcion}>
               <td className='max-w-[20ch] font-medium text-center break-words'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</td>
               <td className='font-light text-center max-w-[10ch] break-words'>{x.nombre_modalidad}</td>

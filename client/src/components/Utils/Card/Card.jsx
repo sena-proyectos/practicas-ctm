@@ -36,16 +36,24 @@ export const Card = ({ title, titleColor, description, buttonText, bgColor = 'bg
   )
 }
 
+export const CardWithChildren = ({ children, classNames = '' }) => {
+  return (
+    <section aria-describedby='card' className={`px-6 py-5 bg-white rounded-2xl ${classNames}`}>
+      {children}
+    </section>
+  )
+}
+
 export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, item1text, item2text, item3text, item4text, onClick }) => {
   return (
-    <div className='[perspective:1000px] group flex flex-col gap-1 rounded-xl md:h-[9.5rem] sm:h-[10rem] h-[8rem]' onClick={onClick}>
+    <div className='[perspective:1000px] group flex flex-col gap-1 rounded-xl h-[10rem]' onClick={onClick}>
       <div className='relative w-full h-full rounded-xl transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] bg-white'>
-        <div className='absolute flex flex-col w-full h-full gap-3 justify-center p-3 shadow-lg rounded-xl [backface-visibility:hidden] border-slate-100 border-1'>
+        <div className='absolute flex flex-col w-full h-full gap-3 justify-center p-3 shadow-lg rounded-xl [backface-visibility:hidden] bg-white '>
           <header className='flex flex-row w-fit '>
-            <div className='border-2 rounded-full w-14 h-14 border-violet-800 bg-violet-200'>
+            <div className='z-10 border-2 rounded-full w-14 h-14 border-violet-800 bg-violet-200'>
               <BsJournalBookmark className='w-full h-full scale-50' />
             </div>
-            <div className='relative w-24 h-5 my-auto text-center border-2 rounded-r-full right-2 -z-10 border-violet-800 bg-violet-200'>
+            <div className='relative w-24 h-5 my-auto text-center border-2 rounded-r-full right-2 border-violet-800 bg-violet-200'>
               <p className='text-xs font-medium'>{header}</p>
             </div>
           </header>
@@ -54,7 +62,7 @@ export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, it
             <span className='text-xs font-light'>{subtitle}</span>
           </section>
         </div>
-        <div className='absolute w-full h-full shadow-lg rounded-xl border-slate-100 border-1  [transform:rotateY(180deg)] [backface-visibility:hidden] p-3 flex flex-col gap-1 justify-center'>
+        <div className='absolute w-full h-full shadow-lg rounded-xl bg-white  [transform:rotateY(180deg)] [backface-visibility:hidden] p-3 flex flex-col gap-1 justify-center'>
           <section className='flex flex-col items-center'>
             <h6 className='text-xs font-medium'>{item1text}</h6>
             <p className='text-xs font-light'>{item1}</p>
@@ -79,7 +87,7 @@ export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, it
   )
 }
 
-export const CardStudent = ({ nameStudent, emailStudent, programStudent, courseStudent, height, userID, modalClicked }) => {
+export const CardStudent = ({ nameStudent, emailStudent, programStudent, courseStudent, height, userID }) => {
   return (
     <section className={`${height} rounded-lg shadow-xl w-auto bg-white`}>
       <header className='h-[40%] rounded-t-lg flex flex-col justify-center px-2 relative z-10 before:absolute before:inset-0 before:w-full before:h-full before:bg-black/50 before:-z-10 before:rounded-t-lg' style={{ backgroundImage: `url('https://www.profesionalonline.com/blog/wp-content/uploads/2022/01/que-es-la-programacion-orientada-a-objetos-header.jpg')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
@@ -98,4 +106,3 @@ export const CardStudent = ({ nameStudent, emailStudent, programStudent, courseS
     </section>
   )
 }
-

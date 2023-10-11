@@ -1,19 +1,22 @@
 import { useState, useEffect, useRef } from 'react'
+import { toast, ToastContainer } from 'react-toastify'
 
 // icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { IoSearchOutline } from 'react-icons/io5'
 import { BsCheck2Circle } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
+import { LuSave } from 'react-icons/lu'
 
 // componentes
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
-import { GetTeacherByName, createCourse, createStudent, getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento } from '../../../api/httpRequest'
+import { GetTeacherByName, createCourse, createStudent, getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento, registerUser } from '../../../api/httpRequest'
 import { studentsValidation } from '../../../validation/studentsValidation'
 import Swal from 'sweetalert2'
 import { coursesValidation } from '../../../validation/coursesValidation'
+import { addTeacherValidation } from '../../../validation/addTeacherValidation'
 
 const BitacoraModal = ({ closeModal, title }) => {
   /**
@@ -409,7 +412,7 @@ const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
   )
 }
 
-const PasswordModal = ({ closeModal, title }) => {
+const PasswordModal = ({ closeModal, title, onSavePassword }) => {
   /**
    * Función para manejar el cierre del modal.
    *
@@ -457,7 +460,6 @@ const PasswordModal = ({ closeModal, title }) => {
   const [showOldPassword, setShowOldPassword] = useState(passwordStatus.hidden)
   const [showNewPassword, setShowNewPassword] = useState(passwordStatus.hidden)
   const [showConfirmPassword, setShowConfirmPassword] = useState(passwordStatus.hidden)
-  const formValuesRef = useRef({})
 
   /**
    * Función para manejar el cambio de visibilidad de la antigua contraseña.
@@ -493,27 +495,13 @@ const PasswordModal = ({ closeModal, title }) => {
    */
   const handleConfirmPassword = () => (showConfirmPassword === passwordStatus.shown ? setShowConfirmPassword(passwordStatus.hidden) : setShowConfirmPassword(passwordStatus.shown))
 
-  /**
-   * Función para manejar el cambio en la entrada de datos del formulario.
-   *
-   * @function
-   * @name handleInputChange
-   * @param {Event} e - Evento de cambio de entrada de datos.
-   * @param {number} index - Índice del elemento en el formulario.
-   * @returns {void}
-   *
-   * @example
-   * handleInputChange(event, 0);
-   */
-  const handleInputChange = (e, index) => {
-    const { name, value } = e.target
-    formValuesRef.current = {
-      ...formValuesRef.current,
-      [index]: {
-        ...formValuesRef.current[index],
-        [name]: value
-      }
-    }
+  const handleSavePassword = async (e) => {
+    e.preventDefault()
+
+    const formPassword = Object.fromEntries(new FormData(e.target))
+    onSavePassword(formPassword)
+
+    closeModal()
   }
 
   return (
@@ -526,7 +514,7 @@ const PasswordModal = ({ closeModal, title }) => {
         </header>
         <section className='flex justify-center'>
           <section className='w-11/12 p-4'>
-            <form action='' className='flex flex-col gap-3 pt-6'>
+            <form onSubmit={handleSavePassword} className='flex flex-col gap-3 pt-6'>
               <section className='grid grid-cols-2'>
                 <label className='font-semibold w-fit whitespace-nowrap' htmlFor=''>
                   Contraseña Anterior
@@ -535,7 +523,7 @@ const PasswordModal = ({ closeModal, title }) => {
                   <span onClick={handleOldPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                     {showOldPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                   </span>
-                  <input type={showOldPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' onChange={(e) => handleInputChange(e)} />
+                  <input name='oldPassword' type={showOldPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                 </div>
               </section>
               <section className='grid grid-cols-2-50-50'>
@@ -547,7 +535,7 @@ const PasswordModal = ({ closeModal, title }) => {
                     <span onClick={handleNewPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                       {showNewPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                     </span>
-                    <input type={showNewPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' onChange={(e) => handleInputChange(e)} />
+                    <input name='newPassword' type={showNewPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                   </div>
                 </div>
               </section>
@@ -560,7 +548,7 @@ const PasswordModal = ({ closeModal, title }) => {
                     <span onClick={handleConfirmPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                       {showConfirmPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                     </span>
-                    <input type={showConfirmPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' onChange={(e) => handleInputChange(e)} />
+                    <input name='confirmPassword' type={showConfirmPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                   </div>
                 </div>
               </section>
@@ -975,4 +963,126 @@ const LoadingModal = ({ children, title = 'Cargando' }) => {
   )
 }
 
-export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, RegisterStudentModal, RegisterCourses }
+const AddTeacherModal = ({ closeModal, title, setNotify }) => {
+  const formRef = useRef(null)
+  /**
+   * Función para manejar el cierre del modal.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
+  const handleModal = () => {
+    closeModal()
+  }
+
+  const handleAddedTeacher = async (e) => {
+    e.preventDefault()
+
+    const id_rol = 3
+    const contrasena = 'InstructorCtm2023'
+    const formData = new FormData(formRef.current)
+    formData.append('id_rol', id_rol)
+    formData.append('contrasena', contrasena)
+    const data = Object.fromEntries(formData)
+
+    const { error } = addTeacherValidation.validate(data)
+    if (error !== undefined) {
+      let errorMessage
+      const customErrorMessages = {
+        nombre: 'El nombre debe tener al menos 3 caracteres.',
+        apellido: 'El apellido debe tener al menos 3 caracteres.',
+        num_documento: 'El número de documento debe tener entre 8 y 10 caracteres',
+        num_celular: 'El número de celular debe tener entre 8 y 10 caracteres'
+      }
+
+      const path = error.details[0].path[0]
+      if (customErrorMessages[path]) {
+        errorMessage = customErrorMessages[path]
+      }
+
+      toast.error(errorMessage, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        className: 'text-sm'
+      })
+    }
+    try {
+      await registerUser(data)
+      setNotify(true)
+      closeModal()
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  return (
+    <>
+      <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme='colored' />
+      <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+        <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
+        <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+          <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
+          <header className='grid pt-5 place-items-center '>
+            <h2 className={`text-xl font-medium text-center w-fit border-b-1 border-primary`}>{title}</h2>
+          </header>
+          <section className='flex justify-center'>
+            <section className='w-11/12 p-4'>
+              <form ref={formRef} onSubmit={handleAddedTeacher} className='flex flex-col gap-6'>
+                <section className='grid grid-cols-2 gap-x-4 gap-y-3'>
+                  <div className='flex flex-col'>
+                    <label htmlFor='name' className='text-sm font-light'>
+                      Nombre
+                    </label>
+                    <input id='name' name='nombre' type='text' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Juanito' required />
+                  </div>
+                  <div className='flex flex-col'>
+                    <label htmlFor='lastname' className='text-sm font-light'>
+                      Apellido
+                    </label>
+                    <input id='lastname' name='apellido' type='text' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Perez' required />
+                  </div>
+                  <div className='flex flex-col'>
+                    <label htmlFor='document' className='text-sm font-light'>
+                      No. Documento
+                    </label>
+                    <input id='document' name='num_documento' type='text' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='1234567890' required />
+                  </div>
+                  <div className='flex flex-col'>
+                    <label htmlFor='email' className='text-sm font-light'>
+                      Correo electrónico
+                    </label>
+                    <input id='email' name='correo_electronico' type='email' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='jperez27@sena.edu.co' required />
+                  </div>
+                  <div className='flex flex-col'>
+                    <label htmlFor='cellphone' className='text-sm font-light'>
+                      No. Celular
+                    </label>
+                    <input id='cellphone' name='num_celular' type='text' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='3012345678' required />
+                  </div>
+                </section>
+
+                <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                  <LuSave />
+                  Guardar
+                </Button>
+              </form>
+            </section>
+          </section>
+        </section>
+      </section>
+    </>
+  )
+}
+
+export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, AddTeacherModal, RegisterCourses, RegisterStudentModal }
