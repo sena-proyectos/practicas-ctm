@@ -260,6 +260,9 @@ const RegisterCourses = ({closedModal, title}) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
+  const resetForm = (e) => {
+    setFormData(initialState)
+  }
   const handleSubmit = async (e) => {
     e.preventDefault()
     const instructorSeguimiento = formData.seguimiento_nombre_completo
@@ -292,7 +295,6 @@ const RegisterCourses = ({closedModal, title}) => {
     }
 
     const { error } = coursesValidation.validate(formData)
-    console.log(error)
     if(error !== undefined) {
       return Swal.fire({
         icon: 'error',
@@ -301,16 +303,16 @@ const RegisterCourses = ({closedModal, title}) => {
     }
 
     const form = { ...formData }
-    const dataToSend = Array(form)
-    const data = await createCourse(dataToSend)
-    console.log(data)
+    const data = await createCourse(form)
+    Swal.fire({
+      icon: 'success',
+      title: '¡Éxito!',
+      text: data.statusText
+    })
+    resetForm()
 
   }
 
-  const resetForm = (e) => {
-    e.preventDefault()
-    setFormData(initialState)
-  }
 
   
   return (
