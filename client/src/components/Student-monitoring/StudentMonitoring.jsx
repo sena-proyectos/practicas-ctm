@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { Pagination } from '@nextui-org/pagination'
+import Swal from 'sweetalert2'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -13,6 +14,7 @@ import { GetUserByName, detailInfoStudents } from '../../api/httpRequest'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { modalities } from '../../import/staticData'
+import { AiOutlineFileAdd } from 'react-icons/ai'
 
 export const StudentMonitoring = () => {
   const [apprentices, setApprentices] = useState([])
@@ -22,6 +24,7 @@ export const StudentMonitoring = () => {
   const [loading, setLoading] = useState(true)
   const [pageNumber, setPageNumber] = useState(1)
   const [currentStudentList, setCurrentStudentList] = useState({})
+  const inputFileRef = useRef(null)
 
   /**
    * Función para manejar el clic en el icono.
@@ -186,6 +189,45 @@ export const StudentMonitoring = () => {
     key: modality.value
   }))
 
+  const handleExcelFile = (e) => {
+    const [file] = e.target.files
+    Swal.fire({
+      title: '¿Estás seguro que quieres subir este archivo?',
+      text: `Nombre del archivo: ${file.name}`,
+      showCancelButton: true,
+      confirmButtonText: 'Subir archivo',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => !Swal.isLoading(),
+      preConfirm: async (res) => {
+        console.log(res)
+        Swal.disableButtons()
+        return fetch('http://localhost:3000/api/test')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(response.statusText)
+            }
+            return response.json()
+          })
+          .catch(error => {
+            Swal.showValidationMessage(
+            `Request failed: ${error}`
+            )
+          })
+      }
+    }).then((result) => {
+      const value = Object.entries(result.value[0])
+      if (result.isConfirmed === false) {
+        return file.value === ''
+      }
+      Swal.fire({
+        title: value
+      })
+    })
+    const formData = new FormData()
+    formData.append('file', file)
+  }
+
   return (
     <>
       {modalFilter && (
@@ -219,11 +261,11 @@ export const StudentMonitoring = () => {
       )}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <Siderbar />
-        <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto] '>
+        <section className='grid flex-auto w-min grid-rows-[auto_1fr_auto] '>
           <header className='grid place-items-center h-[10vh]'>
             <Search searchFilter icon placeholder={'Busca un aprendiz'} iconClick={handleIconClick} searchStudent={searchApprentices} />
           </header>
-          <section className='flex flex-col justify-around'>
+          <section className='grid grid-rows-[1fr_auto] py-5'>
             {searchedApprentices.length > 0 && !error ? (
               <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
                 {searchedApprentices.slice(startIndex, endIndex).map((apprentice, i) => (
@@ -245,7 +287,16 @@ export const StudentMonitoring = () => {
                 )}
               </div>
             )}
-            <div className='flex items-center justify-center py-3'>{loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+            <div className='grid grid-rows-[auto_auto] place-items-center px-7 pt-5'>
+              {loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
+              <div className='ml-auto bg-green-600 rounded-full shadow-md'>
+                <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
+                  <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
+                  <AiOutlineFileAdd />
+                </label>
+                <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={inputFileRef} onChange={handleExcelFile} />
+              </div>
+            </div>
           </section>
           <Footer />
         </section>

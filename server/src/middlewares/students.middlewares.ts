@@ -3,6 +3,7 @@ import { type infoStudents } from '../interfaces/students.interfaces.js'
 import { type CustomError, DataNotValid, NumberIsNaN } from '../errors/customErrors.js'
 import { studentSchema } from '../schemas/students.schemas.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
+import * as XLSX from 'xlsx'
 
 export const checkRegisterStudentData: RequestHandler<{}, Response, infoStudents[]> = (req: Request, res: Response, next: NextFunction) => {
   const students = req.body as infoStudents[]
@@ -33,5 +34,43 @@ export const checkRegisterStudentData: RequestHandler<{}, Response, infoStudents
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)
+  }
+}
+
+export const readExcelFileStudents = async (req: Request, res: Response, _next: NextFunction): Promise<Response> => {
+  const { file } = req
+  try {
+    if (file === undefined) throw new DataNotValid('No se ha encontrado el archivo.')
+    const excelFile = file.buffer
+    const workbook = XLSX.read(excelFile, { type: 'buffer' })
+    const sheetName = workbook.SheetNames[0]
+    const worksheet = workbook.Sheets[sheetName]
+    const excelData: object[] = XLSX.utils.sheet_to_json(worksheet, {
+      raw: false,
+      dateNF: 'dd-mm-yyyy',
+      blankrows: false
+    })
+    const parsedSpaces = excelData.map((item: any) => {
+      if (typeof item !== 'object') return item
+      const trimmedObject: Record<string, any> = {}
+
+      for (const [key, value] of Object.entries(item)) {
+        typeof value === 'string' ? trimmedObject[key] = value.trim().toLocaleLowerCase() : trimmedObject[key] = value
+        if (typeof value === 'string' && key === 'Tipo Documento') {
+          trimmedObject[key] = value.replace(/\./g, '').toLocaleLowerCase().trim()
+        }
+        if (typeof value === 'string' && (key === 'Fecha inicio contrato' || key === 'Fecha fin contrato')) {
+          trimmedObject[key] = value.split('/').reverse().join('-')
+        }
+        if (typeof value === 'string' && key === 'Fecha creación') {
+          delete trimmedObject['Fecha creación']
+          continue
+        }
+      }
+      return trimmedObject
+    })
+    return res.status(200).json({ parsedSpaces })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError ?? 'Error')
   }
 }
