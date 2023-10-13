@@ -247,7 +247,6 @@ const RegisterCourses = ({closedModal, title}) => {
   const initialState = {
     numero_ficha: '',
     nombre_programa_formacion: '',
-    fecha_inicio_lectiva: '',
     fecha_fin_lectiva: '',
     fecha_inicio_practica: '',
     nivel_formacion: '',
@@ -338,6 +337,8 @@ const RegisterCourses = ({closedModal, title}) => {
                     <input type='text' name='nombre_programa_formacion' value={formData.nombre_programa_formacion} onChange={handleInputChange} className='input-style border rounded-md my-2' placeholder='Nombre del programa' />
                     <input type='text' name='lider_nombre_completo' value={formData.lider_nombre_completo} onChange={handleInputChange} className='input-style border rounded-md my-2' placeholder='Instructor lider' />
                     <input type='text' name='seguimiento_nombre_completo' value={formData.seguimiento_nombre_completo} onChange={handleInputChange} className='input-style border rounded-md my-2' placeholder='Instructor seguimiento' />
+                  </div>
+                  <div className=''>
                     <select name='nivel_formacion' value={formData.nivel_formacion} onChange={handleInputChange} className='input-style border rounded-md w-[87%] my-2'>
                       <option value='' disabled defaultValue>
                         Nivel de formacion
@@ -345,11 +346,6 @@ const RegisterCourses = ({closedModal, title}) => {
                       <option value='Tecnologo'>Tecnologo</option>
                       <option value='Tecnico'>Tecnico</option>
                     </select>
-                  </div>
-                  <div className=''>
-                    <label>Inicio Lectiva</label>
-                    <input type='date' name='fecha_inicio_lectiva' value={formData.fecha_inicio_lectiva} onChange={handleInputChange} className='input-style my-2 border rounded-md w-[88%]' />
-                    <br />
                     <label>Fin lectiva</label>
                     <input type='date' name='fecha_fin_lectiva' value={formData.fecha_fin_lectiva} onChange={handleInputChange} className='input-style my-2 border rounded-md w-[88%]' />
                     <br />

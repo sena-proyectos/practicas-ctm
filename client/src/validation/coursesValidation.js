@@ -5,7 +5,6 @@ export const coursesValidation = Joi.object({
   nombre_programa_formacion: Joi.string().required().min(3).max(50),
   fecha_fin_lectiva: Joi.date().required(),
   fecha_inicio_practica: Joi.date().required(),
-  fecha_inicio_lectiva: Joi.date().required(),
   nivel_formacion: Joi.string().required(),
   seguimiento_nombre_completo: Joi.string().required(),
   lider_nombre_completo: Joi.allow(null),
