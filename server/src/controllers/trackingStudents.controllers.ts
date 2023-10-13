@@ -46,7 +46,6 @@ export const modifyLetterByID = async (req: Request, res: Response): Promise<Res
     if (query.affectedRows === 0) throw new DbError('Error al modificar los datos de la carta')
     return res.status(httpStatus.OK).json(query)
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }

@@ -13,7 +13,7 @@ enum LetterState {
 export const letterSchema = Joi.object({
   tipo_carta_aprendiz: Joi.alternatives().try(Joi.string().valid(typeOfLetter.start), Joi.string().valid(typeOfLetter.end)),
   estado_carta_aprendiz: Joi.alternatives().try(Joi.string().valid(LetterState.presented), Joi.string().valid(LetterState.noPresented)),
-  obsevaciones: Joi.string().min(5).max(200),
+  observaciones: Joi.string().min(5).max(200),
   usuario_responsable: Joi.number().required()
 })
 
