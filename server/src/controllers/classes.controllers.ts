@@ -159,16 +159,17 @@ export const getStudentsClassByClassNumber: RequestHandler<{ numero_ficha: strin
  * @returns una promesa que se resuelve en un objeto de respuesta.
  */
 export const createClass: RequestHandler<{}, Response, classes> = async (req: Request<{}>, res: Response): Promise<Response> => {
-  const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_instructor_lider, id_nivel_formacion } = req.body
+  const { numero_ficha, nombre_programa_formacion, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_instructor_lider, id_nivel_formacion } = req.body
   const classNumber = Number(numero_ficha)
   const leaderTeacherNumber = Number(id_instructor_seguimiento)
   const practicalTeacherNumber = Number(id_instructor_lider)
   const formationNumber = Number(id_nivel_formacion)
   try {
-    const [classQuery] = await connection.query('INSERT INTO fichas (numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_instructor_lider, id_nivel_formacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [classNumber, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, leaderTeacherNumber, practicalTeacherNumber, formationNumber])
+    const [classQuery] = await connection.query('INSERT INTO fichas (numero_ficha, nombre_programa_formacion, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_instructor_lider, id_nivel_formacion) VALUES (?, ?, ?, ?, ?, ?, ?)', [classNumber, nombre_programa_formacion, fecha_fin_lectiva, fecha_inicio_practica, leaderTeacherNumber, practicalTeacherNumber, formationNumber])
     if (!Array.isArray(classQuery) && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo crear la ficha.', errorCodes.ERROR_CREATE_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
+    console.log(error);
     return handleHTTP(res, error as CustomError)
   }
 }
