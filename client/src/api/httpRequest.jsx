@@ -290,3 +290,7 @@ export const getVisitDataById = async (id) => {
   return await axios.get(URL)
 }
 
+export const sendExcelContrato = async (payload) => {
+  const URL = `${baseUrl}${api}/read-excel-file/students`
+  return await axios.post(URL, payload)
+}

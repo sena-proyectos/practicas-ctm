@@ -10,7 +10,7 @@ import { Search } from '../Search/Search'
 import { CardStudent } from '../Utils/Card/Card'
 import { FilterModal } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
-import { GetUserByName, detailInfoStudents } from '../../api/httpRequest'
+import { GetUserByName, detailInfoStudents, sendExcelContrato } from '../../api/httpRequest'
 import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { modalities } from '../../import/staticData'
@@ -189,6 +189,17 @@ export const StudentMonitoring = () => {
     key: modality.value
   }))
 
+  const sendExcelFile = async () => {
+    const [file] = inputFileRef.current.files
+    const formData = new FormData()
+    try {
+      formData.append('excelFile', file)
+      return await sendExcelContrato(formData)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   const handleExcelFile = (e) => {
     const [file] = e.target.files
     Swal.fire({
@@ -198,34 +209,31 @@ export const StudentMonitoring = () => {
       confirmButtonText: 'Subir archivo',
       cancelButtonText: 'Cancelar',
       showLoaderOnConfirm: true,
-      allowOutsideClick: () => !Swal.isLoading(),
-      preConfirm: async (res) => {
-        console.log(res)
-        Swal.disableButtons()
-        return fetch('http://localhost:3000/api/test')
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(response.statusText)
-            }
-            return response.json()
-          })
-          .catch(error => {
-            Swal.showValidationMessage(
-            `Request failed: ${error}`
-            )
-          })
-      }
-    }).then((result) => {
-      const value = Object.entries(result.value[0])
-      if (result.isConfirmed === false) {
-        return file.value === ''
-      }
+      preConfirm: () => {
+        return new Promise((resolve, reject) => {
+          sendExcelFile()
+            .then(({ data }) => {
+              const { readedIDs } = data
+              resolve(readedIDs)
+            })
+            .catch(() => {
+              reject(new Error('Error al subir el archivo'))
+            })
+        })
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then(({ value }) => {
       Swal.fire({
-        title: value
+        title: `${value} aprendices de subidos correctamente.`
       })
+      getApprentices()
     })
-    const formData = new FormData()
-    formData.append('file', file)
+      .catch((error) => {
+        Swal.fire({
+          title: 'Error al subir el archivo'
+        })
+        console.error(error)
+      })
   }
 
   return (
