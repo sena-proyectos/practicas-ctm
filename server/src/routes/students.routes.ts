@@ -1,8 +1,8 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
 import { checkName } from '../middlewares/users.middlewares.js'
-import { createStudents, getDetailInfoStudent, getDetailInfoStudents, getStudentByName, getStudents, getStudentsById } from '../controllers/students.controllers.js'
-import { checkRegisterStudentData, readExcelFileStudents } from '../middlewares/students.middlewares.js'
+import { createContractStudentsExcel, createStudents, getDetailInfoStudent, getDetailInfoStudents, getStudentByName, getStudents, getStudentsById } from '../controllers/students.controllers.js'
+import { checkRegisterStudentData, classifyExcel, readExcelFileStudents } from '../middlewares/students.middlewares.js'
 import { configureMulterExcel } from '../middlewares/inscriptions.middlewares.js'
 
 const studentRoutes: IRouter = Router()
@@ -17,6 +17,6 @@ studentRoutes.get('/detailInfoStudent/:id', checkIdReq, getDetailInfoStudent)
 
 // * POST
 studentRoutes.post('/create-students', checkRegisterStudentData, createStudents)
-studentRoutes.post('/read-excel-file/students', multerFile, readExcelFileStudents)
+studentRoutes.post('/read-excel-file/students', multerFile, readExcelFileStudents, classifyExcel, createContractStudentsExcel)
 
 export { studentRoutes }

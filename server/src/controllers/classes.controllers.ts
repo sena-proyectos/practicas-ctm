@@ -182,7 +182,7 @@ export const createClass: RequestHandler<{}, Response, classes> = async (req: Re
  * @param {Response} res - El parámetro `res` es el objeto de respuesta que se devolverá al cliente. Se
  * utiliza para enviar la respuesta HTTP con los datos de clase actualizados o un mensaje de error.
  * @returns una promesa que se resuelve en un objeto de respuesta.
- */
+ *
 export const editClass: RequestHandler<{ id: string }, Response, classes> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
   const { id } = req.params
   const idNumber = Number(id)
