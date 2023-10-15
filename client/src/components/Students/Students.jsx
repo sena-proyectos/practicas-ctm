@@ -9,12 +9,15 @@ import { AiOutlineEye } from 'react-icons/ai'
 import { PiCaretRightBold } from 'react-icons/pi'
 import { TiDelete } from 'react-icons/ti'
 import { BiSad } from 'react-icons/bi'
+import { GrAddCircle } from 'react-icons/gr'
+
 
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById } from '../../api/httpRequest'
-import { InfoStudentModal } from '../Utils/Modals/Modals'
+import { InfoStudentModal, RegisterStudentModal } from '../Utils/Modals/Modals'
+import { Button } from '../Utils/Button/Button'
 
 export const Students = () => {
   const [pageNumber, setPageNumber] = useState(1)
@@ -28,6 +31,7 @@ export const Students = () => {
   const [showFiltros, setShowFiltros] = useState(false)
   const [filtersButtons, setFiltersButtons] = useState({ modalidad: false, etapa: false })
   const [activeFilter, setActiveFilter] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const [loadingData, setLoadingData] = useState({ course: true, students: true })
 
   /**
@@ -52,6 +56,9 @@ export const Students = () => {
     } catch (err) {
       throw new Error(err)
     }
+  }
+  const handleStudentModal = () => {
+    setIsOpen(true)
   }
 
   useEffect(() => {
@@ -84,6 +91,7 @@ export const Students = () => {
   }
 
   const handleStateModal = () => setShowModalStudent(false)
+  const handleCloseModal = () => setIsOpen(false)
 
   /**
    * Función asincrónica para obtener la información detallada de un estudiante por su ID.
@@ -250,6 +258,7 @@ export const Students = () => {
       {showModalStudent && (
         <InfoStudentModal closeModal={handleStateModal} title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} cellPhoneNumber={userInfoById.celular_aprendiz} program={userInfoById.nombre_programa_formacion} courseNumber={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} formationStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} lectivaEnd={dates.fin_lectiva} productiveStart={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} positionSuperior={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celphoneSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />
       )}
+      {isOpen && <RegisterStudentModal closedModal={handleCloseModal}  title={'Registra un estudiante'}/>}
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-2-85-15'>
         <section className='w-[95%] h-[95%] m-auto'>
@@ -400,6 +409,10 @@ export const Students = () => {
             <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0'>
               <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
             </div>
+            <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleStudentModal}>
+              <GrAddCircle className='text-white' />
+              Agregar
+            </Button>
           </div>
         </section>
         <Footer />

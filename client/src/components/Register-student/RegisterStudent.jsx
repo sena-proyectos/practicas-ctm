@@ -163,7 +163,7 @@ export const RegisterStudent = () => {
     if (error !== undefined) {
       return Swal.fire({
         icon: 'error',
-        title: 'Oops...'
+        title: 'Oops...',
       })
     }
 

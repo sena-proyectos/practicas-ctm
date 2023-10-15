@@ -80,7 +80,7 @@ export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData
 export const getTeacherByName: RequestHandler<{ nombreCompleto: string }, Response, unknown> = async (req: Request<{ nombreCompleto: string }>, res: Response): Promise<Response> => {
   const { nombreCompleto } = req.query
   try {
-    const [teacher] = await connection.query('SELECT CONCAT(nombres_usuario, " ", apellidos_usuario) AS nombre_completo, id_usuario, nombres_usuario, apellidos_usuario, tipo_documento_usuario, numero_documento_usuario, email_usuario, numero_celular_usuario, id_rol FROM usuarios WHERE id_rol = 3 AND CONCAT(nombres_usuario, " ", apellidos_usuario) LIKE ?', [`%${nombreCompleto as string}%`])
+    const [teacher] = await connection.query('SELECT CONCAT(nombres_usuario, " ", apellidos_usuario) AS nombre_completo, id_usuario, nombres_usuario, apellidos_usuario, tipo_documento_usuario, numero_documento_usuario, email_usuario, numero_celular_usuario, id_rol FROM usuarios WHERE id_rol = 3 OR id_rol = 4 AND CONCAT(nombres_usuario, " ", apellidos_usuario) LIKE ?', [`%${nombreCompleto as string}%`])
     if (!Array.isArray(teacher) || teacher?.length === 0) throw new DbErrorNotFound('No se encontró el instructor.', errorCodes.ERROR_GET_TEACHER)
     return res.status(httpStatus.OK).json({ data: teacher })
   } catch (error) {

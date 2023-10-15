@@ -12,7 +12,10 @@ import { LuSave } from 'react-icons/lu'
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
-import { getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento, registerUser } from '../../../api/httpRequest'
+import { GetTeacherByName, createCourse, createStudent, getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento, registerUser } from '../../../api/httpRequest'
+import { studentsValidation } from '../../../validation/studentsValidation'
+import Swal from 'sweetalert2'
+import { coursesValidation } from '../../../validation/coursesValidation'
 import { addTeacherValidation } from '../../../validation/addTeacherValidation'
 
 const BitacoraModal = ({ closeModal, title }) => {
@@ -84,6 +87,295 @@ const BitacoraModal = ({ closeModal, title }) => {
     </section>
   )
 }
+const RegisterStudentModal = ({ closedModal, title }) => {
+  const handleModal = () => {
+    closedModal()
+  }
+  const initialState = {
+    nombre_aprendiz: '',
+    tipo_documento_aprendiz: '',
+    email_aprendiz: '',
+    estado_aprendiz: '',
+    id_empresa: '',
+    id_modalidad: '',
+    apellido_aprendiz: '',
+    numero_documento_aprendiz: '',
+    celular_aprendiz: '',
+    fecha_fin_practica_aprendiz: '',
+    id_arl: '',
+    id_jefe: ''
+  }
+  const [formData, setFormData] = useState(initialState)
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
+  const resetForm = () => {
+    setFormData(initialState)
+  }
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const empresa = formData.id_empresa
+      const arl = formData.id_arl
+      const modalidad = formData.id_modalidad
+      const jefe = formData.id_jefe
+
+      if(empresa !== ""){
+        formData.id_empresa = 1
+      }
+      if(arl !== ""){
+        formData.id_arl = 1
+      }
+      if (modalidad === "1") {
+        formData.id_modalidad = 1
+      } else if (modalidad === "2") {
+        formData.id_modalidad = 2
+      } else if (modalidad === "3") {
+        formData.id_modalidad = 3
+      } else if (modalidad === "4") {
+        formData.id_modalidad = 4
+      } else {
+        formData.id_modalidad = 5
+      }
+      if (jefe !== ""){
+        formData.id_jefe = 1
+      }
+
+    } catch (error) {
+      throw new Error(error)
+    }
+    const { error } = studentsValidation.validate(formData)
+
+    if (error !== undefined) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Complete los campos requeridos'
+      })
+    }
+
+    const form = { ...formData }
+    const dataToSend = Array(form)
+    const data = await createStudent(dataToSend)
+
+    Swal.fire({
+      icon: 'success',
+      title: '¡Éxito!',
+      text: data.statusText
+    })
+    resetForm()
+
+  }
+  return (
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter'>
+        <div className='flex items-center justify-center h-full'>
+          <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+            <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
+            <header className='grid pt-5 place-items-center '>
+              <h3 className='text-2xl font-semibold'>
+                <i className='fi fi-rr-smile-plus text-green-600 px-3'></i>
+                {title}
+              </h3>
+            </header>
+            <section className='flex-auto w-5/6 mx-auto'>
+              <form action='' className='flex flex-col gap-3 pt-8'>
+                <div className='grid grid-cols-2 gap-2'>
+                  <div className=''>
+                    <input type='text' name='nombre_aprendiz' value={formData.nombre_aprendiz} className='input-style my-2 border rounded-md' placeholder='Nombres' onChange={handleInputChange} />
+                    <select name='tipo_documento_aprendiz' value={formData.tipo_documento_aprendiz} className='input-style my-2 border rounded-md w-[87%]' onChange={handleInputChange}>
+                      <option value='' disabled defaultValue>
+                        Tipo de documento
+                      </option>
+                      <option value='T.I'>T.I</option>
+                      <option value='C.C'>C.C</option>
+                      <option value='C.E'>C.E</option>
+                    </select>
+                    <input type='text' name='email_aprendiz' value={formData.email_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' placeholder='Email' />
+                    <input type='text' name='estado_aprendiz' value={formData.estado_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' placeholder='Estado del aprendiz' />
+                    <input type='text' name='id_empresa' value={formData.id_empresa} className='input-style my-2 border rounded-md' placeholder='Empresa' onChange={handleInputChange} />
+                    <select name='id_modalidad' value={formData.id_modalidad} onChange={handleInputChange} className='input-style my-2 border rounded-md w-[87%]'>
+                      <option value='' disabled defaultValue>
+                        Modalidad
+                      </option>
+                      <option value='1'>Pasantias</option>
+                      <option value='2'>Contrato De aprendizaje</option>
+                      <option value='3'>Proyecto productivo</option>
+                      <option value='4'>Monitoria</option>
+                      <option value='5'>Vinculacion Laboral</option>
+                    </select>
+                  </div>
+                  <div className=''>
+                    <input type='text' name='apellido_aprendiz' value={formData.apellido_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' placeholder='Apellidos' />
+                    <input type='text' name='numero_documento_aprendiz' value={formData.numero_documento_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' placeholder='Documento' />
+                    <input type='number' name='celular_aprendiz' value={formData.celular_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' placeholder='Celular' />
+                    <br />
+                    <label>Fin de prácticas</label>
+                    <input type='date' name='fecha_fin_practica_aprendiz' value={formData.fecha_fin_practica_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' />
+                    <input type='text' name='id_arl' value={formData.id_arl} className='input-style my-2 border rounded-md' placeholder='Arl' onChange={handleInputChange} />
+                    <input type='text' name='id_jefe' value={formData.id_jefe} className='input-style my-2 border rounded-md' placeholder='Nombre Jefe' onChange={handleInputChange} />
+                  </div>
+                </div>
+                <div className='grid grid-cols-2 mb-5'>
+                  <div className='mx-3'>
+                    <Button bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize='text-md' py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} onClick={resetForm}>
+                      Eliminar datos
+                    </Button>
+                  </div>
+                  <div className='mx-3'>
+                    <span className='absolute inset-y-0 flex items-center text-white left-3'>
+                      <BsCheck2Circle />
+                    </span>
+                    <Button bg={'bg-lime-500'} px={'pl-10 pr-6'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} onClick={handleSubmit}>
+                      Guardar
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </section>
+          </section>
+        </div>
+      </aside>
+    </section>
+  )
+}
+const RegisterCourses = ({closedModal, title}) => {
+  const handleModal = () => {
+    closedModal()
+  }
+  const initialState = {
+    numero_ficha: '',
+    nombre_programa_formacion: '',
+    fecha_fin_lectiva: '',
+    fecha_inicio_practica: '',
+    nivel_formacion: '',
+    id_nivel_formacion: '',
+    seguimiento_nombre_completo: '',
+    lider_nombre_completo: '',
+    id_instructor_seguimiento: '',
+    id_instructor_lider: ''
+  }
+  const [formData, setFormData] = useState(initialState)
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
+  const resetForm = (e) => {
+    setFormData(initialState)
+  }
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const instructorSeguimiento = formData.seguimiento_nombre_completo
+    const nivelDeFormacion = formData.nivel_formacion
+    const instructorLider = formData.lider_nombre_completo
+
+    try {
+      if (instructorSeguimiento) {
+        const res = await GetTeacherByName(instructorSeguimiento)
+        const response = res.data.data[0].id_usuario
+        formData.id_instructor_seguimiento = response
+      }
+
+      if (instructorLider === "" ) {
+        formData.id_instructor_lider = null
+      }else{
+        const res = await GetTeacherByName(instructorLider)
+        const response = res.data.data[1].id_usuario
+        formData.id_instructor_lider = response
+      }
+
+      if(nivelDeFormacion === "Tecnologo") {
+        formData.id_nivel_formacion = 2
+      }else {
+        formData.id_nivel_formacion = 1
+      }
+
+    } catch (error) {
+      throw new Error(error)
+    }
+
+    const { error } = coursesValidation.validate(formData)
+    if(error !== undefined) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Complete los campos requeridos'
+      })
+    }
+
+    const form = { ...formData }
+    const data = await createCourse(form)
+    Swal.fire({
+      icon: 'success',
+      title: '¡Éxito!',
+      text: data.statusText
+    })
+    resetForm()
+
+  }
+
+
+  
+  return (
+    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter'>
+        <div className='flex items-center justify-center h-full'>
+          <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+            <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
+            <header className='grid pt-5 place-items-center '>
+              <h3 className='text-2xl font-semibold'>
+                <i className='fi fi-rr-smile-plus text-green-600 px-3'></i>
+                {title}
+              </h3>
+            </header>
+            <section className='flex-auto w-5/6 mx-auto'>
+              <form action='' className='flex flex-col gap-3 pt-8'>
+                <div className='grid grid-cols-2 gap-2'>
+                  <div className=''>
+                    <input type='number' name='numero_ficha' value={formData.numero_ficha} onChange={handleInputChange} className='input-style border rounded-md my-2' placeholder='Numero de ficha' />
+                    <input type='text' name='nombre_programa_formacion' value={formData.nombre_programa_formacion} onChange={handleInputChange} className='input-style border rounded-md my-2' placeholder='Nombre del programa' />
+                    <input type='text' name='lider_nombre_completo' value={formData.lider_nombre_completo} onChange={handleInputChange} className='input-style border rounded-md my-2' placeholder='Instructor lider' />
+                    <input type='text' name='seguimiento_nombre_completo' value={formData.seguimiento_nombre_completo} onChange={handleInputChange} className='input-style border rounded-md my-2' placeholder='Instructor seguimiento' />
+                  </div>
+                  <div className=''>
+                    <select name='nivel_formacion' value={formData.nivel_formacion} onChange={handleInputChange} className='input-style border rounded-md w-[87%] my-2'>
+                      <option value='' disabled defaultValue>
+                        Nivel de formacion
+                      </option>
+                      <option value='Tecnologo'>Tecnologo</option>
+                      <option value='Tecnico'>Tecnico</option>
+                    </select>
+                    <label>Fin lectiva</label>
+                    <input type='date' name='fecha_fin_lectiva' value={formData.fecha_fin_lectiva} onChange={handleInputChange} className='input-style my-2 border rounded-md w-[88%]' />
+                    <br />
+                    <label>Inicio prácticas</label>
+                    <input type='date' name='fecha_inicio_practica' value={formData.fecha_inicio_practica} onChange={handleInputChange} className='input-style my-2 border rounded-md w-[88%]' />
+                  </div>
+                </div>
+                <div className='grid grid-cols-2 mb-5'>
+                  <div className='mx-3'>
+                    <Button bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize='text-md' py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} onClick={resetForm}>
+                      Eliminar datos
+                    </Button>
+                  </div>
+                  <div className='mx-3'>
+                    <span className='absolute inset-y-0 flex items-center text-white left-3'>
+                      <BsCheck2Circle />
+                    </span>
+                    <Button bg={'bg-lime-500'} px={'pl-10 pr-6'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} onClick={handleSubmit}>
+                      Guardar
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </section>
+          </section>
+        </div>
+      </aside>
+    </section>
+  )
+} 
 
 const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
   /**
@@ -789,4 +1081,4 @@ const AddTeacherModal = ({ closeModal, title, setNotify }) => {
   )
 }
 
-export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, AddTeacherModal }
+export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, AddTeacherModal, RegisterCourses, RegisterStudentModal }
