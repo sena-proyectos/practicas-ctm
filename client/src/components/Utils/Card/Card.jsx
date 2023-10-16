@@ -90,7 +90,7 @@ export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, it
 export const CardStudent = ({ nameStudent, emailStudent, programStudent, courseStudent, height, userID }) => {
   return (
     <section className={`${height} rounded-lg shadow-xl w-auto bg-white`}>
-      <header className='h-[40%] rounded-t-lg flex flex-col justify-center px-2 relative z-10 before:absolute before:inset-0 before:w-full before:h-full before:bg-black/50 before:-z-10 before:rounded-t-lg' style={{ backgroundImage: `url('https://www.profesionalonline.com/blog/wp-content/uploads/2022/01/que-es-la-programacion-orientada-a-objetos-header.jpg')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <header className='h-[40%] rounded-t-lg flex flex-col justify-center px-2 relative z-10 before:absolute before:inset-0 before:w-full before:h-full before:bg-black/50 before:-z-10 before:rounded-t-lg' style={{ backgroundImage: 'url("https://www.profesionalonline.com/blog/wp-content/uploads/2022/01/que-es-la-programacion-orientada-a-objetos-header.jpg")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <p className='text-xs font-medium text-right text-white'>{courseStudent}</p>
         <h3 className='text-[13px] font-medium text-right text-white'>{programStudent}</h3>
       </header>
