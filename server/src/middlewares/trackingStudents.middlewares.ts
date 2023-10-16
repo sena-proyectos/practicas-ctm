@@ -26,9 +26,9 @@ export const checkBitacoraData = (req: Request, res: Response, next: NextFunctio
 }
 
 export const checkVisitData = (req: Request, res: Response, next: NextFunction): void => {
-  const { estado_visita, numero_visita, observaciones_visita, usuario_responsable } = req.body
+  const { id_aprendiz, estado_visita, observaciones_visita, usuario_responsable } = req.body
   try {
-    const { error } = visitSchema.validate({ estado_visita, numero_visita, observaciones_visita, usuario_responsable })
+    const { error } = visitSchema.validate({ id_aprendiz, estado_visita, observaciones_visita, usuario_responsable })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados no son válidos, verifícalos')
     next()
   } catch (error) {
