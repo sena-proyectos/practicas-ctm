@@ -162,7 +162,7 @@ const Siderbar = () => {
         </section>
         <ul className='flex flex-col w-[80%] mx-auto items-start justify-center cursor-pointer'>
           <section className='mb-auto flex w-full flex-col gap-[3px]'>
-            <hr className='w-full my-2 text-white border-[1.4px] rounded-lg' />
+            <hr className='w-full my-2 border-white border-[1.4px] rounded-lg' />
             <li>
               <Link to='/home' className={styles('/home')}>
                 <span className={spanStyle('/home')}>
@@ -217,27 +217,7 @@ const Siderbar = () => {
                 </Link>
               </li>
             )}
-            {/* {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
-              <li>
-                <Link to="/bitacoras" className={styles('/bitacoras')}>
-                  <span className={spanStyle('/bitacoras')}>
-                    <IoDocumentTextOutline />
-                  </span>
-                  {open && 'Bitácoras'}
-                </Link>
-              </li>
-            )} */}
-            {/* {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1]) || idRol === Number(keysRoles[2])) && (
-              <li>
-                <Link to="/visitas" className={styles('/visitas')}>
-                  <span className={spanStyle('/visitas')}>
-                    <IoCalendarClearOutline />
-                  </span>
-                  {open && 'Visitas'}
-                </Link>
-              </li>
-            )} */}
-            <hr className='w-full my-2 text-white border-[1.4px] rounded-lg' />
+            <hr className='w-full my-2 border-white border-[1.4px] rounded-lg' />
             <li>
               <Link to='/config' className={styles('/config')}>
                 <span className={spanStyle('/config')}>

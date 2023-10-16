@@ -161,7 +161,6 @@ DROP TABLE IF EXISTS `aprendices_bitacoras`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `aprendices_bitacoras` (
   `id_bitacora` int NOT NULL AUTO_INCREMENT,
-  `fecha_bitacora` date NOT NULL,
   `calificacion_bitacora` varchar(45) DEFAULT NULL,
   `observaciones_bitacora` varchar(500) DEFAULT NULL,
   `numero_bitacora` int NOT NULL,
@@ -179,7 +178,7 @@ CREATE TABLE `aprendices_bitacoras` (
 
 LOCK TABLES `aprendices_bitacoras` WRITE;
 /*!40000 ALTER TABLE `aprendices_bitacoras` DISABLE KEYS */;
-INSERT INTO `aprendices_bitacoras` VALUES (38,'2022-11-12',NULL,NULL,1,NULL,'2023-10-06 19:10:13'),(39,'2022-11-12',NULL,NULL,2,NULL,'2023-10-06 19:10:13'),(40,'2022-11-12',NULL,NULL,3,NULL,'2023-10-06 19:10:13'),(41,'2022-11-12',NULL,NULL,4,NULL,'2023-10-06 19:10:13'),(42,'2022-11-12',NULL,NULL,5,NULL,'2023-10-06 19:10:13'),(43,'2022-11-12',NULL,NULL,6,NULL,'2023-10-06 19:10:13'),(44,'2022-11-12',NULL,NULL,7,NULL,'2023-10-06 19:10:13'),(45,'2022-11-12',NULL,NULL,8,NULL,'2023-10-06 19:10:13'),(46,'2022-11-12',NULL,NULL,9,NULL,'2023-10-06 19:10:13'),(47,'2022-11-12',NULL,NULL,10,NULL,'2023-10-06 19:10:13'),(48,'2022-11-12',NULL,NULL,11,NULL,'2023-10-06 19:10:13'),(49,'2022-11-12',NULL,NULL,12,NULL,'2023-10-06 19:10:13'),(62,'2023-01-31',NULL,NULL,1,NULL,'2023-10-06 19:23:16'),(63,'2023-01-31',NULL,NULL,2,NULL,'2023-10-06 19:23:16'),(64,'2023-01-31',NULL,NULL,3,NULL,'2023-10-06 19:23:16'),(65,'2023-01-31',NULL,NULL,4,NULL,'2023-10-06 19:23:16'),(66,'2023-01-31',NULL,NULL,5,NULL,'2023-10-06 19:23:16'),(67,'2023-01-31',NULL,NULL,6,NULL,'2023-10-06 19:23:16'),(68,'2023-01-31',NULL,NULL,7,NULL,'2023-10-06 19:23:16'),(69,'2023-01-31',NULL,NULL,8,NULL,'2023-10-06 19:23:16'),(70,'2023-01-31',NULL,NULL,9,NULL,'2023-10-06 19:23:16'),(71,'2023-01-31',NULL,NULL,10,NULL,'2023-10-06 19:23:16'),(72,'2023-01-31',NULL,NULL,11,NULL,'2023-10-06 19:23:16'),(73,'2023-01-31',NULL,NULL,12,NULL,'2023-10-06 19:23:16');
+INSERT INTO `aprendices_bitacoras` VALUES (38,NULL,NULL,1,NULL,'2023-10-06 19:10:13'),(39,NULL,NULL,2,NULL,'2023-10-06 19:10:13'),(40,NULL,NULL,3,NULL,'2023-10-06 19:10:13'),(41,NULL,NULL,4,NULL,'2023-10-06 19:10:13'),(42,NULL,NULL,5,NULL,'2023-10-06 19:10:13'),(43,NULL,NULL,6,NULL,'2023-10-06 19:10:13'),(44,NULL,NULL,7,NULL,'2023-10-06 19:10:13'),(45,NULL,NULL,8,NULL,'2023-10-06 19:10:13'),(46,NULL,NULL,9,NULL,'2023-10-06 19:10:13'),(47,NULL,NULL,10,NULL,'2023-10-06 19:10:13'),(48,NULL,NULL,11,NULL,'2023-10-06 19:10:13'),(49,NULL,NULL,12,NULL,'2023-10-06 19:10:13'),(62,'Calificado','Todo ok',1,1,'2023-10-06 19:23:16'),(63,NULL,NULL,2,NULL,'2023-10-06 19:23:16'),(64,NULL,NULL,3,NULL,'2023-10-06 19:23:16'),(65,NULL,NULL,4,NULL,'2023-10-06 19:23:16'),(66,NULL,NULL,5,NULL,'2023-10-06 19:23:16'),(67,NULL,NULL,6,NULL,'2023-10-06 19:23:16'),(68,NULL,NULL,7,NULL,'2023-10-06 19:23:16'),(69,NULL,NULL,8,NULL,'2023-10-06 19:23:16'),(70,NULL,NULL,9,NULL,'2023-10-06 19:23:16'),(71,NULL,NULL,10,NULL,'2023-10-06 19:23:16'),(72,NULL,NULL,11,NULL,'2023-10-06 19:23:16'),(73,NULL,NULL,12,NULL,'2023-10-06 19:23:16');
 /*!40000 ALTER TABLE `aprendices_bitacoras` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -243,6 +242,7 @@ CREATE TABLE `aprendices_cartas` (
   `estado_carta_aprendiz` varchar(45) DEFAULT NULL,
   `fecha_modificacion` timestamp NOT NULL,
   `usuario_responsable` int DEFAULT NULL,
+  `observaciones` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id_carta_aprendiz`),
   KEY `usuario_responsable_Fk_idx` (`usuario_responsable`),
   CONSTRAINT `usuario_responsable_Fk` FOREIGN KEY (`usuario_responsable`) REFERENCES `usuarios` (`id_usuario`)
@@ -255,7 +255,7 @@ CREATE TABLE `aprendices_cartas` (
 
 LOCK TABLES `aprendices_cartas` WRITE;
 /*!40000 ALTER TABLE `aprendices_cartas` DISABLE KEYS */;
-INSERT INTO `aprendices_cartas` VALUES (5,'inicio','No presentado','2023-10-06 16:49:14',NULL),(6,'fin','No presentado','2023-10-06 16:49:14',NULL),(15,'inicio','No presentado','2023-10-06 19:10:13',NULL),(16,'fin','No presentado','2023-10-06 19:10:13',NULL),(19,'inicio','Presentado','2023-10-06 19:23:16',1),(20,'fin','No presentado','2023-10-06 19:23:16',1);
+INSERT INTO `aprendices_cartas` VALUES (5,'inicio','No presentado','2023-10-06 16:49:14',NULL,NULL),(6,'fin','No presentado','2023-10-06 16:49:14',NULL,NULL),(15,'inicio','No presentado','2023-10-06 19:10:13',NULL,NULL),(16,'fin','No presentado','2023-10-06 19:10:13',NULL,NULL),(19,'inicio','Presentado','2023-10-06 19:23:16',1,'Revisado'),(20,'fin','No presentado','2023-10-06 19:23:16',1,NULL);
 /*!40000 ALTER TABLE `aprendices_cartas` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -315,7 +315,6 @@ DROP TABLE IF EXISTS `aprendices_visitas`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `aprendices_visitas` (
   `id_visita` int NOT NULL AUTO_INCREMENT,
-  `fecha_visita` date DEFAULT NULL,
   `numero_visita` varchar(100) NOT NULL,
   `estado_visita` varchar(45) DEFAULT 'Pendiente',
   `observaciones_visita` varchar(500) DEFAULT NULL,
@@ -333,7 +332,7 @@ CREATE TABLE `aprendices_visitas` (
 
 LOCK TABLES `aprendices_visitas` WRITE;
 /*!40000 ALTER TABLE `aprendices_visitas` DISABLE KEYS */;
-INSERT INTO `aprendices_visitas` VALUES (1,'2023-10-09','1','Realizado','Todo malo pero ya que',1,'2023-10-10 17:48:34'),(2,'2023-10-09','2','Realizado','Lo hice Todo bien',1,'2023-10-10 17:51:30');
+INSERT INTO `aprendices_visitas` VALUES (1,'1','Realizado','Todo malo pero ya que',1,'2023-10-10 17:48:34'),(2,'2','Realizado','Lo hice todo bien',1,'2023-10-13 20:00:19');
 /*!40000 ALTER TABLE `aprendices_visitas` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -1171,4 +1170,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-10 12:56:22
+-- Dump completed on 2023-10-13 15:03:35

@@ -1,15 +1,17 @@
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 // Icons
 import { IoReturnDownBack } from 'react-icons/io5'
-import { PiBooksLight, PiScrollLight, PiCalendarCheckLight } from 'react-icons/pi'
 
 // Components
 import { Footer } from '../Footer/Footer'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { GetStudentsDetailById } from '../../api/httpRequest'
 import { apprenticeStore } from '../../store/config'
+import { Bitacoras } from '../Bitacoras/Bitacoras'
+import { Letters } from '../Letters/Letters'
+import { Visits } from '../Visits/Visits'
 
 export const InfoStudent = () => {
   const { id } = useParams()
@@ -34,7 +36,6 @@ export const InfoStudent = () => {
   useEffect(() => {
     getInfoStudent()
   }, [])
-
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
@@ -135,18 +136,11 @@ export const InfoStudent = () => {
               </section>
             </section>
           </section>
-          <section className='flex flex-row gap-6 justify-evenly'>
-            <Link to={`/bitacoras/${id}`} className='flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-blue-600 shadow-md shadow-blue-600 rounded-xl'>
-              <PiBooksLight className='text-xl' />
-              Bitácoras
-            </Link>
-            <Link to={`/cartas/${id}`} className='flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-yellow-600 shadow-md shadow-yellow-600 rounded-xl'>
-              <PiScrollLight className='text-xl' /> Cartas
-            </Link>
-            <Link to={`/visitas/${id}`} className='flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-green-600 shadow-md shadow-green-600 rounded-xl'>
-              <PiCalendarCheckLight className='text-xl' /> Visitas
-            </Link>
-          </section>
+        </section>
+        <section className='flex flex-col gap-4 px-6 pb-1'>
+          <Letters />
+          <Visits />
+          <Bitacoras />
         </section>
         <Footer />
       </section>
