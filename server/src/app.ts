@@ -5,8 +5,11 @@ import { httpStatus } from './models/httpStatus.enums.js'
 import bodyParser from 'body-parser'
 import { connection } from './config/db.js'
 import colors from 'colors/safe.js'
+import { schedulerTasks } from './utils/scheduler.js'
 
 const app: Application = express()
+
+schedulerTasks.invoke()
 
 const options: CorsOptions = {
   origin: '*',
@@ -32,10 +35,14 @@ app.use((_req: Request, res: Response<object>): Response<object> => {
   return res.status(httpStatus.NOT_FOUND).json({ error: errorMessage })
 })
 
+app.use((err: any, _req: any, res: any, _next: any) => {
+  console.error(err)
+  return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ error: 'Error interno del servidor' })
+})
+
 process.on('uncaughtException', (error) => {
   console.log(colors.bgRed('Ha ocurrido un error, por favor verifique el servicio MYSQL o el error del catch.'))
   console.error(error)
-  process.exit()
 })
 
 process.on('SIGINT', async () => {

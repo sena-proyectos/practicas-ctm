@@ -1,9 +1,11 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { getClasses, getClassById, getClassByClassNumber, createClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber, getClassesFree, getClassByInstructorId, editLiderInstructorClass } from '../controllers/classes.controllers.js'
-import { checkClassData, checkClassDate, checkClassNumber, checkLiderTeacherId, checkPracticalTeacherId } from '../middlewares/classes.middlewares.js'
+import { getClasses, getClassById, getClassByClassNumber, createClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber, getClassesFree, getClassByInstructorId, editLiderInstructorClass, createClassWithStudents } from '../controllers/classes.controllers.js'
+import { checkClassData, checkClassDate, checkClassNumber, checkLiderTeacherId, checkPracticalTeacherId, formatExcelFileClasses, readExcelFileClasses } from '../middlewares/classes.middlewares.js'
+import { configureMulterExcel } from '../middlewares/inscriptions.middlewares.js'
 
 const classRoutes: IRouter = Router()
+const multerFile = configureMulterExcel()
 
 // * GET
 
@@ -52,6 +54,7 @@ classRoutes.get('/classStudents', checkClassNumber, getStudentsClassByClassNumbe
 POST en el punto final '/class'. Cuando se realiza una solicitud POST a este punto final, ejecutará
 la función de middleware `checkClassData` seguida de la función del controlador `createClass`. */
 classRoutes.post('/class', checkClassData, createClass)
+classRoutes.post('/read-excel-file/classes', multerFile, readExcelFileClasses, formatExcelFileClasses, createClassWithStudents)
 
 // * PATCH
 /* `classRoutes.patch('/class/:id', checkIdReq, checkClassData, editClass)` está definiendo una ruta

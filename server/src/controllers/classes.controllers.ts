@@ -1,12 +1,12 @@
 import { type RequestHandler, type Request, type Response } from 'express'
 import { connection } from '../config/db.js'
-import { type CustomError, DbErrorNotFound } from '../errors/customErrors.js'
+import { type CustomError, DbErrorNotFound, DbError } from '../errors/customErrors.js'
 import { errorCodes } from '../models/errorCodes.enums.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { type id } from '../interfaces/users.interfaces.js'
 import { type classes } from '../interfaces/classes.interfaces.js'
-import { type ResultSetHeader } from 'mysql2'
+import { type ResultSetHeader, type RowDataPacket } from 'mysql2'
 
 /**
  * La función `getClasses` recupera una lista de clases de una base de datos y las devuelve como una
@@ -170,6 +170,42 @@ export const createClass: RequestHandler<{}, Response, classes> = async (req: Re
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const createClassWithStudents = async (req: Request, res: Response): Promise<Response> => {
+  const { parsedData } = req.body as { parsedData: any[] }
+  try {
+    const classPayload = parsedData.slice(0, 1)
+    const idClass = await addClassToDatabase(classPayload)
+    const studentsPayload = parsedData.slice(1)
+    await addStudentsClassToDatabase(studentsPayload, idClass)
+    return res.status(httpStatus.OK).json({ msg: 'Ficha y estudiantes creados correctamente' })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+const addClassToDatabase = async (payload: Array<{ numero_ficha: string, nombre_programa_formacion: string }>): Promise<number | DbError> => {
+  try {
+    await connection.execute('CALL subir_ficha_minima_info(?, ?, @id_ficha)', [payload[0].numero_ficha, payload[0].nombre_programa_formacion])
+    const [lastID] = await connection.query<RowDataPacket[]>('SELECT @id_ficha as last_id')
+    const id = lastID[0].last_id
+    return id
+  } catch (error) {
+    throw new DbError('Error al crear la ficha')
+  }
+}
+
+const addStudentsClassToDatabase = async (payload: Array<{ tipo_documento_aprendiz: string, numero_documento_aprendiz: string, nombre_aprendiz: string, apellido_aprendiz: string, celular_aprendiz: string, email_aprendiz: string, estado_aprendiz: string }>, idClass: number | DbError): Promise<boolean | DbError> => {
+  try {
+    for await (const item of payload) {
+      await connection.execute('CALL subir_aprendices_con_ficha(?, ?, ?, ?, ?, ?, ?, ?)', [item.tipo_documento_aprendiz, item.numero_documento_aprendiz, item.nombre_aprendiz, item.apellido_aprendiz, item.celular_aprendiz, item.email_aprendiz, item.estado_aprendiz, idClass])
+    }
+    return true
+  } catch (error) {
+    console.log(error)
+    throw new DbError('Error al agregar los aprendices')
   }
 }
 

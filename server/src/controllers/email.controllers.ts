@@ -23,3 +23,16 @@ export const sendEmail = async (req: Request, res: Response): Promise<Response> 
     return handleHTTP(res, error as CustomError)
   }
 }
+
+export const sendEmailAnyBody = async (payload: { body: string, subject: string, to: string }): Promise<void> => {
+  try {
+    await emailConfig.sendMail({
+      from: process.env.MAIL_USER,
+      to: payload.to,
+      subject: payload.subject,
+      html: payload.body
+    })
+  } catch (error: any) {
+    throw new Error(error)
+  }
+}
