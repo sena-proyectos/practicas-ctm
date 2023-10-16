@@ -44,7 +44,7 @@ export const Visits = () => {
     if (data.estado_visita === 'on') {
       data.estado_visita = 'Realizado'
     } else {
-      data.estado_visita = 'Sin Realizar'
+      data.estado_visita = 'Pendiente'
     }
     data.numero_visita = numero_visita
     sendData(id_visita, { ...data, usuario_responsable })

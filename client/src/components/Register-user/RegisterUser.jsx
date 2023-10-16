@@ -70,8 +70,8 @@ export const RegisterUser = () => {
           <div className='relative flex items-center justify-center w-full'>
             <div className='z-10 flex flex-col bg-white border shadow-xl p-7 justify-self-center rounded-2xl border-neutral-400 '>
               <h2 className='text-xl font-bold text-center'>Registrar Usuario</h2>
-              <div className={`flex w-72 flex-row justify-items-center rounded-lg border border-gray-400  relative mx-auto my-2.5 `}>
-                <div className={`absolute ml-2 mt-1 h-6 w-32 rounded-md bg-white transition-all `} ref={divRef}></div>
+              <div className='flex w-72 flex-row justify-items-center rounded-lg border border-gray-400  relative mx-auto my-2.5 '>
+                <div className='absolute w-32 h-6 mt-1 ml-2 transition-all bg-white rounded-md ' ref={divRef}></div>
               </div>
               <Form inputs={registerForm} isLoginForm={false} />
             </div>
