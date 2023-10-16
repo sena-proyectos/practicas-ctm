@@ -246,6 +246,7 @@ CREATE TABLE `aprendices_cartas` (
   `estado_carta_aprendiz` varchar(45) DEFAULT NULL,
   `fecha_modificacion` timestamp NOT NULL,
   `usuario_responsable` int DEFAULT NULL,
+  `observaciones` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id_carta_aprendiz`),
   KEY `usuario_responsable_Fk_idx` (`usuario_responsable`),
   CONSTRAINT `usuario_responsable_Fk` FOREIGN KEY (`usuario_responsable`) REFERENCES `usuarios` (`id_usuario`)
@@ -318,7 +319,6 @@ DROP TABLE IF EXISTS `aprendices_visitas`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `aprendices_visitas` (
   `id_visita` int NOT NULL AUTO_INCREMENT,
-  `fecha_visita` date DEFAULT NULL,
   `numero_visita` varchar(100) NOT NULL,
   `estado_visita` varchar(45) DEFAULT 'Pendiente',
   `observaciones_visita` varchar(500) DEFAULT NULL,

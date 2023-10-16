@@ -1,24 +1,19 @@
-import { Link, useParams } from 'react-router-dom'
-import { Footer } from '../Footer/Footer'
-import { Siderbar } from '../Siderbar/Sidebar'
+import { useParams } from 'react-router-dom'
 import { apprenticeStore } from '../../store/config'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CardWithChildren } from '../Utils/Card/Card'
 import { Button } from '../Utils/Button/Button'
-import { Slide, ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import { getLettersByStudentID, patchLetterByID } from '../../api/httpRequest'
 import { LuSave } from 'react-icons/lu'
 import { getUserID } from '../../import/getIDActualUser'
-import { CardInfoStudent } from '../Card-info-student/CardInfoStudent'
+import { PiScrollLight } from 'react-icons/pi'
 
 export const Letters = () => {
   const { id } = useParams()
   const { apprenticeData } = apprenticeStore()
 
   const [lettersInfo, setLettersInfo] = useState([])
-  const [modifyState, setModifyState] = useState({ 0: false, 1: false })
-  const formStartRef = useRef(null)
-  const formEndRef = useRef(null)
 
   const getDataLetters = async () => {
     try {
@@ -41,50 +36,49 @@ export const Letters = () => {
     getDataLetters()
   }, [])
 
-  const colorStates = {
-    Presentado: 'text-green-500',
-    'No presentado': 'text-red-500'
-  }
-
   const typeOfLetter = {
     start: 'inicio',
     end: 'fin'
   }
 
-  const btnHandleState = (index) => {
-    if (index === 1) {
-      setModifyState({ ...modifyState, 0: true })
-    } else {
-      setModifyState({ ...modifyState, 1: true })
-    }
+  const LetterState = {
+    presented: 'Presentado',
+    noPresented: 'No presentado'
   }
 
   const formHandleStateEnd = (e) => {
     e.preventDefault()
-    const formData = new FormData(formEndRef.current)
-    const selectedOption = formData.get('option-fin')
+    const formData = new FormData(e.target)
+    const data = Object.fromEntries(formData)
+    if (data.estado_carta_aprendiz === 'on') {
+      data.estado_carta_aprendiz = LetterState.presented
+    } else {
+      data.estado_carta_aprendiz = LetterState.noPresented
+    }
     const { id_carta_aprendiz } = lettersInfo[1]
     const { id_usuario: usuario_responsable } = getUserID().user
-    modifyLetterState(id_carta_aprendiz, { tipo_carta_aprendiz: typeOfLetter.end, estado_carta_aprendiz: selectedOption, usuario_responsable })
-
-    setModifyState({ ...modifyState, 1: false })
+    modifyLetterState(id_carta_aprendiz, { tipo_carta_aprendiz: typeOfLetter.end, ...data, usuario_responsable })
   }
 
   const formHandleStateStart = (e) => {
     e.preventDefault()
-    const formData = new FormData(formStartRef.current)
-    const selectedOption = formData.get(`option-inicio`)
+    const formData = new FormData(e.target)
+    const data = Object.fromEntries(formData)
+    if (data.estado_carta_aprendiz === 'on') {
+      data.estado_carta_aprendiz = LetterState.presented
+    } else {
+      data.estado_carta_aprendiz = LetterState.noPresented
+    }
     const { id_carta_aprendiz } = lettersInfo[0]
     const { id_usuario: usuario_responsable } = getUserID().user
-    modifyLetterState(id_carta_aprendiz, { tipo_carta_aprendiz: typeOfLetter.start, estado_carta_aprendiz: selectedOption, usuario_responsable })
-    setModifyState({ ...modifyState, 0: false })
+    modifyLetterState(id_carta_aprendiz, { tipo_carta_aprendiz: typeOfLetter.start, ...data, usuario_responsable })
   }
 
   const modifyLetterState = async (id, payload) => {
     try {
       const { data } = await patchLetterByID(id, payload)
       if (data.affectedRows === 0) throw new Error()
-      toast.success('Se ha modificado correctamente la carta de inicio')
+      toast.success('Se ha modificado correctamente la carta')
       getDataLetters()
     } catch (error) {
       const message = error.response.data.error.info.message
@@ -93,92 +87,79 @@ export const Letters = () => {
   }
 
   return (
-    <>
-      <ToastContainer transition={Slide} theme='colored' />
-      <section className='grid grid-cols-[auto_1fr] min-h-screen bg-whitesmoke'>
-        <Siderbar />
-        <section className='grid grid-rows-[1fr_auto]'>
-          <section className='px-4 pt-5 grid grid-rows-[auto_1fr] h-full gap-8'>
-            <header className='grid grid-cols-[auto_1fr] place-items-center'>
-              <Link to={`/info-aprendiz/${id}`} className='flex items-center gap-2 px-4 py-1 text-sm font-medium text-white transition-colors rounded-full bg-slate-600'>
-                Regresar
-              </Link>
-              <h2 className='text-xl justify-self-center'>
-                Cartas del aprendiz <span className='font-semibold'>{apprenticeData.nombre_completo}</span>
-              </h2>
-            </header>
-            <main className='grid gap-3 pb-5 auto-rows-max place-items-center'>
-              <CardInfoStudent />
-              <section className='grid items-start w-5/6 grid-cols-1 gap-y-3 md:grid-cols-2 justify-items-center'>
-                {lettersInfo.length > 0 ? (
-                  <>
-                    <CardWithChildren classNames='flex flex-col gap-3 w-4/5'>
-                      <header aria-roledescription='title'>
-                        <h3 className='text-lg font-normal text-center'>Carta de {lettersInfo[0].tipo_carta}</h3>
-                      </header>
-                      <section className='flex flex-col items-center justify-center gap-4'>
-                        <p className={colorStates[lettersInfo[0].estado_carta]}>{lettersInfo[0].estado_carta}</p>
-                        {modifyState[0] === false ? (
-                          <Button onClick={() => btnHandleState(1)} classNames='' bg='bg-blue-500' px='px-2' font='font-base' textSize='text-sm' py='py-1' rounded='rounded-lg'>
-                            Modificar estado
-                          </Button>
-                        ) : (
-                          <form className='flex flex-col gap-2' onSubmit={formHandleStateStart} ref={formStartRef}>
-                            <label className='text-sm'>Selecciona una opción:</label>
-                            <section className='flex justify-center gap-3'>
-                              <input type='radio' required name='option-inicio' id='presentado-1-inicio' value='Presentado' />
-                              <label htmlFor='presentado-1-inicio'>Presentado</label>
-                            </section>
-                            <section className='flex justify-center gap-3'>
-                              <input type='radio' required name={`option-inicio`} id={`no_presentado-2-inicio`} value='No presentado' />
-                              <label htmlFor={`no_presentado-2-inicio`}>No Presentado</label>
-                            </section>
-                            <Button name='save' type='submit' bg={'bg-[#16a34a]'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
-                              <LuSave /> Guardar
-                            </Button>
-                          </form>
-                        )}
-                      </section>
-                    </CardWithChildren>
-                    <CardWithChildren classNames='flex flex-col gap-3 w-4/5'>
-                      <header aria-roledescription='title'>
-                        <h3 className='text-lg font-normal text-center'>Carta de {lettersInfo[1].tipo_carta}</h3>
-                      </header>
-                      <section className='flex flex-col items-center justify-center gap-4'>
-                        <p className={colorStates[lettersInfo[1].estado_carta]}>{lettersInfo[1].estado_carta}</p>
-                        {modifyState[1] === false ? (
-                          <Button onClick={() => btnHandleState(2)} classNames='' bg='bg-blue-500' px='px-2' font='font-base' textSize='text-sm' py='py-1' rounded='rounded-lg'>
-                            Modificar estado
-                          </Button>
-                        ) : (
-                          <form className='flex flex-col gap-2' onSubmit={formHandleStateEnd} ref={formEndRef}>
-                            <label className='text-sm'>Selecciona una opción:</label>
-                            <section className='flex justify-center gap-3'>
-                              <input type='radio' required name='option-fin' id={`presentado-1-fin`} value='Presentado' />
-                              <label htmlFor={`presentado-1-fin`}>Presentado</label>
-                            </section>
-                            <section className='flex justify-center gap-3'>
-                              <input type='radio' required name={`option-fin`} id={`no_presentado-2-fin`} value='No presentado' />
-                              <label htmlFor={`no_presentado-2-fin`}>No Presentado</label>
-                            </section>
-                            <Button name='save' type='submit' bg={'bg-[#16a34a]'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
-                              <LuSave /> Guardar
-                            </Button>
-                          </form>
-                        )}
-                      </section>
-                    </CardWithChildren>
-                  </>
-                ) : (
-                  <h2>Error al conseguir las cartas del aprendiz</h2>
-                )}
+    <section className='flex flex-col w-full gap-4 md:flex-row'>
+      {lettersInfo.length > 0 ? (
+        <>
+          <CardWithChildren key={lettersInfo[0].id_carta_aprendiz} classNames='w-full'>
+            <form className='flex flex-col gap-1.5' onSubmit={formHandleStateStart}>
+              <header className='flex flex-row items-center justify-between'>
+                <div className='flex flex-row items-center gap-2'>
+                  <PiScrollLight className='text-3xl' />
+                  <div className='flex flex-col '>
+                    <h2 className='font-medium'>Carta de {lettersInfo[0].tipo_carta}</h2>
+                    <span className={`text-xs ${lettersInfo[0].estado_carta === 'Presentado' ? 'visible' : 'hidden'}`}>{lettersInfo[0].fecha_modificacion}</span>
+                  </div>
+                </div>
+                <input name='estado_carta_aprendiz' type='checkbox' className='w-4 h-4 rounded-xl accent-purple-700' defaultChecked={lettersInfo[0].estado_carta === 'Presentado'} />
+              </header>
+              <hr className='border-gray-300' />
+              <section className='flex flex-col gap-1 px-2 text-sm'>
+                <div className='flex flex-row justify-between'>
+                  <h3>{apprenticeData.nombre_completo}</h3>
+                  <h3>CC {apprenticeData.numero_documento_aprendiz}</h3>
+                </div>
+                <textarea name='observaciones' defaultValue={lettersInfo[0].observaciones} className='w-full h-14 p-1.5 overflow-y-auto text-sm border-gray-300 focus:outline-none resize-none rounded-xl border-1' placeholder='Observaciones...' />
+                <div className='flex flex-row items-center justify-between pt-2'>
+                  <h3>
+                    {apprenticeData.numero_ficha} - {apprenticeData.nombre_programa_formacion}
+                  </h3>
+                  <div className='w-fit'>
+                    <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                      <LuSave />
+                      Guardar
+                    </Button>
+                  </div>
+                </div>
               </section>
-            </main>
-          </section>
-          <Footer />
-        </section>
-      </section>
-    </>
+            </form>
+          </CardWithChildren>
+          <CardWithChildren key={lettersInfo[1].id_carta_aprendiz} classNames='w-full'>
+            <form className='flex flex-col gap-1.5' onSubmit={formHandleStateEnd}>
+              <header className='flex flex-row items-center justify-between'>
+                <div className='flex flex-row items-center gap-2'>
+                  <PiScrollLight className='text-3xl' />
+                  <div className='flex flex-col '>
+                    <h2 className='font-medium'>Carta de {lettersInfo[1].tipo_carta}</h2>
+                    <span className={`text-xs ${lettersInfo[1].estado_carta === 'Presentado' ? 'visible' : 'hidden'}`}>{lettersInfo[1].fecha_modificacion}</span>
+                  </div>
+                </div>
+                <input name='estado_carta_aprendiz' type='checkbox' required className='w-4 h-4 rounded-xl accent-purple-700' defaultChecked={lettersInfo[1].estado_carta === 'Presentado'} />
+              </header>
+              <hr className='border-gray-300' />
+              <section className='flex flex-col gap-1 px-2 text-sm'>
+                <div className='flex flex-row justify-between'>
+                  <h3>{apprenticeData.nombre_completo}</h3>
+                  <h3>CC {apprenticeData.numero_documento_aprendiz}</h3>
+                </div>
+                <textarea name='observaciones' defaultValue={lettersInfo[1].observaciones} className='w-full h-14 p-1.5 overflow-y-auto text-sm border-gray-300 focus:outline-none resize-none rounded-xl border-1' placeholder='Observaciones...' />
+                <div className='flex flex-row items-center justify-between pt-2'>
+                  <h3>
+                    {apprenticeData.numero_ficha} - {apprenticeData.nombre_programa_formacion}
+                  </h3>
+                  <div className='w-fit'>
+                    <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                      <LuSave />
+                      Guardar
+                    </Button>
+                  </div>
+                </div>
+              </section>
+            </form>
+          </CardWithChildren>
+        </>
+      ) : (
+        <h2>Error al conseguir las cartas del aprendiz</h2>
+      )}
+    </section>
   )
 }
-

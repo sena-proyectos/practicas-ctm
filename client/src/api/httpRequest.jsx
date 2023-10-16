@@ -286,8 +286,8 @@ export const patchVisitById = async (id, payload) => {
   return await axios.patch(URL, payload)
 }
 
-export const getVisitsIDByStudent = async (id) => {
-  const URL = `${baseUrl}${api}/getVisitsIDStudents/${id}`
+export const getVisitsByStudent = async (id) => {
+  const URL = `${baseUrl}${api}/getVisitsByStudent/${id}`
   return await axios.get(URL)
 }
 
