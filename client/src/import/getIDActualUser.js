@@ -5,6 +5,6 @@ export const getUserID = () => {
   const cookie = cookies.get('token')
   if (cookie) {
     const decoded = jwtDecode(cookie)
-    return decoded.data 
+    return decoded.data
   }
 }
