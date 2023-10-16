@@ -17,6 +17,7 @@ import { studentsValidation } from '../../../validation/studentsValidation'
 import Swal from 'sweetalert2'
 import { coursesValidation } from '../../../validation/coursesValidation'
 import { addTeacherValidation } from '../../../validation/addTeacherValidation'
+import { PiTrashBold } from 'react-icons/pi'
 
 const BitacoraModal = ({ closeModal, title }) => {
   /**
@@ -87,6 +88,7 @@ const BitacoraModal = ({ closeModal, title }) => {
     </section>
   )
 }
+
 const RegisterStudentModal = ({ closedModal, title }) => {
   const handleModal = () => {
     closedModal()
@@ -122,27 +124,26 @@ const RegisterStudentModal = ({ closedModal, title }) => {
       const modalidad = formData.id_modalidad
       const jefe = formData.id_jefe
 
-      if(empresa !== ""){
+      if (empresa !== '') {
         formData.id_empresa = 1
       }
-      if(arl !== ""){
+      if (arl !== '') {
         formData.id_arl = 1
       }
-      if (modalidad === "1") {
+      if (modalidad === '1') {
         formData.id_modalidad = 1
-      } else if (modalidad === "2") {
+      } else if (modalidad === '2') {
         formData.id_modalidad = 2
-      } else if (modalidad === "3") {
+      } else if (modalidad === '3') {
         formData.id_modalidad = 3
-      } else if (modalidad === "4") {
+      } else if (modalidad === '4') {
         formData.id_modalidad = 4
       } else {
         formData.id_modalidad = 5
       }
-      if (jefe !== ""){
+      if (jefe !== '') {
         formData.id_jefe = 1
       }
-
     } catch (error) {
       throw new Error(error)
     }
@@ -165,7 +166,6 @@ const RegisterStudentModal = ({ closedModal, title }) => {
       text: data.statusText
     })
     resetForm()
-
   }
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
@@ -175,62 +175,115 @@ const RegisterStudentModal = ({ closedModal, title }) => {
             <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
             <header className='grid pt-5 place-items-center '>
               <h3 className='text-2xl font-semibold'>
-                <i className='fi fi-rr-smile-plus text-green-600 px-3'></i>
+                <i className='px-3 text-green-600 fi fi-rr-smile-plus'></i>
                 {title}
               </h3>
             </header>
             <section className='flex-auto w-5/6 mx-auto'>
-              <form action='' className='flex flex-col gap-3 pt-8'>
+              <form action='' className='flex flex-col gap-6 pt-4'>
                 <div className='grid grid-cols-2 gap-2'>
-                  <div className=''>
-                    <input type='text' name='nombre_aprendiz' value={formData.nombre_aprendiz} className='input-style my-2 border rounded-md' placeholder='Nombres' onChange={handleInputChange} />
-                    <select name='tipo_documento_aprendiz' value={formData.tipo_documento_aprendiz} className='input-style my-2 border rounded-md w-[87%]' onChange={handleInputChange}>
-                      <option value='' disabled defaultValue>
-                        Tipo de documento
-                      </option>
-                      <option value='T.I'>T.I</option>
-                      <option value='C.C'>C.C</option>
-                      <option value='C.E'>C.E</option>
-                    </select>
-                    <input type='text' name='email_aprendiz' value={formData.email_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' placeholder='Email' />
-                    <input type='text' name='estado_aprendiz' value={formData.estado_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' placeholder='Estado del aprendiz' />
-                    <input type='text' name='id_empresa' value={formData.id_empresa} className='input-style my-2 border rounded-md' placeholder='Empresa' onChange={handleInputChange} />
-                    <select name='id_modalidad' value={formData.id_modalidad} onChange={handleInputChange} className='input-style my-2 border rounded-md w-[87%]'>
-                      <option value='' disabled defaultValue>
+                  <div className='flex flex-col gap-2'>
+                    <div className='flex flex-col'>
+                      <label htmlFor='name' className='text-sm font-light'>
+                        Nombres
+                      </label>
+                      <input id='name' type='text' name='nombre_aprendiz' value={formData.nombre_aprendiz} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Nombres' onChange={handleInputChange} />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='tipo_documento' className='text-sm font-light'>
+                        Tipo de Documento
+                      </label>
+                      <select id='tipo_documento' name='tipo_documento_aprendiz' value={formData.tipo_documento_aprendiz} className='px-2 py-[5px] text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' onChange={handleInputChange}>
+                        <option value='' disabled defaultValue>
+                          Tipo de documento
+                        </option>
+                        <option value='T.I'>T.I</option>
+                        <option value='C.C'>C.C</option>
+                        <option value='C.E'>C.E</option>
+                      </select>
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='email' className='text-sm font-light'>
+                        Correo Electronico
+                      </label>
+                      <input id='email' type='text' name='email_aprendiz' value={formData.email_aprendiz} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Email' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='estado' className='text-sm font-light'>
+                        Estado Formación
+                      </label>
+                      <input id='estado' type='text' name='estado_aprendiz' value={formData.estado_aprendiz} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Estado del aprendiz' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='empresa' className='text-sm font-light'>
+                        Empresa
+                      </label>
+                      <input id='empresa' type='text' name='id_empresa' value={formData.id_empresa} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Empresa' onChange={handleInputChange} />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='modalidad' className='text-sm font-light'>
                         Modalidad
-                      </option>
-                      <option value='1'>Pasantias</option>
-                      <option value='2'>Contrato De aprendizaje</option>
-                      <option value='3'>Proyecto productivo</option>
-                      <option value='4'>Monitoria</option>
-                      <option value='5'>Vinculacion Laboral</option>
-                    </select>
+                      </label>
+                      <select id='modalidad' name='id_modalidad' value={formData.id_modalidad} onChange={handleInputChange} className='px-2 py-[5px] text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500'>
+                        <option value='' disabled defaultValue>
+                          Modalidad
+                        </option>
+                        <option value='1'>Pasantias</option>
+                        <option value='2'>Contrato De aprendizaje</option>
+                        <option value='3'>Proyecto productivo</option>
+                        <option value='4'>Monitoria</option>
+                        <option value='5'>Vinculacion Laboral</option>
+                      </select>
+                    </div>
                   </div>
-                  <div className=''>
-                    <input type='text' name='apellido_aprendiz' value={formData.apellido_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' placeholder='Apellidos' />
-                    <input type='text' name='numero_documento_aprendiz' value={formData.numero_documento_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' placeholder='Documento' />
-                    <input type='number' name='celular_aprendiz' value={formData.celular_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' placeholder='Celular' />
-                    <br />
-                    <label>Fin de prácticas</label>
-                    <input type='date' name='fecha_fin_practica_aprendiz' value={formData.fecha_fin_practica_aprendiz} onChange={handleInputChange} className='input-style my-2 border rounded-md' />
-                    <input type='text' name='id_arl' value={formData.id_arl} className='input-style my-2 border rounded-md' placeholder='Arl' onChange={handleInputChange} />
-                    <input type='text' name='id_jefe' value={formData.id_jefe} className='input-style my-2 border rounded-md' placeholder='Nombre Jefe' onChange={handleInputChange} />
+                  <div className='flex flex-col gap-2'>
+                    <div className='flex flex-col'>
+                      <label htmlFor='lastname' className='text-sm font-light'>
+                        Apellidos
+                      </label>
+                      <input id='lastname' type='text' name='apellido_aprendiz' value={formData.apellido_aprendiz} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Apellidos' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='num_documento' className='text-sm font-light'>
+                        No. Documento
+                      </label>
+                      <input id='num_documento' type='text' name='numero_documento_aprendiz' value={formData.numero_documento_aprendiz} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Documento' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='cellphone' className='text-sm font-light'>
+                        No. Celular
+                      </label>
+                      <input id='cellphone' type='number' name='celular_aprendiz' value={formData.celular_aprendiz} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Celular' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='fin_productiva' className='text-sm font-light'>
+                        Fin de prácticas
+                      </label>
+                      <input id='fin_productiva' type='date' name='fecha_fin_practica_aprendiz' value={formData.fecha_fin_practica_aprendiz} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='arl' className='text-sm font-light'>
+                        ARL
+                      </label>
+                      <input id='arl' type='text' name='id_arl' value={formData.id_arl} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Arl' onChange={handleInputChange} />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='jefe' className='text-sm font-light'>
+                        Jefe Inmediato
+                      </label>
+                      <input id='jefe' type='text' name='id_jefe' value={formData.id_jefe} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Nombre Jefe' onChange={handleInputChange} />
+                    </div>
                   </div>
                 </div>
                 <div className='grid grid-cols-2 mb-5'>
-                  <div className='mx-3'>
-                    <Button bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize='text-md' py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} onClick={resetForm}>
-                      Eliminar datos
-                    </Button>
-                  </div>
-                  <div className='mx-3'>
-                    <span className='absolute inset-y-0 flex items-center text-white left-3'>
-                      <BsCheck2Circle />
-                    </span>
-                    <Button bg={'bg-lime-500'} px={'pl-10 pr-6'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} onClick={handleSubmit}>
-                      Guardar
-                    </Button>
-                  </div>
+                  <Button bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={resetForm}>
+                    <PiTrashBold />
+                    Limpiar
+                  </Button>
+                  <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleSubmit}>
+                    <LuSave />
+                    Guardar
+                  </Button>
                 </div>
               </form>
             </section>
@@ -240,7 +293,8 @@ const RegisterStudentModal = ({ closedModal, title }) => {
     </section>
   )
 }
-const RegisterCourses = ({closedModal, title}) => {
+
+const RegisterCourses = ({ closedModal, title }) => {
   const handleModal = () => {
     closedModal()
   }
@@ -278,26 +332,25 @@ const RegisterCourses = ({closedModal, title}) => {
         formData.id_instructor_seguimiento = response
       }
 
-      if (instructorLider === "" ) {
+      if (instructorLider === '') {
         formData.id_instructor_lider = null
-      }else{
+      } else {
         const res = await GetTeacherByName(instructorLider)
         const response = res.data.data[1].id_usuario
         formData.id_instructor_lider = response
       }
 
-      if(nivelDeFormacion === "Tecnologo") {
+      if (nivelDeFormacion === 'Tecnologo') {
         formData.id_nivel_formacion = 2
-      }else {
+      } else {
         formData.id_nivel_formacion = 1
       }
-
     } catch (error) {
       throw new Error(error)
     }
 
     const { error } = coursesValidation.validate(formData)
-    if(error !== undefined) {
+    if (error !== undefined) {
       return Swal.fire({
         icon: 'error',
         title: 'Complete los campos requeridos'
@@ -312,11 +365,8 @@ const RegisterCourses = ({closedModal, title}) => {
       text: data.statusText
     })
     resetForm()
-
   }
 
-
-  
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter'>
@@ -325,48 +375,75 @@ const RegisterCourses = ({closedModal, title}) => {
             <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
             <header className='grid pt-5 place-items-center '>
               <h3 className='text-2xl font-semibold'>
-                <i className='fi fi-rr-smile-plus text-green-600 px-3'></i>
+                <i className='px-3 text-green-600 fi fi-rr-smile-plus'></i>
                 {title}
               </h3>
             </header>
             <section className='flex-auto w-5/6 mx-auto'>
-              <form action='' className='flex flex-col gap-3 pt-8'>
+              <form action='' className='flex flex-col gap-6 pt-4'>
                 <div className='grid grid-cols-2 gap-2'>
-                  <div className=''>
-                    <input type='number' name='numero_ficha' value={formData.numero_ficha} onChange={handleInputChange} className='input-style border rounded-md my-2' placeholder='Numero de ficha' />
-                    <input type='text' name='nombre_programa_formacion' value={formData.nombre_programa_formacion} onChange={handleInputChange} className='input-style border rounded-md my-2' placeholder='Nombre del programa' />
-                    <input type='text' name='lider_nombre_completo' value={formData.lider_nombre_completo} onChange={handleInputChange} className='input-style border rounded-md my-2' placeholder='Instructor lider' />
-                    <input type='text' name='seguimiento_nombre_completo' value={formData.seguimiento_nombre_completo} onChange={handleInputChange} className='input-style border rounded-md my-2' placeholder='Instructor seguimiento' />
+                  <div className='flex flex-col gap-2'>
+                    <div className='flex flex-col'>
+                      <label htmlFor='num_ficha' className='text-sm font-light'>
+                        Número de ficha
+                      </label>
+                      <input id='num_ficha' type='number' name='numero_ficha' value={formData.numero_ficha} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Numero de ficha' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='programa' className='text-sm font-light'>
+                        Programa de formación
+                      </label>
+                      <input id='programa' type='text' name='nombre_programa_formacion' value={formData.nombre_programa_formacion} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Nombre del programa' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='instructor_lider' className='text-sm font-light'>
+                        Instructor Líder
+                      </label>
+                      <input id='instructor_lider' type='text' name='lider_nombre_completo' value={formData.lider_nombre_completo} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Instructor lider' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='instructor_seguimiento' className='text-sm font-light'>
+                        Instructor de Seguimiento
+                      </label>
+                      <input id='instructor_seguimiento' type='text' name='seguimiento_nombre_completo' value={formData.seguimiento_nombre_completo} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Instructor seguimiento' />
+                    </div>
                   </div>
-                  <div className=''>
-                    <select name='nivel_formacion' value={formData.nivel_formacion} onChange={handleInputChange} className='input-style border rounded-md w-[87%] my-2'>
-                      <option value='' disabled defaultValue>
-                        Nivel de formacion
-                      </option>
-                      <option value='Tecnologo'>Tecnologo</option>
-                      <option value='Tecnico'>Tecnico</option>
-                    </select>
-                    <label>Fin lectiva</label>
-                    <input type='date' name='fecha_fin_lectiva' value={formData.fecha_fin_lectiva} onChange={handleInputChange} className='input-style my-2 border rounded-md w-[88%]' />
-                    <br />
-                    <label>Inicio prácticas</label>
-                    <input type='date' name='fecha_inicio_practica' value={formData.fecha_inicio_practica} onChange={handleInputChange} className='input-style my-2 border rounded-md w-[88%]' />
+                  <div className='flex flex-col gap-2'>
+                    <div className='flex flex-col'>
+                      <label htmlFor='nivel_formacion' className='text-sm font-light'>
+                        Nivel de formación
+                      </label>
+                      <select id='nivel_formacion' name='nivel_formacion' value={formData.nivel_formacion} onChange={handleInputChange} className='px-2 py-[5px] text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500'>
+                        <option value='' disabled defaultValue>
+                          Nivel de formacion
+                        </option>
+                        <option value='Tecnologo'>Tecnologo</option>
+                        <option value='Tecnico'>Tecnico</option>
+                      </select>
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='fin_lectiva' className='text-sm font-light'>
+                        Fecha fin lectiva
+                      </label>
+                      <input id='fin_lectiva' type='date' name='fecha_fin_lectiva' value={formData.fecha_fin_lectiva} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label htmlFor='inicio_productiva' className='text-sm font-light'>
+                        Inicio prácticas
+                      </label>
+                      <input id='inicio_productiva' type='date' name='fecha_inicio_practica' value={formData.fecha_inicio_practica} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' />
+                    </div>
                   </div>
                 </div>
                 <div className='grid grid-cols-2 mb-5'>
-                  <div className='mx-3'>
-                    <Button bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize='text-md' py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} onClick={resetForm}>
-                      Eliminar datos
-                    </Button>
-                  </div>
-                  <div className='mx-3'>
-                    <span className='absolute inset-y-0 flex items-center text-white left-3'>
-                      <BsCheck2Circle />
-                    </span>
-                    <Button bg={'bg-lime-500'} px={'pl-10 pr-6'} font={'font-medium'} textSize={'text-md'} py={'py-2'} rounded={'rounded-xl'} shadow={'shadow-lg'} onClick={handleSubmit}>
-                      Guardar
-                    </Button>
-                  </div>
+                  <Button bg={'bg-red-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={resetForm}>
+                    <PiTrashBold />
+                    Limpiar
+                  </Button>
+                  <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleSubmit}>
+                    <LuSave />
+                    Guardar
+                  </Button>
                 </div>
               </form>
             </section>
@@ -375,7 +452,7 @@ const RegisterCourses = ({closedModal, title}) => {
       </aside>
     </section>
   )
-} 
+}
 
 const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
   /**
