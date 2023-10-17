@@ -18,10 +18,13 @@ import XLSX from 'xlsx'
  * usa para pasar a la siguiente función después de que el middleware actual haya completado su tarea.
  */
 export const checkClassData = (req: Request, res: Response, next: NextFunction): void => {
-  const { numero_ficha, nombre_programa_formacion, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion } = req.body
+  const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion } = req.body
+  console.log(req.body)
   try {
-    const { error } = classSchema.validate({ numero_ficha, nombre_programa_formacion, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion })
+    const { error } = classSchema.validate({ numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion })
+    console.log(error)
     if (error !== undefined) throw new DataNotValid('Los datos ingresados para la ficha no son válidos')
+
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)
@@ -115,7 +118,7 @@ export const readExcelFileClasses = async (req: Request, res: Response, next: Ne
     req.body.parsedData = excelData
     next()
   } catch (error) {
-    handleHTTP(res, error as CustomError ?? 'Error')
+    handleHTTP(res, (error as CustomError) ?? 'Error')
   }
 }
 
@@ -132,9 +135,7 @@ export const formatExcelFileClasses = async (req: Request, res: Response, next: 
           .replace(/\s+/g, '_')
           .toLowerCase()
           .trim()
-        const normalizedValue = String(value)
-          .toLowerCase()
-          .trim()
+        const normalizedValue = String(value).toLowerCase().trim()
         normalizedKey === 'reporte_de_aprendices' && (trimmedObject.tipo_documento_aprendiz = normalizedValue)
         normalizedKey === '__empty' && (trimmedObject.numero_documento_aprendiz = normalizedValue)
         normalizedKey === '__empty_1' && (trimmedObject.nombre_aprendiz = normalizedValue)
@@ -152,6 +153,6 @@ export const formatExcelFileClasses = async (req: Request, res: Response, next: 
     req.body.parsedData = formattedData
     next()
   } catch (error) {
-    handleHTTP(res, error as CustomError ?? 'Error')
+    handleHTTP(res, (error as CustomError) ?? 'Error')
   }
 }

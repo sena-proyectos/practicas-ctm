@@ -17,7 +17,7 @@ import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import Swal from 'sweetalert2'
 import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById, editDateClass, generateExcelClass } from '../../api/httpRequest'
-import { FilterModal, InfoStudentModal, RegisterStudentModal } from '../Utils/Modals/Modals'
+import { FilterModal, InfoStudentModal } from '../Utils/Modals/Modals'
 import { LuSave } from 'react-icons/lu'
 import { ToastContainer, toast } from 'react-toastify'
 import { keysRoles } from '../../import/staticData'
@@ -34,7 +34,7 @@ export const Students = () => {
   const [showFiltros, setShowFiltros] = useState(false)
   const [filtersButtons, setFiltersButtons] = useState({ modalidad: false, etapa: false })
   const [activeFilter, setActiveFilter] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
+  // const [isOpen, setIsOpen] = useState(false)
   const [loadingData, setLoadingData] = useState({ course: true, students: true })
   const [modalDates, setModalDates] = useState(false)
   const idRol = Number(localStorage.getItem('idRol'))
@@ -62,9 +62,9 @@ export const Students = () => {
       throw new Error(err)
     }
   }
-  const handleStudentModal = () => {
-    setIsOpen(true)
-  }
+  // const handleStudentModal = () => {
+  //   setIsOpen(true)
+  // }
 
   useEffect(() => {
     getStudents(courseNumber)
@@ -88,6 +88,12 @@ export const Students = () => {
     try {
       const response = await GetClassByNumber(payload)
       const { data } = response.data
+      const fechaInicioLectiva = data[0].fecha_inicio_lectiva
+      const fechaInicioPractica = data[0].fecha_inicio_practica
+      const parsedDateStart = fechaInicioLectiva.split('T')[0].split('-').join('-')
+      const parsedDateEnd = fechaInicioPractica.split('T')[0].split('-').join('-')
+      data[0].fecha_inicio_lectiva = parsedDateStart
+      data[0].fecha_inicio_practica = parsedDateEnd
       setDetailCourse(data[0])
       setLoadingData({ course: false })
     } catch (error) {
@@ -96,7 +102,7 @@ export const Students = () => {
   }
 
   const handleStateModal = () => setShowModalStudent(false)
-  const handleCloseModal = () => setIsOpen(false)
+  // const handleCloseModal = () => setIsOpen(false)
 
   /**
    * Función asincrónica para obtener la información detallada de un estudiante por su ID.
@@ -308,7 +314,7 @@ export const Students = () => {
       {showModalStudent && (
         <InfoStudentModal closeModal={handleStateModal} title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} cellPhoneNumber={userInfoById.celular_aprendiz} program={userInfoById.nombre_programa_formacion} courseNumber={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} formationStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} lectivaEnd={dates.fin_lectiva} productiveStart={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} positionSuperior={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celphoneSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />
       )}
-      {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />}
+      {/* {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />} */}
       {modalDates && (
         <FilterModal closeModal={handleModal} title={'Editar fechas'} width='w-11/12 md:w-1/3'>
           <section className='flex justify-center'>
@@ -323,13 +329,13 @@ export const Students = () => {
                     <label htmlFor='inicio_lectiva' className='text-sm font-light'>
                       Fecha Inicio Lectiva
                     </label>
-                    <input id='inicio_lectiva' name='fecha_inicio_lectiva' type='date' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' />
+                    <input id='inicio_lectiva' defaultValue={detailCourse.fecha_inicio_lectiva} name='fecha_inicio_lectiva' type='date' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' />
                   </div>
                   <div className='flex flex-col'>
                     <label htmlFor='inicio_practica' className='text-sm font-light'>
                       Fecha Inicio Practica
                     </label>
-                    <input id='inicio_practica' name='fecha_inicio_practica' type='date' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' />
+                    <input id='inicio_practica' defaultValue={detailCourse.fecha_inicio_practica} name='fecha_inicio_practica' type='date' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' />
                   </div>
                 </section>
                 <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
@@ -341,7 +347,7 @@ export const Students = () => {
           </section>
         </FilterModal>
       )}
-      {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />}
+      {/* {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />} */}
       <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-2-85-15'>
@@ -499,10 +505,10 @@ export const Students = () => {
                   <Button type='button' px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1.5'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={generateExcel}>
                     Generar reporte
                   </Button>
-                  <Button bg={'bg-orange-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleStudentModal}>
+                  {/* <Button bg={'bg-orange-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleStudentModal}>
                     <GrAddCircle className='text-white' />
                     Agregar
-                  </Button>
+                  </Button> */}
                   <Button bg={'bg-blue-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleModal}>
                     <GrAddCircle className='text-white' />
                     Editar fechas

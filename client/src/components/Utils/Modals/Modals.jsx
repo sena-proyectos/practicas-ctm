@@ -3,7 +3,6 @@ import { toast, ToastContainer } from 'react-toastify'
 
 // icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
-import { IoSearchOutline } from 'react-icons/io5'
 import { BsCheck2Circle } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
 import { LuSave } from 'react-icons/lu'
@@ -20,76 +19,6 @@ import { addTeacherValidation } from '../../../validation/addTeacherValidation'
 import { PiTrashBold } from 'react-icons/pi'
 import { visitValidation } from '../../../validation/visitValidation'
 import { getUserID } from '../../../import/getIDActualUser'
-
-const BitacoraModal = ({ closeModal, title }) => {
-  /**
-   * Función para manejar el cierre del modal.
-   *
-   * @function
-   * @name handleModal
-   * @returns {void}
-   *
-   * @example
-   * handleModal();
-   */
-  const handleModal = () => {
-    closeModal()
-  }
-
-  return (
-    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
-      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
-      <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-2/5 rounded-2xl bounce'>
-        <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
-        <header className='grid pt-5 place-items-center '>
-          <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
-        </header>
-        <section className='flex-auto w-5/6 mx-auto'>
-          <form action='' className='flex flex-col gap-3 pt-8'>
-            <section className='flex flex-col gap-2 md:flex-row'>
-              <label className='font-medium'>Responsable</label>
-              <input type='text' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' />
-            </section>
-            <section className='flex flex-col gap-3 md:flex-row'>
-              <label htmlFor='' className='font-medium whitespace-nowrap'>
-                Fecha Creación
-              </label>
-              <input type='date' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none md:w-1/3' />
-            </section>
-            <section className='flex flex-col gap-3 md:flex-row'>
-              <label htmlFor='' className='font-medium whitespace-nowrap'>
-                Fecha Asignado
-              </label>
-              <input type='date' name='' id='' className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none md:w-1/3' />
-            </section>
-            <section className='flex flex-col'>
-              <label htmlFor='' className='font-medium'>
-                Observaciones
-              </label>
-              <textarea name='' id='' rows='10' className='border-gray-400 focus:text-gray-900 max-h-[8rem] min-h-[2rem] w-full overflow-y-auto rounded-md border-[1.2px]  bg-white py-[0.9px] pl-3 text-base  text-black focus:bg-white focus:outline-none' placeholder='Digite alguna observación' />
-            </section>
-
-            <div className='flex flex-row my-5'>
-              <div className='relative mr-auto'>
-                <Button bg={'bg-coffee/75'} px={'px-[1rem]'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
-                  Editar
-                </Button>
-              </div>
-              <div className='relative ml-auto'>
-                <span className='absolute inset-y-0 flex items-center text-white left-2'>
-                  <IoSearchOutline />
-                </span>
-                <Button bg={'bg-primary'} px={'pl-7 pr-2'} font={'font-normal'} textSize='text-md' py={'py-1'} rounded={'rounded-xl'} shadow={'shadow-lg'}>
-                  Buscar
-                </Button>
-              </div>
-            </div>
-          </form>
-        </section>
-      </section>
-    </section>
-  )
-}
 
 const RegisterStudentModal = ({ closedModal, title }) => {
   const handleModal = () => {
@@ -296,14 +225,14 @@ const RegisterStudentModal = ({ closedModal, title }) => {
   )
 }
 
-const RegisterCourses = ({ closedModal, title }) => {
+const RegisterCourses = ({ closedModal, title, setGetCourses }) => {
   const handleModal = () => {
     closedModal()
   }
   const initialState = {
     numero_ficha: '',
     nombre_programa_formacion: '',
-    fecha_fin_lectiva: '',
+    fecha_inicio_lectiva: '',
     fecha_inicio_practica: '',
     nivel_formacion: '',
     id_nivel_formacion: '',
@@ -331,10 +260,12 @@ const RegisterCourses = ({ closedModal, title }) => {
         formData.id_instructor_seguimiento = response
       }
 
-      if (nivelDeFormacion === 'Tecnologo') {
+      if (nivelDeFormacion === 'Tecnólogo') {
         formData.id_nivel_formacion = 2
-      } else {
+      } else if (nivelDeFormacion === 'Técnico') {
         formData.id_nivel_formacion = 1
+      } else {
+        formData.id_nivel_formacion = 3
       }
     } catch (error) {
       throw new Error(error)
@@ -355,6 +286,8 @@ const RegisterCourses = ({ closedModal, title }) => {
       title: '¡Éxito!',
       text: data.statusText
     })
+    setGetCourses(true)
+    closedModal()
     resetForm()
   }
 
@@ -386,12 +319,6 @@ const RegisterCourses = ({ closedModal, title }) => {
                       </label>
                       <input id='programa' type='text' name='nombre_programa_formacion' value={formData.nombre_programa_formacion} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Nombre del programa' />
                     </div>
-                    {/* <div className='flex flex-col'>
-                      <label htmlFor='instructor_lider' className='text-sm font-light'>
-                        Instructor Líder
-                      </label>
-                      <input id='instructor_lider' type='text' name='lider_nombre_completo' value={formData.lider_nombre_completo} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Instructor lider' />
-                    </div> */}
                     <div className='flex flex-col'>
                       <label htmlFor='instructor_seguimiento' className='text-sm font-light'>
                         Instructor de Seguimiento
@@ -408,15 +335,16 @@ const RegisterCourses = ({ closedModal, title }) => {
                         <option value='' disabled defaultValue>
                           Nivel de formacion
                         </option>
-                        <option value='Tecnologo'>Tecnologo</option>
-                        <option value='Tecnico'>Tecnico</option>
+                        <option value='Tecnologo'>Tecnólogo</option>
+                        <option value='Tecnico'>Técnico</option>
+                        <option value='Auxiliar'>Auxiliar</option>
                       </select>
                     </div>
                     <div className='flex flex-col'>
-                      <label htmlFor='fin_lectiva' className='text-sm font-light'>
-                        Fecha fin lectiva
+                      <label htmlFor='inicio_lectiva' className='text-sm font-light'>
+                        Fecha Inicio lectiva
                       </label>
-                      <input id='fin_lectiva' type='date' name='fecha_fin_lectiva' value={formData.fecha_fin_lectiva} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' />
+                      <input id='inicio_lectiva' type='date' name='fecha_inicio_lectiva' value={formData.fecha_inicio_lectiva} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' />
                     </div>
                     <div className='flex flex-col'>
                       <label htmlFor='inicio_productiva' className='text-sm font-light'>
@@ -1257,4 +1185,4 @@ const AddVisitModal = ({ closeModal, title, id }) => {
   )
 }
 
-export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, AddTeacherModal, RegisterCourses, RegisterStudentModal, AddVisitModal }
+export { FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, AddTeacherModal, RegisterCourses, RegisterStudentModal, AddVisitModal }

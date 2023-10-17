@@ -28,12 +28,13 @@ export const Courses = () => {
   const [courses, setCourses] = useState([])
   const [coursesOriginal, setCoursesOriginal] = useState([])
   const [showFiltros, setShowFiltros] = useState(false)
-  const [filtersButtons, setFiltersButtons] = useState({ etapa: false, nivel: false, finLectiva: false, inicioPractica: false })
+  const [filtersButtons, setFiltersButtons] = useState({ etapa: false, nivel: false, inicioLectiva: false, inicioPractica: false })
   const [activeFilter, setActiveFilter] = useState(false)
   const [error, setError] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
   const [searchedCourses, setSearchedCourses] = useState([])
   const inputFileRef = useRef(null)
+  const [getCourses, setGetCourses] = useState(false)
 
   /**
    * Función asincrónica para buscar fichas por numero de ficha.
@@ -226,8 +227,8 @@ export const Courses = () => {
   const ShowFilter = (filterType) => {
     if (filterType === 'etapa') setFiltersButtons({ etapa: !filtersButtons.etapa, nivel: false, fecha: false, inicioPractica: false })
     if (filterType === 'nivel') setFiltersButtons({ nivel: !filtersButtons.nivel, modalidad: false, fecha: false, inicioPractica: false })
-    if (filterType === 'finLectiva') setFiltersButtons({ finLectiva: !filtersButtons.finLectiva, etapa: false, nivel: false, inicioPractica: false })
-    if (filterType === 'inicioPractica') setFiltersButtons({ inicioPractica: !filtersButtons.inicioPractica, etapa: false, nivel: false, finLectiva: false })
+    if (filterType === 'inicioLectiva') setFiltersButtons({ inicioLectiva: !filtersButtons.inicioLectiva, etapa: false, nivel: false, inicioPractica: false })
+    if (filterType === 'inicioPractica') setFiltersButtons({ inicioPractica: !filtersButtons.inicioPractica, etapa: false, nivel: false, inicioLectiva: false })
   }
 
   /**
@@ -251,7 +252,7 @@ export const Courses = () => {
       const filterMap = coursesOriginal.filter((course) => course.nivel_formacion === filter)
       setCourses(filterMap)
     }
-    if (filterType === 'finLectiva') {
+    if (filterType === 'inicioLectiva') {
       let filterMap = []
 
       if (filter === 'Hoy') {
@@ -413,9 +414,13 @@ export const Courses = () => {
       })
   }
 
+  if (getCourses) {
+    getCursos()
+  }
+
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
-      {isOpen && <RegisterCourses closedModal={handleCloseModal} title={'Agrega una ficha'} />}
+      {isOpen && <RegisterCourses closedModal={handleCloseModal} setGetCourses={setGetCourses} title={'Agrega una ficha'} />}
       <Siderbar />
       <section className='relative grid flex-auto grid-rows-[auto_1fr_auto]'>
         <header className='grid place-items-center h-[10vh]'>
@@ -461,25 +466,25 @@ export const Courses = () => {
               </button>
             </li>
             <li>
-              <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('finLectiva')}>
-                Fin Lectiva
-                <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.finLectiva ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
-                {filtersButtons.finLectiva && (
+              <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('inicioLectiva')}>
+                Inicio Lectiva
+                <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.inicioLectiva ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
+                {filtersButtons.inicioLectiva && (
                   <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
                     <ul className='flex flex-col w-40 gap-1 py-2'>
-                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('finLectiva', 'Hoy')}>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('inicioLectiva', 'Hoy')}>
                         Hoy
                       </li>
-                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('finLectiva', 'Esta Semana')}>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('inicioLectiva', 'Esta Semana')}>
                         Esta Semana
                       </li>
-                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('finLectiva', 'Próxima Semana')}>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('inicioLectiva', 'Próxima Semana')}>
                         Próxima Semana
                       </li>
-                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('finLectiva', 'Este Mes')}>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('inicioLectiva', 'Este Mes')}>
                         Este Mes
                       </li>
-                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('finLectiva', 'Próximo Mes')}>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('inicioLectiva', 'Próximo Mes')}>
                         Próximo Mes
                       </li>
                     </ul>
