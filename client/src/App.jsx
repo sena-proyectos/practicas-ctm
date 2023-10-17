@@ -3,8 +3,6 @@ import { Route, Routes } from 'react-router-dom'
 import { User } from './components/User/User'
 import { Home } from './components/Home/Home'
 import { StudentMonitoring } from './components/Student-monitoring/StudentMonitoring'
-import { Visits } from './components/Visits/Visits'
-import { Bitacoras } from './components/Bitacoras/Bitacoras'
 import { Settings } from './components/Settings/Settings'
 import { Teachers } from './components/Teachers/Teachers'
 import { AssignClass } from './components/Assign-class/AssignClass'
@@ -17,7 +15,6 @@ import { Courses } from './components/Courses/Courses'
 import { Students } from './components/Students/Students'
 import { TeacherClass } from './components/Teacher-class/TeacherClass'
 import { InfoStudent } from './components/Info-student/InfoStudent'
-import { Letters } from './components/Letters/Letters'
 
 const App = () => {
   const idRol = Number(localStorage.getItem('idRol'))
@@ -43,12 +40,6 @@ const App = () => {
 
         <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])} redirectTo='/home' />}>
           <Route path='/instructores' element={<Teachers />} />
-        </Route>
-
-        <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[2])} redirectTo='/home' />}>
-          <Route path='/visitas/:id' element={<Visits />} />
-          <Route path='/cartas/:id' element={<Letters />} />
-          <Route path='/bitacoras/:id' element={<Bitacoras />} />
         </Route>
       </Routes>
     </>

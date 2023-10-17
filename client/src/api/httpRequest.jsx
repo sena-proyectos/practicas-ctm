@@ -52,7 +52,6 @@ export const GetStudentsByCourse = async (data) => {
 export const GetTeacherByName = async (data) => {
   const URL = `${baseUrl}${api}/teacherName?nombreCompleto=${data}`
   const response = await axios.get(URL)
-
   return response
 }
 
@@ -124,7 +123,6 @@ export const readExcel = async (fileData) => {
 // OBTENER FICHAS
 export const getClass = async () => {
   const URL = `${baseUrl}${api}/classes`
-
   const response = await axios.get(URL)
   return response
 }
@@ -223,8 +221,16 @@ export const getModalitiesById = async (id) => {
 export const GetInscriptionByName = async (data) => {
   const URL = `${baseUrl}${api}/inscriptionName?nombreCompleto=${data}`
   const response = await axios.get(URL)
-
   return response
+}
+
+export const createCourse = async (data) => {
+  const URL = `${baseUrl}${api}/class`
+  return await axios.post(URL, data)
+}
+export const createStudent = async (data) => {
+  const URL = `${baseUrl}${api}/create-students`
+  return await axios.post(URL, data)
 }
 
 export const registerUser = async (payload) => {
@@ -280,8 +286,8 @@ export const patchVisitById = async (id, payload) => {
   return await axios.patch(URL, payload)
 }
 
-export const getVisitsIDByStudent = async (id) => {
-  const URL = `${baseUrl}${api}/getVisitsIDStudents/${id}`
+export const getVisitsByStudent = async (id) => {
+  const URL = `${baseUrl}${api}/getVisitsByStudent/${id}`
   return await axios.get(URL)
 }
 
