@@ -15,7 +15,7 @@ import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
-import { getClass, GetClassByNumber } from '../../api/httpRequest'
+import { getClass, GetClassByNumber, sendExcelCourse } from '../../api/httpRequest'
 import { RegisterCourses } from '../Utils/Modals/Modals'
 import { keysRoles } from '../../import/staticData'
 import { AiOutlineFileAdd } from 'react-icons/ai'
@@ -370,7 +370,7 @@ export const Courses = () => {
     const formData = new FormData()
     try {
       formData.append('excelFile', file)
-      // return await sendExcelContrato(formData)
+      return await sendExcelCourse(formData)
     } catch (error) {
       throw new Error(error)
     }
@@ -401,7 +401,7 @@ export const Courses = () => {
     })
       .then(({ value }) => {
         Swal.fire({
-          title: `${value} aprendices de subidos correctamente.`
+          title: 'Ficha cargada correctamente.'
         })
         getCursos()
       })
