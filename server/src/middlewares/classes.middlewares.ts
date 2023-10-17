@@ -17,9 +17,9 @@ import { handleHTTP } from '../errors/errorsHandler.js'
  * usa para pasar a la siguiente función después de que el middleware actual haya completado su tarea.
  */
 export const checkClassData = (req: Request, res: Response, next: NextFunction): void => {
-  const { numero_ficha, nombre_programa_formacion, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_lider, id_instructor_seguimiento, id_nivel_formacion } = req.body
+  const { numero_ficha, nombre_programa_formacion, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion } = req.body
   try {
-    const { error } = classSchema.validate({ numero_ficha, nombre_programa_formacion, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_lider, id_instructor_seguimiento, id_nivel_formacion })
+    const { error } = classSchema.validate({ numero_ficha, nombre_programa_formacion, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados para la ficha no son válidos')
     next()
   } catch (error) {
@@ -88,9 +88,9 @@ export const checkClassNumber = (req: Request, res: Response, next: NextFunction
 }
 
 export const checkClassDate = (req: Request, res: Response, next: NextFunction): void => {
-  const { fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica } = req.body
+  const { numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica } = req.body
   try {
-    const { error } = classDates.validate({ fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica })
+    const { error } = classDates.validate({ numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados para la ficha no son válidos')
     next()
   } catch (error) {

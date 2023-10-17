@@ -73,6 +73,6 @@ classRoutes.patch('/teacherLiderClass', checkClassNumber, checkLiderTeacherId, e
 una ruta para el método PATCH en el punto final '/dateClass'. Cuando se realiza una solicitud PATCH
 a este punto final, ejecutará la función de middleware `checkClassNumber`, seguida de la función de
 middleware `checkClassDate` y, finalmente, la función de controlador `editClassDates`. */
-classRoutes.patch('/dateClass', checkClassNumber, checkClassDate, editClassDates)
+classRoutes.patch('/dateClass', checkClassDate, editClassDates)
 
 export { classRoutes }

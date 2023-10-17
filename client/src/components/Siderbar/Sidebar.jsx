@@ -91,10 +91,10 @@ const Siderbar = () => {
 
     try {
       const tokenData = jwtDecode(token)
-      const { nombres_usuario, apellidos_usuario } = tokenData.data.user
+      const { nombres_usuario } = tokenData.data.user
       const { id_usuario } = tokenData.data.user
       setUserId(id_usuario)
-      const fullName = `${nombres_usuario} ${apellidos_usuario}`
+      const fullName = `${nombres_usuario}`
       setDataFullName(fullName)
     } catch (error) {
       window.location.href = '/'

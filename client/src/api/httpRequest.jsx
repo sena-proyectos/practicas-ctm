@@ -321,3 +321,10 @@ export const editStudentState = async (id, payload) => {
   const response = await axios.patch(URL, payload)
   return response
 }
+
+export const editDateClass = async (payload) => {
+  const URL = `${baseUrl}${api}/dateClass`
+  const response = await axios.patch(URL, payload)
+
+  return response
+}

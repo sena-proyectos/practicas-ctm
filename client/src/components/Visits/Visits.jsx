@@ -62,7 +62,7 @@ export const Visits = () => {
   }
 
   return (
-    <section className='flex flex-col gap-4 md:flex-row'>
+    <section className='grid grid-cols-1 gap-4 md:grid-cols-2'>
       {visitsData &&
         visitsData.length !== 0 &&
         visitsData.map((visit) => {
@@ -73,7 +73,7 @@ export const Visits = () => {
                   <div className='flex flex-row items-center gap-2'>
                     <PiCalendarCheckLight className='text-3xl' />
                     <div className='flex flex-col '>
-                      <h2 className='font-medium'>Visita {visit.numero_visita === '1' ? 'Inicial' : 'Final'}</h2>
+                      <h2 className='font-medium'>Visita {visit.numero_visita === '1' ? 'Inicial' : visit.numero_visita === '2' ? 'Final' : 'Extracurricular'}</h2>
                       <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'}`}>{visit.fecha_modificacion}</span>
                     </div>
                   </div>

@@ -308,9 +308,7 @@ const RegisterCourses = ({ closedModal, title }) => {
     nivel_formacion: '',
     id_nivel_formacion: '',
     seguimiento_nombre_completo: '',
-    lider_nombre_completo: '',
-    id_instructor_seguimiento: '',
-    id_instructor_lider: ''
+    id_instructor_seguimiento: ''
   }
   const [formData, setFormData] = useState(initialState)
 
@@ -325,21 +323,12 @@ const RegisterCourses = ({ closedModal, title }) => {
     e.preventDefault()
     const instructorSeguimiento = formData.seguimiento_nombre_completo
     const nivelDeFormacion = formData.nivel_formacion
-    const instructorLider = formData.lider_nombre_completo
 
     try {
       if (instructorSeguimiento) {
         const res = await GetTeacherByName(instructorSeguimiento)
         const response = res.data.data[0].id_usuario
         formData.id_instructor_seguimiento = response
-      }
-
-      if (instructorLider === '') {
-        formData.id_instructor_lider = null
-      } else {
-        const res = await GetTeacherByName(instructorLider)
-        const response = res.data.data[1].id_usuario
-        formData.id_instructor_lider = response
       }
 
       if (nivelDeFormacion === 'Tecnologo') {
@@ -397,12 +386,12 @@ const RegisterCourses = ({ closedModal, title }) => {
                       </label>
                       <input id='programa' type='text' name='nombre_programa_formacion' value={formData.nombre_programa_formacion} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Nombre del programa' />
                     </div>
-                    <div className='flex flex-col'>
+                    {/* <div className='flex flex-col'>
                       <label htmlFor='instructor_lider' className='text-sm font-light'>
                         Instructor Líder
                       </label>
                       <input id='instructor_lider' type='text' name='lider_nombre_completo' value={formData.lider_nombre_completo} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Instructor lider' />
-                    </div>
+                    </div> */}
                     <div className='flex flex-col'>
                       <label htmlFor='instructor_seguimiento' className='text-sm font-light'>
                         Instructor de Seguimiento

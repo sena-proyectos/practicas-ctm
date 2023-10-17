@@ -452,6 +452,9 @@ export const Courses = () => {
                       <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('nivel', 'Tecnología')}>
                         Tecnólogo
                       </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('nivel', 'Auxiliar')}>
+                        Auxiliar
+                      </li>
                     </ul>
                   </section>
                 )}
@@ -524,14 +527,14 @@ export const Courses = () => {
           {searchedCourses.length > 0 && !error ? (
             <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
               {searchedCourses.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_incio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
+                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_incio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
               })}
             </section>
           ) : (
             <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
               {courses.length > 0 ? (
                 courses.slice(startIndex, endIndex).map((course, i) => {
-                  return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
+                  return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
                 })
               ) : loading ? (
                 <SkeletonLoading number={6} />
