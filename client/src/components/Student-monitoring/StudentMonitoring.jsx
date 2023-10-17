@@ -8,51 +8,51 @@ import Swal from 'sweetalert2'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
 import { CardStudent } from '../Utils/Card/Card'
-import { FilterModal } from '../Utils/Modals/Modals'
+// import { FilterModal } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
 import { GetUserByName, detailInfoStudents, generateExcelStudents, sendExcelContrato } from '../../api/httpRequest'
-import { Button, UIButton } from '../Utils/Button/Button'
-import { Select } from '../Utils/Select/Select'
-import { modalities } from '../../import/staticData'
+import { UIButton } from '../Utils/Button/Button'
+// import { Select } from '../Utils/Select/Select'
+// import { modalities } from '../../import/staticData'
 import { AiOutlineFileAdd } from 'react-icons/ai'
 
 export const StudentMonitoring = () => {
   const [apprentices, setApprentices] = useState([])
   const [searchedApprentices, setSearchedApprentices] = useState([])
   const [error, setError] = useState(null)
-  const [modalFilter, setModalFilter] = useState(false)
+  // const [modalFilter, setModalFilter] = useState(false)
   const [loading, setLoading] = useState(true)
   const [pageNumber, setPageNumber] = useState(1)
   const [currentStudentList, setCurrentStudentList] = useState({})
   const inputFileRef = useRef(null)
 
-  /**
-   * Función para manejar el clic en el icono.
-   *
-   * @function
-   * @name handleIconClick
-   * @returns {void}
-   *
-   * @example
-   * handleIconClick();
-   */
-  const handleIconClick = () => {
-    setModalFilter(!modalFilter)
-  }
+  // /**
+  //  * Función para manejar el clic en el icono.
+  //  *
+  //  * @function
+  //  * @name handleIconClick
+  //  * @returns {void}
+  //  *
+  //  * @example
+  //  * handleIconClick();
+  //  */
+  // const handleIconClick = () => {
+  //   setModalFilter(!modalFilter)
+  // }
 
-  /**
-   * Función para manejar el modal.
-   *
-   * @function
-   * @name handleModal
-   * @returns {void}
-   *
-   * @example
-   * handleModal();
-   */
-  const handleModal = () => {
-    setModalFilter(!modalFilter)
-  }
+  // /**
+  //  * Función para manejar el modal.
+  //  *
+  //  * @function
+  //  * @name handleModal
+  //  * @returns {void}
+  //  *
+  //  * @example
+  //  * handleModal();
+  //  */
+  // const handleModal = () => {
+  //   setModalFilter(!modalFilter)
+  // }
 
   /**
    * Función asincrónica para buscar aprendices por nombre de usuario.
@@ -174,20 +174,20 @@ export const StudentMonitoring = () => {
    */
   const endIndex = startIndex + studentsPerPage
 
-  /**
-   * Opciones de modalidades para filtrar aprendices.
-   *
-   * @constant
-   * @name option
-   * @type {Array<Object>}
-   *
-   * @example
-   * const opcionesModalidades = option;
-   */
-  const option = modalities.map((modality) => ({
-    value: modality.name,
-    key: modality.value
-  }))
+  // /**
+  //  * Opciones de modalidades para filtrar aprendices.
+  //  *
+  //  * @constant
+  //  * @name option
+  //  * @type {Array<Object>}
+  //  *
+  //  * @example
+  //  * const opcionesModalidades = option;
+  //  */
+  // const option = modalities.map((modality) => ({
+  //   value: modality.name,
+  //   key: modality.value
+  // }))
 
   const sendExcelFile = async () => {
     const [file] = inputFileRef.current.files
@@ -263,7 +263,7 @@ export const StudentMonitoring = () => {
 
   return (
     <>
-      {modalFilter && (
+      {/* {modalFilter && (
         <FilterModal title={'Filtrar Aprendices'} width='w-3/4 md:w-1/3' closeModal={handleModal}>
           <form className='flex flex-col gap-5'>
             <section className='flex flex-col gap-3'>
@@ -291,14 +291,20 @@ export const StudentMonitoring = () => {
             </Button>
           </form>
         </FilterModal>
-      )}
+      )} */}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
         <Siderbar />
         <section className='grid flex-auto w-min grid-rows-[auto_1fr_auto] '>
           <header className='grid place-items-center h-[10vh]'>
-            <Search searchFilter icon placeholder={'Busca un aprendiz'} iconClick={handleIconClick} searchStudent={searchApprentices} />
+            <Search
+              searchFilter
+              // icon
+              placeholder={'Busca un aprendiz'}
+              // iconClick={handleIconClick}
+              searchStudent={searchApprentices}
+            />
           </header>
-          <section className='grid grid-rows-[1fr_auto] py-2'>
+          <section className='grid grid-rows-[1fr_auto] py-1'>
             {searchedApprentices.length > 0 && !error ? (
               <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
                 {searchedApprentices.slice(startIndex, endIndex).map((apprentice, i) => (
@@ -320,12 +326,14 @@ export const StudentMonitoring = () => {
                 )}
               </div>
             )}
-            <div className='grid grid-rows-[auto_auto] gap-3 place-items-center px-7 pt-5'>
+            <div className='grid grid-rows-[auto_auto] gap-0.5 place-items-center px-7 pt-4'>
               {loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
               <section className='flex gap-3 ml-auto'>
-                <UIButton type='button' onClick={generateExcel} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>Descargar Excel</UIButton>
+                <UIButton type='button' onClick={generateExcel} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>
+                  Descargar Excel
+                </UIButton>
                 <div className='ml-auto bg-blue-600 rounded-full shadow-md'>
-                  <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
+                  <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-1 text-white rounded-full cursor-pointer'>
                     <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
                     <AiOutlineFileAdd />
                   </label>

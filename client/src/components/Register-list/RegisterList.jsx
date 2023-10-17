@@ -12,7 +12,7 @@ import { Pagination } from '@nextui-org/pagination'
 // icons
 import { BsPatchCheck, BsHourglass, BsXOctagon } from 'react-icons/bs'
 import { AiOutlineCloudUpload, AiOutlineFileAdd } from 'react-icons/ai'
-import { IoAddCircleOutline } from 'react-icons/io5'
+// import { IoAddCircleOutline } from 'react-icons/io5'
 import { PiMicrosoftExcelLogoBold, PiCaretRightBold } from 'react-icons/pi'
 import { BiSad } from 'react-icons/bi'
 import { TiDelete } from 'react-icons/ti'
@@ -44,7 +44,7 @@ export const RegisterList = () => {
   const [username, setUsername] = useState(null)
   const [loadingData, setLoadingData] = useState(true)
   const excelRef = useRef()
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const [showFiltros, setShowFiltros] = useState(false)
   const [filtersButtons, setFiltersButtons] = useState({ modalidad: false, estado: false, fecha: false })
   const [activeFilter, setActiveFilter] = useState(false)
@@ -165,9 +165,9 @@ export const RegisterList = () => {
    * @example
    * handleRegister();
    */
-  const handleRegister = () => {
-    return navigate('/registrar-aprendiz')
-  }
+  // const handleRegister = () => {
+  //   return navigate('/registrar-aprendiz')
+  // }
 
   useEffect(() => {
     const token = Cookies.get('token')
@@ -617,10 +617,10 @@ export const RegisterList = () => {
             <div className='flex justify-center w-full'>{inscriptions.length === 0 || error || loadingData ? <></> : searchedInscriptions.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <div className='grid w-full grid-flow-col-dense gap-3 place-content-end'>
-                <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline classNames='order-last'>
+                {/* <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline classNames='order-last'>
                   <IoAddCircleOutline className='text-xl' />
                   Agregar
-                </Button>
+                </Button> */}
                 <div className='rounded-full shadow-md bg-cyan-600'>
                   <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
                     <AiOutlineFileAdd />

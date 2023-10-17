@@ -14,12 +14,13 @@ import { GrAddCircle } from 'react-icons/gr'
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
-import { UIButton, Button } from '../Utils/Button/Button'
+import { Button } from '../Utils/Button/Button'
 import Swal from 'sweetalert2'
 import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById, editDateClass, generateExcelClass } from '../../api/httpRequest'
 import { FilterModal, InfoStudentModal, RegisterStudentModal } from '../Utils/Modals/Modals'
 import { LuSave } from 'react-icons/lu'
 import { ToastContainer, toast } from 'react-toastify'
+import { keysRoles } from '../../import/staticData'
 
 export const Students = () => {
   const [pageNumber, setPageNumber] = useState(1)
@@ -36,6 +37,7 @@ export const Students = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [loadingData, setLoadingData] = useState({ course: true, students: true })
   const [modalDates, setModalDates] = useState(false)
+  const idRol = Number(localStorage.getItem('idRol'))
 
   /**
    * Función asincrónica para obtener la lista de estudiantes por curso.
@@ -306,7 +308,7 @@ export const Students = () => {
       {showModalStudent && (
         <InfoStudentModal closeModal={handleStateModal} title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} cellPhoneNumber={userInfoById.celular_aprendiz} program={userInfoById.nombre_programa_formacion} courseNumber={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} formationStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} lectivaEnd={dates.fin_lectiva} productiveStart={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} positionSuperior={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celphoneSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />
       )}
-      {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'}/>}
+      {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />}
       {modalDates && (
         <FilterModal closeModal={handleModal} title={'Editar fechas'} width='w-11/12 md:w-1/3'>
           <section className='flex justify-center'>
@@ -488,18 +490,26 @@ export const Students = () => {
                 )}
               </tbody>
             </table>
-            <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0'>
-              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className='h-fit' />
+            <div className='flex flex-col items-center gap-1 pt-2'>
+              <div className='flex justify-center w-full'>
+                <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className='h-fit' />
+              </div>
+              {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+                <div className='grid w-full grid-flow-col-dense gap-3 place-content-end px-7'>
+                  <Button type='button' px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1.5'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={generateExcel}>
+                    Generar reporte
+                  </Button>
+                  <Button bg={'bg-orange-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleStudentModal}>
+                    <GrAddCircle className='text-white' />
+                    Agregar
+                  </Button>
+                  <Button bg={'bg-blue-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleModal}>
+                    <GrAddCircle className='text-white' />
+                    Editar fechas
+                  </Button>
+                </div>
+              )}
             </div>
-            <UIButton type='button' classNames='absolute right-3 bottom-3' onClick={generateExcel}>Generar reporte</UIButton>
-            <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleStudentModal}>
-              <GrAddCircle className='text-white' />
-              Agregar
-            </Button>
-            <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleModal}>
-              <GrAddCircle className='text-white' />
-              Editar fechas
-            </Button>
           </div>
         </section>
         <Footer />
