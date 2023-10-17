@@ -87,7 +87,7 @@ export const Letters = () => {
   }
 
   return (
-    <section className='flex flex-col w-full gap-4 md:flex-row'>
+    <section className='grid grid-cols-1 gap-4 md:grid-cols-2'>
       {lettersInfo.length > 0 ? (
         <>
           <CardWithChildren key={lettersInfo[0].id_carta_aprendiz} classNames='w-full'>

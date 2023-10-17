@@ -1,6 +1,6 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { getBitacorasByStudent, getLettersByStudent, getVisitsByStudent, modifyBitacoraById, modifyLetterByID, modifyVisitByID } from '../controllers/trackingStudents.controllers.js'
+import { createVisit, getBitacorasByStudent, getLettersByStudent, getVisitsByStudent, modifyBitacoraById, modifyLetterByID, modifyVisitByID } from '../controllers/trackingStudents.controllers.js'
 import { checkBitacoraData, checkLetterData, checkVisitData } from '../middlewares/trackingStudents.middlewares.js'
 
 const trackingRoute: IRouter = Router()
@@ -16,5 +16,7 @@ trackingRoute.patch('/modifyLetter/:id', checkIdReq, checkLetterData, modifyLett
 trackingRoute.patch('/modifyBitacora/:id', checkIdReq, checkBitacoraData, modifyBitacoraById)
 
 trackingRoute.patch('/modifyVisit/:id', checkIdReq, checkVisitData, modifyVisitByID)
+
+trackingRoute.post('/create-visit', checkVisitData, createVisit)
 
 export { trackingRoute }

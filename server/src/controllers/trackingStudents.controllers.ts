@@ -4,6 +4,7 @@ import { type ResultSetHeader, type RowDataPacket } from 'mysql2'
 import { type CustomError, DbError } from '../errors/customErrors.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
+import { visitForm } from '../interfaces/trackingStudent.interfaces.js'
 
 export const getLettersByStudent = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params
@@ -69,6 +70,16 @@ export const modifyVisitByID = async (req: Request, res: Response): Promise<Resp
     const [query] = await connection.query<ResultSetHeader>('UPDATE aprendices_visitas SET estado_visita = IFNULL(?, estado_visita), numero_visita = IFNULL(?, numero_visita), observaciones_visita = IFNULL(?, observaciones_visita), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_visita = ?', [estado_visita, numero_visita, observaciones_visita, usuario_responsable, id])
     if (query.affectedRows === 0) throw new DbError('Error al modificar los datos de la visita')
     return res.status(httpStatus.OK).json(query)
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+export const createVisit = async (req: Request, res: Response): Promise<Response> => {
+  const { id_aprendiz, estado_visita, observaciones_visita, usuario_responsable } = req.body as visitForm
+  try {
+    await connection.query('call sena_practicas.subir_visita_con_detalles(?, ?, ?, ?)', [id_aprendiz, estado_visita, observaciones_visita, usuario_responsable])
+    return res.status(httpStatus.OK).json({ message: 'Visita creada con éxito' })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
   }

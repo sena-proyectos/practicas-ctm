@@ -12,12 +12,14 @@ import { LuSave } from 'react-icons/lu'
 import { Button } from '../Button/Button'
 import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
-import { GetTeacherByName, createCourse, createStudent, getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento, registerUser } from '../../../api/httpRequest'
+import { GetTeacherByName, createCourse, createStudent, getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento, registerUser, createVisit } from '../../../api/httpRequest'
 import { studentsValidation } from '../../../validation/studentsValidation'
 import Swal from 'sweetalert2'
 import { coursesValidation } from '../../../validation/coursesValidation'
 import { addTeacherValidation } from '../../../validation/addTeacherValidation'
 import { PiTrashBold } from 'react-icons/pi'
+import { visitValidation } from '../../../validation/visitValidation'
+import { getUserID } from '../../../import/getIDActualUser'
 
 const BitacoraModal = ({ closeModal, title }) => {
   /**
@@ -37,7 +39,7 @@ const BitacoraModal = ({ closeModal, title }) => {
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
-      <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+      <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-2/5 rounded-2xl bounce'>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
           <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
@@ -171,7 +173,7 @@ const RegisterStudentModal = ({ closedModal, title }) => {
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter'>
         <div className='flex items-center justify-center h-full'>
-          <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+          <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-2/5 rounded-2xl bounce'>
             <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
             <header className='grid pt-5 place-items-center '>
               <h3 className='text-2xl font-semibold'>
@@ -306,9 +308,7 @@ const RegisterCourses = ({ closedModal, title }) => {
     nivel_formacion: '',
     id_nivel_formacion: '',
     seguimiento_nombre_completo: '',
-    lider_nombre_completo: '',
-    id_instructor_seguimiento: '',
-    id_instructor_lider: ''
+    id_instructor_seguimiento: ''
   }
   const [formData, setFormData] = useState(initialState)
 
@@ -323,21 +323,12 @@ const RegisterCourses = ({ closedModal, title }) => {
     e.preventDefault()
     const instructorSeguimiento = formData.seguimiento_nombre_completo
     const nivelDeFormacion = formData.nivel_formacion
-    const instructorLider = formData.lider_nombre_completo
 
     try {
       if (instructorSeguimiento) {
         const res = await GetTeacherByName(instructorSeguimiento)
         const response = res.data.data[0].id_usuario
         formData.id_instructor_seguimiento = response
-      }
-
-      if (instructorLider === '') {
-        formData.id_instructor_lider = null
-      } else {
-        const res = await GetTeacherByName(instructorLider)
-        const response = res.data.data[1].id_usuario
-        formData.id_instructor_lider = response
       }
 
       if (nivelDeFormacion === 'Tecnologo') {
@@ -371,7 +362,7 @@ const RegisterCourses = ({ closedModal, title }) => {
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter'>
         <div className='flex items-center justify-center h-full'>
-          <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+          <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-2/5 rounded-2xl bounce'>
             <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
             <header className='grid pt-5 place-items-center '>
               <h3 className='text-2xl font-semibold'>
@@ -395,12 +386,12 @@ const RegisterCourses = ({ closedModal, title }) => {
                       </label>
                       <input id='programa' type='text' name='nombre_programa_formacion' value={formData.nombre_programa_formacion} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Nombre del programa' />
                     </div>
-                    <div className='flex flex-col'>
+                    {/* <div className='flex flex-col'>
                       <label htmlFor='instructor_lider' className='text-sm font-light'>
                         Instructor Líder
                       </label>
                       <input id='instructor_lider' type='text' name='lider_nombre_completo' value={formData.lider_nombre_completo} onChange={handleInputChange} className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='Instructor lider' />
-                    </div>
+                    </div> */}
                     <div className='flex flex-col'>
                       <label htmlFor='instructor_seguimiento' className='text-sm font-light'>
                         Instructor de Seguimiento
@@ -475,7 +466,7 @@ const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
       <section className={`relative flex h-auto ${width} flex-col rounded-2xl bg-white bounce`}>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
-          <h2 className={`text-xl font-medium text-center w-fit border-b-1 border-primary`}>{title}</h2>
+          <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
         </header>
         <section className='flex justify-center'>
           <section className='w-11/12 p-4'>{children}</section>
@@ -580,10 +571,10 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
-      <section className={`relative flex h-auto flex-col rounded-2xl bg-white bounce`}>
+      <section className='relative flex flex-col h-auto bg-white rounded-2xl bounce'>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
-          <h2 className={`text-xl font-medium text-center w-fit border-b-1 border-primary`}>{title}</h2>
+          <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
         </header>
         <section className='flex justify-center'>
           <section className='w-11/12 p-4'>
@@ -596,7 +587,7 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
                   <span onClick={handleOldPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                     {showOldPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                   </span>
-                  <input name='oldPassword' type={showOldPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
+                  <input name='oldPassword' minLength={8} type={showOldPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                 </div>
               </section>
               <section className='grid grid-cols-2-50-50'>
@@ -608,7 +599,7 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
                     <span onClick={handleNewPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                       {showNewPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                     </span>
-                    <input name='newPassword' type={showNewPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
+                    <input name='newPassword' minLength={8} type={showNewPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                   </div>
                 </div>
               </section>
@@ -621,7 +612,7 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
                     <span onClick={handleConfirmPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                       {showConfirmPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                     </span>
-                    <input name='confirmPassword' type={showConfirmPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
+                    <input name='confirmPassword' minLength={8} type={showConfirmPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                   </div>
                 </div>
               </section>
@@ -659,10 +650,10 @@ const InfoStudentModal = ({ closeModal, title, emailStudent, documentStudent, ce
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
-      <section className={`relative flex h-auto w-11/12 md:w-1/2 flex-col rounded-2xl bg-white bounce`}>
+      <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-1/2 rounded-2xl bounce'>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
-          <h2 className={`text-xl font-medium text-center w-fit border-b-1 border-primary`}>{title}</h2>
+          <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
         </header>
         <section className='flex justify-center'>
           <section className='w-11/12 p-4'>
@@ -847,10 +838,10 @@ const AsignTeacherModal = ({ closeModal, title, numero_ficha, programa_formacion
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
-      <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+      <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-2/5 rounded-2xl bounce'>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
-          <h2 className={`text-xl font-medium text-center w-fit border-primary`}>{title}</h2>
+          <h2 className='text-xl font-medium text-center w-fit border-primary'>{title}</h2>
         </header>
         <section className='flex justify-center'>
           <section className='flex flex-col w-11/12 gap-3 my-5'>
@@ -923,10 +914,10 @@ const ModalConfirm = ({ closeModal, title, loadingFile, setModalOption }) => {
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
-      <section className={`relative flex h-auto  flex-col rounded-2xl bg-white bounce`}>
+      <section className='relative flex flex-col h-auto bg-white rounded-2xl bounce'>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
-          <h2 className={`text-xl font-medium text-center w-fit border-b-1 border-primary`}>{title}</h2>
+          <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
         </header>
         <section className='flex justify-center'>
           <section className='w-11/12 p-4'>
@@ -998,10 +989,10 @@ const DenyModal = ({ closeModal, title, id, setNotify }) => {
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
-      <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+      <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-2/5 rounded-2xl bounce'>
         <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
         <header className='grid pt-5 place-items-center '>
-          <h2 className={`text-xl font-medium text-center w-fit 'border-b-1' border-primary`}>{title ?? 'Confirmar'}</h2>
+          <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title ?? 'Confirmar'}</h2>
         </header>
         <section className='flex justify-center'>
           <section className='w-11/12 p-4'>
@@ -1062,35 +1053,35 @@ const AddTeacherModal = ({ closeModal, title, setNotify }) => {
     formData.append('contrasena', contrasena)
     const data = Object.fromEntries(formData)
 
-    const { error } = addTeacherValidation.validate(data)
-    if (error !== undefined) {
-      let errorMessage
-      const customErrorMessages = {
-        nombre: 'El nombre debe tener al menos 3 caracteres.',
-        apellido: 'El apellido debe tener al menos 3 caracteres.',
-        num_documento: 'El número de documento debe tener entre 8 y 10 caracteres',
-        num_celular: 'El número de celular debe tener entre 8 y 10 caracteres'
-      }
-
-      const path = error.details[0].path[0]
-      if (customErrorMessages[path]) {
-        errorMessage = customErrorMessages[path]
-      }
-
-      toast.error(errorMessage, {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
-        theme: 'colored',
-        className: 'text-sm'
-      })
-    }
     try {
+      const { error } = addTeacherValidation.validate(data)
+      if (error !== undefined) {
+        let errorMessage
+        const customErrorMessages = {
+          nombre: 'El nombre debe tener al menos 3 caracteres.',
+          apellido: 'El apellido debe tener al menos 3 caracteres.',
+          num_documento: 'El número de documento debe tener entre 8 y 10 caracteres',
+          num_celular: 'El número de celular debe tener entre 8 y 10 caracteres'
+        }
+
+        const path = error.details[0].path[0]
+        if (customErrorMessages[path]) {
+          errorMessage = customErrorMessages[path]
+        }
+
+        toast.error(errorMessage, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          pauseOnFocusLoss: false,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          className: 'text-sm'
+        })
+      }
       await registerUser(data)
       setNotify(true)
       closeModal()
@@ -1104,10 +1095,10 @@ const AddTeacherModal = ({ closeModal, title, setNotify }) => {
       <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme='colored' />
       <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
         <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
-        <section className={`relative flex h-auto w-11/12 md:w-2/5 flex-col rounded-2xl bg-white bounce`}>
+        <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-2/5 rounded-2xl bounce'>
           <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
           <header className='grid pt-5 place-items-center '>
-            <h2 className={`text-xl font-medium text-center w-fit border-b-1 border-primary`}>{title}</h2>
+            <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
           </header>
           <section className='flex justify-center'>
             <section className='w-11/12 p-4'>
@@ -1158,4 +1149,112 @@ const AddTeacherModal = ({ closeModal, title, setNotify }) => {
   )
 }
 
-export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, AddTeacherModal, RegisterCourses, RegisterStudentModal }
+const AddVisitModal = ({ closeModal, title, id }) => {
+  const formRef = useRef(null)
+  /**
+   * Función para manejar el cierre del modal.
+   *
+   * @function
+   * @name handleModal
+   * @returns {void}
+   *
+   * @example
+   * handleModal();
+   */
+  const handleModal = () => {
+    closeModal()
+  }
+
+  const handleVisit = async (e) => {
+    e.preventDefault()
+
+    const id_aprendiz = id
+    const { id_usuario: usuario_responsable } = getUserID().user
+    const formData = new FormData(formRef.current)
+    formData.append('usuario_responsable', usuario_responsable)
+    formData.append('id_aprendiz', id_aprendiz)
+    const data = Object.fromEntries(formData)
+
+    const { error } = visitValidation.validate(data)
+    if (error !== undefined) {
+      let errorMessage
+      const customErrorMessages = {
+        numero_visita: 'El número de visita debe ser un número.',
+        estado_visita: 'El estado de visita debe ser seleccionado.',
+        observaciones_visita: 'Las observaciones no pueden exceder los 200 caracteres'
+      }
+
+      const path = error.details[0].path[0]
+      if (customErrorMessages[path]) {
+        errorMessage = customErrorMessages[path]
+      }
+
+      toast.error(errorMessage, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        className: 'text-sm'
+      })
+    }
+    try {
+      await createVisit(data)
+      closeModal()
+    } catch (error) {
+      console.log(error)
+      throw new Error(error)
+    }
+  }
+
+  return (
+    <>
+      <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme='colored' />
+      <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
+        <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
+        <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-2/5 rounded-2xl bounce'>
+          <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
+          <header className='grid pt-5 place-items-center '>
+            <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
+          </header>
+          <section className='flex justify-center'>
+            <section className='w-11/12 p-4'>
+              <form ref={formRef} onSubmit={handleVisit} className='flex flex-col gap-6'>
+                <section className='flex flex-col gap-3'>
+                  <div className='flex flex-col w-3/5'>
+                    <label htmlFor='estado_visita' className='text-sm font-light'>
+                      Estado visita
+                    </label>
+                    <select id='estado_visita' name='estado_visita' type='text' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' placeholder='' required>
+                      <option value=''>Sin seleccionar</option>
+                      <option value='Realizado'>Realizado</option>
+                      <option value='Pendiente'>Pendiente</option>
+                    </select>
+                  </div>
+
+                  <div className='flex flex-col'>
+                    <label htmlFor='observaciones_visita' className='text-sm font-light'>
+                      Observaciones
+                    </label>
+                    <textarea id='observaciones_visita' name='observaciones_visita' type='text' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg resize-none focus:outline-none h-[5rem] placeholder:text-gray-500' placeholder='Observaciones...' />
+                  </div>
+                </section>
+
+                <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                  <LuSave />
+                  Guardar
+                </Button>
+              </form>
+            </section>
+          </section>
+        </section>
+      </section>
+    </>
+  )
+}
+
+export { BitacoraModal, FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, AddTeacherModal, RegisterCourses, RegisterStudentModal, AddVisitModal }

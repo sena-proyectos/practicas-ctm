@@ -1,9 +1,11 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { getClasses, getClassById, getClassByClassNumber, createClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber, getClassesFree, getClassByInstructorId, editLiderInstructorClass } from '../controllers/classes.controllers.js'
-import { checkClassData, checkClassDate, checkClassNumber, checkLiderTeacherId, checkPracticalTeacherId } from '../middlewares/classes.middlewares.js'
+import { getClasses, getClassById, getClassByClassNumber, createClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber, getClassesFree, getClassByInstructorId, editLiderInstructorClass, createClassWithStudents } from '../controllers/classes.controllers.js'
+import { checkClassData, checkClassDate, checkClassNumber, checkLiderTeacherId, checkPracticalTeacherId, formatExcelFileClasses, readExcelFileClasses } from '../middlewares/classes.middlewares.js'
+import { configureMulterExcel } from '../middlewares/inscriptions.middlewares.js'
 
 const classRoutes: IRouter = Router()
+const multerFile = configureMulterExcel()
 
 // * GET
 
@@ -52,6 +54,7 @@ classRoutes.get('/classStudents', checkClassNumber, getStudentsClassByClassNumbe
 POST en el punto final '/class'. Cuando se realiza una solicitud POST a este punto final, ejecutará
 la función de middleware `checkClassData` seguida de la función del controlador `createClass`. */
 classRoutes.post('/class', checkClassData, createClass)
+classRoutes.post('/read-excel-file/classes', multerFile, readExcelFileClasses, formatExcelFileClasses, createClassWithStudents)
 
 // * PATCH
 /* `classRoutes.patch('/class/:id', checkIdReq, checkClassData, editClass)` está definiendo una ruta
@@ -73,6 +76,6 @@ classRoutes.patch('/teacherLiderClass', checkClassNumber, checkLiderTeacherId, e
 una ruta para el método PATCH en el punto final '/dateClass'. Cuando se realiza una solicitud PATCH
 a este punto final, ejecutará la función de middleware `checkClassNumber`, seguida de la función de
 middleware `checkClassDate` y, finalmente, la función de controlador `editClassDates`. */
-classRoutes.patch('/dateClass', checkClassNumber, checkClassDate, editClassDates)
+classRoutes.patch('/dateClass', checkClassDate, editClassDates)
 
 export { classRoutes }

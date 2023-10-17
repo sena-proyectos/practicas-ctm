@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useNavigate } from 'react-router-dom'
 
 // Icons
 import { LuBookPlus } from 'react-icons/lu'
-import { PiAddressBookBold, PiCaretRightBold } from 'react-icons/pi'
+import { PiAddressBook, PiCaretRightBold } from 'react-icons/pi'
 import { TiDelete } from 'react-icons/ti'
 import { BiSad } from 'react-icons/bi'
 import { Pagination } from '@nextui-org/pagination'
@@ -18,6 +18,8 @@ import { Card3D } from '../Utils/Card/Card'
 import { getClass, GetClassByNumber } from '../../api/httpRequest'
 import { RegisterCourses } from '../Utils/Modals/Modals'
 import { keysRoles } from '../../import/staticData'
+import { AiOutlineFileAdd } from 'react-icons/ai'
+import Swal from 'sweetalert2'
 
 export const Courses = () => {
   const idRol = Number(localStorage.getItem('idRol'))
@@ -31,6 +33,7 @@ export const Courses = () => {
   const [error, setError] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
   const [searchedCourses, setSearchedCourses] = useState([])
+  const inputFileRef = useRef(null)
 
   /**
    * Función asincrónica para buscar fichas por numero de ficha.
@@ -362,6 +365,54 @@ export const Courses = () => {
     setActiveFilter(false)
   }
 
+  const sendExcelFile = async () => {
+    const [file] = inputFileRef.current.files
+    const formData = new FormData()
+    try {
+      formData.append('excelFile', file)
+      // return await sendExcelContrato(formData)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const handleExcelFile = (e) => {
+    const [file] = e.target.files
+    Swal.fire({
+      title: '¿Estás seguro que quieres subir este archivo?',
+      text: `Nombre del archivo: ${file.name}`,
+      showCancelButton: true,
+      confirmButtonText: 'Subir archivo',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      preConfirm: () => {
+        return new Promise((resolve, reject) => {
+          sendExcelFile()
+            .then(({ data }) => {
+              const { readedIDs } = data
+              resolve(readedIDs)
+            })
+            .catch(() => {
+              reject(new Error('Error al subir el archivo'))
+            })
+        })
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    })
+      .then(({ value }) => {
+        Swal.fire({
+          title: `${value} aprendices de subidos correctamente.`
+        })
+        getCursos()
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: 'Error al subir el archivo'
+        })
+        console.error(error)
+      })
+  }
+
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       {isOpen && <RegisterCourses closedModal={handleCloseModal} title={'Agrega una ficha'} />}
@@ -400,6 +451,9 @@ export const Courses = () => {
                       </li>
                       <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('nivel', 'Tecnología')}>
                         Tecnólogo
+                      </li>
+                      <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleFilterType('nivel', 'Auxiliar')}>
+                        Auxiliar
                       </li>
                     </ul>
                   </section>
@@ -473,14 +527,14 @@ export const Courses = () => {
           {searchedCourses.length > 0 && !error ? (
             <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
               {searchedCourses.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_incio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
+                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_incio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
               })}
             </section>
           ) : (
             <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
               {courses.length > 0 ? (
                 courses.slice(startIndex, endIndex).map((course, i) => {
-                  return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.lider_nombre_completo} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Instructor Lider'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
+                  return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
                 })
               ) : loading ? (
                 <SkeletonLoading number={6} />
@@ -506,8 +560,15 @@ export const Courses = () => {
             <div className='flex justify-center w-full'>{courses.length === 0 || error || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <div className='grid w-full grid-flow-col-dense gap-3 place-content-end px-7'>
+                <div className='ml-auto bg-green-600 rounded-full shadow-md'>
+                  <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-1 text-white rounded-full cursor-pointer'>
+                    <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
+                    <AiOutlineFileAdd />
+                  </label>
+                  <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={inputFileRef} onChange={handleExcelFile} />
+                </div>
                 <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
-                  <PiAddressBookBold className='text-xl' /> Asignar
+                  <PiAddressBook className='text-xl' /> Asignar
                 </Button>
                 <Button rounded='rounded-full' bg='bg-blue-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleCoursesModal} inline>
                   <LuBookPlus className='text-xl' /> Agregar ficha

@@ -10,8 +10,8 @@ import { Search } from '../Search/Search'
 import { CardStudent } from '../Utils/Card/Card'
 import { FilterModal } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
-import { GetUserByName, detailInfoStudents, sendExcelContrato } from '../../api/httpRequest'
-import { Button } from '../Utils/Button/Button'
+import { GetUserByName, detailInfoStudents, generateExcelStudents, sendExcelContrato } from '../../api/httpRequest'
+import { Button, UIButton } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { modalities } from '../../import/staticData'
 import { AiOutlineFileAdd } from 'react-icons/ai'
@@ -222,18 +222,43 @@ export const StudentMonitoring = () => {
         })
       },
       allowOutsideClick: () => !Swal.isLoading()
-    }).then(({ value }) => {
-      Swal.fire({
-        title: `${value} aprendices de subidos correctamente.`
-      })
-      getApprentices()
     })
+      .then(({ value }) => {
+        Swal.fire({
+          title: `${value} aprendices de subidos correctamente.`
+        })
+        getApprentices()
+      })
       .catch((error) => {
         Swal.fire({
           title: 'Error al subir el archivo'
         })
         console.error(error)
       })
+  }
+
+  const generateExcel = async () => {
+    try {
+      const response = await generateExcelStudents()
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'estudiantes.xlsx'
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
   }
 
   return (
@@ -273,7 +298,7 @@ export const StudentMonitoring = () => {
           <header className='grid place-items-center h-[10vh]'>
             <Search searchFilter icon placeholder={'Busca un aprendiz'} iconClick={handleIconClick} searchStudent={searchApprentices} />
           </header>
-          <section className='grid grid-rows-[1fr_auto] py-5'>
+          <section className='grid grid-rows-[1fr_auto] py-2'>
             {searchedApprentices.length > 0 && !error ? (
               <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
                 {searchedApprentices.slice(startIndex, endIndex).map((apprentice, i) => (
@@ -295,15 +320,18 @@ export const StudentMonitoring = () => {
                 )}
               </div>
             )}
-            <div className='grid grid-rows-[auto_auto] place-items-center px-7 pt-5'>
+            <div className='grid grid-rows-[auto_auto] gap-3 place-items-center px-7 pt-5'>
               {loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
-              <div className='ml-auto bg-green-600 rounded-full shadow-md'>
-                <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
-                  <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
-                  <AiOutlineFileAdd />
-                </label>
-                <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={inputFileRef} onChange={handleExcelFile} />
-              </div>
+              <section className='flex gap-3 ml-auto'>
+                <UIButton type='button' onClick={generateExcel} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>Descargar Excel</UIButton>
+                <div className='ml-auto bg-blue-600 rounded-full shadow-md'>
+                  <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
+                    <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
+                    <AiOutlineFileAdd />
+                  </label>
+                  <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={inputFileRef} onChange={handleExcelFile} />
+                </div>
+              </section>
             </div>
           </section>
           <Footer />

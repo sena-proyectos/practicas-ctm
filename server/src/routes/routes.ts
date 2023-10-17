@@ -9,6 +9,7 @@ import { unableRoutes } from './changeStatusId.routes.js'
 import { studentRoutes } from './students.routes.js'
 import { emailRoutes } from './email.routes.js'
 import { trackingRoute } from './trackingStudents.routes.js'
+import { documentRoutes } from './documents.routes.js'
 import { connection } from '../config/db.js'
 import { httpStatus } from '../models/httpStatus.enums.js'
 import { type RowDataPacket } from 'mysql2'
@@ -22,4 +23,4 @@ indexRoutes.get('/test', async (_, res: Response): Promise<Response<object>> => 
   return res.status(httpStatus.OK).json(query)
 })
 
-export { indexRoutes, userRoutes, roleRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes, unableRoutes, studentRoutes, emailRoutes, trackingRoute }
+export { indexRoutes, userRoutes, roleRoutes, inscriptionRoutes, practicalStageRoutes, classRoutes, unableRoutes, studentRoutes, emailRoutes, trackingRoute, documentRoutes }
