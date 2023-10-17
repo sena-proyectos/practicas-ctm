@@ -491,7 +491,8 @@ export const colorIcon = {
   '/fichas': 'text-coffee',
   // '/fichas-instructor/:id': 'text-coffee',
   '/visitas': 'text-primary',
-  '/config': 'text-fifth'
+  '/config': 'text-fifth',
+  '/registrar-usuario': 'text-purple-500'
 }
 
 /**

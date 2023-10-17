@@ -317,3 +317,31 @@ export const generateExcelStudents = async () => {
     responseType: 'arraybuffer'
   })
 }
+
+export const createVisit = async (payload) => {
+  const URL = `${baseUrl}${api}/create-visit`
+  return await axios.post(URL, payload)
+}
+
+/* OBTENER ESTADO DE APRENDICES */
+export const getStudentState = async (id) => {
+  const URL = `${baseUrl}${api}/studentState/${id}`
+
+  const response = await axios.get(URL)
+  return response
+}
+
+/* EDITAR ESTADO DE APRENDICES */
+export const editStudentState = async (id, payload) => {
+  const URL = `${baseUrl}${api}/update-student-state/${id}`
+
+  const response = await axios.patch(URL, payload)
+  return response
+}
+
+export const editDateClass = async (payload) => {
+  const URL = `${baseUrl}${api}/dateClass`
+  const response = await axios.patch(URL, payload)
+
+  return response
+}

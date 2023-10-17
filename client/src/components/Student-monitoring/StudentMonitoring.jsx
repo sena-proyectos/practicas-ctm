@@ -222,12 +222,13 @@ export const StudentMonitoring = () => {
         })
       },
       allowOutsideClick: () => !Swal.isLoading()
-    }).then(({ value }) => {
-      Swal.fire({
-        title: `${value} aprendices de subidos correctamente.`
-      })
-      getApprentices()
     })
+      .then(({ value }) => {
+        Swal.fire({
+          title: `${value} aprendices de subidos correctamente.`
+        })
+        getApprentices()
+      })
       .catch((error) => {
         Swal.fire({
           title: 'Error al subir el archivo'
@@ -297,7 +298,7 @@ export const StudentMonitoring = () => {
           <header className='grid place-items-center h-[10vh]'>
             <Search searchFilter icon placeholder={'Busca un aprendiz'} iconClick={handleIconClick} searchStudent={searchApprentices} />
           </header>
-          <section className='grid grid-rows-[1fr_auto] py-5'>
+          <section className='grid grid-rows-[1fr_auto] py-2'>
             {searchedApprentices.length > 0 && !error ? (
               <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
                 {searchedApprentices.slice(startIndex, endIndex).map((apprentice, i) => (

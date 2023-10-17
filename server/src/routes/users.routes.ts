@@ -11,7 +11,6 @@ userRoutes.get('/user/:id', checkIdReq, getUserById)
 userRoutes.get('/teacherName', checkName, getTeacherByName)
 userRoutes.get('/teachers', getTeachers)
 userRoutes.get('/teacher/:id', checkIdReq, getTeachersById)
-userRoutes.get('/teacherName', checkName, getTeacherByName)
 userRoutes.get('/coordinators', getCoordinators)
 userRoutes.get('/coordinator/:id', checkIdReq, getCoordinatorById)
 

@@ -14,10 +14,12 @@ import { GrAddCircle } from 'react-icons/gr'
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
-import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById, generateExcelClass } from '../../api/httpRequest'
 import { UIButton, Button } from '../Utils/Button/Button'
 import Swal from 'sweetalert2'
-import { InfoStudentModal, RegisterStudentModal } from '../Utils/Modals/Modals'
+import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById, editDateClass, generateExcelClass } from '../../api/httpRequest'
+import { FilterModal, InfoStudentModal, RegisterStudentModal } from '../Utils/Modals/Modals'
+import { LuSave } from 'react-icons/lu'
+import { ToastContainer, toast } from 'react-toastify'
 
 export const Students = () => {
   const [pageNumber, setPageNumber] = useState(1)
@@ -33,6 +35,7 @@ export const Students = () => {
   const [activeFilter, setActiveFilter] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [loadingData, setLoadingData] = useState({ course: true, students: true })
+  const [modalDates, setModalDates] = useState(false)
 
   /**
    * Función asincrónica para obtener la lista de estudiantes por curso.
@@ -276,6 +279,27 @@ export const Students = () => {
       console.error(error)
     }
   }
+  const handleModal = () => {
+    setModalDates(!modalDates)
+  }
+
+  const handleDates = async (e) => {
+    e.preventDefault()
+
+    const formData = new FormData(e.target)
+    formData.append('numero_ficha', detailCourse.numero_ficha)
+    const data = Object.fromEntries(formData)
+    console.log(data)
+
+    try {
+      const response = await editDateClass(data)
+      console.log(response)
+      toast.success('Fechas actualizadas con éxito')
+      setModalDates(false)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
@@ -283,6 +307,40 @@ export const Students = () => {
         <InfoStudentModal closeModal={handleStateModal} title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} cellPhoneNumber={userInfoById.celular_aprendiz} program={userInfoById.nombre_programa_formacion} courseNumber={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} formationStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} lectivaEnd={dates.fin_lectiva} productiveStart={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} positionSuperior={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celphoneSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />
       )}
       {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'}/>}
+      {modalDates && (
+        <FilterModal closeModal={handleModal} title={'Editar fechas'} width='w-11/12 md:w-1/3'>
+          <section className='flex justify-center'>
+            <section className='flex flex-col w-full gap-3 my-5'>
+              <header>
+                <h3 className='text-[16px] font-medium text-right'>{detailCourse.numero_ficha}</h3>
+                <h3 className='text-[16px] font-light text-right'>{detailCourse.nombre_programa_formacion}</h3>
+              </header>
+              <form className='flex flex-col gap-6' onSubmit={handleDates}>
+                <section className='grid grid-cols-2 gap-2'>
+                  <div className='flex flex-col'>
+                    <label htmlFor='inicio_lectiva' className='text-sm font-light'>
+                      Fecha Inicio Lectiva
+                    </label>
+                    <input id='inicio_lectiva' name='fecha_inicio_lectiva' type='date' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' />
+                  </div>
+                  <div className='flex flex-col'>
+                    <label htmlFor='inicio_practica' className='text-sm font-light'>
+                      Fecha Inicio Practica
+                    </label>
+                    <input id='inicio_practica' name='fecha_inicio_practica' type='date' className='px-2 py-1 text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' />
+                  </div>
+                </section>
+                <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                  <LuSave />
+                  Guardar
+                </Button>
+              </form>
+            </section>
+          </section>
+        </FilterModal>
+      )}
+      {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />}
+      <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-2-85-15'>
         <section className='w-[95%] h-[95%] m-auto'>
@@ -437,6 +495,10 @@ export const Students = () => {
             <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleStudentModal}>
               <GrAddCircle className='text-white' />
               Agregar
+            </Button>
+            <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleModal}>
+              <GrAddCircle className='text-white' />
+              Editar fechas
             </Button>
           </div>
         </section>

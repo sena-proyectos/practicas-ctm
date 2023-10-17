@@ -24,8 +24,8 @@ export const bitacoraSchema = Joi.object({
 })
 
 export const visitSchema = Joi.object({
+  id_aprendiz: Joi.number().required(),
   estado_visita: Joi.string().required(),
-  numero_visita: Joi.number().required(),
-  observaciones_visita: Joi.string().required(),
+  observaciones_visita: Joi.string().allow(null, ''),
   usuario_responsable: Joi.number().required()
 })

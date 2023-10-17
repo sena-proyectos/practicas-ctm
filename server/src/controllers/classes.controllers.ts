@@ -20,7 +20,9 @@ import { type ResultSetHeader, type RowDataPacket } from 'mysql2'
  */
 export const getClasses = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const [classes] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, DATE_FORMAT(fichas.fecha_inicio_lectiva, "%Y-%m-%d") as fecha_inicio_lectiva, DATE_FORMAT(fichas.fecha_inicio_practica, "%Y-%m-%d") as fecha_inicio_practica,niveles_formacion.nivel_formacion, CASE WHEN curdate() > fichas.fecha_inicio_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas INNER JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion  LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario')
+    const [classes] = await connection.query(
+      'SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, DATE_FORMAT(fichas.fecha_inicio_lectiva, "%Y-%m-%d") as fecha_inicio_lectiva, DATE_FORMAT(fichas.fecha_inicio_practica, "%Y-%m-%d") as fecha_inicio_practica,niveles_formacion.nivel_formacion, CASE WHEN curdate() > fichas.fecha_inicio_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas INNER JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion  LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario'
+    )
     if (!Array.isArray(classes) || classes?.length === 0) throw new DbErrorNotFound('No hay fichas registradas.', errorCodes.ERROR_GET_CLASSES)
     return res.status(httpStatus.OK).json({ data: classes })
   } catch (error) {
@@ -133,7 +135,6 @@ export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Res
     if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se encontró la ficha.', errorCodes.ERROR_GET_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
@@ -159,18 +160,16 @@ export const getStudentsClassByClassNumber: RequestHandler<{ numero_ficha: strin
  * @returns una promesa que se resuelve en un objeto de respuesta.
  */
 export const createClass: RequestHandler<{}, Response, classes> = async (req: Request<{}>, res: Response): Promise<Response> => {
-
-  const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_instructor_lider, id_nivel_formacion } = req.body
+  const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion } = req.body
   const classNumber = Number(numero_ficha)
-  const leaderTeacherNumber = Number(id_instructor_seguimiento)
-  const practicalTeacherNumber = Number(id_instructor_lider)
+  const practicalTeacherNumber = Number(id_instructor_seguimiento)
   const formationNumber = Number(id_nivel_formacion)
   try {
-    const [classQuery] = await connection.query('INSERT INTO fichas (numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_instructor_lider, id_nivel_formacion) VALUES (?, ?, ?, ?, ?, ?, ?)', [classNumber, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_lectiva, fecha_inicio_practica, leaderTeacherNumber, practicalTeacherNumber, formationNumber])
+    const [classQuery] = await connection.query('INSERT INTO fichas (numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion) VALUES (?, ?, ?, ?, ?, ?)', [classNumber, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_lectiva, fecha_inicio_practica, practicalTeacherNumber, formationNumber])
     if (!Array.isArray(classQuery) && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo crear la ficha.', errorCodes.ERROR_CREATE_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
-    console.log(error);
+    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
@@ -250,12 +249,10 @@ export const editClass: RequestHandler<{ id: string }, Response, classes> = asyn
  * @returns una promesa que se resuelve en un objeto de respuesta.
  */
 export const editClassDates: RequestHandler<{}, Response, classes> = async (req: Request, res: Response): Promise<Response> => {
-  const { numero_ficha } = req.query
-  const { fecha_inicio_lectiva, fecha_inicio_practica } = req.body
+  const { numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica } = req.body
   const classNumber = Number(numero_ficha)
   try {
-    const [classQuery] = await connection.query('UPDATE fichas SET fecha_inicio_lectiva = IFNULL(?, fecha_inicio_lectiva), fecha_inicio_practica = IFNULL(?, fecha_inicio_practica) WHERE numero_ficha LIKE ?', [fecha_inicio_lectiva, fecha_inicio_lectiva, fecha_inicio_practica, classNumber])
-    if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se pudo editar la ficha.', errorCodes.ERROR_EDIT_CLASS)
+    const [classQuery] = await connection.query('call sena_practicas.actualizar_fecha_ficha(?, ?, ?)', [classNumber, fecha_inicio_lectiva, fecha_inicio_practica])
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
     return handleHTTP(res, error as CustomError)

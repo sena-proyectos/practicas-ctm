@@ -11,6 +11,7 @@ import { IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoP
 // Componentes
 import { colorIcon, rolesNames, keysRoles } from '../../import/staticData'
 import { userStore } from '../../store/config'
+import { AiOutlineUsergroupAdd } from 'react-icons/ai'
 
 const Siderbar = () => {
   const location = useLocation()
@@ -90,10 +91,10 @@ const Siderbar = () => {
 
     try {
       const tokenData = jwtDecode(token)
-      const { nombres_usuario, apellidos_usuario } = tokenData.data.user
+      const { nombres_usuario } = tokenData.data.user
       const { id_usuario } = tokenData.data.user
       setUserId(id_usuario)
-      const fullName = `${nombres_usuario} ${apellidos_usuario}`
+      const fullName = `${nombres_usuario}`
       setDataFullName(fullName)
     } catch (error) {
       window.location.href = '/'
@@ -226,8 +227,18 @@ const Siderbar = () => {
                 {open && 'Configuración'}
               </Link>
             </li>
+            {idRol === Number(keysRoles[0]) && (
+              <li>
+                <Link to='/registrar-usuario' className={styles('/registrar-usuario')}>
+                  <span className={spanStyle('/registrar-usuario')}>
+                    <AiOutlineUsergroupAdd />
+                  </span>
+                  {open && 'Crear Usuario'}
+                </Link>
+              </li>
+            )}
           </section>
-          <section className='w-full mb-0'>
+          <section className='w-full mb-0 '>
             <li className='relative flex h-10 w-[115%] items-center rounded-s-2xl py-2 pl-10 text-red-700 transition hover:bg-white' onClick={logout}>
               <span className={`absolute inset-y-0 left-0 flex items-center ${open === true ? 'text-md pl-3' : 'pl-5 text-lg'} text-red-700`}>
                 <IoLogOutOutline />

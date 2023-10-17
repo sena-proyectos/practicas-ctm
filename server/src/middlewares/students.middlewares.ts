@@ -62,7 +62,7 @@ export const readExcelFileStudents = async (req: Request, res: Response, next: N
           .replace(/[\u0300-\u036f]/g, '')
           .replace(/\s+/g, '_')
         trimmedObject[normalizedKey] = value
-        typeof value === 'string' ? trimmedObject[normalizedKey] = value.trim().toLocaleLowerCase() : trimmedObject[normalizedKey] = value
+        typeof value === 'string' ? (trimmedObject[normalizedKey] = value.trim().toLocaleLowerCase()) : (trimmedObject[normalizedKey] = value)
         if (typeof value === 'string' && normalizedKey === 'tipo_documento') {
           trimmedObject[normalizedKey] = value.replace(/\./g, '').toLocaleLowerCase().trim()
         }
@@ -83,7 +83,7 @@ export const readExcelFileStudents = async (req: Request, res: Response, next: N
     req.body.arrExcel = parsedSpaces
     next()
   } catch (error) {
-    handleHTTP(res, error as CustomError ?? 'Error')
+    handleHTTP(res, (error as CustomError) ?? 'Error')
   }
 }
 
@@ -109,7 +109,12 @@ export const classifyExcel = (req: Request, res: Response, next: NextFunction): 
       direccion: item.direccion
     }))
     const fichaData = arrExcel.map(async (item: any) => {
-      const splitModalidad: string = item.especialidad.split(' ')[0].toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
+      const splitModalidad: string = item.especialidad
+        .split(' ')[0]
+        .toLocaleLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim()
       const modalidad: string = splitModalidad.charAt(0).toUpperCase() + splitModalidad.slice(1)
       const modalidadData = modalities[modalidad]
       const idModalidad = await getModalitiesByName(modalidadData)
@@ -145,6 +150,17 @@ export const classifyExcel = (req: Request, res: Response, next: NextFunction): 
     next()
   } catch (error) {
     console.error(error)
+    handleHTTP(res, error as CustomError)
+  }
+}
+
+export const checkStudentState = (req: Request, res: Response, next: NextFunction): void => {
+  const { estado_aprendiz } = req.body
+  try {
+    const { error } = studentSchema.validate({ estado_aprendiz })
+    if (error !== undefined) throw new DataNotValid('Los datos ingresados no son válidos, verifícalos')
+    next()
+  } catch (error) {
     handleHTTP(res, error as CustomError)
   }
 }
