@@ -354,7 +354,6 @@ DROP TABLE IF EXISTS `aprendices_visitas`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `aprendices_visitas` (
   `id_visita` int NOT NULL AUTO_INCREMENT,
-  `fecha_visita` date DEFAULT NULL,
   `numero_visita` varchar(100) NOT NULL,
   `estado_visita` varchar(45) DEFAULT 'Pendiente',
   `observaciones_visita` varchar(500) DEFAULT NULL,
