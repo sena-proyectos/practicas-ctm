@@ -21,6 +21,8 @@
     "comma-dangle": "error",
     "quotes": ["error", "single"],
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/strict-boolean-expressions": "off"
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/no-dynamic-delete": "off",
+    "@typescript-eslint/restrict-template-expressions": "off"
   }
 }

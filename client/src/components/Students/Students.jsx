@@ -14,9 +14,10 @@ import { GrAddCircle } from 'react-icons/gr'
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
-import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById, editDateClass } from '../../api/httpRequest'
+import { UIButton, Button } from '../Utils/Button/Button'
+import Swal from 'sweetalert2'
+import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById, editDateClass, generateExcelClass } from '../../api/httpRequest'
 import { FilterModal, InfoStudentModal, RegisterStudentModal } from '../Utils/Modals/Modals'
-import { Button } from '../Utils/Button/Button'
 import { LuSave } from 'react-icons/lu'
 import { ToastContainer, toast } from 'react-toastify'
 
@@ -255,6 +256,29 @@ export const Students = () => {
     setActiveFilter(false)
   }
 
+  const generateExcel = async () => {
+    try {
+      const response = await generateExcelClass(courseNumber)
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'registros.xlsx'
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
   const handleModal = () => {
     setModalDates(!modalDates)
   }
@@ -282,6 +306,7 @@ export const Students = () => {
       {showModalStudent && (
         <InfoStudentModal closeModal={handleStateModal} title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} cellPhoneNumber={userInfoById.celular_aprendiz} program={userInfoById.nombre_programa_formacion} courseNumber={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} formationStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} lectivaEnd={dates.fin_lectiva} productiveStart={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} positionSuperior={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celphoneSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />
       )}
+      {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'}/>}
       {modalDates && (
         <FilterModal closeModal={handleModal} title={'Editar fechas'} width='w-11/12 md:w-1/3'>
           <section className='flex justify-center'>
@@ -464,8 +489,9 @@ export const Students = () => {
               </tbody>
             </table>
             <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0'>
-              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
+              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className='h-fit' />
             </div>
+            <UIButton type='button' classNames='absolute right-3 bottom-3' onClick={generateExcel}>Generar reporte</UIButton>
             <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleStudentModal}>
               <GrAddCircle className='text-white' />
               Agregar
