@@ -598,7 +598,7 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
                   <span onClick={handleOldPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                     {showOldPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                   </span>
-                  <input name='oldPassword' type={showOldPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
+                  <input name='oldPassword' minLength={8} type={showOldPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                 </div>
               </section>
               <section className='grid grid-cols-2-50-50'>
@@ -610,7 +610,7 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
                     <span onClick={handleNewPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                       {showNewPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                     </span>
-                    <input name='newPassword' type={showNewPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
+                    <input name='newPassword' minLength={8} type={showNewPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                   </div>
                 </div>
               </section>
@@ -623,7 +623,7 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
                     <span onClick={handleConfirmPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
                       {showConfirmPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
                     </span>
-                    <input name='confirmPassword' type={showConfirmPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
+                    <input name='confirmPassword' minLength={8} type={showConfirmPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
                   </div>
                 </div>
               </section>
@@ -1064,35 +1064,35 @@ const AddTeacherModal = ({ closeModal, title, setNotify }) => {
     formData.append('contrasena', contrasena)
     const data = Object.fromEntries(formData)
 
-    const { error } = addTeacherValidation.validate(data)
-    if (error !== undefined) {
-      let errorMessage
-      const customErrorMessages = {
-        nombre: 'El nombre debe tener al menos 3 caracteres.',
-        apellido: 'El apellido debe tener al menos 3 caracteres.',
-        num_documento: 'El número de documento debe tener entre 8 y 10 caracteres',
-        num_celular: 'El número de celular debe tener entre 8 y 10 caracteres'
-      }
-
-      const path = error.details[0].path[0]
-      if (customErrorMessages[path]) {
-        errorMessage = customErrorMessages[path]
-      }
-
-      toast.error(errorMessage, {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
-        theme: 'colored',
-        className: 'text-sm'
-      })
-    }
     try {
+      const { error } = addTeacherValidation.validate(data)
+      if (error !== undefined) {
+        let errorMessage
+        const customErrorMessages = {
+          nombre: 'El nombre debe tener al menos 3 caracteres.',
+          apellido: 'El apellido debe tener al menos 3 caracteres.',
+          num_documento: 'El número de documento debe tener entre 8 y 10 caracteres',
+          num_celular: 'El número de celular debe tener entre 8 y 10 caracteres'
+        }
+
+        const path = error.details[0].path[0]
+        if (customErrorMessages[path]) {
+          errorMessage = customErrorMessages[path]
+        }
+
+        toast.error(errorMessage, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          pauseOnFocusLoss: false,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          className: 'text-sm'
+        })
+      }
       await registerUser(data)
       setNotify(true)
       closeModal()

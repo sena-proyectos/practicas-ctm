@@ -222,12 +222,13 @@ export const StudentMonitoring = () => {
         })
       },
       allowOutsideClick: () => !Swal.isLoading()
-    }).then(({ value }) => {
-      Swal.fire({
-        title: `${value} aprendices de subidos correctamente.`
-      })
-      getApprentices()
     })
+      .then(({ value }) => {
+        Swal.fire({
+          title: `${value} aprendices de subidos correctamente.`
+        })
+        getApprentices()
+      })
       .catch((error) => {
         Swal.fire({
           title: 'Error al subir el archivo'
@@ -298,7 +299,7 @@ export const StudentMonitoring = () => {
             <div className='grid grid-rows-[auto_auto] place-items-center px-7 pt-5'>
               {loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
               <div className='ml-auto bg-green-600 rounded-full shadow-md'>
-                <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
+                <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-1 text-white rounded-full cursor-pointer'>
                   <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
                   <AiOutlineFileAdd />
                 </label>
