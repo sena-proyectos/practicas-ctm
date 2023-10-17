@@ -294,3 +294,20 @@ export const sendExcelContrato = async (payload) => {
   const URL = `${baseUrl}${api}/read-excel-file/students`
   return await axios.post(URL, payload)
 }
+
+export const generateExcelClass = async (classNumber) => {
+  const URL = `${baseUrl}${api}/create-excel-class`
+  return await axios.get(URL, {
+    params: {
+      numero_ficha: classNumber
+    },
+    responseType: 'arraybuffer'
+  })
+}
+
+export const generateExcelStudents = async () => {
+  const URL = `${baseUrl}${api}/create-excel-students`
+  return await axios.get(URL, {
+    responseType: 'arraybuffer'
+  })
+}

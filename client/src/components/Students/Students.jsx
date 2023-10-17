@@ -13,8 +13,10 @@ import { BiSad } from 'react-icons/bi'
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
-import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById } from '../../api/httpRequest'
+import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById, generateExcelClass } from '../../api/httpRequest'
 import { InfoStudentModal } from '../Utils/Modals/Modals'
+import { UIButton } from '../Utils/Button/Button'
+import Swal from 'sweetalert2'
 
 export const Students = () => {
   const [pageNumber, setPageNumber] = useState(1)
@@ -245,6 +247,30 @@ export const Students = () => {
     setActiveFilter(false)
   }
 
+  const generateExcel = async () => {
+    try {
+      const response = await generateExcelClass(courseNumber)
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'registros.xlsx'
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       {showModalStudent && (
@@ -398,8 +424,9 @@ export const Students = () => {
               </tbody>
             </table>
             <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-0'>
-              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
+              <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className='h-fit' />
             </div>
+            <UIButton type='button' classNames='absolute right-3 bottom-3' onClick={generateExcel}>Generar reporte</UIButton>
           </div>
         </section>
         <Footer />
