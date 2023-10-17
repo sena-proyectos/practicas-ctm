@@ -301,6 +301,11 @@ export const sendExcelContrato = async (payload) => {
   return await axios.post(URL, payload)
 }
 
+export const sendExcelCourse = async (payload) => {
+  const URL = `${baseUrl}${api}/read-excel-file/classes`
+  return await axios.post(URL, payload)
+}
+
 export const generateExcelClass = async (classNumber) => {
   const URL = `${baseUrl}${api}/create-excel-class`
   return await axios.get(URL, {
