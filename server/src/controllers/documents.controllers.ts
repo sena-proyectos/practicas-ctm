@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express'
 import { handleHTTP } from '../errors/errorsHandler.js'
-import { type CustomError } from '../errors/customErrors.js'
+import { DataNotValid, type CustomError } from '../errors/customErrors.js'
 import XLSX from 'xlsx'
 import { connection } from '../config/db.js'
 import { type RowDataPacket } from 'mysql2'
@@ -105,7 +105,7 @@ export const excelGeneratorStudentsPractical = async (_req: Request, res: Respon
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    res.setHeader('Content-Disposition', 'attachment; filename=estudiantes.xlsx')
+    res.setHeader('Content-Disposition', 'attachment; filename=estudiantesEnPracticas.xlsx')
     return res.send(buffer)
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -138,7 +138,42 @@ export const excelGeneratorStudentsNoPractical = async (_req: Request, res: Resp
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    res.setHeader('Content-Disposition', 'attachment; filename=estudiantes.xlsx')
+    res.setHeader('Content-Disposition', 'attachment; filename=estudiantesNoPractica.xlsx')
+    return res.send(buffer)
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+const getStudentsByCategory = async (modality: string): Promise<any> => {
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('call sena_practicas.conseguir_aprendices_por_modalidad(?)', [modality])
+    const data = query[0]
+    return data
+  } catch (error) {
+    throw new Error(error as string)
+  }
+}
+
+export const excelGeneratorStudentsCategory = async (req: Request, res: Response): Promise<Response> => {
+  const { modality } = req.query
+  try {
+    if (typeof modality !== 'string') throw new DataNotValid('Error con el query')
+    const payload = await getStudentsByCategory(modality)
+    payload.forEach((student: any) => {
+      for (const key in student) {
+        const newKey = key.replaceAll('_', ' ').toUpperCase()
+        student[newKey] = student[key]
+        delete student[key]
+      }
+    })
+    const worksheet = XLSX.utils.json_to_sheet(payload)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Estudiantes por categoria')
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    res.setHeader('Content-Disposition', 'attachment; filename=estudiantesCategoria.xlsx')
     return res.send(buffer)
   } catch (error) {
     return handleHTTP(res, error as CustomError)
