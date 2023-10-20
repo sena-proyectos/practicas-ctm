@@ -41,8 +41,8 @@ classRoutes.get('/teacherLiderClasses/:id', checkIdReq, getClassByInstructorId)
 GET para el punto final '/classNumber'. Cuando se realiza una solicitud GET a este punto final,
 ejecutará el middleware `checkClassNumber` seguido de la función de controlador
 `getClassByClassNumber`. */
-classRoutes.get('/classNumber', checkClassNumber, getClassByClassNumber)
-classRoutes.get('/classFreeNumber', checkClassNumber, getClassFreeByClassNumber)
+classRoutes.get('/classNumber', getClassByClassNumber)
+classRoutes.get('/classFreeNumber', getClassFreeByClassNumber)
 
 /* La línea `classRoutes.get('/classStudents', checkClassNumber, getStudentsClassByClassNumber)` define
 una ruta GET para el punto final '/classStudents'. Cuando se realiza una solicitud GET a este punto
