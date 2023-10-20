@@ -350,3 +350,11 @@ export const editDateClass = async (payload) => {
 
   return response
 }
+
+// OBTENER FICHAS SIN INSTRUCTOR POR NUMERO DE FICHA
+export const GetClassFreeByNumber = async (data) => {
+  const URL = `${baseUrl}${api}/classFreeNumber?numero_ficha=${data}`
+  const response = await axios.get(URL)
+
+  return response
+}
