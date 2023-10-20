@@ -97,7 +97,7 @@ export const getClassByPracticalInstructorId: RequestHandler<{ id: string }, Res
   const { id } = req.params
   const idNumber = Number(id)
   try {
-    const [classData] = await connection.query('SELECT fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_inicio_lectiva, fichas.fecha_inicio_practica, fichas.id_instructor_lider, fichas.id_instructor_seguimiento, CASE WHEN curdate() > fichas.fecha_inicio_practica THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo, COALESCE(CONCAT(usuarios_lider.nombres_usuario, " ", usuarios_lider.apellidos_usuario), "Sin asignar") AS lider_nombre_completo FROM fichas LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario WHERE id_instructor_seguimiento = ?', [idNumber])
+    const [classData] = await connection.query('SELECT fichas.numero_ficha, fichas.nombre_programa_formacion, fichas.fecha_inicio_lectiva, DATE_FORMAT(fichas.fecha_inicio_lectiva, "%Y-%m-%d") as fecha_inicio_lectiva, DATE_FORMAT(fichas.fecha_inicio_practica, "%Y-%m-%d") as fecha_inicio_practica,niveles_formacion.nivel_formacion, fichas.id_instructor_seguimiento, CASE WHEN curdate() > fichas.fecha_inicio_practica THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo FROM fichas INNER JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario LEFT JOIN usuarios AS usuarios_lider ON fichas.id_instructor_lider = usuarios_lider.id_usuario WHERE id_instructor_seguimiento = ?', [idNumber])
     if (!Array.isArray(classData) || classData?.length === 0) throw new DbErrorNotFound('No se encontraron clases del instructor de seguimiento.', errorCodes.ERROR_GET_CLASS)
     return res.status(httpStatus.OK).json({ data: classData })
   } catch (error) {
@@ -165,7 +165,7 @@ export const createClass: RequestHandler<{}, Response, classes> = async (req: Re
   const practicalTeacherNumber = Number(id_instructor_seguimiento)
   const formationNumber = Number(id_nivel_formacion)
   try {
-    const [classQuery] = await connection.query('INSERT INTO fichas (numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion) VALUES (?, ?, ?, ?, ?, ?)', [classNumber, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_lectiva, fecha_inicio_practica, practicalTeacherNumber, formationNumber])
+    const [classQuery] = await connection.query('INSERT INTO fichas (numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion) VALUES (?, ?, ?, ?, ?, ?)', [classNumber, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, practicalTeacherNumber, formationNumber])
     if (!Array.isArray(classQuery) && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo crear la ficha.', errorCodes.ERROR_CREATE_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
@@ -187,7 +187,7 @@ export const createClassWithStudents = async (req: Request, res: Response): Prom
   }
 }
 
-const addClassToDatabase = async (payload: Array<{ numero_ficha: string, nombre_programa_formacion: string }>): Promise<number | DbError> => {
+const addClassToDatabase = async (payload: Array<{ numero_ficha: string; nombre_programa_formacion: string }>): Promise<number | DbError> => {
   try {
     await connection.execute('CALL subir_ficha_minima_info(?, ?, @id_ficha)', [payload[0].numero_ficha, payload[0].nombre_programa_formacion])
     const [lastID] = await connection.query<RowDataPacket[]>('SELECT @id_ficha as last_id')
@@ -198,7 +198,7 @@ const addClassToDatabase = async (payload: Array<{ numero_ficha: string, nombre_
   }
 }
 
-const addStudentsClassToDatabase = async (payload: Array<{ tipo_documento_aprendiz: string, numero_documento_aprendiz: string, nombre_aprendiz: string, apellido_aprendiz: string, celular_aprendiz: string, email_aprendiz: string, estado_aprendiz: string }>, idClass: number | DbError): Promise<boolean | DbError> => {
+const addStudentsClassToDatabase = async (payload: Array<{ tipo_documento_aprendiz: string; numero_documento_aprendiz: string; nombre_aprendiz: string; apellido_aprendiz: string; celular_aprendiz: string; email_aprendiz: string; estado_aprendiz: string }>, idClass: number | DbError): Promise<boolean | DbError> => {
   try {
     for await (const item of payload) {
       await connection.execute('CALL subir_aprendices_con_ficha(?, ?, ?, ?, ?, ?, ?, ?)', [item.tipo_documento_aprendiz, item.numero_documento_aprendiz, item.nombre_aprendiz, item.apellido_aprendiz, item.celular_aprendiz, item.email_aprendiz, item.estado_aprendiz, idClass])
