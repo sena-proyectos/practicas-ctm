@@ -24,13 +24,19 @@ export const sendEmail = async (req: Request, res: Response): Promise<Response> 
   }
 }
 
-export const sendEmailAnyBody = async (payload: { body: string, subject: string, to: string }): Promise<void> => {
+export const sendEmailAnyBody = async (payload: { body: string, subject: string, to: string, file: Buffer }): Promise<void> => {
   try {
     await emailConfig.sendMail({
       from: process.env.MAIL_USER,
       to: payload.to,
       subject: payload.subject,
-      html: payload.body
+      html: payload.body,
+      attachments: [{
+        filename: 'aprendices.xlsx',
+        content: payload.file,
+        contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        contentDisposition: 'attachment'
+      }]
     })
   } catch (error: any) {
     throw new Error(error)

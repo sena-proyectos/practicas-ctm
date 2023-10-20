@@ -3,6 +3,7 @@ import { DbError } from '../errors/customErrors.js'
 import { connection } from '../config/db.js'
 import { type RowDataPacket } from 'mysql2'
 import { sendEmailAnyBody } from '../controllers/email.controllers.js'
+import XLSX from 'xlsx'
 
 const rule = new schedule.RecurrenceRule()
 rule.dayOfWeek = 1
@@ -12,6 +13,7 @@ rule.minute = 0
 export const schedulerTasks = schedule.scheduleJob(rule, async () => {
   try {
     const data = await querySchedule()
+    const file = generateExcel(data)
 
     const table = `
       <table border="1">
@@ -51,7 +53,7 @@ export const schedulerTasks = schedule.scheduleJob(rule, async () => {
       ${table}
     `
 
-    sendEmailAnyBody({ body, subject: 'Scheduler', to: 'inf.practicasctm@outlook.com' })
+    sendEmailAnyBody({ body, subject: 'Informe bisemanal aprendices sin practicas en Practicas CTM', to: 'inf.practicasctm@outlook.com', file })
       .then(() => {
         console.log('Correo enviado')
       })
@@ -62,6 +64,28 @@ export const schedulerTasks = schedule.scheduleJob(rule, async () => {
     console.error('Ha ocurrido un error al ejecutar el scheduler')
   }
 })
+
+const generateExcel = (payload: object[]): Buffer => {
+  try {
+    const data = payload.map((student: any) => {
+      return Object.entries(student).reduce(
+        (obj, [key, value]) => ({
+          ...obj,
+          [key.replaceAll('_', ' ').toUpperCase()]: value
+        }),
+        {}
+      )
+    })
+    const worksheet = XLSX.utils.json_to_sheet(data)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Estudiantes sin practicas')
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
+
+    return buffer
+  } catch (error) {
+    throw new Error(error as string)
+  }
+}
 
 const querySchedule = async (): Promise<any> => {
   try {
