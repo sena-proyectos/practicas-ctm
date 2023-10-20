@@ -88,10 +88,11 @@ export const Students = () => {
     try {
       const response = await GetClassByNumber(payload)
       const { data } = response.data
+      console.log(data)
       const fechaInicioLectiva = data[0].fecha_inicio_lectiva
       const fechaInicioPractica = data[0].fecha_inicio_practica
-      const parsedDateStart = fechaInicioLectiva.split('T')[0].split('-').join('-')
-      const parsedDateEnd = fechaInicioPractica.split('T')[0].split('-').join('-')
+      const parsedDateStart = fechaInicioLectiva ? fechaInicioLectiva.split('T')[0].split('-').join('-') : fechaInicioLectiva
+      const parsedDateEnd = fechaInicioPractica ? fechaInicioPractica.split('T')[0].split('-').join('-') : fechaInicioPractica
       data[0].fecha_inicio_lectiva = parsedDateStart
       data[0].fecha_inicio_practica = parsedDateEnd
       setDetailCourse(data[0])
