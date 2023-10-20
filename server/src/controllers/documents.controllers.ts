@@ -17,6 +17,8 @@ const getStudentsByNumberClass = async (classNumber: any): Promise<any> => {
 
 export const excelGeneratorClass = async (req: Request, res: Response): Promise<Response> => {
   const { numero_ficha } = req.query
+  const date = new Date()
+  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
   try {
     const payload = await getStudentsByNumberClass(numero_ficha)
     payload.forEach((student: any) => {
@@ -34,7 +36,7 @@ export const excelGeneratorClass = async (req: Request, res: Response): Promise<
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    res.setHeader('Content-Disposition', 'attachment; filename=registros.xlsx')
+    res.setHeader('Content-Disposition', `attachment; filename=registros_${numero_ficha}_${fullDate}.xlsx`)
 
     return res.send(buffer)
   } catch (error) {
@@ -54,6 +56,8 @@ const getStudents = async (): Promise<any> => {
 }
 
 export const excelGeneratorStudents = async (_req: Request, res: Response): Promise<Response> => {
+  const date = new Date()
+  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
   try {
     const payload = await getStudents()
     payload.forEach((student: any) => {
@@ -71,7 +75,7 @@ export const excelGeneratorStudents = async (_req: Request, res: Response): Prom
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    res.setHeader('Content-Disposition', 'attachment; filename=estudiantes.xlsx')
+    res.setHeader('Content-Disposition', `attachment; filename=estudiantes_${fullDate}.xlsx`)
 
     return res.send(buffer)
   } catch (error) {
@@ -90,6 +94,8 @@ const getStudentsPractical = async (): Promise<any> => {
 }
 
 export const excelGeneratorStudentsPractical = async (_req: Request, res: Response): Promise<Response> => {
+  const date = new Date()
+  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
   try {
     const payload = await getStudentsPractical()
     payload.forEach((student: any) => {
@@ -105,7 +111,7 @@ export const excelGeneratorStudentsPractical = async (_req: Request, res: Respon
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    res.setHeader('Content-Disposition', 'attachment; filename=estudiantesEnPracticas.xlsx')
+    res.setHeader('Content-Disposition', `attachment; filename=estudiantesEnPracticas_${fullDate}.xlsx`)
     return res.send(buffer)
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -123,6 +129,8 @@ const getStudentsWithNoPractical = async (): Promise<any> => {
 }
 
 export const excelGeneratorStudentsNoPractical = async (_req: Request, res: Response): Promise<Response> => {
+  const date = new Date()
+  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
   try {
     const payload = await getStudentsWithNoPractical()
     payload.forEach((student: any) => {
@@ -138,7 +146,7 @@ export const excelGeneratorStudentsNoPractical = async (_req: Request, res: Resp
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    res.setHeader('Content-Disposition', 'attachment; filename=estudiantesNoPractica.xlsx')
+    res.setHeader('Content-Disposition', `attachment; filename=estudiantesNoPractica_${fullDate}.xlsx`)
     return res.send(buffer)
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -194,6 +202,8 @@ const getStudentsByInstructor = async (instructor: string): Promise<any> => {
 
 export const excelGeneratorStudentsInstructor = async (req: Request, res: Response): Promise<Response> => {
   const { instructor } = req.query
+  const date = new Date()
+  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
   try {
     if (typeof instructor !== 'string') throw new DataNotValid('Error con el query')
     const payload = await getStudentsByInstructor(instructor)
@@ -210,7 +220,7 @@ export const excelGeneratorStudentsInstructor = async (req: Request, res: Respon
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    res.setHeader('Content-Disposition', `attachment; filename=estudiantes${instructor}.xlsx`)
+    res.setHeader('Content-Disposition', `attachment; filename=estudiantes${instructor}_${fullDate}.xlsx`)
     return res.send(buffer)
   } catch (error) {
     return handleHTTP(res, error as CustomError)
