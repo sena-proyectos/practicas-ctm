@@ -5,6 +5,16 @@ import XLSX from 'xlsx'
 import { connection } from '../config/db.js'
 import { type RowDataPacket } from 'mysql2'
 
+const getStudentsByNumberClass = async (classNumber: any): Promise<any> => {
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('CALL aprendicesPorNumeroFicha(?)', [classNumber])
+    const data = query[0]
+    return data
+  } catch (error) {
+    throw new Error()
+  }
+}
+
 export const excelGeneratorClass = async (req: Request, res: Response): Promise<Response> => {
   const { numero_ficha } = req.query
   try {
@@ -33,6 +43,16 @@ export const excelGeneratorClass = async (req: Request, res: Response): Promise<
   }
 }
 
+const getStudents = async (): Promise<any> => {
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('call sena_practicas.full_info_aprendiz()', [])
+    const data = query[0]
+    return data
+  } catch (error) {
+    throw new Error()
+  }
+}
+
 export const excelGeneratorStudents = async (_req: Request, res: Response): Promise<Response> => {
   try {
     const payload = await getStudents()
@@ -55,27 +75,39 @@ export const excelGeneratorStudents = async (_req: Request, res: Response): Prom
 
     return res.send(buffer)
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
 
-const getStudents = async (): Promise<any> => {
+const getStudentsPractical = async (): Promise<any> => {
   try {
-    const [query] = await connection.query<RowDataPacket[]>('call sena_practicas.full_info_aprendiz()', [])
+    const [query] = await connection.query<RowDataPacket[]>('call sena_practicas.conseguir_aprendices_en_practica()', [])
     const data = query[0]
     return data
   } catch (error) {
-    throw new Error()
+    throw new Error(error as string)
   }
 }
 
-const getStudentsByNumberClass = async (classNumber: any): Promise<any> => {
+export const excelGeneratorStudentsPractical = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const [query] = await connection.query<RowDataPacket[]>('CALL aprendicesPorNumeroFicha(?)', [classNumber])
-    const data = query[0]
-    return data
+    const payload = await getStudentsPractical()
+    payload.forEach((student: any) => {
+      for (const key in student) {
+        const newKey = key.replaceAll('_', ' ').toUpperCase()
+        student[newKey] = student[key]
+        delete student[key]
+      }
+    })
+    const worksheet = XLSX.utils.json_to_sheet(payload)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Estudiantes en practicas')
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    res.setHeader('Content-Disposition', 'attachment; filename=estudiantes.xlsx')
+    return res.send(buffer)
   } catch (error) {
-    throw new Error()
+    return handleHTTP(res, error as CustomError)
   }
 }
