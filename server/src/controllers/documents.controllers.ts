@@ -111,3 +111,36 @@ export const excelGeneratorStudentsPractical = async (_req: Request, res: Respon
     return handleHTTP(res, error as CustomError)
   }
 }
+
+const getStudentsWithNoPractical = async (): Promise<any> => {
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('call sena_practicas.alerta_bisemanal()', [])
+    const data = query[0]
+    return data
+  } catch (error) {
+    throw new Error(error as string)
+  }
+}
+
+export const excelGeneratorStudentsNoPractical = async (_req: Request, res: Response): Promise<Response> => {
+  try {
+    const payload = await getStudentsWithNoPractical()
+    payload.forEach((student: any) => {
+      for (const key in student) {
+        const newKey = key.replaceAll('_', ' ').toUpperCase()
+        student[newKey] = student[key]
+        delete student[key]
+      }
+    })
+    const worksheet = XLSX.utils.json_to_sheet(payload)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Estudiantes sin practicas')
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    res.setHeader('Content-Disposition', 'attachment; filename=estudiantes.xlsx')
+    return res.send(buffer)
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
