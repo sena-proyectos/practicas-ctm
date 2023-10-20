@@ -10,7 +10,7 @@ import { Search } from '../Search/Search'
 import { CardStudent } from '../Utils/Card/Card'
 // import { FilterModal } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
-import { GetUserByName, detailInfoStudents, generateExcelStudents, sendExcelContrato } from '../../api/httpRequest'
+import { GetUserByName, detailInfoStudents, generateExcelStudents, generateExcelStudentsPractical, sendExcelContrato } from '../../api/httpRequest'
 import { UIButton } from '../Utils/Button/Button'
 // import { Select } from '../Utils/Select/Select'
 // import { modalities } from '../../import/staticData'
@@ -289,6 +289,30 @@ export const StudentMonitoring = () => {
     }
   }
 
+  const generateStudentsPractical = async () => {
+    try {
+      const response = await generateExcelStudentsPractical()
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'estudiantes_en_practicas.xlsx'
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
   return (
     <>
       {/* {modalFilter && (
@@ -359,6 +383,9 @@ export const StudentMonitoring = () => {
               <section className='flex gap-3 ml-auto'>
                 <UIButton type='button' onClick={generateExcel} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>
                   Descargar Excel
+                </UIButton>
+                <UIButton type='button' onClick={generateStudentsPractical} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>
+                  Aprendices en práctica
                 </UIButton>
                 <div className='ml-auto bg-blue-600 rounded-full shadow-md'>
                   <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-1 text-white rounded-full cursor-pointer'>

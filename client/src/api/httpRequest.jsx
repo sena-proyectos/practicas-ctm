@@ -358,3 +358,11 @@ export const GetClassFreeByNumber = async (data) => {
 
   return response
 }
+
+// Generar excel de todos los aprendices en prácticas
+export const generateExcelStudentsPractical = async () => {
+  const URL = `${baseUrl}${api}/create-excel-students-practical`
+  return await axios.get(URL, {
+    responseType: 'arraybuffer'
+  })
+}
