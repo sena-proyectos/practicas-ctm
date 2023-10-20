@@ -157,6 +157,8 @@ const getStudentsByCategory = async (modality: string): Promise<any> => {
 
 export const excelGeneratorStudentsCategory = async (req: Request, res: Response): Promise<Response> => {
   const { modality } = req.query
+  const date = new Date()
+  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
   try {
     if (typeof modality !== 'string') throw new DataNotValid('Error con el query')
     const payload = await getStudentsByCategory(modality)
@@ -169,11 +171,46 @@ export const excelGeneratorStudentsCategory = async (req: Request, res: Response
     })
     const worksheet = XLSX.utils.json_to_sheet(payload)
     const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Estudiantes por categoria')
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Estudiantes por ${modality}`)
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    res.setHeader('Content-Disposition', 'attachment; filename=estudiantesCategoria.xlsx')
+    res.setHeader('Content-Disposition', `attachment; filename=estudiantes${modality}_${fullDate}.xlsx`)
+    return res.send(buffer)
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
+const getStudentsByInstructor = async (instructor: string): Promise<any> => {
+  try {
+    const [query] = await connection.query<RowDataPacket[]>('call sena_practicas.conseguir_aprendices_por_instructor(?)', [instructor])
+    const data = query[0]
+    return data
+  } catch (error) {
+    throw new Error(error as string)
+  }
+}
+
+export const excelGeneratorStudentsInstructor = async (req: Request, res: Response): Promise<Response> => {
+  const { instructor } = req.query
+  try {
+    if (typeof instructor !== 'string') throw new DataNotValid('Error con el query')
+    const payload = await getStudentsByInstructor(instructor)
+    payload.forEach((student: any) => {
+      for (const key in student) {
+        const newKey = key.replaceAll('_', ' ').toUpperCase()
+        student[newKey] = student[key]
+        delete student[key]
+      }
+    })
+    const worksheet = XLSX.utils.json_to_sheet(payload)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Estudiantes de ${instructor}`)
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    res.setHeader('Content-Disposition', `attachment; filename=estudiantes${instructor}.xlsx`)
     return res.send(buffer)
   } catch (error) {
     return handleHTTP(res, error as CustomError)
