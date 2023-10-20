@@ -76,6 +76,20 @@ export const StudentMonitoring = () => {
     try {
       const response = await GetUserByName(searchTerm)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_completo = element.nombre_completo
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       if (searchTerm.trim() === '') {
         setError(null)
         setSearchedApprentices([])
@@ -107,6 +121,20 @@ export const StudentMonitoring = () => {
     try {
       const response = await detailInfoStudents()
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_completo = element.nombre_completo
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       setApprentices(data)
       setLoading(false)
     } catch (error) {

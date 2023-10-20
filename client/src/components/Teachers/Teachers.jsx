@@ -61,6 +61,20 @@ export const Teachers = () => {
     try {
       const response = await GetTeacherByName(searchTerm)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombres_usuario = element.nombres_usuario
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+        element.apellidos_usuario = element.apellidos_usuario
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       if (searchTerm.trim() === '') {
         setError(null)
         setSearchedTeachers([])
@@ -92,6 +106,21 @@ export const Teachers = () => {
     try {
       const response = await getTeachers()
       const { data } = response.data
+      console.log(data)
+      data.forEach((element) => {
+        element.nombres_usuario = element.nombres_usuario
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+        element.apellidos_usuario = element.apellidos_usuario
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       setTeacher(data)
       setLoading(false)
     } catch (error) {
@@ -298,7 +327,7 @@ export const Teachers = () => {
               <div className='flex justify-center w-full'>{teacher.length === 0 || error || loading ? <></> : searchedTeachers.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
               {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
                 <div className='grid w-full pr-7 place-content-end'>
-                  <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleModal} inline>
+                  <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-1.5' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleModal} inline>
                     <HiOutlineUserAdd className='text-xl' />
                     Agregar
                   </Button>

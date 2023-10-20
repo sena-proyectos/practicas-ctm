@@ -56,6 +56,14 @@ export const Students = () => {
     try {
       const response = await GetStudentsByCourse(payload)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_completo = element.nombre_completo
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       setStudentsCourse(data)
       setStudentsCourseOriginal(data)
     } catch (err) {
@@ -88,7 +96,14 @@ export const Students = () => {
     try {
       const response = await GetClassByNumber(payload)
       const { data } = response.data
-      console.log(data)
+      data.forEach((element) => {
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       const fechaInicioLectiva = data[0].fecha_inicio_lectiva
       const fechaInicioPractica = data[0].fecha_inicio_practica
       const parsedDateStart = fechaInicioLectiva ? fechaInicioLectiva.split('T')[0].split('-').join('-') : fechaInicioLectiva

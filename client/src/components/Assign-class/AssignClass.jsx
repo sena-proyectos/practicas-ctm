@@ -51,6 +51,14 @@ export const AssignClass = () => {
     try {
       const response = await GetClassFreeByNumber(searchTerm)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       if (searchTerm.trim() === '') {
         setError(null)
         setSearchedFreeCourses([])
@@ -82,6 +90,14 @@ export const AssignClass = () => {
     try {
       const response = await getClassFree()
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       setCourses(data)
       setLoading(false)
     } catch (error) {
@@ -123,6 +139,14 @@ export const AssignClass = () => {
       setModalAsign(true)
       const response = await GetClassFreeByNumber(numero_ficha)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       setDetailCourse(data[0])
     } catch (error) {
       throw new Error(error)
