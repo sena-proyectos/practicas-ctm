@@ -18,7 +18,7 @@ const getStudentsByNumberClass = async (classNumber: any): Promise<any> => {
 export const excelGeneratorClass = async (req: Request, res: Response): Promise<Response> => {
   const { numero_ficha } = req.query
   const date = new Date()
-  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
+  const fullDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
   try {
     const payload = await getStudentsByNumberClass(numero_ficha)
     payload.forEach((student: any) => {
@@ -57,7 +57,7 @@ const getStudents = async (): Promise<any> => {
 
 export const excelGeneratorStudents = async (_req: Request, res: Response): Promise<Response> => {
   const date = new Date()
-  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
+  const fullDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
   try {
     const payload = await getStudents()
     payload.forEach((student: any) => {
@@ -95,7 +95,7 @@ const getStudentsPractical = async (): Promise<any> => {
 
 export const excelGeneratorStudentsPractical = async (_req: Request, res: Response): Promise<Response> => {
   const date = new Date()
-  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
+  const fullDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
   try {
     const payload = await getStudentsPractical()
     payload.forEach((student: any) => {
@@ -130,7 +130,7 @@ const getStudentsWithNoPractical = async (): Promise<any> => {
 
 export const excelGeneratorStudentsNoPractical = async (_req: Request, res: Response): Promise<Response> => {
   const date = new Date()
-  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
+  const fullDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
   try {
     const payload = await getStudentsWithNoPractical()
     payload.forEach((student: any) => {
@@ -166,7 +166,7 @@ const getStudentsByCategory = async (modality: string): Promise<any> => {
 export const excelGeneratorStudentsCategory = async (req: Request, res: Response): Promise<Response> => {
   const { modality } = req.query
   const date = new Date()
-  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
+  const fullDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
   try {
     if (typeof modality !== 'string') throw new DataNotValid('Error con el query')
     const payload = await getStudentsByCategory(modality)
@@ -179,11 +179,11 @@ export const excelGeneratorStudentsCategory = async (req: Request, res: Response
     })
     const worksheet = XLSX.utils.json_to_sheet(payload)
     const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, `Estudiantes por ${modality}`)
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Hoja 1')
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    res.setHeader('Content-Disposition', `attachment; filename=estudiantes${modality}_${fullDate}.xlsx`)
+    res.setHeader('Content-Disposition', `attachment; filename=estudiantes_${modality}_${fullDate}.xlsx`)
     return res.send(buffer)
   } catch (error) {
     return handleHTTP(res, error as CustomError)
@@ -203,7 +203,7 @@ const getStudentsByInstructor = async (instructor: string): Promise<any> => {
 export const excelGeneratorStudentsInstructor = async (req: Request, res: Response): Promise<Response> => {
   const { instructor } = req.query
   const date = new Date()
-  const fullDate = `${date.getDate()}-${(date.getMonth() + 1)}-${date.getFullYear()}`
+  const fullDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
   try {
     if (typeof instructor !== 'string') throw new DataNotValid('Error con el query')
     const payload = await getStudentsByInstructor(instructor)
@@ -216,7 +216,7 @@ export const excelGeneratorStudentsInstructor = async (req: Request, res: Respon
     })
     const worksheet = XLSX.utils.json_to_sheet(payload)
     const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, `Estudiantes de ${instructor}`)
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Hoja 1')
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' })
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

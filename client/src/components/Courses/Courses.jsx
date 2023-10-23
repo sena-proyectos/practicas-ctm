@@ -12,10 +12,10 @@ import { Pagination } from '@nextui-org/pagination'
 // Componentes
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
-import { Button } from '../Utils/Button/Button'
+import { Button, UIButton } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
-import { getClass, GetClassByNumber, sendExcelCourse } from '../../api/httpRequest'
+import { generateExcelStudentsNoPractical, getClass, GetClassByNumber, sendExcelCourse } from '../../api/httpRequest'
 import { RegisterCourses } from '../Utils/Modals/Modals'
 import { keysRoles } from '../../import/staticData'
 import { AiOutlineFileAdd } from 'react-icons/ai'
@@ -440,6 +440,30 @@ export const Courses = () => {
     getCursos()
   }
 
+  const generateExcelNoPractical = async () => {
+    try {
+      const response = await generateExcelStudentsNoPractical()
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'estudiantes_en_practicas.xlsx'
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       {isOpen && <RegisterCourses closedModal={handleCloseModal} setGetCourses={setGetCourses} title={'Agrega una ficha'} />}
@@ -587,6 +611,9 @@ export const Courses = () => {
             <div className='flex justify-center w-full'>{courses.length === 0 || error || loading ? <></> : searchedCourses.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <div className='grid w-full grid-flow-col-dense gap-3 place-content-end px-7'>
+                <UIButton type='button' onClick={generateExcelNoPractical} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>
+                  Aprendices sin práctica
+                </UIButton>
                 <div className='ml-auto bg-green-600 rounded-full shadow-md'>
                   <label htmlFor='upload' className='flex items-center w-full h-full gap-1.5 px-3 py-1.5 text-white rounded-full cursor-pointer'>
                     <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>

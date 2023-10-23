@@ -373,7 +373,7 @@ const RegisterCourses = ({ closedModal, title, setGetCourses }) => {
   )
 }
 
-const FilterModal = ({ closeModal, width = 'w-2/5', title, children }) => {
+const ModalWithChildren = ({ closeModal, width = 'w-2/5', title, children }) => {
   /**
    * Función para manejar el cierre del modal.
    *
@@ -1185,4 +1185,4 @@ const AddVisitModal = ({ closeModal, title, id }) => {
   )
 }
 
-export { FilterModal, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, AddTeacherModal, RegisterCourses, RegisterStudentModal, AddVisitModal }
+export { ModalWithChildren, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, AddTeacherModal, RegisterCourses, RegisterStudentModal, AddVisitModal }

@@ -17,7 +17,7 @@ import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import Swal from 'sweetalert2'
 import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById, editDateClass, generateExcelClass } from '../../api/httpRequest'
-import { FilterModal, InfoStudentModal } from '../Utils/Modals/Modals'
+import { ModalWithChildren, InfoStudentModal } from '../Utils/Modals/Modals'
 import { LuSave } from 'react-icons/lu'
 import { ToastContainer, toast } from 'react-toastify'
 import { keysRoles } from '../../import/staticData'
@@ -332,7 +332,7 @@ export const Students = () => {
       )}
       {/* {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />} */}
       {modalDates && (
-        <FilterModal closeModal={handleModal} title={'Editar fechas'} width='w-11/12 md:w-1/3'>
+        <ModalWithChildren closeModal={handleModal} title={'Editar fechas'} width='w-11/12 md:w-1/3'>
           <section className='flex justify-center'>
             <section className='flex flex-col w-full gap-3 my-5'>
               <header>
@@ -361,7 +361,7 @@ export const Students = () => {
               </form>
             </section>
           </section>
-        </FilterModal>
+        </ModalWithChildren>
       )}
       {/* {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />} */}
       <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
