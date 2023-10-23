@@ -382,7 +382,7 @@ export const StudentMonitoring = () => {
               {loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
               <section className='flex gap-3 ml-auto'>
                 <UIButton type='button' onClick={generateExcel} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>
-                  Descargar Excel
+                  Excel todos los aprendices
                 </UIButton>
                 <UIButton type='button' onClick={generateStudentsPractical} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>
                   Aprendices en práctica

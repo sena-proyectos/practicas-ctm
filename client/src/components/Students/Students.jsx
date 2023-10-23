@@ -488,7 +488,7 @@ export const Students = () => {
                             <div className='font-light text-center'>{student.email_aprendiz}</div>
                           </div>
                         </th>
-                        <td className='text-base font-light text-center max-w-[10ch]'>{student.nombre_modalidad}</td>
+                        <td className='text-base font-light text-center max-w-[10ch]'>{student.nombre_modalidad ? student.nombre_modalidad : 'N/A'}</td>
                         <td>
                           <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
                         </td>

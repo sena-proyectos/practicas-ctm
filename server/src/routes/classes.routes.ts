@@ -48,7 +48,7 @@ classRoutes.get('/classFreeNumber', getClassFreeByClassNumber)
 una ruta GET para el punto final '/classStudents'. Cuando se realiza una solicitud GET a este punto
 final, ejecutará la función de middleware `checkClassNumber` seguida de la función de controlador
 `getStudentsClassByClassNumber`. */
-classRoutes.get('/classStudents', checkClassNumber, getStudentsClassByClassNumber)
+classRoutes.get('/classStudents', getStudentsClassByClassNumber)
 
 // * POST
 /* `classRoutes.post('/class', checkClassData, createClass)` está definiendo una ruta para el método

@@ -7,23 +7,28 @@ import { Pagination } from '@nextui-org/pagination'
 import { IoReturnDownBack } from 'react-icons/io5'
 
 // Components
-import { getClassByTeacherId } from '../../api/httpRequest'
+import { generateExcelStudentsByInstructor, getClassByTeacherId } from '../../api/httpRequest'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
 import { keysRoles } from '../../import/staticData'
+import Swal from 'sweetalert2'
+import { UIButton } from '../Utils/Button/Button'
 
 export const TeacherClass = () => {
   const { id } = useParams()
   const [loading, setLoading] = useState(true)
   const [dataTeacherClass, setDataTeacherClass] = useState([])
   const [pageNumber, setPageNumber] = useState(1)
+  const [nameInstructor, setNameInstructor] = useState(null)
   const idRol = Number(localStorage.getItem('idRol'))
 
   const getTeacherClass = async () => {
     try {
       const { data } = await getClassByTeacherId(id)
+      const { seguimiento_nombre_completo } = data.data[0]
+      setNameInstructor(seguimiento_nombre_completo)
       setDataTeacherClass(data.data)
       setLoading(false)
     } catch (error) {
@@ -35,6 +40,7 @@ export const TeacherClass = () => {
     getTeacherClass()
   }, [])
 
+  console.log(nameInstructor)
   /**
    * Número de cursos a mostrar por página.
    *
@@ -81,6 +87,30 @@ export const TeacherClass = () => {
    */
   const endIndex = startIndex + coursesPerPage
 
+  const ExcelStudentsByInstructor = async () => {
+    try {
+      const response = await generateExcelStudentsByInstructor(nameInstructor)
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'estudiantes_en_practicas.xlsx'
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
@@ -111,6 +141,9 @@ export const TeacherClass = () => {
             </div>
           )}
           <div className='flex flex-col items-center py-2'>{dataTeacherClass.length === 0 || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />}</div>
+          <UIButton type='button' onClick={ExcelStudentsByInstructor} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>
+            Informe Aprendices
+          </UIButton>
         </section>
         <Footer />
       </section>
