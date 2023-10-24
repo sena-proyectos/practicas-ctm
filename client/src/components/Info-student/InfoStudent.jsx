@@ -70,7 +70,7 @@ export const InfoStudent = () => {
               <section className='flex flex-col justify-center px-3 py-3'>
                 <div className='grid grid-cols-2-40-60'>
                   <h3 className='font-medium'>Email:</h3>
-                  <p className='break-words whitespace-pre-wrap'>{email_aprendiz ?? 'No registrado'}</p>
+                  <p className='break-all'>{email_aprendiz ?? 'No registrado'}</p>
                 </div>
                 <div className='grid grid-cols-2-40-60'>
                   <p className='font-medium'>No. Documento:</p>

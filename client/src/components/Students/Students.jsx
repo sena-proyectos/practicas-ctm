@@ -17,7 +17,7 @@ import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import Swal from 'sweetalert2'
 import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById, editDateClass, generateExcelClass } from '../../api/httpRequest'
-import { FilterModal, InfoStudentModal } from '../Utils/Modals/Modals'
+import { ModalWithChildren, InfoStudentModal } from '../Utils/Modals/Modals'
 import { LuSave } from 'react-icons/lu'
 import { ToastContainer, toast } from 'react-toastify'
 import { keysRoles } from '../../import/staticData'
@@ -56,6 +56,14 @@ export const Students = () => {
     try {
       const response = await GetStudentsByCourse(payload)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_completo = element.nombre_completo
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       setStudentsCourse(data)
       setStudentsCourseOriginal(data)
     } catch (err) {
@@ -88,10 +96,18 @@ export const Students = () => {
     try {
       const response = await GetClassByNumber(payload)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       const fechaInicioLectiva = data[0].fecha_inicio_lectiva
       const fechaInicioPractica = data[0].fecha_inicio_practica
-      const parsedDateStart = fechaInicioLectiva.split('T')[0].split('-').join('-')
-      const parsedDateEnd = fechaInicioPractica.split('T')[0].split('-').join('-')
+      const parsedDateStart = fechaInicioLectiva ? fechaInicioLectiva.split('T')[0].split('-').join('-') : fechaInicioLectiva
+      const parsedDateEnd = fechaInicioPractica ? fechaInicioPractica.split('T')[0].split('-').join('-') : fechaInicioPractica
       data[0].fecha_inicio_lectiva = parsedDateStart
       data[0].fecha_inicio_practica = parsedDateEnd
       setDetailCourse(data[0])
@@ -316,7 +332,7 @@ export const Students = () => {
       )}
       {/* {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />} */}
       {modalDates && (
-        <FilterModal closeModal={handleModal} title={'Editar fechas'} width='w-11/12 md:w-1/3'>
+        <ModalWithChildren closeModal={handleModal} title={'Editar fechas'} width='w-11/12 md:w-1/3'>
           <section className='flex justify-center'>
             <section className='flex flex-col w-full gap-3 my-5'>
               <header>
@@ -345,7 +361,7 @@ export const Students = () => {
               </form>
             </section>
           </section>
-        </FilterModal>
+        </ModalWithChildren>
       )}
       {/* {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />} */}
       <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
@@ -472,7 +488,7 @@ export const Students = () => {
                             <div className='font-light text-center'>{student.email_aprendiz}</div>
                           </div>
                         </th>
-                        <td className='text-base font-light text-center max-w-[10ch]'>{student.nombre_modalidad}</td>
+                        <td className='text-base font-light text-center max-w-[10ch]'>{student.nombre_modalidad ? student.nombre_modalidad : 'N/A'}</td>
                         <td>
                           <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
                         </td>

@@ -76,6 +76,21 @@ export const RegisterList = () => {
     try {
       const response = await GetInscriptionByName(searchTerm)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_inscripcion = element.nombre_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+
+        element.apellido_inscripcion = element.apellido_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       if (searchTerm.trim() === '') {
         setError(null)
         setSearchedInscriptions([])
@@ -245,6 +260,21 @@ export const RegisterList = () => {
     try {
       const response = await getInscriptions()
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_inscripcion = element.nombre_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+
+        element.apellido_inscripcion = element.apellido_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       setInscriptions(data)
       setInscriptionOriginal(data)
       setLoadingData(false)

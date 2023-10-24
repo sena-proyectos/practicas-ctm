@@ -12,10 +12,10 @@ import { Pagination } from '@nextui-org/pagination'
 // Componentes
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
-import { Button } from '../Utils/Button/Button'
+import { Button, UIButton } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
-import { getClass, GetClassByNumber, sendExcelCourse } from '../../api/httpRequest'
+import { generateExcelStudentsNoPractical, getClass, GetClassByNumber, sendExcelCourse } from '../../api/httpRequest'
 import { RegisterCourses } from '../Utils/Modals/Modals'
 import { keysRoles } from '../../import/staticData'
 import { AiOutlineFileAdd } from 'react-icons/ai'
@@ -24,6 +24,7 @@ import Swal from 'sweetalert2'
 export const Courses = () => {
   const idRol = Number(localStorage.getItem('idRol'))
   const [pageNumber, setPageNumber] = useState(1)
+  const [searchPageNumber, setSearchPageNumber] = useState(1)
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
   const [coursesOriginal, setCoursesOriginal] = useState([])
@@ -58,6 +59,14 @@ export const Courses = () => {
     try {
       const response = await GetClassByNumber(searchTerm)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       if (searchTerm.trim() === '') {
         setError(null)
         setSearchedCourses([])
@@ -107,6 +116,14 @@ export const Courses = () => {
     try {
       const response = await getClass()
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       setCourses(data)
       setCoursesOriginal(data)
       setLoading(false)
@@ -142,6 +159,8 @@ export const Courses = () => {
    * const numeroDePaginas = pageCount;
    */
   const pageCount = Math.ceil(courses.length / coursesPerPage)
+  const pageCountSearch = Math.ceil(searchedCourses.length / coursesPerPage)
+
   /**
    * Índice de inicio de la lista de cursos a mostrar en la página actual.
    *
@@ -153,6 +172,8 @@ export const Courses = () => {
    * const indiceInicio = startIndex;
    */
   const startIndex = (pageNumber - 1) * coursesPerPage
+  const startIndexSearch = (searchPageNumber - 1) * coursesPerPage
+
   /**
    * Índice de fin de la lista de cursos a mostrar en la página actual.
    *
@@ -164,6 +185,7 @@ export const Courses = () => {
    * const indiceFin = endIndex;
    */
   const endIndex = startIndex + coursesPerPage
+  const endIndexSearch = startIndexSearch + coursesPerPage
 
   const navigate = useNavigate()
 
@@ -418,6 +440,30 @@ export const Courses = () => {
     getCursos()
   }
 
+  const generateExcelNoPractical = async () => {
+    try {
+      const response = await generateExcelStudentsNoPractical()
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'estudiantes_en_practicas.xlsx'
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       {isOpen && <RegisterCourses closedModal={handleCloseModal} setGetCourses={setGetCourses} title={'Agrega una ficha'} />}
@@ -531,8 +577,8 @@ export const Courses = () => {
         <section className='flex flex-col justify-around'>
           {searchedCourses.length > 0 && !error ? (
             <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
-              {searchedCourses.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_incio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Final Lectiva'} item4text={'Inicio Practica'} />
+              {searchedCourses.slice(startIndexSearch, endIndexSearch).map((course, i) => {
+                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
               })}
             </section>
           ) : (
@@ -562,20 +608,23 @@ export const Courses = () => {
           )}
 
           <div className='flex flex-col items-center gap-1 pt-2 pb-1'>
-            <div className='flex justify-center w-full'>{courses.length === 0 || error || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+            <div className='flex justify-center w-full'>{courses.length === 0 || error || loading ? <></> : searchedCourses.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <div className='grid w-full grid-flow-col-dense gap-3 place-content-end px-7'>
+                <UIButton type='button' onClick={generateExcelNoPractical} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>
+                  Aprendices sin práctica
+                </UIButton>
                 <div className='ml-auto bg-green-600 rounded-full shadow-md'>
-                  <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-1 text-white rounded-full cursor-pointer'>
+                  <label htmlFor='upload' className='flex items-center w-full h-full gap-1.5 px-3 py-1.5 text-white rounded-full cursor-pointer'>
                     <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
                     <AiOutlineFileAdd />
                   </label>
                   <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={inputFileRef} onChange={handleExcelFile} />
                 </div>
-                <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
+                <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-1.5' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleAsign} inline>
                   <PiAddressBook className='text-xl' /> Asignar
                 </Button>
-                <Button rounded='rounded-full' bg='bg-blue-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleCoursesModal} inline>
+                <Button rounded='rounded-full' bg='bg-blue-600' px='px-3' py='py-1.5' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleCoursesModal} inline>
                   <LuBookPlus className='text-xl' /> Agregar ficha
                 </Button>
               </div>

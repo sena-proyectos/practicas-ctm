@@ -350,3 +350,42 @@ export const editDateClass = async (payload) => {
 
   return response
 }
+
+// OBTENER FICHAS SIN INSTRUCTOR POR NUMERO DE FICHA
+export const GetClassFreeByNumber = async (data) => {
+  const URL = `${baseUrl}${api}/classFreeNumber?numero_ficha=${data}`
+  const response = await axios.get(URL)
+
+  return response
+}
+
+// Generar excel de todos los aprendices en prácticas
+export const generateExcelStudentsPractical = async () => {
+  const URL = `${baseUrl}${api}/create-excel-students-practical`
+  return await axios.get(URL, {
+    responseType: 'arraybuffer'
+  })
+}
+
+// Generar excel de todos los aprendices sin prácticas
+export const generateExcelStudentsNoPractical = async () => {
+  const URL = `${baseUrl}${api}/create-excel-students-nopractical`
+  return await axios.get(URL, {
+    responseType: 'arraybuffer'
+  })
+}
+// Generar excel por modalidad
+export const generateExcelStudentsByModality = async (modality) => {
+  const URL = `${baseUrl}${api}/create-excel-students-category?modality=${modality}`
+  return await axios.get(URL, {
+    responseType: 'arraybuffer'
+  })
+}
+
+// Generar excel de estudiantes por instructor
+export const generateExcelStudentsByInstructor = async (teacherName) => {
+  const URL = `${baseUrl}${api}/create-excel-students-instructor?instructor=${teacherName}`
+  return await axios.get(URL, {
+    responseType: 'arraybuffer'
+  })
+}

@@ -8,51 +8,20 @@ import Swal from 'sweetalert2'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
 import { CardStudent } from '../Utils/Card/Card'
-// import { FilterModal } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
-import { GetUserByName, detailInfoStudents, generateExcelStudents, sendExcelContrato } from '../../api/httpRequest'
-import { UIButton } from '../Utils/Button/Button'
-// import { Select } from '../Utils/Select/Select'
-// import { modalities } from '../../import/staticData'
+import { GetUserByName, detailInfoStudents, generateExcelStudents, generateExcelStudentsByModality, generateExcelStudentsPractical, sendExcelContrato } from '../../api/httpRequest'
 import { AiOutlineFileAdd } from 'react-icons/ai'
+import { HiOutlineDocumentText } from 'react-icons/hi'
 
 export const StudentMonitoring = () => {
   const [apprentices, setApprentices] = useState([])
   const [searchedApprentices, setSearchedApprentices] = useState([])
   const [error, setError] = useState(null)
-  // const [modalFilter, setModalFilter] = useState(false)
   const [loading, setLoading] = useState(true)
   const [pageNumber, setPageNumber] = useState(1)
   const [currentStudentList, setCurrentStudentList] = useState({})
   const inputFileRef = useRef(null)
-
-  // /**
-  //  * Función para manejar el clic en el icono.
-  //  *
-  //  * @function
-  //  * @name handleIconClick
-  //  * @returns {void}
-  //  *
-  //  * @example
-  //  * handleIconClick();
-  //  */
-  // const handleIconClick = () => {
-  //   setModalFilter(!modalFilter)
-  // }
-
-  // /**
-  //  * Función para manejar el modal.
-  //  *
-  //  * @function
-  //  * @name handleModal
-  //  * @returns {void}
-  //  *
-  //  * @example
-  //  * handleModal();
-  //  */
-  // const handleModal = () => {
-  //   setModalFilter(!modalFilter)
-  // }
+  const [optionsExcel, setOptionsExcel] = useState(false)
 
   /**
    * Función asincrónica para buscar aprendices por nombre de usuario.
@@ -76,6 +45,20 @@ export const StudentMonitoring = () => {
     try {
       const response = await GetUserByName(searchTerm)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_completo = element.nombre_completo
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       if (searchTerm.trim() === '') {
         setError(null)
         setSearchedApprentices([])
@@ -107,6 +90,20 @@ export const StudentMonitoring = () => {
     try {
       const response = await detailInfoStudents()
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_completo = element.nombre_completo
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       setApprentices(data)
       setLoading(false)
     } catch (error) {
@@ -174,21 +171,6 @@ export const StudentMonitoring = () => {
    */
   const endIndex = startIndex + studentsPerPage
 
-  // /**
-  //  * Opciones de modalidades para filtrar aprendices.
-  //  *
-  //  * @constant
-  //  * @name option
-  //  * @type {Array<Object>}
-  //  *
-  //  * @example
-  //  * const opcionesModalidades = option;
-  //  */
-  // const option = modalities.map((modality) => ({
-  //   value: modality.name,
-  //   key: modality.value
-  // }))
-
   const sendExcelFile = async () => {
     const [file] = inputFileRef.current.files
     const formData = new FormData()
@@ -237,6 +219,13 @@ export const StudentMonitoring = () => {
       })
   }
 
+  const handleShowOptionsExcel = () => {
+    setOptionsExcel(!optionsExcel)
+  }
+
+  const date = new Date()
+  const fullDate = `${date.getDate()}_${date.getMonth() + 1}_${date.getFullYear()}`
+
   const generateExcel = async () => {
     try {
       const response = await generateExcelStudents()
@@ -247,7 +236,55 @@ export const StudentMonitoring = () => {
 
       const a = document.createElement('a')
       a.href = url
-      a.download = 'estudiantes.xlsx'
+      a.download = `estudiantes_${fullDate}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
+  const generateStudentsPractical = async () => {
+    try {
+      const response = await generateExcelStudentsPractical()
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `estudiantes_en_practicas_${fullDate}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
+  const generateExcelModality = async (modality) => {
+    try {
+      const response = await generateExcelStudentsByModality(modality)
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `estudiantes_${modality}_${fullDate}.xlsx`
       document.body.appendChild(a)
       a.click()
 
@@ -262,90 +299,99 @@ export const StudentMonitoring = () => {
   }
 
   return (
-    <>
-      {/* {modalFilter && (
-        <FilterModal title={'Filtrar Aprendices'} width='w-3/4 md:w-1/3' closeModal={handleModal}>
-          <form className='flex flex-col gap-5'>
-            <section className='flex flex-col gap-3'>
-              <section className='grid grid-rows-2'>
-                <label htmlFor='' className='text-sm text-cyan-700'>
-                  Fichas
-                </label>
-                <input type='text' className='border-gray-400 focus:text-gray-900 rounded-lg w-full border-[1.2px] bg-white py-[1px] pl-3 text-sm text-black focus:bg-white focus:outline-none' placeholder='Ej: 2473196' />
-              </section>
-              <section className='grid grid-rows-2'>
-                <label htmlFor='' className='text-sm text-cyan-700'>
-                  Programa de Formación
-                </label>
-                <input type='text' className='border-gray-400 focus:text-gray-900 rounded-lg border-[1.2px] w-full bg-white py-[1px] pl-3 text-sm text-black focus:bg-white focus:outline-none' placeholder='Ej: Análisis y Desarrollo de Software' />
-              </section>
-              <section className='grid grid-rows-2'>
-                <label htmlFor='' className='text-sm text-cyan-700'>
-                  Modalidad
-                </label>
-                <Select placeholder={'Selecciona la modalidad'} options={option} hoverColor='hover:bg-slate-600' hoverTextColor='hover:text-white' placeholderSearch='Ingrese nombre instructor' selectedColor='bg-slate-600 text-white' rounded='rounded-lg' py='py-[2.6px]' borderColor='border-slate-500' textSize={'text-sm'} />
-              </section>
-            </section>
-            <Button rounded='rounded-xl' px='px-8' py='py-1' textSize='text-base'>
-              Filtrar
-            </Button>
-          </form>
-        </FilterModal>
-      )} */}
-      <main className='flex flex-row min-h-screen bg-whitesmoke'>
-        <Siderbar />
-        <section className='grid flex-auto w-min grid-rows-[auto_1fr_auto] '>
-          <header className='grid place-items-center h-[10vh]'>
-            <Search
-              searchFilter
-              // icon
-              placeholder={'Busca un aprendiz'}
-              // iconClick={handleIconClick}
-              searchStudent={searchApprentices}
-            />
-          </header>
-          <section className='grid grid-rows-[1fr_auto] py-1'>
-            {searchedApprentices.length > 0 && !error ? (
-              <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
-                {searchedApprentices.slice(startIndex, endIndex).map((apprentice, i) => (
-                  <CardStudent key={i} userID={apprentice.id_aprendiz} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
-                ))}
-              </div>
-            ) : (
-              <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
-                {loading ? (
-                  <>
-                    <SkeletonLoading />
-                  </>
-                ) : error ? (
-                  <h2 className='text-red-500'>{error}</h2>
-                ) : (
-                  apprentices.slice(startIndex, endIndex).map((apprentice, i) => {
-                    return <CardStudent key={i} userID={apprentice.id_aprendiz} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
-                  })
-                )}
-              </div>
-            )}
-            <div className='grid grid-rows-[auto_auto] gap-0.5 place-items-center px-7 pt-4'>
-              {loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
-              <section className='flex gap-3 ml-auto'>
-                <UIButton type='button' onClick={generateExcel} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>
-                  Descargar Excel
-                </UIButton>
-                <div className='ml-auto bg-blue-600 rounded-full shadow-md'>
-                  <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-1 text-white rounded-full cursor-pointer'>
-                    <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
-                    <AiOutlineFileAdd />
-                  </label>
-                  <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={inputFileRef} onChange={handleExcelFile} />
-                </div>
-              </section>
-            </div>
+    <main className='flex flex-row min-h-screen bg-whitesmoke'>
+      <Siderbar />
+      <section className='grid flex-auto w-min grid-rows-[auto_1fr_auto] '>
+        <header className='grid place-items-center h-[10vh]'>
+          <Search
+            searchFilter
+            // icon
+            placeholder={'Busca un aprendiz'}
+            // iconClick={handleIconClick}
+            searchStudent={searchApprentices}
+          />
+          <section className='absolute top-4 right-7'>
+            <button className='flex items-center gap-1 py-1 px-1.5 text-sm bg-blue-200 rounded-lg' onClick={handleShowOptionsExcel}>
+              Reportes
+              <HiOutlineDocumentText />
+            </button>
+            <ul className={`absolute right-0 mt-1 top-full w-40 flex flex-col gap-y-1.5 py-2 text-sm border border-gray rounded-lg bg-white ${optionsExcel ? 'visible' : 'hidden'} z-50 transition-all duration-200 px-2`}>
+              <li>
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateExcel}>
+                  Todos los aprendices
+                </button>
+              </li>
+              <li>
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateStudentsPractical}>
+                  Aprendices en prácticas
+                </button>
+              </li>
+              <li>
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('pasantias')}>
+                  Pasantías
+                </button>
+              </li>
+              <li>
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('monitoria')}>
+                  Monitoría
+                </button>
+              </li>
+              <li>
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('vinculacion laboral')}>
+                  Vinculación laboral
+                </button>
+              </li>
+              <li>
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('proyecto productivo')}>
+                  Proyecto productivo
+                </button>
+              </li>
+              <li>
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('contrato de aprendizaje')}>
+                  Contrato de aprendizaje
+                </button>
+              </li>
+            </ul>
           </section>
-          <Footer />
+        </header>
+        <section className='grid grid-rows-[1fr_auto] py-1'>
+          {searchedApprentices.length > 0 && !error ? (
+            <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+              {searchedApprentices.slice(startIndex, endIndex).map((apprentice, i) => (
+                <CardStudent key={i} userID={apprentice.id_aprendiz} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
+              ))}
+            </div>
+          ) : (
+            <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+              {loading ? (
+                <>
+                  <SkeletonLoading />
+                </>
+              ) : error ? (
+                <h2 className='text-red-500'>{error}</h2>
+              ) : (
+                apprentices.slice(startIndex, endIndex).map((apprentice, i) => {
+                  return <CardStudent key={i} userID={apprentice.id_aprendiz} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
+                })
+              )}
+            </div>
+          )}
+          <div className='grid grid-rows-[auto_auto] gap-0.5 place-items-center px-7 pt-4'>
+            {loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
+            <section className='ml-auto '>
+              <div className='ml-auto bg-blue-600 rounded-full shadow-md'>
+                <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-1 text-white rounded-full cursor-pointer'>
+                  <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
+                  <AiOutlineFileAdd />
+                </label>
+                <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={inputFileRef} onChange={handleExcelFile} />
+              </div>
+            </section>
+          </div>
         </section>
-      </main>
-    </>
+        <Footer />
+      </section>
+    </main>
   )
 }
 
