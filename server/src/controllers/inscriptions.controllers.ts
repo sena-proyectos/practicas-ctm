@@ -166,7 +166,6 @@ export const editInscriptionDetail: RequestHandler<{}, Response, inscripcionDeta
     if (!Array.isArray(result) && result?.affectedRows === 0) throw new DbError('No se pudo actualizar la modalidad de etapa práctica')
     return res.status(httpStatus.OK).json({ message: 'Aval de inscripción actualizada con éxito' })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }

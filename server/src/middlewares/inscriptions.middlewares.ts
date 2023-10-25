@@ -143,6 +143,7 @@ export const readExcelFile = async (req: Request, res: Response, next: NextFunct
     const filteredArray = dataToSend.filter((item) => item !== null).map((item, i) => {
       const originalLink = linksArray[i]
       const regex = /(?:\/open\?id=|\/file\/d\/|id=)([^/]+)/
+      if (originalLink === undefined) throw new Error('Error al leer el archivo')
 
       const match = originalLink.match(regex)
 

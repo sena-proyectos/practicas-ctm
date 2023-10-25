@@ -19,10 +19,8 @@ import XLSX from 'xlsx'
  */
 export const checkClassData = (req: Request, res: Response, next: NextFunction): void => {
   const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion } = req.body
-  console.log(req.body)
   try {
     const { error } = classSchema.validate({ numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion })
-    console.log(error)
     if (error !== undefined) throw new DataNotValid('Los datos ingresados para la ficha no son válidos')
 
     next()
