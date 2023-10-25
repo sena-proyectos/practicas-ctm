@@ -106,7 +106,6 @@ export const Teachers = () => {
     try {
       const response = await getTeachers()
       const { data } = response.data
-      console.log(data)
       data.forEach((element) => {
         element.nombres_usuario = element.nombres_usuario
           .split(' ')

@@ -401,7 +401,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
 
       // Crear una copia de la respuesta para evitar mutar el estado directamente
       const updatedInfoAvales = [...res]
-      console.log(updatedInfoAvales)
 
       // Iterar sobre cada elemento en infoAvales
       for (let i = 0; i < updatedInfoAvales.length; i++) {

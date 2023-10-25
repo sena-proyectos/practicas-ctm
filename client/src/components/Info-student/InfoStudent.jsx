@@ -189,7 +189,6 @@ const Novedades = () => {
     try {
       const { data } = await getStudentState(id)
       setState(data.data[0])
-      console.log(state)
     } catch (error) {
       console.error(error)
     }

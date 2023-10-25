@@ -40,7 +40,6 @@ export const TeacherClass = () => {
     getTeacherClass()
   }, [])
 
-  console.log(nameInstructor)
   /**
    * Número de cursos a mostrar por página.
    *

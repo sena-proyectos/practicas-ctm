@@ -77,7 +77,7 @@ export const Courses = () => {
     } catch (error) {
       const message = error?.response?.data?.error?.info?.message
 
-      setError(message ?? 'Usuario no existente')
+      setError(message ?? 'Curso no existe')
       setSearchedCourses([])
     }
   }
@@ -581,21 +581,19 @@ export const Courses = () => {
                 return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
               })}
             </section>
+          ) : error ? (
+            <section className='flex items-center justify-center w-full gap-2 text-red-600'>
+              <BiSad className='text-2xl' />
+              <h2>{error}</h2>
+            </section>
           ) : (
             <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
-              {courses.length > 0 ? (
+              {loading ? (
+                <SkeletonLoading number={6} />
+              ) : courses.length > 0 ? (
                 courses.slice(startIndex, endIndex).map((course, i) => {
                   return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
                 })
-              ) : loading ? (
-                <SkeletonLoading number={6} />
-              ) : error ? (
-                <section className='absolute flex justify-center w-full top-32'>
-                  <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
-                    <p>¡Oops! No hay ningún curso con este número.</p>
-                    <BiSad className='text-2xl' />
-                  </section>
-                </section>
               ) : (
                 <section className='absolute flex justify-center w-full top-32'>
                   <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
