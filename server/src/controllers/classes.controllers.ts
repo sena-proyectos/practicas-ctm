@@ -168,7 +168,6 @@ export const createClass: RequestHandler<{}, Response, classes> = async (req: Re
     if (!Array.isArray(classQuery) && classQuery?.affectedRows === 0) throw new DbErrorNotFound('No se pudo crear la ficha.', errorCodes.ERROR_CREATE_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
@@ -186,7 +185,7 @@ export const createClassWithStudents = async (req: Request, res: Response): Prom
   }
 }
 
-const addClassToDatabase = async (payload: Array<{ numero_ficha: string; nombre_programa_formacion: string }>): Promise<number | DbError> => {
+const addClassToDatabase = async (payload: Array<{ numero_ficha: string, nombre_programa_formacion: string }>): Promise<number | DbError> => {
   try {
     await connection.execute('CALL subir_ficha_minima_info(?, ?, @id_ficha)', [payload[0].numero_ficha, payload[0].nombre_programa_formacion])
     const [lastID] = await connection.query<RowDataPacket[]>('SELECT @id_ficha as last_id')
@@ -197,14 +196,13 @@ const addClassToDatabase = async (payload: Array<{ numero_ficha: string; nombre_
   }
 }
 
-const addStudentsClassToDatabase = async (payload: Array<{ tipo_documento_aprendiz: string; numero_documento_aprendiz: string; nombre_aprendiz: string; apellido_aprendiz: string; celular_aprendiz: string; email_aprendiz: string; estado_aprendiz: string }>, idClass: number | DbError): Promise<boolean | DbError> => {
+const addStudentsClassToDatabase = async (payload: Array<{ tipo_documento_aprendiz: string, numero_documento_aprendiz: string, nombre_aprendiz: string, apellido_aprendiz: string, celular_aprendiz: string, email_aprendiz: string, estado_aprendiz: string }>, idClass: number | DbError): Promise<boolean | DbError> => {
   try {
     for await (const item of payload) {
       await connection.execute('CALL subir_aprendices_con_ficha(?, ?, ?, ?, ?, ?, ?, ?)', [item.tipo_documento_aprendiz, item.numero_documento_aprendiz, item.nombre_aprendiz, item.apellido_aprendiz, item.celular_aprendiz, item.email_aprendiz, item.estado_aprendiz, idClass])
     }
     return true
   } catch (error) {
-    console.log(error)
     throw new DbError('Error al agregar los aprendices')
   }
 }

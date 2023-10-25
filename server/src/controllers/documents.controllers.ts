@@ -40,7 +40,6 @@ export const excelGeneratorClass = async (req: Request, res: Response): Promise<
 
     return res.send(buffer)
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }

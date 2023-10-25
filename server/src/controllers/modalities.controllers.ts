@@ -6,7 +6,6 @@ export const getModalitiesByName = async (name: string): Promise<object> => {
     const [query] = await connection.query<RowDataPacket[]>('SELECT id_nivel_formacion FROM niveles_formacion WHERE nivel_formacion = ?', [name])
     return query[0].id_nivel_formacion
   } catch (error) {
-    console.log(error)
     throw new Error()
   }
 }
