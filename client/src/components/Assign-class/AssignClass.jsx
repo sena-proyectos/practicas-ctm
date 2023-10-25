@@ -250,8 +250,8 @@ export const AssignClass = () => {
               <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
                 {searchedFreeCourses.slice(startIndexSearch, endIndexSearch).map((course, i) => {
                   return (
-                    <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 bg-white shadow-lg ' key={i}>
-                      <header className='flex flex-row w-fit '>
+                    <div className='grid grid-rows-[2fr, 1fr, 1fr] gap-y-1 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] p-3 bg-white shadow-lg ' key={i}>
+                      <header className='flex flex-row items-center w-fit '>
                         <div className='z-10 bg-teal-200 border-2 border-teal-800 rounded-full w-14 h-14'>
                           <BsJournalBookmark className='w-full h-full scale-50' />
                         </div>
@@ -259,12 +259,12 @@ export const AssignClass = () => {
                           <p className='text-xs font-medium'>{course.numero_ficha}</p>
                         </div>
                       </header>
-                      <section>
+                      <section className='h-16'>
                         <p className='text-sm font-medium'>{course.nombre_programa_formacion}</p>
                         <span className='text-xs font-light'>{course.estado}</span>
                       </section>
-                      <div className='relative ml-auto bottom-2 w-fit'>
-                        <Button rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' inline>
+                      <div className='relative ml-auto w-fit'>
+                        <Button rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' inline classNames='absolute bottom-[1px] right-0'>
                           <HiOutlineUserAdd className='text-xl' /> Asignar
                         </Button>
                       </div>
@@ -286,8 +286,8 @@ export const AssignClass = () => {
                 ) : (
                   courses.slice(startIndex, endIndex).map((course, i) => {
                     return (
-                      <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 bg-white shadow-lg ' key={i}>
-                        <header className='flex flex-row w-fit '>
+                      <div className='grid grid-rows-[2fr, 1fr, 1fr] gap-y-1 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] p-3 bg-white shadow-lg ' key={i}>
+                        <header className='flex flex-row items-center w-fit '>
                           <div className='z-10 bg-teal-200 border-2 border-teal-800 rounded-full w-14 h-14'>
                             <BsJournalBookmark className='w-full h-full scale-50' />
                           </div>
@@ -295,12 +295,12 @@ export const AssignClass = () => {
                             <p className='text-xs font-medium'>{course.numero_ficha}</p>
                           </div>
                         </header>
-                        <section>
+                        <section className='h-16'>
                           <p className='text-sm font-medium'>{course.nombre_programa_formacion}</p>
                           <span className='text-xs font-light'>{course.estado}</span>
                         </section>
-                        <div className='relative ml-auto bottom-2 w-fit'>
-                          <Button rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' inline>
+                        <div className='relative ml-auto w-fit'>
+                          <Button rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' inline classNames='absolute bottom-[1px] right-0'>
                             <HiOutlineUserAdd className='text-xl' /> Asignar
                           </Button>
                         </div>
