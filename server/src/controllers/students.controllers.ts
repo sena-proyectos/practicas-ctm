@@ -70,7 +70,6 @@ export const getDetailInfoStudent: RequestHandler<{}, Response, unknown> = async
     if (!Array.isArray(students) || students?.length === 0) throw new DbErrorNotFound('Error al conseguir la información del estudiante.', errorCodes.ERROR_GET_STUDENTS)
     return res.status(httpStatus.OK).json({ data: students })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
@@ -114,7 +113,6 @@ const addEmpresaPayloadToDatabase = async (payload: TEmpresaExcelRequest): Promi
     }
     return insertedIDs
   } catch (error) {
-    console.log(error)
     throw new DbError('Error al crear la empresa')
   }
 }
@@ -130,7 +128,6 @@ const addFichaPayloadToDatabase = async (payload: TFichaExcelRequest): Promise<e
     }
     return insertedIDs
   } catch (error) {
-    console.log(error)
     return new DbError('Error al crear la ficha')
   }
 }
@@ -146,7 +143,6 @@ const addContractPayloadToDatabase = async (payload: TContratoExcelRequest): Pro
     }
     return insertedIDs
   } catch (error) {
-    console.log(error)
     return new DbError('Error al crear el contrato')
   }
 }
@@ -164,7 +160,7 @@ const addStudentPayloadToDatabase = async (studentPayload: TStudentExcelRequest,
 }
 
 const dataUnified = (payload: any): any[] => {
-  const { studentPayload, payload: itemsPayload }: { studentPayload: object[]; payload: any } = payload
+  const { studentPayload, payload: itemsPayload }: { studentPayload: object[], payload: any } = payload
   const { empresaPayload, fichaPayload, contractPayload } = itemsPayload
 
   const data = studentPayload.map((item: any, index) => {
@@ -207,7 +203,6 @@ export const editStudentState: RequestHandler<{ id: string }, Response, unknown>
     if (!Array.isArray(student) && student?.affectedRows === 0) throw new DbErrorNotFound('No se pudo actualizar el usuario.')
     return res.status(httpStatus.OK).json({ message: 'Estado actualizado exitosamente.' })
   } catch (error) {
-    console.log(error)
     return handleHTTP(res, error as CustomError)
   }
 }
