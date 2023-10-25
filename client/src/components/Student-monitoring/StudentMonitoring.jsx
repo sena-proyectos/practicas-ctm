@@ -338,7 +338,7 @@ export const StudentMonitoring = () => {
       <Siderbar />
       <section className='grid flex-auto w-min grid-rows-[auto_1fr_auto] '>
         <header className='grid place-items-center h-[10vh]'>
-          <Search searchFilter placeholder={'Busca un aprendiz'} searchStudent={searchApprentices} />
+          <Search searchFilter placeholder={'Busca un aprendiz'} searchItem={searchApprentices} />
           <section className='absolute top-4 right-7'>
             <button className='flex items-center gap-1 py-1 px-1.5 text-sm bg-blue-200 rounded-lg' onClick={handleShowOptionsExcel}>
               Reportes
@@ -422,7 +422,7 @@ export const StudentMonitoring = () => {
             </div>
           )}
           <div className='grid grid-rows-[auto_auto] gap-0.5 place-items-center px-7 pt-4'>
-            {loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
+            {loading || currentStudentList.length === 0 || error ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
             <section className='ml-auto '>
               <div className='ml-auto bg-blue-600 rounded-full shadow-md'>
                 <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-1 text-white rounded-full cursor-pointer'>

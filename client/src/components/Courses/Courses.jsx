@@ -43,7 +43,7 @@ export const Courses = () => {
    * @async
    * @function
    * @name searchCourses
-   * @param {string} searchTerm - Término de búsqueda para el aprendiz.
+   * @param {string} searchTerm - Término de búsqueda para las fichas.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
    *
@@ -446,7 +446,7 @@ export const Courses = () => {
       <Siderbar />
       <section className='relative grid flex-auto grid-rows-[auto_1fr_auto]'>
         <header className='grid place-items-center h-[10vh]'>
-          <Search searchStudent={searchCourses} searchFilter placeholder={'Busca una ficha'} icon iconClick={handleFilter} />
+          <Search searchItem={searchCourses} searchFilter placeholder={'Busca una ficha'} icon iconClick={handleFilter} />
           <ul className={`absolute right-48  mt-1 top-4 w-40 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
             <li>
               <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('etapa')}>

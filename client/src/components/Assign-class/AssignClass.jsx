@@ -243,7 +243,7 @@ export const AssignClass = () => {
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto]'>
           <header className='grid place-items-center h-[10vh]'>
-            <Search searchFilter placeholder={'Busca una ficha'} searchStudent={searchCourses} />
+            <Search searchFilter placeholder={'Busca una ficha'} searchItem={searchCourses} />
           </header>
           <section className='flex flex-col justify-around'>
             {searchedFreeCourses.length > 0 && !error ? (
