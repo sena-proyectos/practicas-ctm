@@ -1,6 +1,6 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { getClasses, getClassById, getClassByClassNumber, createClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber, getClassesFree, getClassByInstructorId, editLiderInstructorClass, createClassWithStudents, getClassFreeByClassNumber } from '../controllers/classes.controllers.js'
+import { getClasses, getClassById, getClassByClassNumber, createClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber, getClassesFree, getClassByInstructorId, editLiderInstructorClass, createClassWithStudents, getClassFreeByClassNumber, getClassTeacherByClassNumber } from '../controllers/classes.controllers.js'
 import { checkClassData, checkClassDate, checkClassNumber, checkLiderTeacherId, checkPracticalTeacherId, formatExcelFileClasses, readExcelFileClasses } from '../middlewares/classes.middlewares.js'
 import { configureMulterExcel } from '../middlewares/inscriptions.middlewares.js'
 
@@ -43,6 +43,7 @@ ejecutará el middleware `checkClassNumber` seguido de la función de controlado
 `getClassByClassNumber`. */
 classRoutes.get('/classNumber', getClassByClassNumber)
 classRoutes.get('/classFreeNumber', getClassFreeByClassNumber)
+classRoutes.get('/classTeacherNumber/:id', checkIdReq, getClassTeacherByClassNumber)
 
 /* La línea `classRoutes.get('/classStudents', checkClassNumber, getStudentsClassByClassNumber)` define
 una ruta GET para el punto final '/classStudents'. Cuando se realiza una solicitud GET a este punto

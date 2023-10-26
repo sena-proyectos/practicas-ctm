@@ -557,7 +557,7 @@ export const RegisterList = () => {
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto]'>
         <header className='grid h-[10vh] place-items-center'>
-          <Search searchFilter placeholder={'Busca un aprendiz'} icon iconClick={handleFilter} searchStudent={searchInscriptions} />
+          <Search searchFilter placeholder={'Busca un aprendiz'} icon iconClick={handleFilter} searchItem={searchInscriptions} />
           <ul className={`absolute right-80 mt-1 top-4 w-36 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
             <li>
               <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('modalidad')}>

@@ -389,3 +389,10 @@ export const generateExcelStudentsByInstructor = async (teacherName) => {
     responseType: 'arraybuffer'
   })
 }
+
+export const getClassTeacherByClassNumber = async (id, data) => {
+  const URL = `${baseUrl}${api}/classTeacherNumber/${id}?numero_ficha=${data}`
+  const response = await axios.get(URL)
+
+  return response
+}

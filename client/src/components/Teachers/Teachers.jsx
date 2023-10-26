@@ -106,7 +106,6 @@ export const Teachers = () => {
     try {
       const response = await getTeachers()
       const { data } = response.data
-      console.log(data)
       data.forEach((element) => {
         element.nombres_usuario = element.nombres_usuario
           .split(' ')
@@ -269,7 +268,7 @@ export const Teachers = () => {
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto]'>
           <header className='grid place-items-center h-[10vh]'>
-            <Search searchFilter placeholder={'Busca un instructor'} searchStudent={searchTeachers} />
+            <Search searchFilter placeholder={'Busca un instructor'} searchItem={searchTeachers} />
           </header>
           <section className='flex flex-col justify-around'>
             {searchedTeachers.length > 0 && !error ? (

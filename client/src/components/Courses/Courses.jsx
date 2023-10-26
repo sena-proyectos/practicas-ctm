@@ -12,10 +12,10 @@ import { Pagination } from '@nextui-org/pagination'
 // Componentes
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
-import { Button, UIButton } from '../Utils/Button/Button'
+import { Button } from '../Utils/Button/Button'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Card3D } from '../Utils/Card/Card'
-import { generateExcelStudentsNoPractical, getClass, GetClassByNumber, sendExcelCourse } from '../../api/httpRequest'
+import { getClass, GetClassByNumber, sendExcelCourse } from '../../api/httpRequest'
 import { RegisterCourses } from '../Utils/Modals/Modals'
 import { keysRoles } from '../../import/staticData'
 import { AiOutlineFileAdd } from 'react-icons/ai'
@@ -43,7 +43,7 @@ export const Courses = () => {
    * @async
    * @function
    * @name searchCourses
-   * @param {string} searchTerm - Término de búsqueda para el aprendiz.
+   * @param {string} searchTerm - Término de búsqueda para las fichas.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
    *
@@ -77,7 +77,7 @@ export const Courses = () => {
     } catch (error) {
       const message = error?.response?.data?.error?.info?.message
 
-      setError(message ?? 'Usuario no existente')
+      setError(message ?? 'Curso no existe')
       setSearchedCourses([])
     }
   }
@@ -440,37 +440,13 @@ export const Courses = () => {
     getCursos()
   }
 
-  const generateExcelNoPractical = async () => {
-    try {
-      const response = await generateExcelStudentsNoPractical()
-
-      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-
-      const url = window.URL.createObjectURL(blob)
-
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'estudiantes_en_practicas.xlsx'
-      document.body.appendChild(a)
-      a.click()
-
-      window.URL.revokeObjectURL(url)
-    } catch (error) {
-      Swal.fire({
-        title: 'Ha ocurrido un error al generar el archivo excel.',
-        icon: 'error'
-      })
-      console.error(error)
-    }
-  }
-
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       {isOpen && <RegisterCourses closedModal={handleCloseModal} setGetCourses={setGetCourses} title={'Agrega una ficha'} />}
       <Siderbar />
       <section className='relative grid flex-auto grid-rows-[auto_1fr_auto]'>
         <header className='grid place-items-center h-[10vh]'>
-          <Search searchStudent={searchCourses} searchFilter placeholder={'Busca una ficha'} icon iconClick={handleFilter} />
+          <Search searchItem={searchCourses} searchFilter placeholder={'Busca una ficha'} icon iconClick={handleFilter} />
           <ul className={`absolute right-48  mt-1 top-4 w-40 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
             <li>
               <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('etapa')}>
@@ -581,21 +557,19 @@ export const Courses = () => {
                 return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
               })}
             </section>
+          ) : error ? (
+            <section className='flex items-center justify-center w-full gap-2 text-red-600'>
+              <BiSad className='text-2xl' />
+              <h2>{error}</h2>
+            </section>
           ) : (
             <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
-              {courses.length > 0 ? (
+              {loading ? (
+                <SkeletonLoading number={6} />
+              ) : courses.length > 0 ? (
                 courses.slice(startIndex, endIndex).map((course, i) => {
                   return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
                 })
-              ) : loading ? (
-                <SkeletonLoading number={6} />
-              ) : error ? (
-                <section className='absolute flex justify-center w-full top-32'>
-                  <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
-                    <p>¡Oops! No hay ningún curso con este número.</p>
-                    <BiSad className='text-2xl' />
-                  </section>
-                </section>
               ) : (
                 <section className='absolute flex justify-center w-full top-32'>
                   <section className='flex items-center gap-1 mx-auto text-xl text-red-500'>
@@ -611,9 +585,6 @@ export const Courses = () => {
             <div className='flex justify-center w-full'>{courses.length === 0 || error || loading ? <></> : searchedCourses.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <div className='grid w-full grid-flow-col-dense gap-3 place-content-end px-7'>
-                <UIButton type='button' onClick={generateExcelNoPractical} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>
-                  Aprendices sin práctica
-                </UIButton>
                 <div className='ml-auto bg-green-600 rounded-full shadow-md'>
                   <label htmlFor='upload' className='flex items-center w-full h-full gap-1.5 px-3 py-1.5 text-white rounded-full cursor-pointer'>
                     <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>

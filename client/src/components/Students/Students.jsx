@@ -363,7 +363,6 @@ export const Students = () => {
           </section>
         </ModalWithChildren>
       )}
-      {/* {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />} */}
       <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
       <Siderbar />
       <section className='relative grid flex-auto w-min grid-rows-2-85-15'>

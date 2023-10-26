@@ -48,8 +48,8 @@ export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, it
   return (
     <div className='[perspective:1000px] group flex flex-col gap-1 rounded-xl h-[10rem]' onClick={onClick}>
       <div className='relative w-full h-full rounded-xl transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] bg-white'>
-        <div className='absolute flex flex-col w-full h-full gap-3 justify-center p-3 shadow-lg rounded-xl [backface-visibility:hidden] bg-white '>
-          <header className='flex flex-row w-fit '>
+        <div className='absolute grid grid-rows-[2fr, 1fr] w-full h-full gap-2  p-3 shadow-lg rounded-xl [backface-visibility:hidden] bg-white '>
+          <header className='flex flex-row items-center w-fit '>
             <div className='z-10 border-2 rounded-full w-14 h-14 border-violet-800 bg-violet-200'>
               <BsJournalBookmark className='w-full h-full scale-50' />
             </div>
@@ -57,7 +57,7 @@ export const Card3D = ({ title, subtitle, header, item1, item2, item3, item4, it
               <p className='text-xs font-medium'>{header}</p>
             </div>
           </header>
-          <section>
+          <section className='h-20'>
             <p className='text-sm font-medium'>{title}</p>
             <span className='text-xs font-light'>{subtitle}</span>
           </section>

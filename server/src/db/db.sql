@@ -1173,34 +1173,6 @@ INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanito@gmai
 UNLOCK TABLES;
 
 --
--- Table structure for table `visitas`
---
-
-DROP TABLE IF EXISTS `visitas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `visitas` (
-  `id_visita` int NOT NULL AUTO_INCREMENT,
-  `fecha_visita` date NOT NULL,
-  `numero_visita` varchar(100) NOT NULL,
-  `observaciones_visita` longtext,
-  `id_instructor_seguimiento` int NOT NULL,
-  PRIMARY KEY (`id_visita`),
-  KEY `fk_visitas_1` (`id_instructor_seguimiento`),
-  CONSTRAINT `fk_visitas_1` FOREIGN KEY (`id_instructor_seguimiento`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `visitas`
---
-
-LOCK TABLES `visitas` WRITE;
-/*!40000 ALTER TABLE `visitas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `visitas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping events for database 'sena_practicas'
 --
 
@@ -1951,4 +1923,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-25 14:22:37
+-- Dump completed on 2023-10-25 18:39:48

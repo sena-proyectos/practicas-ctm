@@ -9,7 +9,7 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
 import { CardStudent } from '../Utils/Card/Card'
 import { Footer } from '../Footer/Footer'
-import { GetUserByName, detailInfoStudents, generateExcelStudents, generateExcelStudentsByModality, generateExcelStudentsPractical, sendExcelContrato } from '../../api/httpRequest'
+import { GetUserByName, detailInfoStudents, generateExcelStudents, generateExcelStudentsByModality, generateExcelStudentsNoPractical, generateExcelStudentsPractical, sendExcelContrato } from '../../api/httpRequest'
 import { AiOutlineFileAdd } from 'react-icons/ai'
 import { HiOutlineDocumentText } from 'react-icons/hi'
 
@@ -22,6 +22,7 @@ export const StudentMonitoring = () => {
   const [currentStudentList, setCurrentStudentList] = useState({})
   const inputFileRef = useRef(null)
   const [optionsExcel, setOptionsExcel] = useState(false)
+  const [optionsModality, setOptionsModality] = useState(false)
 
   /**
    * Función asincrónica para buscar aprendices por nombre de usuario.
@@ -219,8 +220,18 @@ export const StudentMonitoring = () => {
       })
   }
 
+  const disabledOptions = () => {
+    setTimeout(() => {
+      setOptionsExcel(false)
+    }, 100)
+  }
+
   const handleShowOptionsExcel = () => {
     setOptionsExcel(!optionsExcel)
+  }
+
+  const showModality = () => {
+    setOptionsModality(!optionsModality)
   }
 
   const date = new Date()
@@ -298,24 +309,42 @@ export const StudentMonitoring = () => {
     }
   }
 
+  const generateExcelNoPractical = async () => {
+    try {
+      const response = await generateExcelStudentsNoPractical()
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `estudiantes_sin_practicas_${fullDate}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />
       <section className='grid flex-auto w-min grid-rows-[auto_1fr_auto] '>
         <header className='grid place-items-center h-[10vh]'>
-          <Search
-            searchFilter
-            // icon
-            placeholder={'Busca un aprendiz'}
-            // iconClick={handleIconClick}
-            searchStudent={searchApprentices}
-          />
+          <Search searchFilter placeholder={'Busca un aprendiz'} searchItem={searchApprentices} />
           <section className='absolute top-4 right-7'>
             <button className='flex items-center gap-1 py-1 px-1.5 text-sm bg-blue-200 rounded-lg' onClick={handleShowOptionsExcel}>
               Reportes
               <HiOutlineDocumentText />
             </button>
-            <ul className={`absolute right-0 mt-1 top-full w-40 flex flex-col gap-y-1.5 py-2 text-sm border border-gray rounded-lg bg-white ${optionsExcel ? 'visible' : 'hidden'} z-50 transition-all duration-200 px-2`}>
+            <ul className={`absolute right-0 mt-1 top-full w-40 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${optionsExcel ? 'visible' : 'hidden'} z-50 transition-all duration-200 px-2`} onMouseLeave={disabledOptions}>
               <li>
                 <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateExcel}>
                   Todos los aprendices
@@ -327,28 +356,44 @@ export const StudentMonitoring = () => {
                 </button>
               </li>
               <li>
-                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('pasantias')}>
-                  Pasantías
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateExcelNoPractical}>
+                  Aprendices sin prácticas
                 </button>
               </li>
               <li>
-                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('monitoria')}>
-                  Monitoría
-                </button>
-              </li>
-              <li>
-                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('vinculacion laboral')}>
-                  Vinculación laboral
-                </button>
-              </li>
-              <li>
-                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('proyecto productivo')}>
-                  Proyecto productivo
-                </button>
-              </li>
-              <li>
-                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('contrato de aprendizaje')}>
-                  Contrato de aprendizaje
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={showModality}>
+                  Modalidades
+                  {optionsModality && (
+                    <section className='absolute right-full mr-[2px] bg-white top-0 border border-gray rounded-lg' onMouseLeave={showModality}>
+                      <ul className='flex flex-col gap-1 p-2 w-36'>
+                        <li>
+                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('pasantias')}>
+                            Pasantías
+                          </button>
+                        </li>
+                        <li>
+                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('monitoria')}>
+                            Monitoría
+                          </button>
+                        </li>
+                        <li>
+                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('vinculacion laboral')}>
+                            Vinculación laboral
+                          </button>
+                        </li>
+                        <li>
+                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('proyecto productivo')}>
+                            Proyecto productivo
+                          </button>
+                        </li>
+                        <li>
+                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('contrato de aprendizaje')}>
+                            Contrato de aprendizaje
+                          </button>
+                        </li>
+                      </ul>
+                    </section>
+                  )}
                 </button>
               </li>
             </ul>
@@ -377,7 +422,7 @@ export const StudentMonitoring = () => {
             </div>
           )}
           <div className='grid grid-rows-[auto_auto] gap-0.5 place-items-center px-7 pt-4'>
-            {loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
+            {loading || currentStudentList.length === 0 || error ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
             <section className='ml-auto '>
               <div className='ml-auto bg-blue-600 rounded-full shadow-md'>
                 <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-1 text-white rounded-full cursor-pointer'>

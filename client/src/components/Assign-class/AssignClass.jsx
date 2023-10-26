@@ -17,6 +17,7 @@ import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
 import { AsignTeacherModal } from '../Utils/Modals/Modals'
 import { getClassFree, GetClassFreeByNumber } from '../../api/httpRequest'
+import { BiSad } from 'react-icons/bi'
 
 export const AssignClass = () => {
   const [modalAsign, setModalAsign] = useState(false)
@@ -242,15 +243,15 @@ export const AssignClass = () => {
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto]'>
           <header className='grid place-items-center h-[10vh]'>
-            <Search searchFilter placeholder={'Busca una ficha'} searchStudent={searchCourses} />
+            <Search searchFilter placeholder={'Busca una ficha'} searchItem={searchCourses} />
           </header>
           <section className='flex flex-col justify-around'>
             {searchedFreeCourses.length > 0 && !error ? (
               <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
                 {searchedFreeCourses.slice(startIndexSearch, endIndexSearch).map((course, i) => {
                   return (
-                    <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 bg-white shadow-lg ' key={i}>
-                      <header className='flex flex-row w-fit '>
+                    <div className='grid grid-rows-[2fr, 1fr, 1fr] gap-y-1 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] p-3 bg-white shadow-lg ' key={i}>
+                      <header className='flex flex-row items-center w-fit '>
                         <div className='z-10 bg-teal-200 border-2 border-teal-800 rounded-full w-14 h-14'>
                           <BsJournalBookmark className='w-full h-full scale-50' />
                         </div>
@@ -258,18 +259,23 @@ export const AssignClass = () => {
                           <p className='text-xs font-medium'>{course.numero_ficha}</p>
                         </div>
                       </header>
-                      <section>
+                      <section className='h-16'>
                         <p className='text-sm font-medium'>{course.nombre_programa_formacion}</p>
                         <span className='text-xs font-light'>{course.estado}</span>
                       </section>
-                      <div className='relative ml-auto bottom-2 w-fit'>
-                        <Button rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' inline>
+                      <div className='relative ml-auto w-fit'>
+                        <Button rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' inline classNames='absolute bottom-[1px] right-0'>
                           <HiOutlineUserAdd className='text-xl' /> Asignar
                         </Button>
                       </div>
                     </div>
                   )
                 })}
+              </section>
+            ) : error ? (
+              <section className='flex items-center justify-center w-full gap-2 text-red-600'>
+                <BiSad className='text-2xl' />
+                <h2>{error}</h2>
               </section>
             ) : (
               <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
@@ -280,8 +286,8 @@ export const AssignClass = () => {
                 ) : (
                   courses.slice(startIndex, endIndex).map((course, i) => {
                     return (
-                      <div className=' group flex flex-col gap-3 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] justify-center p-3 bg-white shadow-lg ' key={i}>
-                        <header className='flex flex-row w-fit '>
+                      <div className='grid grid-rows-[2fr, 1fr, 1fr] gap-y-1 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] p-3 bg-white shadow-lg ' key={i}>
+                        <header className='flex flex-row items-center w-fit '>
                           <div className='z-10 bg-teal-200 border-2 border-teal-800 rounded-full w-14 h-14'>
                             <BsJournalBookmark className='w-full h-full scale-50' />
                           </div>
@@ -289,12 +295,12 @@ export const AssignClass = () => {
                             <p className='text-xs font-medium'>{course.numero_ficha}</p>
                           </div>
                         </header>
-                        <section>
+                        <section className='h-16'>
                           <p className='text-sm font-medium'>{course.nombre_programa_formacion}</p>
                           <span className='text-xs font-light'>{course.estado}</span>
                         </section>
-                        <div className='relative ml-auto bottom-2 w-fit'>
-                          <Button rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' inline>
+                        <div className='relative ml-auto w-fit'>
+                          <Button rounded='rounded-full' bg='bg-slate-200' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' onClick={() => handleDetailCourse(course.numero_ficha)} textColor='text-slate-600' inline classNames='absolute bottom-[1px] right-0'>
                             <HiOutlineUserAdd className='text-xl' /> Asignar
                           </Button>
                         </div>
