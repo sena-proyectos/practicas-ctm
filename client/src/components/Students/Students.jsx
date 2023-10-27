@@ -3,23 +3,24 @@ import { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { Pagination } from '@nextui-org/pagination'
+import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover'
+import Swal from 'sweetalert2'
+import { ToastContainer, toast } from 'react-toastify'
 
 // Icons
 import { AiOutlineEye } from 'react-icons/ai'
-import { PiCaretRightBold } from 'react-icons/pi'
+import { PiCaretRightBold, PiDownloadSimple, PiPencilSimple } from 'react-icons/pi'
 import { TiDelete } from 'react-icons/ti'
 import { BiSad } from 'react-icons/bi'
-import { GrAddCircle } from 'react-icons/gr'
+import { BsInfoCircle } from 'react-icons/bs'
+import { LuSave } from 'react-icons/lu'
 
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
-import Swal from 'sweetalert2'
 import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById, editDateClass, generateExcelClass } from '../../api/httpRequest'
 import { ModalWithChildren, InfoStudentModal } from '../Utils/Modals/Modals'
-import { LuSave } from 'react-icons/lu'
-import { ToastContainer, toast } from 'react-toastify'
 import { keysRoles } from '../../import/staticData'
 
 export const Students = () => {
@@ -303,6 +304,7 @@ export const Students = () => {
       console.error(error)
     }
   }
+
   const handleModal = () => {
     setModalDates(!modalDates)
   }
@@ -365,87 +367,11 @@ export const Students = () => {
       )}
       <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
       <Siderbar />
-      <section className='relative grid flex-auto w-min grid-rows-2-85-15'>
+      <section className='relative grid flex-auto w-min grid-rows-2-93-6'>
         <section className='w-[95%] h-[95%] m-auto'>
-          <div className='relative h-full bg-white shadow-md sm:rounded-lg'>
-            <div className='grid items-center justify-between h-16 grid-cols-3 px-3'>
-              <div className='relative flex items-center w-full'>
-                <button className='flex items-center justify-between gap-1 border border-gray focus:outline-none  font-medium rounded-lg text-sm px-3 py-1.5 w-36 bg-white relative text-slate-800 hover:bg-[#ffd6a5]/30' onClick={handleShowFiltros} type='button'>
-                  Filtros
-                  <PiCaretRightBold className={`text-md mt-[1px] ${showFiltros ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
-                </button>
-                <ul className={`absolute left-0 mt-1 top-full w-36 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
-                  <li>
-                    <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('modalidad')}>
-                      Modalidad <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.modalidad ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
-                      {filtersButtons.modalidad && (
-                        <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
-                          <ul className='flex flex-col w-40 gap-1 py-2'>
-                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Pasantías')}>
-                              Pasantías
-                            </li>
-                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Contrato de aprendizaje')}>
-                              Contrato de aprendizaje
-                            </li>
-                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Proyecto Productivo')}>
-                              Proyecto Productivo
-                            </li>
-                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Monitoría')}>
-                              Monitoría
-                            </li>
-                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Vinculación laboral')}>
-                              Vinculación laboral
-                            </li>
-                          </ul>
-                        </section>
-                      )}
-                    </button>
-                  </li>
-                  <li>
-                    <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('estado')}>
-                      Estado <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.etapa ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
-                      {filtersButtons.etapa && (
-                        <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
-                          <ul className='flex flex-col w-40 gap-1 py-2'>
-                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('estado', 'Lectiva')}>
-                              Lectiva
-                            </li>
-                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('estado', 'Prácticas')}>
-                              Prácticas
-                            </li>
-                            <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('estado', 'Finalizada')}>
-                              Finalizada
-                            </li>
-                          </ul>
-                        </section>
-                      )}
-                    </button>
-                  </li>
-                </ul>
-                {activeFilter && (
-                  <section className='ml-2 justify-self-end '>
-                    <button type='button' className='text-sm font-light flex items-center gap-[2px] hover:text-red-500 transition-colors' onClick={handleResetFilter}>
-                      <TiDelete className='text-lg text-red-500' /> Borrar Filtro
-                    </button>
-                  </section>
-                )}
-              </div>
-
-              <div className='flex flex-row gap-3 mx-auto text-sm font-light '>
-                <div className='flex flex-row items-center'>
-                  <div className='h-2.5 w-2.5 rounded-full bg-red-500 mr-2' />
-                  Lectiva
-                </div>
-                <div className='flex flex-row items-center'>
-                  <div className='h-2.5 w-2.5 rounded-full bg-yellow-500 mr-2' />
-                  Prácticas
-                </div>
-                <div className='flex flex-row items-center'>
-                  <div className='h-2.5 w-2.5 rounded-full bg-green-500 mr-2' />
-                  Finalizada
-                </div>
-              </div>
-              <div className='flex flex-col items-end text-slate-800'>
+          <div className='relative h-full bg-white shadow-md rounded-2xl'>
+            <header className='flex flex-col w-full gap-1 px-2 py-3'>
+              <div className='flex flex-col items-end w-full text-slate-800'>
                 {loadingData.course ? (
                   <>
                     <Skeleton width={55} height={20} />
@@ -453,84 +379,171 @@ export const Students = () => {
                   </>
                 ) : (
                   <>
-                    <h2 className='text-base font-normal'>{detailCourse.nombre_programa_formacion}</h2>
-                    <h3 className='text-sm font-light'>{detailCourse.numero_ficha}</h3>
+                    <h2 className='text-sm font-normal text-right w-[35ch]'>{detailCourse.nombre_programa_formacion}</h2>
+                    <h3 className='text-xs font-light'>{detailCourse.numero_ficha}</h3>
                   </>
                 )}
               </div>
-            </div>
-            <table className='w-full text-sm text-left h-[72%]'>
-              <thead className='uppercase bg-[#ffd6a5] border-y-[0.5px] border-gray'>
-                <tr className='grid w-full grid-cols-4-columns-table justify-items-center text-slate-800'>
-                  <th scope='col' className='px-6 py-3'>
-                    Nombre completo
-                  </th>
-                  <th scope='col' className='px-6 py-3'>
-                    Modalidad
-                  </th>
-                  <th scope='col' className='px-6 py-3'>
-                    Estado
-                  </th>
-                  <th scope='col' className='px-6 py-3'>
-                    Detalles
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {studentsCourse.length > 0 ? (
-                  studentsCourse.slice(startIndex, endIndex).map((student, i) => {
-                    return (
-                      <tr className='border-b border-gray bg-white text-slate-800 hover:bg-[#ffd6a5]/30 grid grid-cols-4-columns-table justify-items-center items-center h-[10vh] transition-colors' key={i}>
-                        <th scope='row' className='flex items-center text-slate-200 whitespace-nowrap '>
-                          <div className='text-slate-800'>
-                            <div className='text-base font-semibold break-words whitespace-normal max-w-[40ch] text-center'>{student.nombre_completo}</div>
-                            <div className='font-light text-center'>{student.email_aprendiz}</div>
-                          </div>
-                        </th>
-                        <td className='text-base font-light text-center max-w-[10ch]'>{student.nombre_modalidad ? student.nombre_modalidad : 'N/A'}</td>
-                        <td>
-                          <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
-                        </td>
-                        <td className='flex items-center text-2xl'>
-                          <button onClick={() => handleDetailInfoStudent(student.id_aprendiz)}>
-                            <AiOutlineEye />
-                          </button>
-                        </td>
-                      </tr>
-                    )
-                  })
-                ) : loadingData.course ? (
-                  <LoadingDataStudents number={5} />
-                ) : (
-                  <tr className='grid h-full place-content-center'>
-                    <th scope='row' className='flex items-center gap-1 text-xl text-red-500'>
-                      <p>¡Oops! No hay ningún aprendiz con este filtro.</p>
-                      <BiSad className='text-2xl' />
-                    </th>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-            <div className='flex flex-col items-center gap-1 pt-2'>
-              <div className='flex justify-center w-full'>
-                <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className='h-fit' />
-              </div>
-              {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-                <div className='grid w-full grid-flow-col-dense gap-3 place-content-end px-7'>
-                  <Button type='button' px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1.5'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={generateExcel}>
-                    Generar reporte
-                  </Button>
-                  {/* <Button bg={'bg-orange-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleStudentModal}>
+              <div className='flex flex-row justify-between w-full'>
+                <div className='relative flex items-center w-full '>
+                  <button className='flex items-center justify-between gap-1 border border-gray focus:outline-none  font-medium rounded-lg text-sm px-3 py-1.5 w-36 bg-white relative text-slate-800 hover:bg-[#ffd6a5]/30' onClick={handleShowFiltros} type='button'>
+                    Filtros
+                    <PiCaretRightBold className={`text-md mt-[1px] ${showFiltros ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
+                  </button>
+                  <ul className={`absolute left-0 mt-1 top-full w-36 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
+                    <li>
+                      <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('modalidad')}>
+                        Modalidad <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.modalidad ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
+                        {filtersButtons.modalidad && (
+                          <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
+                            <ul className='flex flex-col w-40 gap-1 py-2'>
+                              <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Pasantías')}>
+                                Pasantías
+                              </li>
+                              <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Contrato de aprendizaje')}>
+                                Contrato de aprendizaje
+                              </li>
+                              <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Proyecto Productivo')}>
+                                Proyecto Productivo
+                              </li>
+                              <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Monitoría')}>
+                                Monitoría
+                              </li>
+                              <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('modalidad', 'Vinculación laboral')}>
+                                Vinculación laboral
+                              </li>
+                            </ul>
+                          </section>
+                        )}
+                      </button>
+                    </li>
+                    <li>
+                      <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('estado')}>
+                        Estado <PiCaretRightBold className={`text-md mt-[1px] ${filtersButtons.etapa ? 'rotate-90' : 'rotate-0'} transition-all duration-200`} />
+                        {filtersButtons.etapa && (
+                          <section className='absolute left-full ml-[2px] bg-white top-0 border border-gray rounded-lg'>
+                            <ul className='flex flex-col w-40 gap-1 py-2'>
+                              <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('estado', 'Lectiva')}>
+                                Lectiva
+                              </li>
+                              <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('estado', 'Prácticas')}>
+                                Prácticas
+                              </li>
+                              <li className='w-full px-3 py-1 text-left transition-colors hover:bg-whitesmoke hover:text-black' onClick={() => handleModalidadFilter('estado', 'Finalizada')}>
+                                Finalizada
+                              </li>
+                            </ul>
+                          </section>
+                        )}
+                      </button>
+                    </li>
+                  </ul>
+                  {activeFilter && (
+                    <section className='ml-2 justify-self-end '>
+                      <button type='button' className='text-sm font-light flex items-center gap-[2px] hover:text-red-500 transition-colors' onClick={handleResetFilter}>
+                        <TiDelete className='text-lg text-red-500' /> Borrar Filtro
+                      </button>
+                    </section>
+                  )}
+                </div>
+                {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+                  <div className='grid w-full grid-flow-col-dense gap-2 place-content-end'>
+                    <Button type='button' px={'px-3'} font={'font-normal'} textSize={'text-sm'} py={'py-1.5'} rounded={'rounded-2xl'} inline bg='bg-blue-200' textColor='text-black' onClick={generateExcel}>
+                      <PiDownloadSimple />
+                      Reporte
+                    </Button>
+                    {/* <Button bg={'bg-orange-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleStudentModal}>
                     <GrAddCircle className='text-white' />
                     Agregar
                   </Button> */}
-                  <Button bg={'bg-blue-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline onClick={handleModal}>
-                    <GrAddCircle className='text-white' />
-                    Editar fechas
-                  </Button>
-                </div>
-              )}
-            </div>
+                    <Button bg={'bg-blue-600'} px={'px-3'} font={'font-normal'} textSize={'text-sm'} py={'py-1.5'} rounded={'rounded-2xl'} shadow={'lg'} inline onClick={handleModal} classNames='whitespace-nowrap'>
+                      <PiPencilSimple className='text-white' />
+                      Editar fechas
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </header>
+            <section className='w-[97%]  mx-auto '>
+              <table className='w-full h-full overflow-x-auto text-sm text-left'>
+                <thead className='uppercase'>
+                  <tr className='grid w-full py-0.5 text-sm bg-gray-300 h-fit grid-cols-4-columns-table justify-items-center rounded-t-2xl text-slate-800'>
+                    <th scope='col' className='px-6 py-3 whitespace-nowrap'>
+                      Nombre completo
+                    </th>
+                    <th scope='col' className='px-6 py-3'>
+                      Modalidad
+                    </th>
+                    <th scope='col' className='flex items-center gap-2 px-6 py-3'>
+                      Estado
+                      <Popover placement='right'>
+                        <PopoverTrigger>
+                          <button>
+                            <BsInfoCircle className='text-base' />
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <div className='flex flex-col gap-1.5 mx-auto text-xs font-light '>
+                            <div className='flex flex-row items-center'>
+                              <div className='w-2.5 h-2.5 mr-2 bg-red-500 rounded-full' />
+                              Lectiva
+                            </div>
+                            <div className='flex flex-row items-center'>
+                              <div className='h-2.5 w-2.5 rounded-full bg-yellow-500 mr-2' />
+                              Prácticas
+                            </div>
+                            <div className='flex flex-row items-center'>
+                              <div className='h-2.5 w-2.5 rounded-full bg-green-500 mr-2' />
+                              Finalizada
+                            </div>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </th>
+                    <th scope='col' className='px-6 py-3'>
+                      Detalles
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className='h-[50vh] border-x-1'>
+                  {studentsCourse.length > 0 ? (
+                    studentsCourse.slice(startIndex, endIndex).map((student, i) => {
+                      return (
+                        <tr className='border-b border-gray bg-white text-slate-800 hover:bg-gray-300/30 grid grid-cols-4-columns-table justify-items-center items-center h-[10vh] transition-colors' key={i}>
+                          <th scope='row' className='flex items-center text-slate-200 whitespace-nowrap '>
+                            <div className='text-slate-800'>
+                              <div className='text-base font-semibold break-words whitespace-normal max-w-[40ch] text-center'>{student.nombre_completo}</div>
+                              <div className='font-light text-center'>{student.email_aprendiz}</div>
+                            </div>
+                          </th>
+                          <td className='text-base font-light text-center max-w-[10ch]'>{student.nombre_modalidad ? student.nombre_modalidad : 'N/A'}</td>
+                          <td>
+                            <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
+                          </td>
+                          <td className='flex items-center text-2xl'>
+                            <button onClick={() => handleDetailInfoStudent(student.id_aprendiz)}>
+                              <AiOutlineEye />
+                            </button>
+                          </td>
+                        </tr>
+                      )
+                    })
+                  ) : loadingData.course ? (
+                    <LoadingDataStudents number={5} />
+                  ) : (
+                    <tr className='grid h-full place-content-center'>
+                      <th scope='row' className='flex items-center gap-1 text-lg font-medium text-red-500'>
+                        <p>¡Oops! No hay ningún aprendiz con este filtro.</p>
+                        <BiSad className='text-xl' />
+                      </th>
+                    </tr>
+                  )}
+                </tbody>
+                <tfoot>
+                  <div className='flex justify-center w-full py-1.5 bg-gray-300 rounded-b-2xl'>{studentsCourse.length === 0 || loadingData.course ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className='h-fit' />}</div>
+                </tfoot>
+              </table>
+            </section>
           </div>
         </section>
         <Footer />
