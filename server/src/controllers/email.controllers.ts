@@ -24,6 +24,24 @@ export const sendEmail = async (req: Request, res: Response): Promise<Response> 
   }
 }
 
+export const sendEmailFunctions = async (req: Request, res: Response): Promise<Response> => {
+  const { to, subject, nombre, apellido, apprentice } = req.body
+
+  try {
+    const emailBody = `<p>Querido ${nombre as string} ${apellido as string}, se te ha asignado la revisión de la carta de funciones para el estudiante ${apprentice}</p> <br/> <h5>Revisado por Juan Esteban</h5>`
+
+    await emailConfig.sendMail({
+      from: process.env.MAIL_USER,
+      to,
+      subject,
+      html: emailBody
+    })
+    return res.status(200).json({ msg: 'Correo enviado correctamente' })
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 export const sendEmailAnyBody = async (payload: { body: string, subject: string, to: string, file: Buffer }): Promise<void> => {
   try {
     await emailConfig.sendMail({
