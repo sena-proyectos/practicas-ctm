@@ -282,18 +282,23 @@ export const Students = () => {
     setModalDates(!modalDates)
   }
 
-  const handleDates = async (e) => {
+  const handleEditCourse = async (e) => {
     e.preventDefault()
 
     const formData = new FormData(e.target)
     formData.append('numero_ficha', detailCourse.numero_ficha)
     const data = Object.fromEntries(formData)
-    console.log(data)
-
+    if (data.id_nivel_formacion === 'Técnico') {
+      data.id_nivel_formacion = 1
+    } else if (data.id_nivel_formacion === 'Tecnología') {
+      data.id_nivel_formacion = 2
+    } else {
+      data.id_nivel_formacion = 3
+    }
     try {
       const response = await editDateClass(data)
       console.log(response)
-      toast.success('Fechas actualizadas con éxito')
+      toast.success('Ficha actualizada con éxito')
       setModalDates(false)
     } catch (error) {
       throw new Error(error)
@@ -304,14 +309,27 @@ export const Students = () => {
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       {/* {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />} */}
       {modalDates && (
-        <ModalWithChildren closeModal={handleModal} title={'Editar fechas'} width='w-11/12 md:w-1/3'>
+        <ModalWithChildren closeModal={handleModal} title={'Editar ficha'} width='w-11/12 md:w-1/3'>
           <section className='flex justify-center'>
             <section className='flex flex-col w-full gap-3 my-5'>
               <header>
                 <h3 className='text-[16px] font-medium text-right'>{detailCourse.numero_ficha}</h3>
                 <h3 className='text-[16px] font-light text-right'>{detailCourse.nombre_programa_formacion}</h3>
               </header>
-              <form className='flex flex-col gap-6' onSubmit={handleDates}>
+              <form className='flex flex-col gap-4' onSubmit={handleEditCourse}>
+                <div className='flex flex-col'>
+                  <label htmlFor='nivel_formacion' className='text-sm font-light'>
+                    Nivel de formación
+                  </label>
+                  <select id='nivel_formacion' name='id_nivel_formacion' className='px-2 py-[5px] text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' value={detailCourse.nivel_formacion}>
+                    <option value='' disabled>
+                      Nivel de formacion
+                    </option>
+                    <option value='Tecnología'>Tecnología</option>
+                    <option value='Técnico'>Técnico</option>
+                    <option value='Auxiliar'>Auxiliar</option>
+                  </select>
+                </div>
                 <section className='grid grid-cols-2 gap-2'>
                   <div className='flex flex-col'>
                     <label htmlFor='inicio_lectiva' className='text-sm font-light'>
@@ -428,7 +446,7 @@ export const Students = () => {
                   </Button> */}
                     <Button bg={'bg-blue-600'} px={'px-3'} font={'font-normal'} textSize={'text-sm'} py={'py-1.5'} rounded={'rounded-2xl'} shadow={'lg'} inline onClick={handleModal} classNames='whitespace-nowrap'>
                       <PiPencilSimple className='text-white' />
-                      Editar fechas
+                      Editar ficha
                     </Button>
                   </div>
                 )}

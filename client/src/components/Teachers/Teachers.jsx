@@ -19,13 +19,13 @@ import { Button } from '../Utils/Button/Button'
 
 export const Teachers = () => {
   const [pageNumber, setPageNumber] = useState(1)
-  const [searchPageNumber, setSearchPageNumber] = useState(1)
   const [loading, setLoading] = useState(true)
   const [teacher, setTeacher] = useState([])
   const [searchedTeachers, setSearchedTeachers] = useState([])
   const [error, setError] = useState(null)
   const [showModal, setShowModal] = useState(false)
   const [notify, setNotify] = useState(false)
+  const [currentTeachers, setCurrentTeachers] = useState([])
 
   /**
    * Identificador del rol del usuario almacenado en el almacenamiento local.
@@ -130,11 +130,16 @@ export const Teachers = () => {
   useEffect(() => {
     getInstructores()
   }, [])
+
+  // Cambia el numero de paginas dependiendo de la cantidad de instructores
   useEffect(() => {
-    if (searchedTeachers.length === 0 || error) {
-      setSearchPageNumber(1)
+    if (searchedTeachers.length > 0 && !error) {
+      setCurrentTeachers(searchedTeachers)
+      setPageNumber(1)
+    } else {
+      setCurrentTeachers(teacher)
     }
-  }, [searchedTeachers, error])
+  }, [searchedTeachers, error, teacher])
 
   /**
    * Número de instructores a mostrar por página.
@@ -159,8 +164,8 @@ export const Teachers = () => {
    * const numeroDePaginas = pageCount;
    */
 
-  const pageCount = Math.ceil(teacher.length / instructoresPerPage)
-  const pageCountSearch = Math.ceil(searchedTeachers.length / instructoresPerPage)
+  const pageCount = Math.ceil(currentTeachers.length / instructoresPerPage)
+
   /**
    * Mapea los colores para las filas impares de la lista de instructores.
    *
@@ -185,7 +190,7 @@ export const Teachers = () => {
    * const indiceInicio = startIndex;
    */
   const startIndex = (pageNumber - 1) * instructoresPerPage
-  const startIndexSearch = (searchPageNumber - 1) * instructoresPerPage
+
   /**
    * Índice de fin de la lista de instructores a mostrar en la página actual.
    *
@@ -197,7 +202,6 @@ export const Teachers = () => {
    * const indiceFin = endIndex;
    */
   const endIndex = startIndex + instructoresPerPage
-  const endIndexSearch = startIndexSearch + instructoresPerPage
 
   const navigate = useNavigate()
 
@@ -273,17 +277,17 @@ export const Teachers = () => {
           <section className='flex flex-col justify-around'>
             {searchedTeachers.length > 0 && !error ? (
               <section className='grid grid-cols-1 gap-6 pt-3 px-7 md:grid-cols-4 st1:grid-cols-3 st2:grid-cols-2'>
-                {allColors.slice(startIndexSearch, endIndexSearch).map((color, index) =>
-                  searchedTeachers[startIndexSearch + index] ? (
+                {allColors.slice(startIndex, endIndex).map((color, index) =>
+                  searchedTeachers[startIndex + index] ? (
                     <div className='rounded-[2rem] grid grid-cols-2-90-10 shadow-2xl md:h-[10rem] h-[9rem] bg-white' key={index} {...color}>
                       <div className='flex flex-col w-4/5 gap-2 mx-auto my-auto'>
-                        <h6 className='font-medium text-center text-[0.9rem]'>{`${searchedTeachers[startIndexSearch + index].nombres_usuario} ${searchedTeachers[startIndexSearch + index].apellidos_usuario}`}</h6>
+                        <h6 className='font-medium text-center text-[0.9rem]'>{`${searchedTeachers[startIndex + index].nombres_usuario} ${searchedTeachers[startIndex + index].apellidos_usuario}`}</h6>
                         <hr className={`font-bold ${color.hrcolor} border-1`} />
-                        <p className='text-[0.8rem] font-light text-center'>{searchedTeachers[startIndexSearch + index].id_rol === 3 && 'Instructor Seguimiento'}</p>
+                        <p className='text-[0.8rem] font-light text-center'>{searchedTeachers[startIndex + index].id_rol === 3 && 'Instructor Seguimiento'}</p>
                       </div>
                       <div className={`w-full h-full rounded-r-[2rem] ${color.sidecolor}`}>
                         <div className={`w-full h-[3rem] rounded-tr-[2rem] text-white text-xl ${color.linkcolor}`}>
-                          <button className='w-full h-full' onClick={() => handleCourse(searchedTeachers[startIndexSearch + index].id_usuario)}>
+                          <button className='w-full h-full' onClick={() => handleCourse(searchedTeachers[startIndex + index].id_usuario)}>
                             <FaAngleRight className='h-full py-3 mx-auto' />
                           </button>
                         </div>
@@ -323,7 +327,7 @@ export const Teachers = () => {
               </section>
             )}
             <div className='flex flex-col items-center gap-1 pt-2 pb-1'>
-              <div className='flex justify-center w-full'>{teacher.length === 0 || error || loading ? <></> : searchedTeachers.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+              <div className='flex justify-center w-full'>{currentTeachers.length === 0 || error || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
               {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
                 <div className='grid w-full pr-7 place-content-end'>
                   <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-1.5' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleModal} inline>
