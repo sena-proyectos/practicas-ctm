@@ -64,7 +64,7 @@ export const getDetailInfoStudent: RequestHandler<{}, Response, unknown> = async
   const { id } = req.params
   try {
     const [students] = await connection.query(
-      'SELECT CONCAT(aprendices.nombre_aprendiz, " ", aprendices.apellido_aprendiz) AS nombre_completo, aprendices.email_aprendiz, aprendices.numero_documento_aprendiz, aprendices.celular_aprendiz, fichas.nombre_programa_formacion, fichas.numero_ficha, niveles_formacion.nivel_formacion, CASE WHEN fichas.fecha_inicio_practica >= fichas.fecha_inicio_lectiva THEN "Prácticas" ELSE "Lectiva" END AS etapa_formacion, fichas.fecha_inicio_lectiva, fichas.fecha_inicio_practica, modalidades.nombre_modalidad, empresas.nombre_empresa, jefes.nombre_jefe, jefes.cargo_jefe, jefes.email_jefe, jefes.numero_contacto_jefe, arl.nombre_arl FROM aprendices LEFT JOIN detalle_fichas_aprendices ON aprendices.id_aprendiz = detalle_fichas_aprendices.id_aprendiz LEFT JOIN fichas ON detalle_fichas_aprendices.id_ficha = fichas.id_ficha LEFT JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion  LEFT JOIN modalidades ON modalidades.id_modalidad = aprendices.id_modalidad LEFT JOIN empresas ON aprendices.id_empresa = empresas.id_empresa LEFT JOIN jefes ON aprendices.id_jefe = jefes.id_jefe LEFT JOIN arl ON aprendices.id_arl = arl.id_arl WHERE aprendices.id_aprendiz = ?',
+      'SELECT CONCAT(aprendices.nombre_aprendiz, " ", aprendices.apellido_aprendiz) AS nombre_completo, aprendices.email_aprendiz, aprendices.tipo_documento_aprendiz, aprendices.numero_documento_aprendiz, aprendices.celular_aprendiz, fichas.nombre_programa_formacion, fichas.numero_ficha, niveles_formacion.nivel_formacion, CASE WHEN fichas.fecha_inicio_practica >= fichas.fecha_inicio_lectiva THEN "Prácticas" ELSE "Lectiva" END AS etapa_formacion, fichas.fecha_inicio_lectiva, fichas.fecha_inicio_practica, modalidades.nombre_modalidad, empresas.nombre_empresa, jefes.nombre_jefe, jefes.cargo_jefe, jefes.email_jefe, jefes.numero_contacto_jefe, arl.nombre_arl FROM aprendices LEFT JOIN detalle_fichas_aprendices ON aprendices.id_aprendiz = detalle_fichas_aprendices.id_aprendiz LEFT JOIN fichas ON detalle_fichas_aprendices.id_ficha = fichas.id_ficha LEFT JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion  LEFT JOIN modalidades ON modalidades.id_modalidad = aprendices.id_modalidad LEFT JOIN empresas ON aprendices.id_empresa = empresas.id_empresa LEFT JOIN jefes ON aprendices.id_jefe = jefes.id_jefe LEFT JOIN arl ON aprendices.id_arl = arl.id_arl WHERE aprendices.id_aprendiz = ?',
       [id]
     )
     if (!Array.isArray(students) || students?.length === 0) throw new DbErrorNotFound('Error al conseguir la información del estudiante.', errorCodes.ERROR_GET_STUDENTS)
@@ -160,7 +160,7 @@ const addStudentPayloadToDatabase = async (studentPayload: TStudentExcelRequest,
 }
 
 const dataUnified = (payload: any): any[] => {
-  const { studentPayload, payload: itemsPayload }: { studentPayload: object[], payload: any } = payload
+  const { studentPayload, payload: itemsPayload }: { studentPayload: object[]; payload: any } = payload
   const { empresaPayload, fichaPayload, contractPayload } = itemsPayload
 
   const data = studentPayload.map((item: any, index) => {

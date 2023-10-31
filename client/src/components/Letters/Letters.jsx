@@ -100,13 +100,13 @@ export const Letters = () => {
                     <span className={`text-xs ${lettersInfo[0].estado_carta === 'Presentado' ? 'visible' : 'hidden'}`}>{lettersInfo[0].fecha_modificacion}</span>
                   </div>
                 </div>
-                <input name='estado_carta_aprendiz' type='checkbox' className='w-4 h-4 rounded-xl accent-purple-700' defaultChecked={lettersInfo[0].estado_carta === 'Presentado'} />
+                <input name='estado_carta_aprendiz' type='checkbox' className='w-4 h-4 rounded-xl accent-teal-600' defaultChecked={lettersInfo[0].estado_carta === 'Presentado'} />
               </header>
               <hr className='border-gray-300' />
               <section className='flex flex-col gap-1 px-2 text-sm'>
                 <div className='flex flex-row justify-between'>
                   <h3>{apprenticeData.nombre_completo}</h3>
-                  <h3>CC {apprenticeData.numero_documento_aprendiz}</h3>
+                  <h3 className='uppercase'>{apprenticeData.tipo_documento_aprendiz + ' ' + apprenticeData.numero_documento_aprendiz}</h3>
                 </div>
                 <textarea name='observaciones' defaultValue={lettersInfo[0].observaciones} className='w-full h-14 p-1.5 overflow-y-auto text-sm border-gray-300 focus:outline-none resize-none rounded-xl border-1' placeholder='Observaciones...' />
                 <div className='flex flex-row items-center justify-between pt-2'>
@@ -114,7 +114,7 @@ export const Letters = () => {
                     {apprenticeData.numero_ficha} - {apprenticeData.nombre_programa_formacion}
                   </h3>
                   <div className='w-fit'>
-                    <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                    <Button bg={'bg-teal-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
                       <LuSave />
                       Guardar
                     </Button>
@@ -133,13 +133,13 @@ export const Letters = () => {
                     <span className={`text-xs ${lettersInfo[1].estado_carta === 'Presentado' ? 'visible' : 'hidden'}`}>{lettersInfo[1].fecha_modificacion}</span>
                   </div>
                 </div>
-                <input name='estado_carta_aprendiz' type='checkbox' required className='w-4 h-4 rounded-xl accent-purple-700' defaultChecked={lettersInfo[1].estado_carta === 'Presentado'} />
+                <input name='estado_carta_aprendiz' type='checkbox' required className='w-4 h-4 rounded-xl accent-teal-600' defaultChecked={lettersInfo[1].estado_carta === 'Presentado'} />
               </header>
               <hr className='border-gray-300' />
               <section className='flex flex-col gap-1 px-2 text-sm'>
                 <div className='flex flex-row justify-between'>
                   <h3>{apprenticeData.nombre_completo}</h3>
-                  <h3>CC {apprenticeData.numero_documento_aprendiz}</h3>
+                  <h3 className='uppercase'>{apprenticeData.tipo_documento_aprendiz + ' ' + apprenticeData.numero_documento_aprendiz}</h3>
                 </div>
                 <textarea name='observaciones' defaultValue={lettersInfo[1].observaciones} className='w-full h-14 p-1.5 overflow-y-auto text-sm border-gray-300 focus:outline-none resize-none rounded-xl border-1' placeholder='Observaciones...' />
                 <div className='flex flex-row items-center justify-between pt-2'>
@@ -147,7 +147,7 @@ export const Letters = () => {
                     {apprenticeData.numero_ficha} - {apprenticeData.nombre_programa_formacion}
                   </h3>
                   <div className='w-fit'>
-                    <Button bg={'bg-green-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                    <Button bg={'bg-teal-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
                       <LuSave />
                       Guardar
                     </Button>
