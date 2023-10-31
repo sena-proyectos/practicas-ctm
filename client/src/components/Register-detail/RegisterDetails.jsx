@@ -10,7 +10,8 @@ import { LuSave } from 'react-icons/lu'
 import { IoReturnDownBack } from 'react-icons/io5'
 import { PiCheckCircleBold, PiXCircleBold } from 'react-icons/pi'
 import { FaGoogleDrive } from 'react-icons/fa'
-import { AiFillEdit, AiOutlineFullscreen } from 'react-icons/ai'
+import { AiOutlineFullscreen } from 'react-icons/ai'
+import { HiOutlinePencilAlt } from 'react-icons/hi'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -191,7 +192,7 @@ export const RegisterDetails = () => {
 
 const InfoAprendiz = ({ inscriptionAprendiz }) => {
   return (
-    <section className={'w-[85%] p-2 mx-auto'}>
+    <section className='w-[85%] p-2 mx-auto'>
       {inscriptionAprendiz.map((x) => {
         return (
           <section className='flex flex-col gap-4' key={x.id_inscripcion}>
@@ -245,7 +246,7 @@ const InfoAprendiz = ({ inscriptionAprendiz }) => {
 
 const InfoEmpresa = ({ inscriptionAprendiz }) => {
   return (
-    <section className={'w-[85%] p-2 mx-auto'}>
+    <section className='w-[85%] p-2 mx-auto'>
       {inscriptionAprendiz.map((x) => {
         return (
           <section className='flex flex-col gap-3' key={x.id_inscripcion}>
@@ -416,12 +417,15 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
         if (responsableId === null) return
 
         // Obtener el nombre del responsable usando la función getUser
-        const responsableResponse = await getUser(responsableId)
+        if (responsableId) {
+          // Obtener el nombre del responsable usando la función getUser
+          const responsableResponse = await getUser(responsableId)
 
-        // Reemplazar el ID del responsable con el nombre en el objeto
-        updatedInfoAvales[i] = {
-          ...item,
-          responsable_aval: responsableResponse
+          // Reemplazar el ID del responsable con el nombre en el objeto
+          updatedInfoAvales[i] = {
+            ...item,
+            responsable_aval: responsableResponse
+          }
         }
       }
 
@@ -655,8 +659,8 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   }
 
   return (
-    <section className='grid grid-cols-2 w-[95%] gap-3 mx-auto h-full'>
-      <section className='flex flex-col justify-center gap-3'>
+    <section className='grid grid-cols-1 md:grid-cols-2 w-[95%] gap-3 mx-auto h-full'>
+      <section className='flex flex-col h-[88vh] md:h-[80vh] justify-center gap-3'>
         {dataAprendiz.map((item) => (
           <section key={item.id_inscripcion}>
             <header className='h-[8vh]'>
@@ -680,16 +684,16 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
           <section className='flex flex-col text-sm items-center gap-1.5 px-3'>
             {infoAvales.slice(0, 3).map((item) => (
               <div className='flex flex-col items-center w-1/2 ' key={item.id_detalle_inscripcion}>
-                <h3 className='font-semibold text-center'>{item.descripcion_detalle}</h3>
+                <h3 className='font-semibold text-center'>{item.descripcion_detalle ?? 'No aplica'}</h3>
                 <p className='font-light'>
                   <span className='font-medium'>Estado: </span>
                   {item.estado_aval}
                 </p>
                 <p className='text-center'>
                   <span className='font-medium'>Responsable: </span>
-                  {item.responsable_aval}
+                  {item.responsable_aval ?? 'Sin asignar'}
                 </p>
-                {item.descripcion_detalle !== 'Funciones' && <hr className='border-1.5 border-gray-400 w-3/4 rounded-xl' />}
+                {item.descripcion_detalle !== 'Funciones' && <hr className='border-1.5 my-0.5 border-gray-400 w-3/4 rounded-xl' />}
               </div>
             ))}
           </section>
@@ -699,29 +703,26 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
         {avalInfo.map((aval) => {
           return (
             <form onSubmit={handleAvalForm} ref={formRef} className='flex flex-col gap-4 ' key={aval.id_detalle_inscripcion}>
-              {idRol && idRol === Number(keysRoles[0]) && (
-                <div>
-                  <label htmlFor='' className='text-sm font-light'>
-                    Coordinador Asignado
-                  </label>
-                  {coordinatorFullName === null ? (
-                    <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={dataAdmins} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} onChange={saveSelectOnChange} />
-                  ) : (
-                    <Fragment>
-                      <p className='flex gap-2'>
-                        {coordinatorFullName}
-                        <span className='flex items-center'>
-                          <Button type='button' bg='transparent' onClick={() => setCoordinatorFullName(null)}>
-                            <AiFillEdit className='text-blue-500' />
-                          </Button>
-                        </span>
-                      </p>
-                    </Fragment>
-                  )}
-                </div>
+            {idRol && idRol === Number(keysRoles[0]) && (
+              <div>
+                <label htmlFor='' className='text-sm font-light'>
+                  Coordinador Asignado
+                </label>
+                {coordinatorFullName === null ? (
+                  <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={dataAdmins} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} onChange={saveSelectOnChange} />
+                ) : (
+                  <Fragment>
+                    <h3 className='flex flex-row flex-wrap flex-grow-0 gap-2 text-sm w-fit flex-shrink-1'>
+                      {coordinatorFullName}
+                      <Button type='button' px='none' bg='transparent' py='none' onClick={() => setCoordinatorFullName(null)}>
+                        <HiOutlinePencilAlt className='text-blue-500' />
+                      </Button>
+                    </h3>
+                  </Fragment>
+                )}
+              </div>
               )}
-              {(coordinatorID && userID) && (Number(coordinatorID) === Number(userID)) && (
-                <Fragment>
+              {idRol && (
                 <div className='flex flex-row gap-2 place-self-center'>
                   {!selectedApproveButton ? (
                     <>
@@ -882,9 +883,9 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
 
   return (
     <>
-      <section className='grid grid-cols-2 w-[95%] gap-3 mx-auto h-full'>
+      <section className='grid grid-cols-1 md:grid-cols-2 w-[95%] gap-3 mx-auto h-full'>
         {showDriveButton === true ? (
-          <section className='flex flex-col justify-evenly'>
+          <section className='flex flex-col h-full justify-evenly'>
             <header className='relative flex items-center'>
               <h2 className='flex justify-start w-full'>Documentación</h2>
             </header>
@@ -895,7 +896,7 @@ const Docs = ({ idRol, avalDocumentos, avalFunciones, linkDocs }) => {
             </section>
           </section>
         ) : (
-          <section className='flex flex-col justify-evenly'>
+          <section className='flex flex-col h-[90vh] md:h-[80vh] justify-evenly'>
             <header className='relative flex items-center'>
               <h2 className='flex justify-start w-full'>Documentación</h2>
               <section className='absolute right-2 top-0.5'>
@@ -1211,7 +1212,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
   return (
     <div className='w-[95%] mx-auto'>
       <form action='' className='flex flex-col gap-2' ref={functionApproval} onSubmit={handleFunctionsApproval}>
-        <section className='grid items-center grid-cols-2 gap-2'>
+        <section className='grid items-center grid-cols-2 w-fit gap-x-5'>
           <section className='flex flex-col gap-1'>
             <span className='text-sm font-semibold'>
               Encargado <span className='text-red-800'>(Funciones)</span>
@@ -1220,14 +1221,14 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
           </section>
           <section>
             {fullNameInstructor === null ? (
-              <Select name='name_instructor' placeholder='Nombre instructor' isSearch hoverColor='hover:bg-teal-600' hoverTextColor='hover:text-white' selectedColor='bg-teal-600 text-white' characters='25' placeholderSearch='Nombre instructor' rounded='rounded-xl' textSearch='text-sm' shadow='shadow-md' textSize='text-sm' options={option} selectedKey={selectedOptionKey} manual onChange={handleSelectChange} />
+              <Select name='name_instructor' placeholder='Instructor' isSearch hoverColor='hover:bg-teal-600' hoverTextColor='hover:text-white' selectedColor='bg-teal-600 text-white' characters='25' placeholderSearch='Nombre instructor' rounded='rounded-xl' textSearch='text-sm' shadow='shadow-md' textSize='text-sm' options={option} selectedKey={selectedOptionKey} manual onChange={handleSelectChange} />
             ) : (
-              <div className='flex flex-col flex-wrap items-center gap-1 py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
+              <div className='flex flex-col flex-wrap gap-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
                 <section className='flex'>
-                  <h3 className='flex flex-row flex-wrap flex-grow-0 text-sm flex-shrink-1'>
+                  <h3 className='flex flex-row flex-wrap flex-grow-0 gap-2 text-sm flex-shrink-1'>
                     {fullNameInstructor}
-                    <Button type='button' bg='transparent' py='none' onClick={() => setFullNameInstructor(null)}>
-                      <AiFillEdit className='text-blue-500' />
+                    <Button type='button' px='none' bg='transparent' py='none' onClick={() => setFullNameInstructor(null)}>
+                      <HiOutlinePencilAlt className='text-blue-500' />
                     </Button>
                   </h3>
                 </section>
@@ -1496,23 +1497,19 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
   return (
     <div className='w-[95%] mx-auto'>
       <form className='flex flex-col gap-2' ref={fullDocsRef} onSubmit={handleFullDocsForm}>
-        <section className='grid items-center grid-cols-2 gap-2'>
-          <section className='flex flex-col'>
-            <span className='text-sm font-semibold'>Líder Prácticas:</span>
-            <span className='text-sm font-semibold'>Última fecha de modificación:</span>
-            {modalidad.map((item) => (
-              <div key={item.id_modalidad}>
-                <span className='text-sm '>{item.nombre_modalidad}</span>
-              </div>
-            ))}
-          </section>
-          <div className='flex flex-col flex-wrap py-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
-            <h3 className='text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
-            <h3 className='text-sm whitespace-nowrap'>{avalInfoDocumentos.fecha_modificacion}</h3>
-            <h5 className='text-sm whitespace-nowrap'>
-              Estado: <span className={`font-semibold ${colorTextStatus[avalInfoDocumentos.estado_aval]}`}>{avalInfoDocumentos.estado_aval}</span>
-            </h5>
-          </div>
+        <section className='grid items-start grid-cols-2 w-fit gap-x-10'>
+          <span className='text-sm font-semibold'>Líder Prácticas:</span>
+          <h3 className='text-sm whitespace-nowrap'>{nameResponsableDocumentos}</h3>
+          <span className='text-sm font-semibold'>Modificación:</span>
+          <h3 className='text-sm whitespace-nowrap'>{avalInfoDocumentos.fecha_modificacion}</h3>
+          {modalidad.map((item) => (
+            <div key={item.id_modalidad}>
+              <span className='text-sm '>{item.nombre_modalidad}</span>
+            </div>
+          ))}
+          <h5 className='text-sm whitespace-nowrap'>
+            Estado: <span className={`font-semibold ${colorTextStatus[avalInfoDocumentos.estado_aval]}`}>{avalInfoDocumentos.estado_aval}</span>
+          </h5>
         </section>
         <div>
           <label htmlFor='fullDocsObservations' className='text-sm font-light'>
@@ -1811,37 +1808,33 @@ const RAPS = ({ idRol, avalRaps }) => {
   }, [id, avalRaps])
 
   return (
-    <section className='grid grid-cols-2 w-[95%] gap-3 mx-auto'>
-      <section>
-        <h2>RAPS</h2>
-        <section></section>
-      </section>
+    <section className='grid grid-cols-1 w-[95%] gap-3 mx-auto'>
       <section className='flex flex-col w-[95%] gap-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>
           <form className='flex flex-col gap-2' onSubmit={handleSubmit} ref={formRef}>
-            <section className='grid items-center grid-cols-2 gap-2'>
-              <section className='flex flex-col'>
-                <span className='text-sm font-semibold'>Líder Prácticas:</span>
-                <span className='text-sm'>{avalInfo.fecha_creacion}</span>
-                {info.map((item) => (
-                  <div key={item.id_inscripcion}>
-                    <p className='text-sm'>{item.numero_ficha_inscripcion}</p>
-                    <p className='text-sm'>{item.nombre_inscripcion + ' ' + item.apellido_inscripcion}</p>
-                  </div>
-                ))}
-              </section>
-              <div className='flex flex-col py-1 rounded-lg cursor-default justify-items-center w-fit bg-gray place-self-center'>
-                <h3 className='text-sm whitespace-nowrap'>{nameResponsable}</h3>
-                <h3 className='text-sm whitespace-nowrap'>{avalInfo.fecha_modificacion}</h3>
-                <h5 className='text-sm whitespace-nowrap'>
-                  Estado: <span className={`font-semibold ${colorTextStatus[avalInfo.estado_aval]}`}>{avalInfo.estado_aval}</span>
-                </h5>
-                {info.map((item) => (
-                  <div key={item.id_inscripcion}>
-                    <p className='text-sm'>{item.tipo_documento_inscripcion + ' ' + item.documento_inscripcion}</p>
-                  </div>
-                ))}
-              </div>
+            <section className='grid items-start grid-cols-2 w-fit gap-x-10'>
+              <span className='text-sm font-semibold'>Líder Prácticas:</span>
+              <h3 className='text-sm whitespace-nowrap'>{nameResponsable}</h3>
+              <span className='text-sm font-semibold'>Modificación:</span>
+              <h3 className='text-sm whitespace-nowrap'>{avalInfo.fecha_modificacion}</h3>
+              {info.map((item) => (
+                <div key={item.id_inscripcion}>
+                  <p className='text-sm'>{item.numero_ficha_inscripcion}</p>
+                </div>
+              ))}
+              <h5 className='text-sm whitespace-nowrap'>
+                Estado: <span className={`font-semibold ${colorTextStatus[avalInfo.estado_aval]}`}>{avalInfo.estado_aval}</span>
+              </h5>
+              {info.map((item) => (
+                <div key={item.id_inscripcion}>
+                  <p className='text-sm'>{item.nombre_inscripcion + ' ' + item.apellido_inscripcion}</p>
+                </div>
+              ))}
+              {info.map((item) => (
+                <div key={item.id_inscripcion}>
+                  <p className='text-sm'>{item.tipo_documento_inscripcion + ' ' + item.documento_inscripcion}</p>
+                </div>
+              ))}
             </section>
             <div className='flex flex-col gap-3'>
               <section className='flex flex-col gap-2'>

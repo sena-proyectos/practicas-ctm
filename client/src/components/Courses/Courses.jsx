@@ -24,7 +24,6 @@ import Swal from 'sweetalert2'
 export const Courses = () => {
   const idRol = Number(localStorage.getItem('idRol'))
   const [pageNumber, setPageNumber] = useState(1)
-  const [searchPageNumber, setSearchPageNumber] = useState(1)
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
   const [coursesOriginal, setCoursesOriginal] = useState([])
@@ -36,6 +35,8 @@ export const Courses = () => {
   const [searchedCourses, setSearchedCourses] = useState([])
   const inputFileRef = useRef(null)
   const [getCourses, setGetCourses] = useState(false)
+  const [originalSearched, setOriginalSearched] = useState([])
+  const [currentCoursesList, setCurrentCoursesList] = useState({})
 
   /**
    * Función asincrónica para buscar fichas por numero de ficha.
@@ -54,6 +55,7 @@ export const Courses = () => {
     if (searchTerm.trim() === '') {
       setError(null)
       setSearchedCourses([])
+      setOriginalSearched([])
       return
     }
     try {
@@ -70,9 +72,11 @@ export const Courses = () => {
       if (searchTerm.trim() === '') {
         setError(null)
         setSearchedCourses([])
+        setOriginalSearched([])
       } else {
         setError(null)
         setSearchedCourses(data)
+        setOriginalSearched(data)
       }
     } catch (error) {
       const message = error?.response?.data?.error?.info?.message
@@ -136,6 +140,16 @@ export const Courses = () => {
     getCursos()
   }, [])
 
+  // Cambia el numero de paginas dependiendo de la cantidad de cursos
+  useEffect(() => {
+    if (searchedCourses.length > 0 && !error) {
+      setCurrentCoursesList(searchedCourses)
+      setPageNumber(1)
+    } else {
+      setCurrentCoursesList(courses)
+    }
+  }, [searchedCourses, error, courses])
+
   /**
    * Número de cursos a mostrar por página.
    *
@@ -158,8 +172,7 @@ export const Courses = () => {
    * @example
    * const numeroDePaginas = pageCount;
    */
-  const pageCount = Math.ceil(courses.length / coursesPerPage)
-  const pageCountSearch = Math.ceil(searchedCourses.length / coursesPerPage)
+  const pageCount = Math.ceil(currentCoursesList.length / coursesPerPage)
 
   /**
    * Índice de inicio de la lista de cursos a mostrar en la página actual.
@@ -172,7 +185,6 @@ export const Courses = () => {
    * const indiceInicio = startIndex;
    */
   const startIndex = (pageNumber - 1) * coursesPerPage
-  const startIndexSearch = (searchPageNumber - 1) * coursesPerPage
 
   /**
    * Índice de fin de la lista de cursos a mostrar en la página actual.
@@ -185,7 +197,6 @@ export const Courses = () => {
    * const indiceFin = endIndex;
    */
   const endIndex = startIndex + coursesPerPage
-  const endIndexSearch = startIndexSearch + coursesPerPage
 
   const navigate = useNavigate()
 
@@ -267,11 +278,24 @@ export const Courses = () => {
    */
   const handleFilterType = (filterType, filter) => {
     if (filterType === 'etapa') {
-      const filterMap = coursesOriginal.filter((course) => course.estado === filter)
+      let filterMap
+      console.log(originalSearched)
+      if (originalSearched.length > 0 && !error) {
+        filterMap = originalSearched.filter((course) => course.estado === filter)
+        setSearchedCourses({})
+      } else {
+        filterMap = coursesOriginal.filter((course) => course.estado === filter)
+      }
       setCourses(filterMap)
     }
     if (filterType === 'nivel') {
-      const filterMap = coursesOriginal.filter((course) => course.nivel_formacion === filter)
+      let filterMap
+      if (originalSearched.length > 0 && !error) {
+        filterMap = originalSearched.filter((course) => course.nivel_formacion === filter)
+        setSearchedCourses({})
+      } else {
+        filterMap = coursesOriginal.filter((course) => course.nivel_formacion === filter)
+      }
       setCourses(filterMap)
     }
     if (filterType === 'inicioLectiva') {
@@ -279,44 +303,84 @@ export const Courses = () => {
 
       if (filter === 'Hoy') {
         const today = new Date()
-        filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
-          return courseDate.getFullYear() === today.getFullYear() && courseDate.getMonth() === today.getMonth() && courseDate.getDate() === today.getDate()
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((course) => {
+            setSearchedCourses({})
+            const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
+            return courseDate.toDateString() === today.toDateString()
+          })
+        } else {
+          filterMap = coursesOriginal.filter((course) => {
+            const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
+            return courseDate.getFullYear() === today.getFullYear() && courseDate.getMonth() === today.getMonth() && courseDate.getDate() === today.getDate()
+          })
+        }
       } else if (filter === 'Esta Semana') {
         const today = new Date()
         const nextWeek = new Date(today)
         nextWeek.setDate(today.getDate() + 7)
-        filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
-          return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((course) => {
+            setSearchedCourses({})
+            const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
+            return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
+          })
+        } else {
+          filterMap = coursesOriginal.filter((course) => {
+            const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
+            return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
+          })
+        }
       } else if (filter === 'Próxima Semana') {
         const today = new Date()
         const nextWeek = new Date(today)
         nextWeek.setDate(today.getDate() + 7)
         const weekAfterNext = new Date(nextWeek)
         weekAfterNext.setDate(nextWeek.getDate() + 7)
-        filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
-          return courseDate >= nextWeek && courseDate <= weekAfterNext
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((course) => {
+            setSearchedCourses({})
+            const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
+            return courseDate >= nextWeek && courseDate <= weekAfterNext
+          })
+        } else {
+          filterMap = coursesOriginal.filter((course) => {
+            const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
+            return courseDate >= nextWeek && courseDate <= weekAfterNext
+          })
+        }
       } else if (filter === 'Este Mes') {
         const today = new Date()
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
-        filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
-          return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((course) => {
+            setSearchedCourses({})
+            const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
+            return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
+          })
+        } else {
+          filterMap = coursesOriginal.filter((course) => {
+            const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
+            return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
+          })
+        }
       } else if (filter === 'Próximo Mes') {
         const today = new Date()
         const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
         const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0)
-        filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
-          return courseDate >= nextMonth && courseDate <= endOfMonth
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((course) => {
+            setSearchedCourses({})
+            const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
+            return courseDate >= nextMonth && courseDate <= endOfMonth
+          })
+        } else {
+          filterMap = coursesOriginal.filter((course) => {
+            const courseDate = new Date(course.fecha_inicio_lectiva + 'T00:00:00')
+            return courseDate >= nextMonth && courseDate <= endOfMonth
+          })
+        }
       }
 
       setCourses(filterMap)
@@ -326,44 +390,84 @@ export const Courses = () => {
 
       if (filter === 'Hoy') {
         const today = new Date()
-        filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
-          return courseDate.getFullYear() === today.getFullYear() && courseDate.getMonth() === today.getMonth() && courseDate.getDate() === today.getDate()
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((course) => {
+            setSearchedCourses({})
+            const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+            return courseDate.getFullYear() === today.getFullYear() && courseDate.getMonth() === today.getMonth() && courseDate.getDate() === today.getDate()
+          })
+        } else {
+          filterMap = coursesOriginal.filter((course) => {
+            const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+            return courseDate.getFullYear() === today.getFullYear() && courseDate.getMonth() === today.getMonth() && courseDate.getDate() === today.getDate()
+          })
+        }
       } else if (filter === 'Esta Semana') {
         const today = new Date()
         const nextWeek = new Date(today)
         nextWeek.setDate(today.getDate() + 7)
-        filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
-          return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((course) => {
+            setSearchedCourses({})
+            const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+            return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
+          })
+        } else {
+          filterMap = coursesOriginal.filter((course) => {
+            const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+            return courseDate.toDateString() >= today.toDateString() && courseDate <= nextWeek
+          })
+        }
       } else if (filter === 'Próxima Semana') {
         const today = new Date()
         const nextWeek = new Date(today)
         nextWeek.setDate(today.getDate() + 7)
         const weekAfterNext = new Date(nextWeek)
         weekAfterNext.setDate(nextWeek.getDate() + 7)
-        filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
-          return courseDate >= nextWeek && courseDate <= weekAfterNext
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((course) => {
+            setSearchedCourses({})
+            const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+            return courseDate >= nextWeek && courseDate <= weekAfterNext
+          })
+        } else {
+          filterMap = coursesOriginal.filter((course) => {
+            const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+            return courseDate >= nextWeek && courseDate <= weekAfterNext
+          })
+        }
       } else if (filter === 'Este Mes') {
         const today = new Date()
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
-        filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
-          return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((course) => {
+            setSearchedCourses({})
+            const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+            return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
+          })
+        } else {
+          filterMap = coursesOriginal.filter((course) => {
+            const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+            return courseDate >= firstDayOfMonth && courseDate <= lastDayOfMonth
+          })
+        }
       } else if (filter === 'Próximo Mes') {
         const today = new Date()
         const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
         const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0)
-        filterMap = coursesOriginal.filter((course) => {
-          const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
-          return courseDate >= nextMonth && courseDate <= endOfMonth
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((course) => {
+            setSearchedCourses({})
+            const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+            return courseDate >= nextMonth && courseDate <= endOfMonth
+          })
+        } else {
+          filterMap = coursesOriginal.filter((course) => {
+            const courseDate = new Date(course.fecha_inicio_practica + 'T00:00:00')
+            return courseDate >= nextMonth && courseDate <= endOfMonth
+          })
+        }
       }
 
       setCourses(filterMap)
@@ -386,6 +490,7 @@ export const Courses = () => {
     setCourses(coursesOriginal)
     disableShowFiltros()
     setActiveFilter(false)
+    setSearchedCourses(originalSearched)
   }
 
   const sendExcelFile = async () => {
@@ -553,7 +658,7 @@ export const Courses = () => {
         <section className='flex flex-col justify-around'>
           {searchedCourses.length > 0 && !error ? (
             <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
-              {searchedCourses.slice(startIndexSearch, endIndexSearch).map((course, i) => {
+              {searchedCourses.slice(startIndex, endIndex).map((course, i) => {
                 return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
               })}
             </section>
@@ -582,7 +687,7 @@ export const Courses = () => {
           )}
 
           <div className='flex flex-col items-center gap-1 pt-2 pb-1'>
-            <div className='flex justify-center w-full'>{courses.length === 0 || error || loading ? <></> : searchedCourses.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+            <div className='flex justify-center w-full'>{currentCoursesList.length === 0 || error || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <div className='grid w-full grid-flow-col-dense gap-3 place-content-end px-7'>
                 <div className='ml-auto bg-green-600 rounded-full shadow-md'>

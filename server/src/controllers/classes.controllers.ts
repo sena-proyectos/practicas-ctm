@@ -128,7 +128,7 @@ export const getClassByInstructorId: RequestHandler<{ id: string }, Response, id
 export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Response, classes> = async (req: Request<{ numero_ficha: string }>, res: Response): Promise<Response> => {
   const { numero_ficha } = req.query
   try {
-    const [classQuery] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, DATE_FORMAT(fichas.fecha_inicio_lectiva, "%Y-%m-%d") AS fecha_inicio_lectiva, DATE_FORMAT(fichas.fecha_inicio_practica, "%Y-%m-%d") AS fecha_inicio_practica, niveles_formacion.nivel_formacion, CASE WHEN curdate() > fichas.fecha_inicio_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo FROM fichas LEFT JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion  LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario WHERE fichas.numero_ficha LIKE ?', [`${numero_ficha as string}%`])
+    const [classQuery] = await connection.query('SELECT fichas.id_ficha, fichas.numero_ficha, fichas.nombre_programa_formacion, DATE_FORMAT(fichas.fecha_inicio_lectiva, "%Y-%m-%d") AS fecha_inicio_lectiva, DATE_FORMAT(fichas.fecha_inicio_practica, "%Y-%m-%d") AS fecha_inicio_practica, COALESCE(niveles_formacion.nivel_formacion, "Sin asignar") AS nivel_formacion, CASE WHEN curdate() > fichas.fecha_inicio_lectiva THEN "Práctica" ELSE "Lectiva" END AS estado, COALESCE(CONCAT(usuarios_seguimiento.nombres_usuario, " ", usuarios_seguimiento.apellidos_usuario), "Sin asignar") AS seguimiento_nombre_completo FROM fichas LEFT JOIN niveles_formacion ON fichas.id_nivel_formacion = niveles_formacion.id_nivel_formacion  LEFT JOIN usuarios AS usuarios_seguimiento ON fichas.id_instructor_seguimiento = usuarios_seguimiento.id_usuario WHERE fichas.numero_ficha LIKE ?', [`${numero_ficha as string}%`])
     if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se encontró la ficha.', errorCodes.ERROR_GET_CLASS)
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
@@ -244,10 +244,10 @@ export const editClass: RequestHandler<{ id: string }, Response, classes> = asyn
  * @returns una promesa que se resuelve en un objeto de respuesta.
  */
 export const editClassDates: RequestHandler<{}, Response, classes> = async (req: Request, res: Response): Promise<Response> => {
-  const { numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica } = req.body
+  const { numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica, id_nivel_formacion } = req.body
   const classNumber = Number(numero_ficha)
   try {
-    const [classQuery] = await connection.query('call sena_practicas.actualizar_fecha_ficha(?, ?, ?)', [classNumber, fecha_inicio_lectiva, fecha_inicio_practica])
+    const [classQuery] = await connection.query('call sena_practicas.actualizar_fecha_ficha(?, ?, ?, ?)', [classNumber, fecha_inicio_lectiva, fecha_inicio_practica, id_nivel_formacion])
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
     return handleHTTP(res, error as CustomError)

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -19,8 +19,8 @@ import { LuSave } from 'react-icons/lu'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
-import { GetClassByNumber, GetStudentsByCourse, GetStudentsDetailById, editDateClass, generateExcelClass } from '../../api/httpRequest'
-import { ModalWithChildren, InfoStudentModal } from '../Utils/Modals/Modals'
+import { GetClassByNumber, GetStudentsByCourse, editDateClass, generateExcelClass } from '../../api/httpRequest'
+import { ModalWithChildren } from '../Utils/Modals/Modals'
 import { keysRoles } from '../../import/staticData'
 
 export const Students = () => {
@@ -28,9 +28,6 @@ export const Students = () => {
   const [detailCourse, setDetailCourse] = useState([])
   const [studentsCourse, setStudentsCourse] = useState([])
   const [studentsCourseOriginal, setStudentsCourseOriginal] = useState([])
-  const [userInfoById, setUserInfoById] = useState([])
-  const [dates, setDates] = useState({})
-  const [showModalStudent, setShowModalStudent] = useState(null)
   const { id: courseNumber } = useParams()
   const [showFiltros, setShowFiltros] = useState(false)
   const [filtersButtons, setFiltersButtons] = useState({ modalidad: false, etapa: false })
@@ -118,34 +115,7 @@ export const Students = () => {
     }
   }
 
-  const handleStateModal = () => setShowModalStudent(false)
   // const handleCloseModal = () => setIsOpen(false)
-
-  /**
-   * Función asincrónica para obtener la información detallada de un estudiante por su ID.
-   *
-   * @async
-   * @function
-   * @name handleDetailInfoStudent
-   * @param {number} id - ID del estudiante.
-   * @throws {Error} Error en caso de fallo en la solicitud.
-   * @returns {void}
-   *
-   * @example
-   * handleDetailInfoStudent(456);
-   */
-  const handleDetailInfoStudent = async (id) => {
-    try {
-      setShowModalStudent(true)
-      const response = await GetStudentsDetailById(id)
-      const { data } = response.data
-      const { fecha_fin_lectiva, fecha_inicio_practica } = data[0]
-      setDates({ fin_lectiva: fecha_fin_lectiva.split('T')[0], inicio_practicas: fecha_inicio_practica.split('T')[0] })
-      setUserInfoById(data[0])
-    } catch (err) {
-      throw new Error(err)
-    }
-  }
 
   /**
    * Número de estudiantes a mostrar por página.
@@ -285,13 +255,16 @@ export const Students = () => {
     try {
       const response = await generateExcelClass(courseNumber)
 
+      const date = new Date()
+      const fullDate = `${date.getDate()}_${date.getMonth() + 1}_${date.getFullYear()}`
+
       const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
 
       const url = window.URL.createObjectURL(blob)
 
       const a = document.createElement('a')
       a.href = url
-      a.download = 'registros.xlsx'
+      a.download = `registros_${courseNumber}_${fullDate}.xlsx`
       document.body.appendChild(a)
       a.click()
 
@@ -309,18 +282,23 @@ export const Students = () => {
     setModalDates(!modalDates)
   }
 
-  const handleDates = async (e) => {
+  const handleEditCourse = async (e) => {
     e.preventDefault()
 
     const formData = new FormData(e.target)
     formData.append('numero_ficha', detailCourse.numero_ficha)
     const data = Object.fromEntries(formData)
-    console.log(data)
-
+    if (data.id_nivel_formacion === 'Técnico') {
+      data.id_nivel_formacion = 1
+    } else if (data.id_nivel_formacion === 'Tecnología') {
+      data.id_nivel_formacion = 2
+    } else {
+      data.id_nivel_formacion = 3
+    }
     try {
       const response = await editDateClass(data)
       console.log(response)
-      toast.success('Fechas actualizadas con éxito')
+      toast.success('Ficha actualizada con éxito')
       setModalDates(false)
     } catch (error) {
       throw new Error(error)
@@ -329,19 +307,29 @@ export const Students = () => {
 
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
-      {showModalStudent && (
-        <InfoStudentModal closeModal={handleStateModal} title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} cellPhoneNumber={userInfoById.celular_aprendiz} program={userInfoById.nombre_programa_formacion} courseNumber={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} formationStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} lectivaEnd={dates.fin_lectiva} productiveStart={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} positionSuperior={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celphoneSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />
-      )}
       {/* {isOpen && <RegisterStudentModal closedModal={handleCloseModal} title={'Registra un estudiante'} />} */}
       {modalDates && (
-        <ModalWithChildren closeModal={handleModal} title={'Editar fechas'} width='w-11/12 md:w-1/3'>
+        <ModalWithChildren closeModal={handleModal} title={'Editar ficha'} width='w-11/12 md:w-1/3'>
           <section className='flex justify-center'>
             <section className='flex flex-col w-full gap-3 my-5'>
               <header>
                 <h3 className='text-[16px] font-medium text-right'>{detailCourse.numero_ficha}</h3>
                 <h3 className='text-[16px] font-light text-right'>{detailCourse.nombre_programa_formacion}</h3>
               </header>
-              <form className='flex flex-col gap-6' onSubmit={handleDates}>
+              <form className='flex flex-col gap-4' onSubmit={handleEditCourse}>
+                <div className='flex flex-col'>
+                  <label htmlFor='nivel_formacion' className='text-sm font-light'>
+                    Nivel de formación
+                  </label>
+                  <select id='nivel_formacion' name='id_nivel_formacion' className='px-2 py-[5px] text-sm text-black bg-gray-300 rounded-lg focus:outline-none placeholder:text-gray-500' value={detailCourse.nivel_formacion}>
+                    <option value='' disabled>
+                      Nivel de formacion
+                    </option>
+                    <option value='Tecnología'>Tecnología</option>
+                    <option value='Técnico'>Técnico</option>
+                    <option value='Auxiliar'>Auxiliar</option>
+                  </select>
+                </div>
                 <section className='grid grid-cols-2 gap-2'>
                   <div className='flex flex-col'>
                     <label htmlFor='inicio_lectiva' className='text-sm font-light'>
@@ -458,7 +446,7 @@ export const Students = () => {
                   </Button> */}
                     <Button bg={'bg-blue-600'} px={'px-3'} font={'font-normal'} textSize={'text-sm'} py={'py-1.5'} rounded={'rounded-2xl'} shadow={'lg'} inline onClick={handleModal} classNames='whitespace-nowrap'>
                       <PiPencilSimple className='text-white' />
-                      Editar fechas
+                      Editar ficha
                     </Button>
                   </div>
                 )}
@@ -521,9 +509,9 @@ export const Students = () => {
                             <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null}  mr-2`} />
                           </td>
                           <td className='flex items-center text-2xl'>
-                            <button onClick={() => handleDetailInfoStudent(student.id_aprendiz)}>
+                            <Link to={`/info-aprendiz/${student.id_aprendiz}`} type='button'>
                               <AiOutlineEye />
-                            </button>
+                            </Link>
                           </td>
                         </tr>
                       )
