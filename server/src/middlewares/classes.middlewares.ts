@@ -90,9 +90,9 @@ export const checkClassNumber = (req: Request, res: Response, next: NextFunction
 }
 
 export const checkClassDate = (req: Request, res: Response, next: NextFunction): void => {
-  const { numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica } = req.body
+  const { numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica, id_nivel_formacion } = req.body
   try {
-    const { error } = classDates.validate({ numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica })
+    const { error } = classDates.validate({ numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica, id_nivel_formacion })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados para la ficha no son válidos')
     next()
   } catch (error) {

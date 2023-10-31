@@ -22,13 +22,13 @@ import { BiSad } from 'react-icons/bi'
 export const AssignClass = () => {
   const [modalAsign, setModalAsign] = useState(false)
   const [pageNumber, setPageNumber] = useState(1)
-  const [searchPageNumber, setSearchPageNumber] = useState(1)
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState([])
   const [detailCourse, setDetailCourse] = useState([])
   const [notify, setNotify] = useState(false)
   const [error, setError] = useState(null)
   const [searchedFreeCourses, setSearchedFreeCourses] = useState([])
+  const [currentCourses, setCurrentCourses] = useState([])
 
   /**
    * Función asincrónica para buscar fichas por numero de ficha.
@@ -154,6 +154,16 @@ export const AssignClass = () => {
     }
   }
 
+  // Cambia el numero de paginas dependiendo de la cantidad de cursos
+  useEffect(() => {
+    if (searchedFreeCourses.length > 0 && !error) {
+      setCurrentCourses(searchedFreeCourses)
+      setPageNumber(1)
+    } else {
+      setCurrentCourses(courses)
+    }
+  }, [searchedFreeCourses, error, courses])
+
   /**
    * Número de cursos a mostrar por página.
    *
@@ -176,8 +186,7 @@ export const AssignClass = () => {
    * @example
    * const numeroDePaginas = pageCount;
    */
-  const pageCount = Math.ceil(courses.length / coursesPerPage)
-  const pageCountSearch = Math.ceil(searchedFreeCourses.length / coursesPerPage)
+  const pageCount = Math.ceil(currentCourses.length / coursesPerPage)
 
   /**
    * Índice de inicio de la lista de cursos a mostrar en la página actual.
@@ -190,7 +199,6 @@ export const AssignClass = () => {
    * const indiceInicio = startIndex;
    */
   const startIndex = (pageNumber - 1) * coursesPerPage
-  const startIndexSearch = (searchPageNumber - 1) * coursesPerPage
 
   /**
    * Índice de fin de la lista de cursos a mostrar en la página actual.
@@ -203,7 +211,6 @@ export const AssignClass = () => {
    * const indiceFin = endIndex;
    */
   const endIndex = startIndex + coursesPerPage
-  const endIndexSearch = startIndexSearch + coursesPerPage
 
   /**
    * Efecto secundario para mostrar una notificación de asignación de instructor y actualizar la lista de cursos.
@@ -248,7 +255,7 @@ export const AssignClass = () => {
           <section className='flex flex-col justify-around'>
             {searchedFreeCourses.length > 0 && !error ? (
               <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
-                {searchedFreeCourses.slice(startIndexSearch, endIndexSearch).map((course, i) => {
+                {searchedFreeCourses.slice(startIndex, endIndex).map((course, i) => {
                   return (
                     <div className='grid grid-rows-[2fr, 1fr, 1fr] gap-y-1 rounded-xl md:h-[11rem] sm:h-[12.5rem] h-[10.5rem] p-3 bg-white shadow-lg ' key={i}>
                       <header className='flex flex-row items-center w-fit '>
@@ -317,7 +324,7 @@ export const AssignClass = () => {
               </Link>
             </div>
             <div className='flex flex-col items-center pt-2 pb-1'>
-              <div className='flex justify-center w-full'>{courses.length === 0 || error || loading ? <></> : searchedFreeCourses.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+              <div className='flex justify-center w-full'>{currentCourses.length === 0 || error || loading ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             </div>
           </section>
           <Footer />

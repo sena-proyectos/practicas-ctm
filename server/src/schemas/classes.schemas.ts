@@ -12,5 +12,6 @@ export const classSchema = Joi.object({
 export const classDates = Joi.object({
   numero_ficha: Joi.number().required(),
   fecha_inicio_lectiva: Joi.date().required(),
-  fecha_inicio_practica: Joi.date().required()
+  fecha_inicio_practica: Joi.date().required(),
+  id_nivel_formacion: Joi.number().required()
 })

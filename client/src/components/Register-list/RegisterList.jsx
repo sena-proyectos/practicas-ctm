@@ -38,7 +38,6 @@ export const RegisterList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [inscriptions, setInscriptions] = useState([])
   const [pageNumber, setPageNumber] = useState(1)
-  const [searchPageNumber, setSearchPageNumber] = useState(1)
   const [fileName, setFileName] = useState(null)
   const [modalOption, setModalOption] = useState(modalOptionList.confirmModal)
   const [username, setUsername] = useState(null)
@@ -52,6 +51,7 @@ export const RegisterList = () => {
   const [error, setError] = useState(null)
   const [searchedInscriptions, setSearchedInscriptions] = useState([])
   const [originalSearched, setOriginalSearched] = useState([])
+  const [currentRegisterList, setCurrentRegisterList] = useState({})
 
   /**
    * Función asincrónica para buscar aprendices por nombre de usuario.
@@ -108,6 +108,16 @@ export const RegisterList = () => {
     }
   }
 
+  // Cambia el numero de paginas dependiendo de la cantidad de registros
+  useEffect(() => {
+    if (searchedInscriptions.length > 0 && !error) {
+      setCurrentRegisterList(searchedInscriptions)
+      setPageNumber(1)
+    } else {
+      setCurrentRegisterList(inscriptions)
+    }
+  }, [searchedInscriptions, error, inscriptions])
+
   /**
    * Número de inscripciones por página.
    *
@@ -129,8 +139,7 @@ export const RegisterList = () => {
    * @example
    * const totalPaginas = pageCount;
    */
-  const pageCount = Math.ceil(inscriptions.length / inscriptionsPerPage)
-  const pageCountSearch = Math.ceil(searchedInscriptions.length / inscriptionsPerPage)
+  const pageCount = Math.ceil(currentRegisterList.length / inscriptionsPerPage)
 
   /**
    * Índice de inicio de la página actual.
@@ -143,7 +152,6 @@ export const RegisterList = () => {
    * const indiceInicio = startIndex;
    */
   const startIndex = (pageNumber - 1) * inscriptionsPerPage
-  const startIndexSearch = (searchPageNumber - 1) * inscriptionsPerPage
 
   /**
    * Índice de fin de la página actual.
@@ -156,7 +164,6 @@ export const RegisterList = () => {
    * const indiceFin = endIndex;
    */
   const endIndex = startIndex + inscriptionsPerPage
-  const endIndexSearch = startIndexSearch + inscriptionsPerPage
 
   /**
    * Identificador del rol del usuario almacenado en el almacenamiento local.
@@ -641,10 +648,10 @@ export const RegisterList = () => {
           )}
         </header>
         <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto justify-evenly'>
-          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} startIndexSearch={startIndexSearch} endIndexSearch={endIndexSearch} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
+          <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
 
           <div className='flex flex-col items-center gap-1 py-1'>
-            <div className='flex justify-center w-full'>{inscriptions.length === 0 || error || loadingData ? <></> : searchedInscriptions.length > 0 && !error ? <Pagination total={pageCountSearch} color='secondary' variant='flat' page={searchPageNumber} onChange={setSearchPageNumber} className=' h-fit' /> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+            <div className='flex justify-center w-full'>{currentRegisterList.length === 0 || error || loadingData ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <div className='grid w-full grid-flow-col-dense gap-3 place-content-end'>
                 {/* <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline classNames='order-last'>
@@ -668,7 +675,7 @@ export const RegisterList = () => {
   )
 }
 
-const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, startIndexSearch = 0, endIndexSearch = 6, loadingData, searchedInscriptions, error }) => {
+const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, loadingData, searchedInscriptions, error }) => {
   const navigate = useNavigate()
   const handleAvales = (id) => {
     return navigate(`/registro-detalles/${id}`)
@@ -688,7 +695,7 @@ const TableList = ({ inscriptions, startIndex = 0, endIndex = 6, startIndexSearc
       </thead>
       <tbody className='grid grid-rows-6'>
         {searchedInscriptions.length > 0 && !error ? (
-          searchedInscriptions.slice(startIndexSearch, endIndexSearch).map((x) => (
+          searchedInscriptions.slice(startIndex, endIndex).map((x) => (
             <tr className='grid items-center text-sm border-b border-gray-200 h-[60px] grid-cols-6-columns-table justify-items-center' key={x.id_inscripcion}>
               <td className='max-w-[20ch] font-medium text-center break-words'>{`${x.nombre_inscripcion} ${x.apellido_inscripcion}`}</td>
               <td className='font-light text-center max-w-[10ch] break-words'>{x.nombre_modalidad}</td>
