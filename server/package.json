@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "3.32.0-alpha",
+  "version": "3.33.0-alpha",
   "type": "module",
   "description": "Back-end para el proyecto de practicas en el sena",
   "main": "./src/index.js",
