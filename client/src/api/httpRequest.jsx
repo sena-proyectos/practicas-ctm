@@ -63,6 +63,13 @@ export const GetClassByNumber = async (data) => {
   return response
 }
 
+export const sendEmailFunctions = async (data) => {
+  const URL = `${baseUrl}${api}/sendEmail/functions`
+  const response = await axios.post(URL, data)
+
+  return response
+}
+
 export const detailInfoStudents = async () => {
   const URL = `${baseUrl}${api}/detailInfoStudents`
 

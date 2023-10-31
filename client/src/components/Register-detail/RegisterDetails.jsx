@@ -19,10 +19,11 @@ import { Button } from '../Utils/Button/Button'
 import { Select } from '../Utils/Select/Select'
 import { colorTextStatus, keysRoles } from '../../import/staticData'
 
-import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById, registerUser, getInfoTeacherByID, getCoordinators, getCoordinatorNameByID } from '../../api/httpRequest'
+import { getInscriptionById, getInscriptionDetails, getAvalById, getUserById, inscriptionDetailsUpdate, sendEmail, getTeachers, getModalitiesById, registerUser, getInfoTeacherByID, getCoordinators, getCoordinatorNameByID, sendEmailFunctions } from '../../api/httpRequest'
 import { checkApprovementData } from '../../validation/approvementValidation'
 import { inscriptionStore } from '../../store/config'
 import { randomNumberGenerator } from '../Utils/randomNumberGenerator'
+import { getUserID } from '../../import/getIDActualUser'
 
 export const RegisterDetails = () => {
   const { id } = useParams()
@@ -190,7 +191,7 @@ export const RegisterDetails = () => {
 
 const InfoAprendiz = ({ inscriptionAprendiz }) => {
   return (
-    <section className={`w-[85%] p-2 mx-auto`}>
+    <section className={'w-[85%] p-2 mx-auto'}>
       {inscriptionAprendiz.map((x) => {
         return (
           <section className='flex flex-col gap-4' key={x.id_inscripcion}>
@@ -244,7 +245,7 @@ const InfoAprendiz = ({ inscriptionAprendiz }) => {
 
 const InfoEmpresa = ({ inscriptionAprendiz }) => {
   return (
-    <section className={`w-[85%] p-2 mx-auto`}>
+    <section className={'w-[85%] p-2 mx-auto'}>
       {inscriptionAprendiz.map((x) => {
         return (
           <section className='flex flex-col gap-3' key={x.id_inscripcion}>
@@ -306,6 +307,8 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   const [dataAprendiz, setDataAprendiz] = useState([])
   const [dataAdmins, setDataAdmins] = useState([{ id_usuario: Number(), nombre_completo: String() }])
   const [coordinatorFullName, setCoordinatorFullName] = useState(null)
+  const [coordinatorID, setCoordinatorID] = useState(null)
+  const [userID, setUserID] = useState(null)
   const [infoAvales, setInfoAvales] = useState([])
   const { inscriptionData } = inscriptionStore()
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
@@ -326,6 +329,9 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       const res = await getAvalById(avalCoordinador)
       const { data } = res.data
       const idPayload = data[0].responsable_aval
+      setCoordinatorID(idPayload)
+      const { id_usuario } = getUserID().user
+      setUserID(id_usuario)
       if (idPayload !== null) {
         getCoordinatorName(idPayload)
       }
@@ -406,6 +412,8 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
       for (let i = 0; i < updatedInfoAvales.length; i++) {
         const item = updatedInfoAvales[i]
         const responsableId = item.responsable_aval
+
+        if (responsableId === null) return
 
         // Obtener el nombre del responsable usando la función getUser
         const responsableResponse = await getUser(responsableId)
@@ -604,7 +612,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
   const saveSelectOnChange = async (e) => {
     try {
       await inscriptionDetailsUpdate(avalCoordinador, { responsable_aval: e })
-      toast.success('Instructor guardado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
+      toast.success('Coordinador guardado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       fetchInfo()
     } catch (error) {
       toast.error('Error al guardar el coordinador asignado')
@@ -691,26 +699,29 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
         {avalInfo.map((aval) => {
           return (
             <form onSubmit={handleAvalForm} ref={formRef} className='flex flex-col gap-4 ' key={aval.id_detalle_inscripcion}>
-              <div>
-                <label htmlFor='' className='text-sm font-light'>
-                  Coordinador Asignado
-                </label>
-                {coordinatorFullName === null ? (
-                  <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={dataAdmins} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} onChange={saveSelectOnChange} />
-                ) : (
-                  <Fragment>
-                    <p className='flex gap-2'>
-                      {coordinatorFullName}
-                      <span className='flex items-center'>
-                        <Button type='button' bg='transparent' onClick={() => setCoordinatorFullName(null)}>
-                          <AiFillEdit className='text-blue-500' />
-                        </Button>
-                      </span>
-                    </p>
-                  </Fragment>
-                )}
-              </div>
-              {idRol && (
+              {idRol && idRol === Number(keysRoles[0]) && (
+                <div>
+                  <label htmlFor='' className='text-sm font-light'>
+                    Coordinador Asignado
+                  </label>
+                  {coordinatorFullName === null ? (
+                    <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={dataAdmins} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} onChange={saveSelectOnChange} />
+                  ) : (
+                    <Fragment>
+                      <p className='flex gap-2'>
+                        {coordinatorFullName}
+                        <span className='flex items-center'>
+                          <Button type='button' bg='transparent' onClick={() => setCoordinatorFullName(null)}>
+                            <AiFillEdit className='text-blue-500' />
+                          </Button>
+                        </span>
+                      </p>
+                    </Fragment>
+                  )}
+                </div>
+              )}
+              {(coordinatorID && userID) && (Number(coordinatorID) === Number(userID)) && (
+                <Fragment>
                 <div className='flex flex-row gap-2 place-self-center'>
                   {!selectedApproveButton ? (
                     <>
@@ -741,7 +752,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                     </>
                   )}
                 </div>
-              )}
               <div>
                 <label htmlFor='observations' className='text-sm font-light'>
                   Observaciones
@@ -758,6 +768,8 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                   <LuSave />
                   Guardar
                 </Button>
+              )}
+                  </Fragment>
               )}
             </form>
           )
@@ -1028,6 +1040,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
    * handleSelectChange(1);
    */
   const handleSelectChange = (optionKey) => {
+    console.log(optionKey)
     setSelectedOptionKey(optionKey)
     setApprovalDetailUser(optionKey)
   }
@@ -1129,7 +1142,11 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
   const setApprovalDetailUser = async (id) => {
     const idApprovalDetail = avalInfoFunciones.id_detalle_inscripcion
     try {
+      const userData = await getUserById(id)
+      const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+      const { apellidos_usuario, nombres_usuario, email_usuario } = userData.data.data[0]
       await inscriptionDetailsUpdate(idApprovalDetail, { responsable_aval: id })
+      await sendEmailFunctions({ to: 'blandon0207s@gmail.com', subject: 'Solicitud de revisión carta de funciones', nombre: nombres_usuario, apellido: apellidos_usuario, apprentice: String(`${nombre_inscripcion} ${apellido_inscripcion}`) })
       toast.success('Instructor guardado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       fetchDataFunciones(avalFunciones)
     } catch (error) {
@@ -1157,7 +1174,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
       await inscriptionDetailsUpdate(id, data)
       toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
-      fetchDataFunciones()
+      fetchDataFunciones(avalFunciones)
     } catch (error) {
       toast.error('Error al guardar el aval', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
     }
@@ -1185,7 +1202,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
       await sendEmail({ to: 'blandon0207s@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
-      fetchDataFunciones()
+      fetchDataFunciones(avalFunciones)
     } catch (error) {
       throw new Error(error)
     }
