@@ -11,6 +11,12 @@ export const getPublicToken = async () => {
   return data
 }
 
+export const getStudentsByTeacherId = async (id) => {
+  const URL = `${baseUrl}${api}/v1/detailInfoStudents/teacher/${id}`
+  const { data } = await axios.get(URL, { headers: { Authorization: publicToken } })
+  return data
+}
+
 /* LOGIN */
 export const Login = async (data) => {
   const URL = `${baseUrl}${api}/v1/login`
@@ -91,6 +97,13 @@ export const getInscriptions = async () => {
 
   const response = await axios.get(URL, { headers: { Authorization: publicToken } })
   return response
+}
+
+export const getInscriptionsByTeacherId = async (id) => {
+  const URL = `${baseUrl}${api}/v1/inscriptions/teacher/${id}`
+
+  const response = await axios.get(URL, { headers: { Authorization: publicToken } })
+  return response.data
 }
 
 // OBTENER REGISTRO POR ID

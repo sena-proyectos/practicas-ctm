@@ -69,7 +69,6 @@ export const Settings = () => {
       const { error } = settingsValidation.validate(formValues)
       if (error !== undefined) {
         let errorMessage
-        console.log(error)
         const customErrorMessages = {
           nombre: 'El nombre debe tener al menos 3 caracteres.',
           apellido: 'El apellido debe tener al menos 3 caracteres.',

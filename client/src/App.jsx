@@ -29,7 +29,6 @@ const App = () => {
 
   const getAndSavePublicToken = async () => {
     const response = await getPublicToken()
-    console.log(response)
     sessionStorage.setItem('public-token', response)
   }
 

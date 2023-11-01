@@ -297,8 +297,7 @@ export const Students = () => {
       data.id_nivel_formacion = 3
     }
     try {
-      const response = await editDateClass(data)
-      console.log(response)
+      await editDateClass(data)
       toast.success('Ficha actualizada con éxito')
       setModalDates(false)
     } catch (error) {
