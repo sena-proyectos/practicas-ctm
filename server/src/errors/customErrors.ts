@@ -14,6 +14,15 @@ export class CustomError extends Error {
   }
 }
 
+export class APIError extends CustomError {
+  constructor (message: string) {
+    super(message)
+    this.header = 'API_ERROR'
+    this.statusCode = httpStatus.INTERNAL_SERVER_ERROR
+    this.errorCode = errorCodes.INTERNAL_SERVER_ERROR
+  }
+}
+
 export class DbError extends CustomError {
   constructor (message: string) {
     super(message)

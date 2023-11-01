@@ -9,18 +9,18 @@ const studentRoutes: IRouter = Router()
 const multerFile = configureMulterExcel()
 
 // * GET
-studentRoutes.get('/students', getStudents)
-studentRoutes.get('/studentName', checkName, getStudentByName)
-studentRoutes.get('/student/:id', checkIdReq, getStudentsById)
-studentRoutes.get('/detailInfoStudents', getDetailInfoStudents)
-studentRoutes.get('/detailInfoStudent/:id', checkIdReq, getDetailInfoStudent)
-studentRoutes.get('/studentState/:id', checkIdReq, getStudentState)
+studentRoutes.get('/v1/students', getStudents)
+studentRoutes.get('/v1/studentName', checkName, getStudentByName)
+studentRoutes.get('/v1/student/:id', checkIdReq, getStudentsById)
+studentRoutes.get('/v1/detailInfoStudents', getDetailInfoStudents)
+studentRoutes.get('/v1/detailInfoStudent/:id', checkIdReq, getDetailInfoStudent)
+studentRoutes.get('/v1/studentState/:id', checkIdReq, getStudentState)
 
 // * POST
-studentRoutes.post('/create-students', checkRegisterStudentData, createStudents)
-studentRoutes.post('/read-excel-file/students', multerFile, readExcelFileStudents, classifyExcel, createContractStudentsExcel)
+studentRoutes.post('/v1/create-students', checkRegisterStudentData, createStudents)
+studentRoutes.post('/v1/read-excel-file/students', multerFile, readExcelFileStudents, classifyExcel, createContractStudentsExcel)
 
 // * PATCH
-studentRoutes.patch('/update-student-state/:id', checkIdReq, editStudentState)
+studentRoutes.patch('/v1/update-student-state/:id', checkIdReq, editStudentState)
 
 export { studentRoutes }

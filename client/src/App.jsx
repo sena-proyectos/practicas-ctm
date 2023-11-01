@@ -1,13 +1,12 @@
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
+import { IsAdmin, IsAdminOrCoordinator, IsLogged, ProtectedRoute } from './ProtectedRoute'
 import { User } from './components/User/User'
 import { Home } from './components/Home/Home'
 import { StudentMonitoring } from './components/Student-monitoring/StudentMonitoring'
 import { Settings } from './components/Settings/Settings'
 import { Teachers } from './components/Teachers/Teachers'
 import { AssignClass } from './components/Assign-class/AssignClass'
-import { ProtectedRoute } from './ProtectedRoute'
-import { keysRoles } from './import/staticData'
 import { RegisterList } from './components/Register-list/RegisterList'
 import { RegisterStudent } from './components/Register-student/RegisterStudent'
 import { RegisterDetails } from './components/Register-detail/RegisterDetails'
@@ -16,38 +15,155 @@ import { Students } from './components/Students/Students'
 import { TeacherClass } from './components/Teacher-class/TeacherClass'
 import { InfoStudent } from './components/Info-student/InfoStudent'
 import { RegisterUser } from './components/Register-user/RegisterUser'
+import { getPublicToken } from './api/httpRequest'
+import { useEffect } from 'react'
+import { getPublicTokenFromSession } from './import/getPublicToken'
 
 const App = () => {
-  const idRol = Number(localStorage.getItem('idRol'))
+  useEffect(() => {
+    const publicToken = getPublicTokenFromSession()
+    if (!publicToken) {
+      getAndSavePublicToken()
+    }
+  }, [])
+
+  const getAndSavePublicToken = async () => {
+    const response = await getPublicToken()
+    console.log(response)
+    sessionStorage.setItem('public-token', response)
+  }
 
   return (
-    <>
-      <Routes>
-        <Route element={<ProtectedRoute idRol={idRol} />}>
-          <Route path='/' element={<User />} />
-          <Route path='/home' element={<Home />} />
-          <Route path='/config' element={<Settings />} />
-          <Route path='/seguimiento-aprendices' element={<StudentMonitoring />} />
-          <Route path='/info-aprendiz/:id' element={<InfoStudent />} />
-          <Route path='/registros' element={<RegisterList />} />
-          <Route path='/registrar-aprendiz' element={<RegisterStudent />} />
-          <Route path='/registro-detalles/:id' element={<RegisterDetails />} />
-          <Route path='/asignar-ficha' element={<AssignClass />} />
-          <Route path='/fichas' element={<Courses />} />
-          {/* No está bien hecho, deberia ser anidado */}
-          <Route path='/fichas/aprendices/:id' element={<Students />} />
-          <Route path='/fichas-instructor/:id' element={<TeacherClass />} />
-        </Route>
+    <Routes>
+      <Route
+        path='/'
+        element={
+          <IsLogged redirectTo={'/home'}>
+            <User />
+          </IsLogged>
+        }
+      />
+      <Route
+        path='/home'
+        element={
+          <ProtectedRoute redirectTo='/'>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
 
-        <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])} redirectTo='/home' />}>
-          <Route path='/instructores' element={<Teachers />} />
-        </Route>
+      <Route
+        path='/config'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <Settings />
+          </ProtectedRoute>
+        }
+      />
 
-        <Route element={<ProtectedRoute idRol={idRol === Number(keysRoles[0])} redirectTo='/home' />}>
-          <Route path='/registrar-usuario' element={<RegisterUser />} />
-        </Route>
-      </Routes>
-    </>
+      <Route
+        path='/seguimiento-aprendices'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <StudentMonitoring />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/info-aprendiz/:id'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <InfoStudent />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/registros'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <RegisterList />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/registrar-aprendiz'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <RegisterStudent />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/registro-detalles/:id'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <RegisterDetails />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/asignar-ficha'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <AssignClass />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/fichas'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <Courses />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/fichas/aprendices/:id'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <Students />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/fichas-instructor/:id'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <TeacherClass />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/instructores'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <IsAdminOrCoordinator redirectTo={'/home'}>
+              <Teachers />
+            </IsAdminOrCoordinator>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/registrar-usuario'
+        element={
+          <ProtectedRoute redirectTo='/home'>
+            <IsAdmin redirectTo={'/home'}>
+              <RegisterUser />
+            </IsAdmin>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   )
 }
 

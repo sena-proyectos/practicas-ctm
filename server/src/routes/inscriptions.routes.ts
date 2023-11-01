@@ -13,32 +13,32 @@ const inscriptionRoutes: IRouter = Router()
  * @description Ruta para obtener todas las inscripciones.
  * @route GET /inscriptions
  */
-inscriptionRoutes.get('/inscriptions', getInscriptions)
+inscriptionRoutes.get('/v1/inscriptions', getInscriptions)
 
 /**
  * @description Ruta para obtener una inscripción por su ID.
  * @route GET /inscription/:id
  * @param id El ID de la inscripción.
  */
-inscriptionRoutes.get('/inscription/:id', checkIdReq, getInscriptionById)
+inscriptionRoutes.get('/v1/inscription/:id', checkIdReq, getInscriptionById)
 
 /**
  * @description Ruta para obtener detalles de inscripción por su ID.
  * @route GET /inscriptionDetails/:id
  * @param id El ID de la inscripción.
  */
-inscriptionRoutes.get('/inscriptionDetails/:id', checkIdReq, getInscriptionsDetailsByInscription)
+inscriptionRoutes.get('/v1/inscriptionDetails/:id', checkIdReq, getInscriptionsDetailsByInscription)
 
 /**
  * @description Ruta para obtener detalles de inscripción por el ID del usuario responsable.
  * @route GET /inscriptionDetailsUser/:id
  * @param id El ID del usuario responsable.
  */
-inscriptionRoutes.get('/inscriptionDetailsUser/:id', checkIdReq, getInscriptionsDetailsByUser)
+inscriptionRoutes.get('/v1/inscriptionDetailsUser/:id', checkIdReq, getInscriptionsDetailsByUser)
 
-inscriptionRoutes.get('/inscriptionDetail/:id', checkIdReq, getInscriptionsDetailsById)
+inscriptionRoutes.get('/v1/inscriptionDetail/:id', checkIdReq, getInscriptionsDetailsById)
 
-inscriptionRoutes.get('/inscriptionName', checkName, getInscriptionsDetailsByName)
+inscriptionRoutes.get('/v1/inscriptionName', checkName, getInscriptionsDetailsByName)
 
 // * POST
 /**
@@ -46,14 +46,14 @@ inscriptionRoutes.get('/inscriptionName', checkName, getInscriptionsDetailsByNam
  * @route POST /create-inscriptions
  * @bodyparam inscriptions Datos de las inscripciones a crear.
  */
-inscriptionRoutes.post('/create-inscriptions', checkInscriptionData, createInscriptions)
+inscriptionRoutes.post('/v1/create-inscriptions', checkInscriptionData, createInscriptions)
 
 /**
  * @description Ruta para leer excel de inscripciones.
  * @route POST /inscription-excel-file
  * @fileparam Archivo excel.
  */
-inscriptionRoutes.post('/inscription-excel-file', multerFile, readExcelFile, returnExcelData)
+inscriptionRoutes.post('/v1/inscription-excel-file', multerFile, readExcelFile, returnExcelData)
 
 // * PATCH
 /**
@@ -64,7 +64,7 @@ inscriptionRoutes.post('/inscription-excel-file', multerFile, readExcelFile, ret
  * @bodyparam estado_aval El estado de aval a actualizar.
  * @bodyparam observaciones Las observaciones a actualizar.
  */
-inscriptionRoutes.patch('/update-inscription-detail/:id', checkInscriptionDetailData, editInscriptionDetail)
+inscriptionRoutes.patch('/v1/update-inscription-detail/:id', checkInscriptionDetailData, editInscriptionDetail)
 
 /**
  * @description Ruta para actualizar una inscripción por su ID.
@@ -72,6 +72,6 @@ inscriptionRoutes.patch('/update-inscription-detail/:id', checkInscriptionDetail
  * @param id El ID de la inscripción a actualizar.
  * @bodyparam Todos los datos de la inscripción a actualizar.
  */
-inscriptionRoutes.patch('/update-inscription/:id', checkIdReq, checkInscriptionData, editInscription)
+inscriptionRoutes.patch('/v1/update-inscription/:id', checkIdReq, checkInscriptionData, editInscription)
 
 export { inscriptionRoutes }

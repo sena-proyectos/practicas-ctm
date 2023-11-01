@@ -122,7 +122,7 @@ export const createUser: RequestHandler<{}, Response, userForm> = async (req: Re
   }
 }
 
-export const login: RequestHandler<{ num_documento: string; contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string; contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
+export const login: RequestHandler<{ num_documento: string, contrasena: string }, unknown, LoginData> = async (req: Request<{ num_documento: string, contrasena: string }>, res: Response, next: NextFunction): Promise<void> => {
   const { num_documento, contrasena } = req.body
   try {
     const [user] = await connection.query('SELECT * FROM usuarios WHERE numero_documento_usuario = ?', [num_documento])

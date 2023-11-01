@@ -2,8 +2,9 @@ import schedule from 'node-schedule'
 import { DbError } from '../errors/customErrors.js'
 import { connection } from '../config/db.js'
 import { type RowDataPacket } from 'mysql2'
-import { sendEmailAnyBody } from '../controllers/email.controllers.js'
+import { sendEmailAnyBody, sendEmailAnyBodyNotfile } from '../controllers/email.controllers.js'
 import XLSX from 'xlsx'
+import { type IStudentData } from '../interfaces/scheduler.interfaces.js'
 
 const rule = new schedule.RecurrenceRule()
 rule.dayOfWeek = 1
@@ -13,6 +14,7 @@ rule.minute = 0
 export const schedulerTasks = schedule.scheduleJob(rule, async () => {
   try {
     const data = await querySchedule()
+    await sendEmailsToStudents(data)
     const file = generateExcel(data)
 
     const table = `
@@ -31,7 +33,7 @@ export const schedulerTasks = schedule.scheduleJob(rule, async () => {
           </tr>
         </thead>
         <tbody>
-          ${data.map((item: any) => `
+          ${data.map((item: IStudentData) => `
             <tr>
               <td>${item.nombre_aprendiz}</td>
               <td>${item.apellido_aprendiz}</td>
@@ -47,7 +49,6 @@ export const schedulerTasks = schedule.scheduleJob(rule, async () => {
       </table>
     `
 
-    // Construye el cuerpo del correo con la tabla
     const body = `
       <h1>Aprendices sin prácticas registradas:</h1>
       ${table}
@@ -83,6 +84,21 @@ const generateExcel = (payload: object[]): Buffer => {
 
     return buffer
   } catch (error) {
+    throw new Error(error as string)
+  }
+}
+
+const sendEmailsToStudents = async (payload: IStudentData[]): Promise<void> => {
+  try {
+    for (let i = 0; i < payload.length; i++) {
+      const item = payload[i]
+      const body = `Cordial saludo, <br/> aprendiz ${item.nombre_aprendiz} ${item.apellido_aprendiz} reportado sin prácticas actualmente, contáctese con <a href="mailto:practicasctm@sena.edu.co">practicasctm@sena.edu.co</a> para reportar su estado.`
+      await sendEmailAnyBodyNotfile({ body, subject: 'Información: aprendiz notificado sin prácticas', to: 't46537753@gmail.com' })
+
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    }
+  } catch (error) {
+    console.log(error)
     throw new Error(error as string)
   }
 }

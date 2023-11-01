@@ -4,7 +4,7 @@ import { sendEmail, sendEmailFunctions } from '../controllers/email.controllers.
 
 const emailRoutes: IRouter = Router()
 
-emailRoutes.post('/sendEmail', checkEmail, sendEmail)
-emailRoutes.post('/sendEmail/functions', checkEmail, sendEmailFunctions)
+emailRoutes.post('/v1/sendEmail', checkEmail, sendEmail)
+emailRoutes.post('/v1/sendEmail/functions', checkEmail, sendEmailFunctions)
 
 export { emailRoutes }
