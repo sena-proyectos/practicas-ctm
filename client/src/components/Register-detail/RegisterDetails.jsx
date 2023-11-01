@@ -721,8 +721,9 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                   </Fragment>
                 )}
               </div>
-              )}
+            )}
               {idRol && (
+                <Fragment>
                 <div className='flex flex-row gap-2 place-self-center'>
                   {!selectedApproveButton ? (
                     <>
@@ -770,7 +771,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                   Guardar
                 </Button>
               )}
-                  </Fragment>
+              </Fragment>
               )}
             </form>
           )
