@@ -5,6 +5,6 @@ import { checkStatusData } from '../middlewares/changeStatusId.middlewares.js'
 
 const unableRoutes: IRouter = Router()
 
-unableRoutes.patch('/unable/:id', checkIdReq, checkStatusData, changeStatusId)
+unableRoutes.patch('/v1/unable/:id', checkIdReq, checkStatusData, changeStatusId)
 
 export { unableRoutes }

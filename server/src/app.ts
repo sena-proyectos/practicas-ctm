@@ -6,6 +6,8 @@ import bodyParser from 'body-parser'
 import { connection } from './config/db.js'
 import colors from 'colors/safe.js'
 import { schedulerTasks } from './utils/scheduler.js'
+import { checkPublicToken } from './controllers/publicAccess.controllers.js'
+import { publicAccess } from './routes/publicAccess.routes.js'
 
 const app: Application = express()
 
@@ -13,7 +15,7 @@ schedulerTasks.invoke()
 
 const options: CorsOptions = {
   origin: '*',
-  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  methods: ['GET', 'POST', 'PATCH'],
   optionsSuccessStatus: 200,
   allowedHeaders: ['Content-Type', 'Authorization']
 }
@@ -25,8 +27,10 @@ const APILINK = '/api'
 
 const appRoutes: IRouter[] = Object.values(routes)
 
+app.use(APILINK, publicAccess)
+
 for (const route of appRoutes) {
-  app.use(APILINK, route)
+  app.use(APILINK, checkPublicToken, route)
 }
 
 // No found route
