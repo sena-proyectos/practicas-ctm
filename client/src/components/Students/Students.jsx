@@ -461,7 +461,7 @@ export const Students = () => {
           >
             <TableHeader>
               <TableColumn className='text-center text-white uppercase w-[28rem]'>Nombre Completo</TableColumn>
-              <TableColumn className='text-center text-white uppercase'>Modalidad</TableColumn>
+              <TableColumn className='text-center text-white uppercase w-[130px]'>Modalidad</TableColumn>
               <TableColumn className='flex items-center text-white justify-center gap-1.5 text-center uppercase'>
                 Estado
                 <Popover placement='right'>
@@ -498,7 +498,7 @@ export const Students = () => {
                         <h2 className='text-base font-semibold break-words whitespace-normal w-[30ch] text-center'>{student.nombre_completo}</h2>
                         <span className='text-sm font-light text-center break-all'>{student.email_aprendiz}</span>
                       </TableCell>
-                      <TableCell className='text-sm font-light text-center w-[12ch]'>
+                      <TableCell className='text-sm font-light text-center w-[130px]'>
                         <h3 className='w-[12ch] text-center'>{student.nombre_modalidad ? student.nombre_modalidad : 'N/A'}</h3>
                       </TableCell>
                       <TableCell>
@@ -522,7 +522,7 @@ export const Students = () => {
                           <Skeleton width={'10rem'} height={10} />
                         </span>
                       </TableCell>
-                      <TableCell className='text-sm font-light text-center w-[12ch]'>
+                      <TableCell className='text-sm font-light text-center w-[130px]'>
                         <h3 className='w-[12ch] text-center'>
                           <Skeleton width={'6rem'} height={15} />
                         </h3>
