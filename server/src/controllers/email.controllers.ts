@@ -60,3 +60,17 @@ export const sendEmailAnyBody = async (payload: { body: string, subject: string,
     throw new Error(error)
   }
 }
+
+export const sendEmailAnyBodyNotfile = async (payload: { body: string, subject: string, to: string }): Promise<void> => {
+  try {
+    await emailConfig.sendMail({
+      from: process.env.MAIL_USER,
+      to: payload.to,
+      subject: payload.subject,
+      html: payload.body
+    })
+  } catch (error: any) {
+    console.log(error)
+    throw new Error(error)
+  }
+}
