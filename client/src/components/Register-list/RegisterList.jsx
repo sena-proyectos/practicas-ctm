@@ -23,9 +23,10 @@ import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Button } from '../Utils/Button/Button'
 
-import { InscriptionApprentice, getInscriptions, readExcel, GetInscriptionByName } from '../../api/httpRequest'
+import { InscriptionApprentice, getInscriptions, readExcel, GetInscriptionByName, getInscriptionsByTeacherId } from '../../api/httpRequest'
 import { keysRoles } from '../../import/staticData'
 import { LoadingModal, ModalConfirm } from '../Utils/Modals/Modals'
+import { getUserID } from '../../import/getIDActualUser'
 
 export const modalOptionList = {
   confirmModal: 'confirm',
@@ -43,7 +44,6 @@ export const RegisterList = () => {
   const [username, setUsername] = useState(null)
   const [loadingData, setLoadingData] = useState(true)
   const excelRef = useRef()
-  // const navigate = useNavigate()
   const [showFiltros, setShowFiltros] = useState(false)
   const [filtersButtons, setFiltersButtons] = useState({ modalidad: false, estado: false, fecha: false })
   const [activeFilter, setActiveFilter] = useState(false)
@@ -264,9 +264,41 @@ export const RegisterList = () => {
    * getRegistros();
    */
   const getRegistros = async () => {
+    const { id_rol, id_usuario } = getUserID().user
+    if (String(id_rol) === '3') {
+      getRegistersTrackingInstructor(id_usuario)
+      return
+    }
     try {
       const response = await getInscriptions()
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_inscripcion = element.nombre_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+
+        element.apellido_inscripcion = element.apellido_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
+      setInscriptions(data)
+      setInscriptionOriginal(data)
+      setLoadingData(false)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const getRegistersTrackingInstructor = async (id) => {
+    try {
+      const response = await getInscriptionsByTeacherId(id)
+      const { data } = response
       data.forEach((element) => {
         element.nombre_inscripcion = element.nombre_inscripcion
           .split(' ')
@@ -654,10 +686,6 @@ export const RegisterList = () => {
             <div className='flex justify-center w-full'>{currentRegisterList.length === 0 || error || loadingData ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
             {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
               <div className='grid w-full grid-flow-col-dense gap-3 place-content-end'>
-                {/* <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline classNames='order-last'>
-                  <IoAddCircleOutline className='text-xl' />
-                  Agregar
-                </Button> */}
                 <div className='rounded-full shadow-md bg-cyan-600'>
                   <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
                     <AiOutlineFileAdd />

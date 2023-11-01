@@ -1,5 +1,5 @@
 import { type IRouter, Router } from 'express'
-import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsById, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData, getInscriptionsDetailsByName } from '../controllers/inscriptions.controllers.js'
+import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsById, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData, getInscriptionsDetailsByName, getInscriptionsByTeacherId } from '../controllers/inscriptions.controllers.js'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
 import { checkInscriptionData, checkInscriptionDetailData, configureMulterExcel, readExcelFile } from '../middlewares/inscriptions.middlewares.js'
 import { checkName } from '../middlewares/users.middlewares.js'
@@ -14,6 +14,8 @@ const inscriptionRoutes: IRouter = Router()
  * @route GET /inscriptions
  */
 inscriptionRoutes.get('/v1/inscriptions', getInscriptions)
+
+inscriptionRoutes.get('/v1/inscriptions/teacher/:id', checkIdReq, getInscriptionsByTeacherId)
 
 /**
  * @description Ruta para obtener una inscripción por su ID.

@@ -56,7 +56,6 @@ export const Visits = () => {
       toast.success('Visita modificada correctamente')
       getVisits()
     } catch (error) {
-      console.log(error)
       toast.error('Error al actualizar la visita')
     }
   }

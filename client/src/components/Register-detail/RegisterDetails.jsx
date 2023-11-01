@@ -1049,7 +1049,6 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
    * handleSelectChange(1);
    */
   const handleSelectChange = (optionKey) => {
-    console.log(optionKey)
     setSelectedOptionKey(optionKey)
     setApprovalDetailUser(optionKey)
   }
@@ -1235,9 +1234,11 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
                 <section className='flex'>
                   <h3 className='flex flex-row flex-wrap flex-grow-0 gap-2 text-sm flex-shrink-1'>
                     {fullNameInstructor}
-                    <Button type='button' px='none' bg='transparent' py='none' onClick={() => setFullNameInstructor(null)}>
-                      <HiOutlinePencilAlt className='text-blue-500' />
-                    </Button>
+                    {idRol === Number(keysRoles[0]) && (
+                      <Button type='button' px='none' bg='transparent' py='none' onClick={() => setFullNameInstructor(null)}>
+                        <HiOutlinePencilAlt className='text-blue-500' />
+                      </Button>
+                    )}
                   </h3>
                 </section>
                 <h5 className='text-sm'>

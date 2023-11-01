@@ -162,7 +162,7 @@ const Form = ({ inputs, isLoginForm }) => {
       await registerUser(data)
       Swal.fire({
         icon: 'success',
-        title: '!Registro exitoso¡',
+        title: '¡Registro exitoso!',
         text: 'Usuario creado correctamente'
       })
       setLoadingBtn(false)

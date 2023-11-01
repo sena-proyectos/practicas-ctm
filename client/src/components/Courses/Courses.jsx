@@ -279,7 +279,6 @@ export const Courses = () => {
   const handleFilterType = (filterType, filter) => {
     if (filterType === 'etapa') {
       let filterMap
-      console.log(originalSearched)
       if (originalSearched.length > 0 && !error) {
         filterMap = originalSearched.filter((course) => course.estado === filter)
         setSearchedCourses({})
