@@ -14,7 +14,7 @@ const app: Application = express()
 schedulerTasks.invoke()
 
 const options: CorsOptions = {
-  origin: '*',
+  origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PATCH'],
   optionsSuccessStatus: 200,
   allowedHeaders: ['Content-Type', 'Authorization']
