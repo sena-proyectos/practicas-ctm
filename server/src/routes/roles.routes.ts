@@ -6,12 +6,12 @@ import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
 const roleRoutes: IRouter = Router()
 
 // * GET
-roleRoutes.get('/roles', getRoles)
+roleRoutes.get('/v1/roles', getRoles)
 
 // * POST
-roleRoutes.post('/create-role', checkRoleName, createRole)
+roleRoutes.post('/v1/create-role', checkRoleName, createRole)
 
 // * PATCH
-roleRoutes.patch('/edit-role/:id', checkIdReq, checkRoleName, editRole)
+roleRoutes.patch('/v1/edit-role/:id', checkIdReq, checkRoleName, editRole)
 
 export { roleRoutes }

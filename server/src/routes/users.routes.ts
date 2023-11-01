@@ -6,19 +6,19 @@ import { checkEditData, checkExistingUser, checkLoginData, checkName, checkRegis
 const userRoutes: IRouter = Router()
 
 // * GET
-userRoutes.get('/users', getUsers)
-userRoutes.get('/user/:id', checkIdReq, getUserById)
-userRoutes.get('/teacherName', checkName, getTeacherByName)
-userRoutes.get('/teachers', getTeachers)
-userRoutes.get('/teacher/:id', checkIdReq, getTeachersById)
-userRoutes.get('/coordinators', getCoordinators)
-userRoutes.get('/coordinator/:id', checkIdReq, getCoordinatorById)
+userRoutes.get('/v1/users', getUsers)
+userRoutes.get('/v1/user/:id', checkIdReq, getUserById)
+userRoutes.get('/v1/teacherName', checkName, getTeacherByName)
+userRoutes.get('/v1/teachers', getTeachers)
+userRoutes.get('/v1/teacher/:id', checkIdReq, getTeachersById)
+userRoutes.get('/v1/coordinators', getCoordinators)
+userRoutes.get('/v1/coordinator/:id', checkIdReq, getCoordinatorById)
 
 // * POST
-userRoutes.post('/register', checkRegisterData, checkExistingUser, createUser)
-userRoutes.post('/login', checkLoginData, login, generateToken)
+userRoutes.post('/v1/register', checkRegisterData, checkExistingUser, createUser)
+userRoutes.post('/v1/login', checkLoginData, login, generateToken)
 
 // * PATCH
-userRoutes.patch('/edit-user/:id', checkIdReq, checkEditData, editUser)
+userRoutes.patch('/v1/edit-user/:id', checkIdReq, checkEditData, editUser)
 
 export { userRoutes }

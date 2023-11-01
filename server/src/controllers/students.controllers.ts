@@ -9,14 +9,11 @@ import { type infoStudents, type TFichaExcelRequest, type TEmpresaExcelRequest, 
 
 export const getStudents = async (req: Request, res: Response): Promise<Response> => {
   try {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     const page = parseInt(req.query.page as string) || 1
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     const limit = parseInt(req.query.limit as string) || 10
     const offset = (Number(page) - 1) * Number(limit)
 
     const [students] = await connection.query('SELECT * FROM aprendices LIMIT ? OFFSET ?', [limit, offset])
-    if (!Array.isArray(students) || students.length === 0) throw new DbErrorNotFound('No hay estudiantes registrados.', errorCodes.ERROR_GET_STUDENTS)
 
     const [total] = (await connection.query('SELECT COUNT(*) as count FROM aprendices')) as unknown as Array<{ count: number }>
     const totalPages = Math.ceil(Number(Array.isArray(total) && total[0].count) / Number(limit))
@@ -160,7 +157,7 @@ const addStudentPayloadToDatabase = async (studentPayload: TStudentExcelRequest,
 }
 
 const dataUnified = (payload: any): any[] => {
-  const { studentPayload, payload: itemsPayload }: { studentPayload: object[]; payload: any } = payload
+  const { studentPayload, payload: itemsPayload }: { studentPayload: object[], payload: any } = payload
   const { empresaPayload, fichaPayload, contractPayload } = itemsPayload
 
   const data = studentPayload.map((item: any, index) => {

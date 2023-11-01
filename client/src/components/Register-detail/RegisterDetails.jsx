@@ -604,7 +604,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations }
     try {
       await inscriptionDetailsUpdate(id, data)
-      await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion: dataAprendiz[0].nombre_inscripcion, apellido_inscripcion: dataAprendiz[0].apellido_inscripcion, observations: payload.observations }], subject: 'Aceptado de solicitud de inscripción de etapa práctica' })
+      await sendEmail({ to: 't46537753@gmail.com', htmlData: [null, { nombre_inscripcion: dataAprendiz[0].nombre_inscripcion, apellido_inscripcion: dataAprendiz[0].apellido_inscripcion, observations: payload.observations }], subject: 'Aceptado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchInfo()
@@ -649,7 +649,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     try {
       await inscriptionDetailsUpdate(id, data)
 
-      await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      await sendEmail({ to: 't46537753@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchInfo()
@@ -699,10 +699,10 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
           </section>
         </section>
       </section>
-      <div className='w-[95%] mx-auto'>
+      <div className='w-[95%] mx-auto grid items-center'>
         {avalInfo.map((aval) => {
           return (
-            <form onSubmit={handleAvalForm} ref={formRef} className='flex flex-col gap-4 ' key={aval.id_detalle_inscripcion}>
+            <form onSubmit={handleAvalForm} ref={formRef} className='flex flex-col gap-4' key={aval.id_detalle_inscripcion}>
               {idRol && idRol === Number(keysRoles[0]) && (
                 <div>
                   <label htmlFor='' className='text-sm font-light'>
@@ -722,7 +722,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                   )}
                 </div>
               )}
-              {idRol && (
+              {idRol && idRol === Number(keysRoles[1]) && Number(coordinatorID) !== Number(userID) ? (
                 <Fragment>
                   <div className='flex flex-row gap-2 place-self-center'>
                     {!selectedApproveButton ? (
@@ -772,6 +772,13 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                     </Button>
                   )}
                 </Fragment>
+              ) : (
+                idRol &&
+                idRol === Number(keysRoles[1]) && (
+                  <Fragment>
+                    <h3 className='text-center'>Este aval no se ha asignado</h3>
+                  </Fragment>
+                )
               )}
             </form>
           )
@@ -1201,7 +1208,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
-      await sendEmail({ to: 'blandon0207s@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      await sendEmail({ to: 't46537753@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchDataFunciones(avalFunciones)
@@ -1486,7 +1493,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)('inscripcion updated')
-      await sendEmail({ to: 'blandon0207s@outlook.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      await sendEmail({ to: 't46537753@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchDataDocuments()
@@ -1782,7 +1789,7 @@ const RAPS = ({ idRol, avalRaps }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
-      await sendEmail({ to: 'lorenquiceno@gmail.com', subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
+      await sendEmail({ to: 't46537753@gmail.com', subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchRaps()

@@ -5,18 +5,18 @@ import { checkBitacoraData, checkLetterData, checkVisitData } from '../middlewar
 
 const trackingRoute: IRouter = Router()
 
-trackingRoute.get('/getLetterByStudent/:id', checkIdReq, getLettersByStudent)
+trackingRoute.get('/v1/getLetterByStudent/:id', checkIdReq, getLettersByStudent)
 
-trackingRoute.get('/getBitacorasByStudent/:id', checkIdReq, getBitacorasByStudent)
+trackingRoute.get('/v1/getBitacorasByStudent/:id', checkIdReq, getBitacorasByStudent)
 
-trackingRoute.get('/getVisitsByStudent/:id', checkIdReq, getVisitsByStudent)
+trackingRoute.get('/v1/getVisitsByStudent/:id', checkIdReq, getVisitsByStudent)
 
-trackingRoute.patch('/modifyLetter/:id', checkIdReq, checkLetterData, modifyLetterByID)
+trackingRoute.patch('/v1/modifyLetter/:id', checkIdReq, checkLetterData, modifyLetterByID)
 
-trackingRoute.patch('/modifyBitacora/:id', checkIdReq, checkBitacoraData, modifyBitacoraById)
+trackingRoute.patch('/v1/modifyBitacora/:id', checkIdReq, checkBitacoraData, modifyBitacoraById)
 
-trackingRoute.patch('/modifyVisit/:id', checkIdReq, checkVisitData, modifyVisitByID)
+trackingRoute.patch('/v1/modifyVisit/:id', checkIdReq, checkVisitData, modifyVisitByID)
 
-trackingRoute.post('/create-visit', checkVisitData, createVisit)
+trackingRoute.post('/v1/create-visit', checkVisitData, createVisit)
 
 export { trackingRoute }
