@@ -1134,7 +1134,6 @@ const AddVisitModal = ({ closeModal, title, id }) => {
       await createVisit(data)
       closeModal()
     } catch (error) {
-      console.log(error)
       throw new Error(error)
     }
   }

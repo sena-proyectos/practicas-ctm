@@ -9,9 +9,10 @@ import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
 import { CardStudent } from '../Utils/Card/Card'
 import { Footer } from '../Footer/Footer'
-import { GetUserByName, detailInfoStudents, generateExcelStudents, generateExcelStudentsByModality, generateExcelStudentsNoPractical, generateExcelStudentsPractical, sendExcelContrato } from '../../api/httpRequest'
+import { GetUserByName, detailInfoStudents, generateExcelStudents, generateExcelStudentsByModality, generateExcelStudentsNoPractical, generateExcelStudentsPractical, getStudentsByTeacherId, sendExcelContrato } from '../../api/httpRequest'
 import { AiOutlineFileAdd } from 'react-icons/ai'
 import { HiOutlineDocumentText } from 'react-icons/hi'
+import { getUserID } from '../../import/getIDActualUser'
 
 export const StudentMonitoring = () => {
   const [apprentices, setApprentices] = useState([])
@@ -88,9 +89,40 @@ export const StudentMonitoring = () => {
    * getApprentices();
    */
   const getApprentices = async () => {
+    const { id_rol, id_usuario } = getUserID().user
+    if (String(id_rol) === '3') {
+      getApprenticesTrackingInstructor(id_usuario)
+      return
+    }
+
     try {
       const response = await detailInfoStudents()
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_completo = element.nombre_completo
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
+      setApprentices(data)
+      setLoading(false)
+    } catch (error) {
+      setError('Error al obtener los aprendices')
+    }
+  }
+
+  const getApprenticesTrackingInstructor = async (id) => {
+    try {
+      const response = await getStudentsByTeacherId(id)
+      const { data } = response
       data.forEach((element) => {
         element.nombre_completo = element.nombre_completo
           .split(' ')
