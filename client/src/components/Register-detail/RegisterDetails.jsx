@@ -414,7 +414,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
         const item = updatedInfoAvales[i]
         const responsableId = item.responsable_aval
 
-        if (responsableId === null) return
+        // if (responsableId === null) return
 
         // Obtener el nombre del responsable usando la función getUser
         if (responsableId) {
@@ -703,74 +703,75 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
         {avalInfo.map((aval) => {
           return (
             <form onSubmit={handleAvalForm} ref={formRef} className='flex flex-col gap-4 ' key={aval.id_detalle_inscripcion}>
-            {idRol && idRol === Number(keysRoles[0]) && (
-              <div>
-                <label htmlFor='' className='text-sm font-light'>
-                  Coordinador Asignado
-                </label>
-                {coordinatorFullName === null ? (
-                  <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={dataAdmins} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} onChange={saveSelectOnChange} />
-                ) : (
-                  <Fragment>
-                    <h3 className='flex flex-row flex-wrap flex-grow-0 gap-2 text-sm w-fit flex-shrink-1'>
-                      {coordinatorFullName}
-                      <Button type='button' px='none' bg='transparent' py='none' onClick={() => setCoordinatorFullName(null)}>
-                        <HiOutlinePencilAlt className='text-blue-500' />
-                      </Button>
-                    </h3>
-                  </Fragment>
-                )}
-              </div>
-              )}
-              {idRol && (
-                <div className='flex flex-row gap-2 place-self-center'>
-                  {!selectedApproveButton ? (
-                    <>
-                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
-                        <PiCheckCircleBold className='text-xl' /> Sí
-                      </Button>
-                      <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
-                        <PiXCircleBold className='text-xl' /> No
-                      </Button>
-                    </>
-                  ) : selectedApproveButton === 'No' ? (
-                    <>
-                      <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
-                        <PiCheckCircleBold className='text-xl' /> Sí
-                      </Button>
-                      <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
-                        <PiXCircleBold className='text-xl' /> No
-                      </Button>
-                    </>
+              {idRol && idRol === Number(keysRoles[0]) && (
+                <div>
+                  <label htmlFor='' className='text-sm font-light'>
+                    Coordinador Asignado
+                  </label>
+                  {coordinatorFullName === null ? (
+                    <Select placeholder='Coordinador' rounded='rounded-lg' py='py-1' hoverColor='hover:bg-gray' hoverTextColor='hover:text-black' textSize='text-sm' options={dataAdmins} shadow={'shadow-md shadow-slate-400'} border='none' selectedColor={'bg-slate-500'} onChange={saveSelectOnChange} />
                   ) : (
-                    <>
-                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
-                        <PiCheckCircleBold className='text-xl' /> Sí
-                      </Button>
-                      <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
-                        <PiXCircleBold className='text-xl' /> No
-                      </Button>
-                    </>
+                    <Fragment>
+                      <h3 className='flex flex-row flex-wrap flex-grow-0 gap-2 text-sm w-fit flex-shrink-1'>
+                        {coordinatorFullName}
+                        <Button type='button' px='none' bg='transparent' py='none' onClick={() => setCoordinatorFullName(null)}>
+                          <HiOutlinePencilAlt className='text-blue-500' />
+                        </Button>
+                      </h3>
+                    </Fragment>
                   )}
                 </div>
-              <div>
-                <label htmlFor='observations' className='text-sm font-light'>
-                  Observaciones
-                </label>
-                <textarea name='observations' id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
-              </div>
-              {disableSubmitButton ? (
-                <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
-                  <LuSave />
-                  Guardar
-                </Button>
-              ) : (
-                <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
-                  <LuSave />
-                  Guardar
-                </Button>
               )}
-                  </Fragment>
+              {idRol && (
+                <Fragment>
+                  <div className='flex flex-row gap-2 place-self-center'>
+                    {!selectedApproveButton ? (
+                      <>
+                        <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                          <PiCheckCircleBold className='text-xl' /> Sí
+                        </Button>
+                        <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                          <PiXCircleBold className='text-xl' /> No
+                        </Button>
+                      </>
+                    ) : selectedApproveButton === 'No' ? (
+                      <>
+                        <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                          <PiCheckCircleBold className='text-xl' /> Sí
+                        </Button>
+                        <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                          <PiXCircleBold className='text-xl' /> No
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                          <PiCheckCircleBold className='text-xl' /> Sí
+                        </Button>
+                        <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                          <PiXCircleBold className='text-xl' /> No
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                  <div>
+                    <label htmlFor='observations' className='text-sm font-light'>
+                      Observaciones
+                    </label>
+                    <textarea name='observations' id='editor' defaultValue={aval.observaciones} rows='3' className='block w-full h-[5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
+                  </div>
+                  {disableSubmitButton ? (
+                    <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
+                      <LuSave />
+                      Guardar
+                    </Button>
+                  ) : (
+                    <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                      <LuSave />
+                      Guardar
+                    </Button>
+                  )}
+                </Fragment>
               )}
             </form>
           )
