@@ -14,7 +14,7 @@ rule.minute = 0
 export const schedulerTasks = schedule.scheduleJob(rule, async () => {
   try {
     const data = await querySchedule()
-    // await sendEmailsToStudents(data)
+    await sendEmailsToStudents(data)
     const file = generateExcel(data)
 
     const table = `
