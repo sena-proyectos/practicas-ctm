@@ -414,8 +414,6 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
         const item = updatedInfoAvales[i]
         const responsableId = item.responsable_aval
 
-        if (responsableId === null) return
-
         // Obtener el nombre del responsable usando la función getUser
         if (responsableId) {
           // Obtener el nombre del responsable usando la función getUser
