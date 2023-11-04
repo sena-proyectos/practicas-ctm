@@ -1,4 +1,4 @@
-import schedule, { Job, JobCallback } from 'node-schedule'
+import schedule from 'node-schedule'
 import { DbError } from '../errors/customErrors.js'
 import { connection } from '../config/db.js'
 import { type RowDataPacket } from 'mysql2'
