@@ -49,7 +49,7 @@ export const getClassesFree = async (_req: Request, res: Response): Promise<Resp
  * @returns una promesa que se resuelve en un objeto de respuesta.
  */
 export const getClassDetail: RequestHandler<{}, Response, classes> = async (req: Request, res: Response): Promise<Response> => {
-  const { numero_ficha } = req.body
+  const { numero_ficha } = req.query
   try {
     const [classes] = await connection.query('SELECT * FROM detalles_fichas_aprendices', [numero_ficha])
     if (!Array.isArray(classes) || classes?.length === 0) throw new DbErrorNotFound('No hay detalles de fichas.', errorCodes.ERROR_GET_CLASSES)
@@ -138,7 +138,6 @@ export const getClassByClassNumber: RequestHandler<{ numero_ficha: string }, Res
 
 export const getStudentsClassByClassNumber: RequestHandler<{ numero_ficha: string }, Response, classes> = async (req: Request, res: Response) => {
   const { numero_ficha } = req.query
-  // const classNumber = Number(numero_ficha)
   try {
     const [classQuery] = await connection.query('SELECT aprendices.id_aprendiz, CONCAT(aprendices.nombre_aprendiz, " ", aprendices.apellido_aprendiz) AS nombre_completo, aprendices.email_aprendiz, modalidades.nombre_modalidad, aprendices.estado_aprendiz FROM aprendices LEFT JOIN modalidades ON aprendices.id_modalidad = modalidades.id_modalidad INNER JOIN detalle_fichas_aprendices ON aprendices.id_aprendiz = detalle_fichas_aprendices.id_aprendiz INNER JOIN fichas ON fichas.id_ficha = detalle_fichas_aprendices.id_ficha WHERE fichas.numero_ficha = ?', [numero_ficha as string])
     if (!Array.isArray(classQuery) || classQuery?.length === 0) throw new DbErrorNotFound('No se encontró la información de los estudiantes.', errorCodes.ERROR_GET_CLASS)
@@ -183,7 +182,7 @@ export const createClassWithStudents = async (req: Request, res: Response): Prom
   }
 }
 
-const addClassToDatabase = async (payload: Array<{ numero_ficha: string; nombre_programa_formacion: string }>): Promise<number | DbError> => {
+const addClassToDatabase = async (payload: Array<{ numero_ficha: string, nombre_programa_formacion: string }>): Promise<number | DbError> => {
   try {
     await connection.execute('CALL subir_ficha_minima_info(?, ?, @id_ficha)', [payload[0].numero_ficha, payload[0].nombre_programa_formacion])
     const [lastID] = await connection.query<RowDataPacket[]>('SELECT @id_ficha as last_id')
@@ -194,7 +193,7 @@ const addClassToDatabase = async (payload: Array<{ numero_ficha: string; nombre_
   }
 }
 
-const addStudentsClassToDatabase = async (payload: Array<{ tipo_documento_aprendiz: string; numero_documento_aprendiz: string; nombre_aprendiz: string; apellido_aprendiz: string; celular_aprendiz: string; email_aprendiz: string; estado_aprendiz: string }>, idClass: number | DbError): Promise<boolean | DbError> => {
+const addStudentsClassToDatabase = async (payload: Array<{ tipo_documento_aprendiz: string, numero_documento_aprendiz: string, nombre_aprendiz: string, apellido_aprendiz: string, celular_aprendiz: string, email_aprendiz: string, estado_aprendiz: string }>, idClass: number | DbError): Promise<boolean | DbError> => {
   try {
     for await (const item of payload) {
       await connection.execute('CALL subir_aprendices_con_ficha(?, ?, ?, ?, ?, ?, ?, ?)', [item.tipo_documento_aprendiz, item.numero_documento_aprendiz, item.nombre_aprendiz, item.apellido_aprendiz, item.celular_aprendiz, item.email_aprendiz, item.estado_aprendiz, idClass])
@@ -302,7 +301,7 @@ export const getClassFreeByClassNumber: RequestHandler<{ numero_ficha: string },
   }
 }
 
-export const getClassTeacherByClassNumber: RequestHandler<{ numero_ficha: string; id: string }, Response, classes> = async (req: Request<{ numero_ficha: string; id: string }>, res: Response): Promise<Response> => {
+export const getClassTeacherByClassNumber: RequestHandler<{ numero_ficha: string, id: string }, Response, classes> = async (req: Request<{ numero_ficha: string, id: string }>, res: Response): Promise<Response> => {
   const { id } = req.params
   const { numero_ficha } = req.query
   const idNumber = Number(id)

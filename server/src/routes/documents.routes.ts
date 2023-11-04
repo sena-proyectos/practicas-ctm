@@ -6,47 +6,59 @@ import { checkInstructor, checkModality } from '../middlewares/documents.middlew
 const documentRoutes: IRouter = Router()
 
 /**
+ * Genera un archivo de Excel relacionado con las clases.
  * @route GET /create-excel-class
- * @description Genera un archivo de Excel relacionado con las clases.
- * @param numero_ficha Número de la clase.
- * @access Público
+ * @param {string} request.query.numero_ficha
+ * @returns {Promise<Buffer>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
 documentRoutes.get('/v1/create-excel-class', checkClassNumber, excelGeneratorClass)
 
 /**
+ * Genera un archivo de Excel de todos los estudiantes.
  * @route GET /create-excel-students
- * @description Genera un archivo de Excel de todos los estudiantes.
- * @access Público
+ * @returns {Promise<Buffer>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
 documentRoutes.get('/v1/create-excel-students', excelGeneratorStudents)
 
 /**
+ * Genera un archivo de Excel relacionado con los estudiantes en prácticas.
  * @route GET /create-excel-students-practical
- * @description Genera un archivo de Excel relacionado con los estudiantes en prácticas.
- * @access Público
+ * @returns {Promise<Buffer>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
 documentRoutes.get('/v1/create-excel-students-practical', excelGeneratorStudentsPractical)
 
 /**
+ * Genera un archivo de Excel relacionado con los estudiantes sin prácticas.
  * @route GET /create-excel-students-nopractical
- * @description Genera un archivo de Excel relacionado con los estudiantes sin prácticas.
- * @access Público
+ * @returns {Promise<Buffer>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
 documentRoutes.get('/v1/create-excel-students-nopractical', excelGeneratorStudentsNoPractical)
 
 /**
+ * Genera un archivo de Excel relacionado con los estudiantes por modalidad de practicas.
  * @route GET /create-excel-students-category
- * @description Genera un archivo de Excel relacionado con los estudiantes por modalidad de practicas.
- * @param modality Nombre modalidad de practicas.
- * @access Público
+ * @param {string} request.query.modality
+ * @returns {Promise<Buffer>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
 documentRoutes.get('/v1/create-excel-students-category', checkModality, excelGeneratorStudentsCategory)
 
 /**
+ * Genera un archivo de Excel relacionado con los estudiantes por instructor.
  * @route GET /create-excel-students-instructor
- * @description Genera un archivo de Excel relacionado con los estudiantes por instructor.
- * @param instructor Nombre completo del instructor.
- * @access Público
+ * @param {string} request.query.instructor
+ * @returns {Promise<Buffer>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
 documentRoutes.get('/v1/create-excel-students-instructor', checkInstructor, excelGeneratorStudentsInstructor)
 
