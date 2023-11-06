@@ -6,11 +6,25 @@ import { sendEmailAnyBody, sendEmailAnyBodyNotfile } from '../controllers/email.
 import XLSX from 'xlsx'
 import { type IStudentData } from '../interfaces/scheduler.interfaces.js'
 
+/**
+ * Especifíca las reglas de ejecución del programador semanal
+ * @property {number} rule.dayOfWeek - Que dia de la semana se va a ejecutar siendo 0 = Domingo y 6 = Sabado
+ * @property {number} rule.hour - Que hora se va a ejecutar
+ * @property {number} rule.minute - Que minuto se va a ejecutar
+ */
 const rule = new schedule.RecurrenceRule()
 rule.dayOfWeek = 1
 rule.hour = 10
 rule.minute = 0
 
+/**
+ * Se encarga de generar el informe de aprendices sin practicas, enviar los correos a los aprendices y generar el excel para retornar los dos correos principales
+ * @param {schedule.RecurrenceRule} rule
+ * @param {JobCallback}
+ * @callback
+ * @returns {Job}
+ * @async
+ */
 export const schedulerTasks = schedule.scheduleJob(rule, async () => {
   try {
     const data = await querySchedule()
@@ -70,6 +84,12 @@ export const schedulerTasks = schedule.scheduleJob(rule, async () => {
   }
 })
 
+/**
+ * Generador de excel del archivo enviado al correo junto con un parseo de columans
+ * @param {Object[]} payload
+ * @returns {Buffer} - Archivo excel
+ * @throws {Error} Error mandado por XLSX
+ */
 const generateExcel = (payload: object[]): Buffer => {
   try {
     const data = payload.map((student: any) => {
@@ -92,6 +112,12 @@ const generateExcel = (payload: object[]): Buffer => {
   }
 }
 
+/**
+ * Se encarga de enviar los correos a todos los aprendices que se encuentran actualmente en un estado diferente 'Prácticas' o su fecha de fin de practicas no es especifícado
+ * @param {IStudentData[]} payload
+ * @returns {Promise<void>}
+ * @async
+ */
 const sendEmailsToStudents = async (payload: IStudentData[]): Promise<void> => {
   try {
     for (let i = 0; i < payload.length; i++) {
@@ -108,6 +134,12 @@ const sendEmailsToStudents = async (payload: IStudentData[]): Promise<void> => {
   }
 }
 
+/**
+ * Llama el procedimiento almacenado que genera el informe semanal
+ * @returns {Promise<any>}
+ * @throws {DbError} Error estandar escrito
+ * @async
+ */
 const querySchedule = async (): Promise<any> => {
   try {
     const [query] = await connection.query<RowDataPacket[]>('call alerta_bisemanal()', [])
