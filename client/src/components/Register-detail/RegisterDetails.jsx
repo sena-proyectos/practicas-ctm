@@ -720,7 +720,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
                   )}
                 </div>
               )}
-              {idRol && idRol === Number(keysRoles[1]) && Number(coordinatorID) !== Number(userID) ? (
+              {idRol && idRol === Number(keysRoles[1]) && Number(coordinatorID) === Number(userID) ? (
                 <Fragment>
                   <div className='flex flex-row gap-2 place-self-center'>
                     {!selectedApproveButton ? (

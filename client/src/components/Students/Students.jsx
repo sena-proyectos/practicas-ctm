@@ -484,6 +484,10 @@ export const Students = () => {
                         <div className='h-2.5 w-2.5 rounded-full bg-green-500 mr-2' />
                         Finalizada
                       </div>
+                      <div className='flex flex-row items-center'>
+                        <div className='h-2.5 w-2.5 rounded-full bg-gray-500 mr-2' />
+                        Condicionado
+                      </div>
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -502,7 +506,7 @@ export const Students = () => {
                         <h3 className='w-[12ch] text-center'>{student.nombre_modalidad ? student.nombre_modalidad : 'N/A'}</h3>
                       </TableCell>
                       <TableCell>
-                        <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'Lectiva' ? 'bg-red-500' : student.estado_aprendiz === 'Prácticas' ? 'bg-yellow-500' : student.estado_aprendiz === 'Finalizada' ? 'bg-green-500' : null} m-auto`} />
+                        <div className={`h-3.5 w-3.5 rounded-full ${student.estado_aprendiz === 'lectiva' || student.estado_aprendiz === 'en formacion' ? 'bg-red-500' : student.estado_aprendiz === 'practicas' || student.estado_aprendiz === 'contratado' ? 'bg-yellow-500' : student.estado_aprendiz === 'finalizada' || student.estado_aprendiz === 'terminado' ? 'bg-green-500' : student.estado_aprendiz === 'condicionado' ? 'bg-gray-500' : null} m-auto`} />
                       </TableCell>
                       <TableCell className='text-2xl text-center'>
                         <Link to={`/info-aprendiz/${student.id_aprendiz}`} type='button'>

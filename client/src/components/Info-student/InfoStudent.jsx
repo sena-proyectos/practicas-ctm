@@ -235,6 +235,7 @@ const Novedades = () => {
               <option value='Terminado'>Terminado</option>
               <option value='Contratado'>Contratado</option>
               <option value='Cancelado'>Cancelado</option>
+              <option value='Condicionado'>Condicionado</option>
             </select>
           </div>
           <hr className='w-3/5 mx-auto border-gray-300 border-1 rounded-xl' />
