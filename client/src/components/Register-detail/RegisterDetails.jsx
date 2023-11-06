@@ -596,13 +596,15 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
    * acceptApprove(datosAprobacion, toastId);
    */
   const acceptApprove = async (payload, toastId) => {
+    const { email_inscripcion } = inscriptionData
     const estado_aval = { Si: 'Aprobado', No: 'Rechazado' }
     const id = payload.avalCoordinador
 
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations }
     try {
       await inscriptionDetailsUpdate(id, data)
-      await sendEmail({ to: 't46537753@gmail.com', htmlData: [null, { nombre_inscripcion: dataAprendiz[0].nombre_inscripcion, apellido_inscripcion: dataAprendiz[0].apellido_inscripcion, observations: payload.observations }], subject: 'Aceptado de solicitud de inscripción de etapa práctica' })
+
+      await sendEmail({ to: email_inscripcion, htmlData: [null, { nombre_inscripcion: dataAprendiz[0].nombre_inscripcion, apellido_inscripcion: dataAprendiz[0].apellido_inscripcion, observations: payload.observations }], subject: 'Aceptado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchInfo()
@@ -637,7 +639,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
    * denyApprove(datosAprobacion, toastId);
    */
   const denyApprove = async (payload, toastId) => {
-    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const { nombre_inscripcion, apellido_inscripcion, email_inscripcion } = inscriptionData
     const estado_aval = { No: 'Rechazado' }
     const id = payload.avalCoordinador
     const cookie = Cookies.get('token')
@@ -647,7 +649,7 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     try {
       await inscriptionDetailsUpdate(id, data)
 
-      await sendEmail({ to: 't46537753@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      await sendEmail({ to: email_inscripcion, htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchInfo()
@@ -1152,7 +1154,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
       const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
       const { apellidos_usuario, nombres_usuario, email_usuario } = userData.data.data[0]
       await inscriptionDetailsUpdate(idApprovalDetail, { responsable_aval: id })
-      await sendEmailFunctions({ to: 'blandon0207s@gmail.com', subject: 'Solicitud de revisión carta de funciones', nombre: nombres_usuario, apellido: apellidos_usuario, apprentice: String(`${nombre_inscripcion} ${apellido_inscripcion}`) })
+      await sendEmailFunctions({ to: email_usuario, subject: 'Solicitud de revisión carta de funciones', nombre: nombres_usuario, apellido: apellidos_usuario, apprentice: String(`${nombre_inscripcion} ${apellido_inscripcion}`) })
       toast.success('Instructor guardado correctamente', { isLoading: false, autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       fetchDataFunciones(avalFunciones)
     } catch (error) {
@@ -1196,7 +1198,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
    * @name denyFunctionsApprove
    */
   const denyFuntionsApprove = async (payload, toastId) => {
-    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const { nombre_inscripcion, apellido_inscripcion, email_inscripcion } = inscriptionData
     const estado_aval = { No: 'Rechazado' }
     const id = payload.avalFunciones
     const cookie = Cookies.get('token')
@@ -1205,7 +1207,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
-      await sendEmail({ to: 't46537753@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      await sendEmail({ to: email_inscripcion, htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchDataFunciones(avalFunciones)
@@ -1483,7 +1485,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
    * denyFullDocsApprove({ observations, approveOption, avalDocumentos }, 'toastId');
    */
   const denyFullDocsApprove = async (payload, toastId) => {
-    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const { nombre_inscripcion, apellido_inscripcion, email_inscripcion } = inscriptionData
     const estado_aval = { No: 'Rechazado' }
     const id = payload.avalDocumentos
     const cookie = Cookies.get('token')
@@ -1492,7 +1494,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)('inscripcion updated')
-      await sendEmail({ to: 't46537753@gmail.com', htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
+      await sendEmail({ to: email_inscripcion, htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchDataDocuments()
@@ -1779,7 +1781,7 @@ const RAPS = ({ idRol, avalRaps }) => {
    * denyApprove({ observations: 'Rechazado', approveOption: 'No', avalRaps: 456, htmlContent: '<html>...</html>' }, 'loadingToast');
    */
   const denyApprove = async (payload, toastId) => {
-    const { nombre_inscripcion, apellido_inscripcion } = inscriptionData
+    const { nombre_inscripcion, apellido_inscripcion, email_inscripcion } = inscriptionData
     const estado_aval = { No: 'Rechazado' }
     const id = payload.avalRaps
     const cookie = Cookies.get('token')
@@ -1788,7 +1790,7 @@ const RAPS = ({ idRol, avalRaps }) => {
     const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
-      await sendEmail({ to: 't46537753@gmail.com', subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
+      await sendEmail({ to: email_inscripcion, subject: 'Rechazado de solicitud de inscripción de etapa práctica', htmlData: [payload.htmlContent, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }] })
       toast.update(toastId, { render: '¡Aval denegado!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
       selectButtonToSubmit(null)
       fetchRaps()
