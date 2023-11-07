@@ -574,9 +574,13 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
     e.preventDefault()
 
     const formPassword = Object.fromEntries(new FormData(e.target))
-    onSavePassword(formPassword)
 
-    closeModal()
+    if (formPassword.newPassword !== formPassword.confirmPassword) {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Las contraseñas no coinciden' })
+    } else {
+      onSavePassword(formPassword)
+      closeModal()
+    }
   }
 
   return (

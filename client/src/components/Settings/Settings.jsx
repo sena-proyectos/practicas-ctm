@@ -107,7 +107,7 @@ export const Settings = () => {
     const id_rol = user.id_rol
     const formValues = Object.fromEntries(new FormData(e.target))
     formValues.id_rol = id_rol
-    password === '' ? (formValues.contrasena = user.contrasena_usuario) : (formValues.contrasena = password)
+    password !== '' && (formValues.contrasena = password)
     const id_usuario = user.id_usuario
     setPassword('')
 
