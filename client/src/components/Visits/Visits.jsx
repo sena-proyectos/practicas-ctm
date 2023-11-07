@@ -17,6 +17,20 @@ export const Visits = () => {
 
   const [visitsData, setVisitData] = useState([])
 
+  /**
+   * @function
+   *
+   * @description
+   * Este efecto de React se utiliza para cargar datos de un estudiante desde la memoria caché de la sesión y actualizar el estado del componente cuando se monta por primera vez.
+   *
+   * @param {function} effect - La función que contiene la lógica del efecto.
+   * @param {array} dependencies - Un arreglo de dependencias que determina cuándo se debe ejecutar el efecto. Si está vacío, el efecto se ejecuta solo una vez al montar el componente.
+   * @returns {void}
+   *
+   * @reference
+   * Este efecto se utiliza para cargar datos de estudiante almacenados en la memoria caché de la sesión y actualizar el estado del componente al montarse por primera vez.
+   *
+   */
   useEffect(() => {
     const cachedData = JSON.parse(sessionStorage.getItem('apprenticeData'))
     if (cachedData) {
@@ -24,6 +38,25 @@ export const Visits = () => {
     }
   }, [])
 
+  /**
+   * @function
+   * @name getVisits
+   * @async
+   *
+   * @description
+   * Esta función realiza una solicitud para obtener los datos de las visitas realizadas por el estudiante identificado por `id`. Luego, actualiza el estado `visitData` con los datos obtenidos. En caso de error, muestra un mensaje de error genérico.
+   *
+   * @param {number} id - El ID del estudiante para el cual se desean obtener las visitas.
+   * @throws {Error} Si la solicitud no se procesa con éxito, se muestra un mensaje de error.
+   * @returns {Promise<void>}
+   *
+   * @reference
+   * Esta función se utiliza para obtener datos de visitas de un estudiante y se invoca en respuesta a eventos o acciones en el componente.
+   *
+   * @example
+   * getVisits();
+   *
+   */
   const getVisits = async () => {
     try {
       const { data } = await getVisitsByStudent(id)
@@ -36,6 +69,24 @@ export const Visits = () => {
     getVisits()
   }, [])
 
+  /**
+   * @function handleSubmit
+   *
+   * @description
+   * Esta función se utiliza para gestionar la presentación de un formulario y el envío de datos para actualizar el estado de una visita identificada por `id_visita`. Dependiendo de la selección en el formulario, se establece el estado de la visita como 'Realizado' o 'Pendiente'. Además, se incluye el número de la visita en los datos antes de enviarlos mediante la función `sendData`.
+   *
+   * @param {Event} e - El evento del formulario que se está manejando.
+   * @param {number} id_visita - El ID de la visita que se va a actualizar.
+   * @param {number} numero_visita - El número de la visita que se va a actualizar.
+   * @returns {void}
+   *
+   * @reference
+   * Esta función se utiliza en un formulario para actualizar el estado de una visita y enviar los datos actualizados al servidor.
+   *
+   * @example
+   * handleSubmit(e, visitaID, numeroVisita);
+   *
+   */
   const handleSubmit = (e, id_visita, numero_visita) => {
     e.preventDefault()
     const { id_usuario: usuario_responsable } = getUserID().user
@@ -50,6 +101,26 @@ export const Visits = () => {
     sendData(id_visita, { ...data, usuario_responsable })
   }
 
+  /**
+   * @function
+   * @name sendData
+   * @async
+   *
+   * @description
+   * Esta función realiza una solicitud para enviar los datos actualizados de una visita al servidor, identificada por `id`, utilizando el objeto `payload`. En caso de éxito, muestra un mensaje de éxito y actualiza la lista de visitas mediante la función `getVisits`. En caso de error, muestra un mensaje de error genérico.
+   *
+   * @param {number} id - El ID de la visita que se va a actualizar.
+   * @param {Object} payload - Los datos a enviar para actualizar la visita.
+   * @throws {Error} Si la solicitud no se procesa con éxito, se muestra un mensaje de error.
+   * @returns {Promise<void>}
+   *
+   * @reference
+   * Esta función se utiliza para enviar datos y actualizar una visita en el servidor, y se invoca en respuesta a eventos o acciones en el componente.
+   *
+   * @example
+   * sendData(visitaID, { ...data, usuario_responsable });
+   *
+   */
   const sendData = async (id, payload) => {
     try {
       await patchVisitById(id, payload)

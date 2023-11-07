@@ -58,4 +58,3 @@ export const LoadingButton = ({ bgColor = '', classNames = '' }) => {
     </button>
   )
 }
-

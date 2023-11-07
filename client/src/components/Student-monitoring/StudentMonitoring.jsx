@@ -26,11 +26,13 @@ export const StudentMonitoring = () => {
   const [optionsModality, setOptionsModality] = useState(false)
 
   /**
-   * Función asincrónica para buscar aprendices por nombre de usuario.
-   *
-   * @async
    * @function
    * @name searchApprentices
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para buscar aprendices por su nombre. Si el término de búsqueda está vacío, restablece el estado de error y la lista de aprendices buscados. En caso de éxito, procesa el nombre del aprendiz, actualiza el estado `searchedApprentices` con los resultados de la búsqueda y elimina el error. Si se produce un error, muestra un mensaje de error indicando que el aprendiz no existe y restablece la lista de aprendices buscados.
+   *
    * @param {string} searchTerm - Término de búsqueda para el aprendiz.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
@@ -77,11 +79,13 @@ export const StudentMonitoring = () => {
   }
 
   /**
-   * Función asincrónica para obtener la lista de aprendices.
-   *
-   * @async
    * @function
    * @name getApprentices
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para obtener la lista de aprendices. Dependiendo del rol del usuario autenticado (instructor o no), se utiliza la función correspondiente para obtener la lista de aprendices. En caso de ser instructor, se utiliza la función `getApprenticesTrackingInstructor(id_usuario)`, y en caso de ser otro rol, se utiliza `detailInfoStudents()`. Los resultados se formatean y se almacenan en el estado `apprentices` para su uso en el componente.
+   *
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
    *
@@ -119,6 +123,19 @@ export const StudentMonitoring = () => {
     }
   }
 
+  /**
+   * @function
+   * @name getApprenticesTrackingInstructor
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para obtener la lista de aprendices que están de instructor de seguimiento en específico.
+   * Utiliza la función `getStudentsByTeacherId(id)` para obtener los datos de los aprendices del instructor de seguimiento con el ID proporcionado. Los resultados se formatean y se almacenan en el estado `apprentices` para su uso en el componente. Si se produce un error, se establece un mensaje de error en el estado `error`.
+   *
+   * @param {number} id - El ID del instructor del cual se desean recuperar los aprendices asignados.
+   * @throws {Error} Si ocurre un error al realizar la solicitud.
+   * @returns {void}
+   */
   const getApprenticesTrackingInstructor = async (id) => {
     try {
       const response = await getStudentsByTeacherId(id)
@@ -148,7 +165,17 @@ export const StudentMonitoring = () => {
     getApprentices()
   }, [])
 
-  // Cambia el numero de paginas dependiendo de la cantidad de estudiantes
+  /**
+   * @function
+   *
+   * @description
+   * Este efecto se activa cuando hay cambios en `searchedApprentices`, `error` o `apprentices`. Si `searchedApprentices` tiene elementos y no hay errores, actualiza `currentStudentList` con los aprendices buscados y establece `pageNumber` en 1. En caso contrario, restablece `currentStudentList` a la lista completa de aprendices almacenada en `apprentices`.
+   *
+   * @param {function} effect - La función que contiene la lógica del efecto.
+   * @param {array} dependencies - Un arreglo de dependencias que determina cuándo se debe ejecutar el efecto.
+   * @returns {void}
+   *
+   */
   useEffect(() => {
     if (searchedApprentices.length > 0 && !error) {
       setCurrentStudentList(searchedApprentices)
@@ -159,51 +186,49 @@ export const StudentMonitoring = () => {
   }, [searchedApprentices, error, apprentices])
 
   /**
-   * Número de aprendices a mostrar por página.
-   *
-   * @constant
-   * @name studentsPerPage
    * @type {number}
+   * @name studentsPerPage
    * @default 6
-   *
-   * @example
-   * const aprendicesPorPagina = studentsPerPage;
+   * @description
+   * Almacena la cantidad de aprendices que se muestran por página en la paginación de aprendices.
    */
   const studentsPerPage = 6
+
   /**
-   * Calcula el número de páginas necesarias para la paginación de aprendices.
-   *
-   * @constant
-   * @name pageCount
    * @type {number}
-   *
-   * @example
-   * const numeroDePaginas = pageCount;
+   * @name pageCount
+   * @description
+   * Almacena el número de páginas necesarias para mostrar todos los aprendices en función de la cantidad de aprendices por página.
    */
   const pageCount = Math.ceil(currentStudentList.length / studentsPerPage)
+
   /**
-   * Índice de inicio de la lista de aprendices a mostrar en la página actual.
-   *
-   * @constant
-   * @name startIndex
    * @type {number}
-   *
-   * @example
-   * const indiceInicio = startIndex;
+   * @name startIndex
+   * @description
+   * Almacena el índice de inicio de un rango de aprendices en función del número de página actual y la cantidad de aprendices por página.
    */
   const startIndex = (pageNumber - 1) * studentsPerPage
+
   /**
-   * Índice de fin de la lista de aprendices a mostrar en la página actual.
-   *
-   * @constant
-   * @name endIndex
    * @type {number}
-   *
-   * @example
-   * const indiceFin = endIndex;
+   * @name endIndex
+   * @description
+   * Almacena el índice de fin de un rango de aprendices que se muestra en una paginación.
    */
   const endIndex = startIndex + studentsPerPage
 
+  /**
+   * @function
+   * @name sendExcelFile
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para enviar un archivo Excel al servidor. El archivo se selecciona utilizando un input y se adjunta al objeto FormData. Luego se llama a la función `sendExcelContrato(formData)` para enviar el archivo al servidor. La función devuelve una promesa que se debe esperar para obtener la respuesta del servidor. Si se produce un error al enviar el archivo, se lanza una excepción con el error.
+   *
+   * @returns {Promise} Una promesa que se resuelve cuando se ha enviado el archivo exitosamente.
+   * @throws {Error} Si ocurre un error al enviar el archivo.
+   */
   const sendExcelFile = async () => {
     const [file] = inputFileRef.current.files
     const formData = new FormData()
@@ -215,6 +240,15 @@ export const StudentMonitoring = () => {
     }
   }
 
+  /**
+   * @function
+   * @name handleExcelFile
+   *
+   * @description
+   * Esta función se utiliza para manejar la subida de un archivo Excel. Muestra un cuadro de diálogo de confirmación para que el usuario confirme la subida del archivo. Luego, llama a la función `sendExcelFile()` para cargar el archivo. Si la carga es exitosa, muestra un mensaje indicando la cantidad de aprendices subidos correctamente y actualiza la lista de aprendices llamando a la función `getApprentices()`. En caso de error, muestra un mensaje de error.
+   *
+   * @param {Event} e - El evento de cambio de archivo que desencadenó la función.
+   */
   const handleExcelFile = (e) => {
     const [file] = e.target.files
     Swal.fire({
@@ -252,6 +286,13 @@ export const StudentMonitoring = () => {
       })
   }
 
+  /**
+   * @function
+   * @name disabledOptions
+   *
+   * @description
+   * Esta función deshabilita ciertas opciones después de un breve período de tiempo.
+   */
   const disabledOptions = () => {
     setTimeout(() => {
       setOptionsExcel(false)
@@ -269,6 +310,18 @@ export const StudentMonitoring = () => {
   const date = new Date()
   const fullDate = `${date.getDate()}_${date.getMonth() + 1}_${date.getFullYear()}`
 
+  /**
+   * Genera un excel con todos los aprendices que se encuentren en el software y permite descargarlo
+   *
+   * @function
+   * @name generateExcel
+   * @async
+   *
+   * @description
+   * Esta función llama a `generateExcelStudents()` para obtener los datos del archivo Excel. Luego, crea un Blob a partir de los datos y lo convierte en un objeto URL. A continuación, crea un elemento `<a>` en el DOM, establece la URL generada y un nombre de archivo para el enlace. Finalmente, desencadena la descarga del archivo haciendo clic en el enlace y elimina el objeto URL después de la descarga.
+   *
+   * @returns {void}
+   */
   const generateExcel = async () => {
     try {
       const response = await generateExcelStudents()
@@ -293,6 +346,18 @@ export const StudentMonitoring = () => {
     }
   }
 
+  /**
+   * Genera un excel con todos los aprendices que se encuentren en el practicas y permite descargarlo
+
+   * @function
+   * @name generateStudentsPractical
+   * @async
+   *
+   * @description
+   * Esta función llama a `generateExcelStudentsPractical()` para obtener los datos del archivo Excel. Luego, crea un Blob a partir de los datos y lo convierte en un objeto URL. A continuación, crea un elemento `<a>` en el DOM, establece la URL generada y un nombre de archivo para el enlace. Finalmente, desencadena la descarga del archivo haciendo clic en el enlace y elimina el objeto URL después de la descarga.
+   *
+   * @returns {void}
+   */
   const generateStudentsPractical = async () => {
     try {
       const response = await generateExcelStudentsPractical()
@@ -317,6 +382,19 @@ export const StudentMonitoring = () => {
     }
   }
 
+  /**
+   * Genera un excel con todos los aprendices por una modalidad y permite descargarlo
+
+   * @function
+   * @name generateExcelModality
+   * @async
+   *
+   * @description
+   * Esta función llama a `generateExcelStudentsByModality(modality)` para obtener los datos del archivo Excel específicos para la modalidad proporcionada. Luego, crea un Blob a partir de los datos y lo convierte en un objeto URL. A continuación, crea un elemento `<a>` en el DOM, establece la URL generada y un nombre de archivo para el enlace. Finalmente, desencadena la descarga del archivo haciendo clic en el enlace y elimina el objeto URL después de la descarga.
+   *
+   * @param {string} modality - La modalidad de los estudiantes para filtrar la información.
+   * @returns {void}
+   */
   const generateExcelModality = async (modality) => {
     try {
       const response = await generateExcelStudentsByModality(modality)
@@ -341,6 +419,18 @@ export const StudentMonitoring = () => {
     }
   }
 
+  /**
+   * Genera un excel con todos los aprendices que ya estan en etapa aun no estan en prácticas y permite descargarlo
+
+   * @function
+   * @name generateExcelNoPractical
+   * @async
+   *
+   * @description
+   * Esta función llama a `generateExcelStudentsNoPractical()` para obtener los datos del archivo Excel específicos para estudiantes que no están en prácticas. Luego, crea un Blob a partir de los datos y lo convierte en un objeto URL. A continuación, crea un elemento `<a>` en el DOM, establece la URL generada y un nombre de archivo para el enlace. Finalmente, desencadena la descarga del archivo haciendo clic en el enlace y elimina el objeto URL después de la descarga.
+   *
+   * @returns {void}
+   */
   const generateExcelNoPractical = async () => {
     try {
       const response = await generateExcelStudentsNoPractical()

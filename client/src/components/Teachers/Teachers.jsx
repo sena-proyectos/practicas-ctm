@@ -40,12 +40,14 @@ export const Teachers = () => {
   const idRol = Number(localStorage.getItem('idRol'))
 
   /**
-   * Función asincrónica para buscar aprendices por nombre de usuario.
-   *
-   * @async
    * @function
    * @name searchTeachers
-   * @param {string} searchTerm - Término de búsqueda para el aprendiz.
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para buscar instructores por su nombre. Si el término de búsqueda está vacío, restablece el estado de error y la lista de instructores buscados. En caso de éxito, procesa el nombre del instructor, actualiza el estado `searchedTeachers` con los resultados de la búsqueda y elimina el error. Si se produce un error, muestra un mensaje de error indicando que el instructor no existe y restablece la lista de instructores buscados.
+   *
+   * @param {string} searchTerm - Término de búsqueda para el instructor.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
    *
@@ -91,16 +93,22 @@ export const Teachers = () => {
   }
 
   /**
-   * Función asincrónica para obtener la lista de instructores.
-   *
-   * @async
    * @function
    * @name getInstructores
-   * @throws {Error} Error en caso de fallo en la solicitud.
-   * @returns {void}
+   * @async
+   *
+   * @description
+   * Esta función realiza una solicitud para obtener la lista de instructores de seguimiento utilizando la función `getTeachers`. Luego, procesa el nombre de cada instructor para capitalizar las primeras letras de cada palabra. Finalmente, actualiza el estado `teacher` con los datos obtenidos y establece el estado `loading` como `false`.
+   *
+   * @throws {Error} Si la solicitud no se procesa con éxito, se lanza un error.
+   * @returns {Promise<void>}
+   *
+   * @reference
+   * Esta función se utiliza para obtener información de instructores y formatear los nombres antes de actualizar el estado del componente.
    *
    * @example
    * getInstructores();
+   *
    */
   const getInstructores = async () => {
     try {
@@ -131,7 +139,17 @@ export const Teachers = () => {
     getInstructores()
   }, [])
 
-  // Cambia el numero de paginas dependiendo de la cantidad de instructores
+  /**
+   * @function
+   *
+   * @description
+   * Este efecto se activa cuando hay cambios en `searchedTeachers`, `error` o `teacher`. Si `searchedTeachers` tiene elementos y no hay errores, actualiza `currentTeachers` con los instructores buscados y establece `pageNumber` en 1. En caso contrario, restablece `currentTeachers` a la lista completa de instructores almacenada en `teacher`.
+   *
+   * @param {function} effect - La función que contiene la lógica del efecto.
+   * @param {array} dependencies - Un arreglo de dependencias que determina cuándo se debe ejecutar el efecto.
+   * @returns {void}
+   *
+   */
   useEffect(() => {
     if (searchedTeachers.length > 0 && !error) {
       setCurrentTeachers(searchedTeachers)
@@ -142,28 +160,20 @@ export const Teachers = () => {
   }, [searchedTeachers, error, teacher])
 
   /**
-   * Número de instructores a mostrar por página.
-   *
-   * @constant
-   * @name instructoresPerPage
    * @type {number}
+   * @name instructoresPerPage
    * @default 8
-   *
-   * @example
-   * const instructoresPorPagina = instructoresPerPage;
+   * @description
+   * Almacena la cantidad de instructores que se muestran por página en la paginación de instructores.
    */
   const instructoresPerPage = 8
-  /**
-   * Calcula el número de páginas necesarias para la paginación de instructores y la busquedad de instructores.
-   *
-   * @constant
-   * @name pageCount
-   * @type {number}
-   *
-   * @example
-   * const numeroDePaginas = pageCount;
-   */
 
+  /**
+   * @type {number}
+   * @name pageCount
+   * @description
+   * Almacena el número de páginas necesarias para mostrar todos los instructores en función de la cantidad de instructores por página.
+   */
   const pageCount = Math.ceil(currentTeachers.length / instructoresPerPage)
 
   /**
@@ -179,27 +189,20 @@ export const Teachers = () => {
   const allColors = teacher.map((_, index) => ({
     ...colorsOddRow[index % colorsOddRow.length]
   }))
+
   /**
-   * Índice de inicio de la lista de instructores a mostrar en la página actual.
-   *
-   * @constant
-   * @name startIndex
    * @type {number}
-   *
-   * @example
-   * const indiceInicio = startIndex;
+   * @name startIndex
+   * @description
+   * Almacena el índice de inicio de un rango de instructores en función del número de página actual y la cantidad de instructores por página.
    */
   const startIndex = (pageNumber - 1) * instructoresPerPage
 
   /**
-   * Índice de fin de la lista de instructores a mostrar en la página actual.
-   *
-   * @constant
-   * @name endIndex
    * @type {number}
-   *
-   * @example
-   * const indiceFin = endIndex;
+   * @name endIndex
+   * @description
+   * Almacena el índice de fin de un rango de instructores que se muestra en una paginación.
    */
   const endIndex = startIndex + instructoresPerPage
 
@@ -238,12 +241,8 @@ export const Teachers = () => {
    * Efecto secundario para mostrar una notificación de crear instructor y actualizar la lista de instructores.
    *
    * @function
-   * @name useEffectMostrarNotificacionYActualizarInstructores
    * @param {boolean} notify - Estado de notificación.
    * @returns {void}
-   *
-   * @example
-   * useEffectMostrarNotificacionYActualizarInstructores(true);
    */
   useEffect(() => {
     if (notify) {

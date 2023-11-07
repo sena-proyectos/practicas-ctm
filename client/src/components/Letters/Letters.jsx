@@ -1,13 +1,17 @@
 import { useParams } from 'react-router-dom'
-import { apprenticeStore } from '../../store/config'
 import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+
+// icons
+import { LuSave } from 'react-icons/lu'
+import { PiScrollLight } from 'react-icons/pi'
+
+// components
+import { apprenticeStore } from '../../store/config'
 import { CardWithChildren } from '../Utils/Card/Card'
 import { Button } from '../Utils/Button/Button'
-import { toast } from 'react-toastify'
 import { getLettersByStudentID, patchLetterByID } from '../../api/httpRequest'
-import { LuSave } from 'react-icons/lu'
 import { getUserID } from '../../import/getIDActualUser'
-import { PiScrollLight } from 'react-icons/pi'
 
 export const Letters = () => {
   const { id } = useParams()
@@ -15,6 +19,25 @@ export const Letters = () => {
 
   const [lettersInfo, setLettersInfo] = useState([])
 
+  /**
+   * @function
+   * @name getDataLetters
+   * @async
+   *
+   * @description
+   * Esta función realiza una solicitud para obtener la información de las cartas de aprendiz asociadas a un estudiante utilizando su identificador `id`. Luego, actualiza el estado `lettersInfo` con la respuesta obtenida. En caso de error, muestra un mensaje de error con la descripción del error o un mensaje genérico.
+   *
+   * @param {number} id - El ID del estudiante para el cual se desean obtener las cartas.
+   * @throws {Error} Si ocurre un error durante la solicitud, se maneja y muestra un mensaje de error.
+   * @returns {Promise<void>}
+
+   *
+   * @reference Esta función se utiliza para obtener datos de cartas de un estudiante y se invoca en respuesta a ciertos eventos o acciones en el componente.
+   *
+   * @example
+   * getDataLetters(25)
+   *
+   */
   const getDataLetters = async () => {
     try {
       const response = await getLettersByStudentID(id)
@@ -25,6 +48,20 @@ export const Letters = () => {
     }
   }
 
+  /**
+   * @function
+   *
+   * @description
+   * Este efecto de React se utiliza para cargar datos de un estudiante desde la memoria caché de la sesión y actualizar el estado del componente cuando se monta por primera vez.
+   *
+   * @param {function} effect - La función que contiene la lógica del efecto.
+   * @param {array} dependencies - Un arreglo de dependencias que determina cuándo se debe ejecutar el efecto. Si está vacío, el efecto se ejecuta solo una vez al montar el componente.
+   * @returns {void}
+   *
+   * @reference
+   * Este efecto se utiliza para cargar datos de estudiante almacenados en la memoria caché de la sesión y actualizar el estado del componente al montarse por primera vez.
+   *
+   */
   useEffect(() => {
     const cachedData = JSON.parse(sessionStorage.getItem('apprenticeData'))
     if (cachedData) {
@@ -36,16 +73,52 @@ export const Letters = () => {
     getDataLetters()
   }, [])
 
+  /**
+   * @typedef {Object} typeOfLetter
+   *
+   * @description
+   * Este objeto define los tipos de cartas disponibles en una aplicación.
+   *
+   * @property {string} start - Tipo de carta de inicio.
+   * @property {string} end - Tipo de carta de fin.
+   */
   const typeOfLetter = {
     start: 'inicio',
     end: 'fin'
   }
 
+  /**
+   * @typedef {Object} LetterState
+   *
+   * @description
+   * Este objeto define los estados posibles de una carta en una aplicación.
+   *
+   * @property {string} presented - Representa el estado de una carta como "Presentado".
+   * @property {string} noPresented - Representa el estado de una carta como "No presentado".
+   */
   const LetterState = {
     presented: 'Presentado',
     noPresented: 'No presentado'
   }
 
+  /**
+   * @function
+   * @name formHandleStateEnd
+   *
+   * @description
+   * Este método se utiliza para gestionar el estado de la carta final del aprendiz.
+   * Actualiza el estado de la carta y realiza una llamada a la función `modifyLetterState` para guardar los cambios en el servidor.
+   *
+   * @param {Event} e - El evento del formulario que se está manejando.
+   * @returns {void}
+   *
+   * @reference
+   * Esta función se utiliza en un formulario para cambiar el estado de una carta al estado final y enviar los datos actualizados al servidor.
+   *
+   * @example
+   * formHandleStateEnd(event);
+   *
+   */
   const formHandleStateEnd = (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
@@ -60,6 +133,24 @@ export const Letters = () => {
     modifyLetterState(id_carta_aprendiz, { tipo_carta_aprendiz: typeOfLetter.end, ...data, usuario_responsable })
   }
 
+  /**
+   * @function
+   * @name formHandleStateStart
+   *
+   * @description
+   * Este método se utiliza para gestionar el estado de la carta inicial del aprendiz.
+   * Actualiza el estado de la carta y realiza una llamada a la función `modifyLetterState` para guardar los cambios en el servidor.
+   *
+   * @param {Event} e - El evento del formulario que se está manejando.
+   * @returns {void}
+   *
+   * @reference
+   * Esta función se utiliza en un formulario para cambiar el estado de una carta al estado inicial y enviar los datos actualizados al servidor.
+   *
+   * @example
+   * formHandleStateStart(event);
+   *
+   */
   const formHandleStateStart = (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
@@ -74,6 +165,26 @@ export const Letters = () => {
     modifyLetterState(id_carta_aprendiz, { tipo_carta_aprendiz: typeOfLetter.start, ...data, usuario_responsable })
   }
 
+  /**
+   * @function
+   * @name modifyLetterState
+   * @async
+   *
+   * @description
+   * Esta función realiza una solicitud para modificar el estado de una carta de aprendiz en el servidor mediante la llamada a la función `patchLetterByID`. En caso de éxito, muestra un mensaje de éxito y refresca la lista de cartas con la función `getDataLetters`. En caso de error, muestra un mensaje de error con la descripción del error o un mensaje genérico.
+   *
+   * @param {number} id - El ID de la carta que se va a modificar.
+   * @param {Object} payload - Los datos a enviar para modificar la carta.
+   * @throws {Error} Si la solicitud no se procesa con éxito, se muestra un mensaje de error.
+   * @returns {Promise<void>}
+   *
+   * @reference
+   * Esta función se utiliza para actualizar el estado de una carta en el servidor a través de una solicitud PATCH y notificar al usuario sobre el resultado.
+   *
+   * @example
+   * modifyLetterState(letterId, { tipo_carta_aprendiz: typeOfLetter.start, ...data, usuario_responsable });
+   *
+   */
   const modifyLetterState = async (id, payload) => {
     try {
       const { data } = await patchLetterByID(id, payload)

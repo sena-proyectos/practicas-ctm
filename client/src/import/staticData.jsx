@@ -32,7 +32,6 @@ export const keysRoles = Object.keys(rolesNames)
  * @property {Array<object>} 1 - Datos de tarjetas para el rol 1
  * @property {Array<object>} 2 - Datos de tarjetas para el rol 2
  * @property {Array<object>} 3 - Datos de tarjetas para el rol 3
- * @property {Array<object>} 4 - Datos de tarjetas para el rol 4
  * @example
  * const tarjetas = rolesCard[1]; // Devuelve un arreglo de objetos con datos de tarjetas para el rol 1
  */
@@ -497,73 +496,6 @@ export const colorIcon = {
 export const estadoIcons = {
   visitado: <LuCalendarCheck2 />,
   visitadont: <LuCalendarX2 />
-}
-
-/**
- * @src src\components\Bitacoras\Bitacoras.jsx
- *
- * @description Bitacoras de prueba.
- * @type {Object} TestInscriptions
- */
-export const testInscriptions = {
-  data: [
-    {
-      nombreCompleto: 'Guillermo Stiven Benjumea Morales',
-      programaFormacion: 'Fabicación de Muebles Contemporaneos y Modulares',
-      ficha: '2345678',
-      estado: 'Calificado',
-      fecha: '29/06/2023'
-    },
-    {
-      nombreCompleto: 'Stiven Blandón Urrego',
-      programaFormacion: 'Analisis y Desarrollo de Software',
-      ficha: '2345678',
-      estado: 'Calificado',
-      fecha: '29/06/2023'
-    },
-    {
-      nombreCompleto: 'Lorena Quiceno Giraldo',
-      programaFormacion: 'Producción y Multimedia',
-      ficha: '2345678',
-      estado: 'Calificado',
-      fecha: '28/05/2023'
-    },
-    {
-      nombreCompleto: 'Juan Guillermo Gomez Zapata',
-      programaFormacion: 'Dibujo arquitectónico',
-      ficha: '2456666',
-      estado: 'Calificado',
-      fecha: '01/06/2023'
-    },
-    {
-      nombreCompleto: 'Guillermo Stiven Benjumea Morales',
-      programaFormacion: 'Fabicación de Muebles Contemporaneos y Modulares',
-      ficha: '2345678',
-      estado: 'Sin Calificar',
-      fecha: '06/07/2023'
-    },
-    {
-      nombreCompleto: 'Stiven Blandón Urrego',
-      programaFormacion: 'Analisis y Desarrollo de Software',
-      ficha: '2345678',
-      estado: 'Sin Calificar',
-      fecha: '06/07/2023'
-    },
-    {
-      nombreCompleto: 'Lorena Quiceno Giraldo',
-      programaFormacion: 'Producción y Multimedia',
-      ficha: '2345678',
-      estado: 'Sin Calificar',
-      fecha: '06/07/2023'
-    },
-    {
-      nombreCompleto: 'Juan Guillermo Gomez Zapata',
-      programaFormacion: 'Dibujo arquitectónico',
-      ficha: '2456666',
-      estado: 'Sin Calificar',
-      fecha: '06/07/2023'
-    }
-  ]
 }
 
 /**

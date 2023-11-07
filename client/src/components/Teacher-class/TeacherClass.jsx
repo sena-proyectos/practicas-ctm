@@ -29,12 +29,14 @@ export const TeacherClass = () => {
   const idRol = Number(localStorage.getItem('idRol'))
 
   /**
-   * Función asincrónica para buscar fichas de un instructor por numero de ficha.
-   *
-   * @async
    * @function
    * @name searchCourses
-   * @param {string} searchTerm - Término de búsqueda para las fichas.
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para buscar cursos por su número de ficha. Si el término de búsqueda está vacío, restablece el estado de error y la lista de cursos buscados. En caso de éxito, procesa el nombre del programa de formación, actualiza el estado `searchedCourses` con los resultados de la búsqueda y elimina el error. Si se produce un error, muestra un mensaje de error indicando que el curso no existe y restablece la lista de cursos buscados.
+   *
+   * @param {string} searchTerm - Término de búsqueda para el curso.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
    *
@@ -73,6 +75,24 @@ export const TeacherClass = () => {
     }
   }
 
+  /**
+   * @function
+   * @name getTeacherClass
+   * @async
+   *
+   * @description
+   * Esta función realiza una solicitud para obtener la lista de cursos por instructor de seguimiento utilizando la función `getClassByTeacherId`. Luego, procesa el nombre de cada programa de formación para capitalizar las primeras letras de cada palabra. Finalmente, actualiza el estado `dataTeacherClass` con los datos obtenidos, almacena el nombre del instructor en el estado `nameInstructor` y establece el estado `loading` como `false`.
+   *
+   * @throws {Error} Si la solicitud no se procesa con éxito, se lanza un error.
+   * @returns {Promise<void>}
+   *
+   * @reference
+   * Esta función se utiliza para obtener información de cursos y formatear los nombres de los programas de formación antes de actualizar el estado del componente.
+   *
+   * @example
+   * getTeacherClass();
+   *
+   */
   const getTeacherClass = async () => {
     try {
       const response = await getClassByTeacherId(id)
@@ -100,7 +120,17 @@ export const TeacherClass = () => {
     getTeacherClass()
   }, [])
 
-  // Cambia el numero de paginas dependiendo de la cantidad de cursos
+  /**
+   * @function
+   *
+   * @description
+   * Este efecto se activa cuando hay cambios en `searchedCourses`, `error` o `dataTeacherClass`. Si `searchedCourses` tiene elementos y no hay errores, actualiza `currentCourses` con los cursos buscados y establece `pageNumber` en 1. En caso contrario, restablece `currentCourses` a la lista completa de cursos almacenada en `dataTeacherClass`.
+   *
+   * @param {function} effect - La función que contiene la lógica del efecto.
+   * @param {array} dependencies - Un arreglo de dependencias que determina cuándo se debe ejecutar el efecto.
+   * @returns {void}
+   *
+   */
   useEffect(() => {
     if (searchedCourses.length > 0 && !error) {
       setCurrentCourses(searchedCourses)
@@ -111,51 +141,51 @@ export const TeacherClass = () => {
   }, [searchedCourses, error, dataTeacherClass])
 
   /**
-   * Número de cursos a mostrar por página.
-   *
-   * @constant
-   * @name coursesPerPage
    * @type {number}
+   * @name coursesPerPage
    * @default 6
-   *
-   * @example
-   * const cursosPorPagina = coursesPerPage;
+   * @description
+   * Almacena la cantidad de cursos que se muestran por página en la paginación de cursos.
    */
   const coursesPerPage = 6
+
   /**
-   * Calcula el número de páginas necesarias para la paginación de cursos.
-   *
-   * @constant
-   * @name pageCount
    * @type {number}
-   *
-   * @example
-   * const numeroDePaginas = pageCount;
+   * @name pageCount
+   * @description
+   * Almacena el número de páginas necesarias para mostrar todos los cursos disponibles en función de la cantidad de cursos por página.
    */
   const pageCount = Math.ceil(currentCourses.length / coursesPerPage)
+
   /**
-   * Índice de inicio de la lista de cursos a mostrar en la página actual.
-   *
-   * @constant
-   * @name startIndex
    * @type {number}
-   *
-   * @example
-   * const indiceInicio = startIndex;
+   * @name startIndex
+   * @description
+   * Almacena el índice de inicio de un rango de cursos en función del número de página actual y la cantidad de cursos por página.
    */
   const startIndex = (pageNumber - 1) * coursesPerPage
+
   /**
-   * Índice de fin de la lista de cursos a mostrar en la página actual.
-   *
-   * @constant
-   * @name endIndex
    * @type {number}
-   *
-   * @example
-   * const indiceFin = endIndex;
+   * @name endIndex
+   * @description
+   * Almacena el índice de fin de un rango de cursos que se muestra en una paginación.
    */
   const endIndex = startIndex + coursesPerPage
 
+  /**
+   * Genera un excel con todos los aprendices por un instructor y permite descargarlo
+
+   * @function
+   * @name ExcelStudentsByInstructor
+   * @async
+   *
+   * @description
+   * Esta función llama a `generateExcelStudentsByInstructor(nameInstructor)` para obtener los datos del archivo Excel específicos para el instructor proporcionado. Luego, crea un Blob a partir de los datos y lo convierte en un objeto URL. A continuación, crea un elemento `<a>` en el DOM, establece la URL generada y un nombre de archivo para el enlace. Finalmente, desencadena la descarga del archivo haciendo clic en el enlace y elimina el objeto URL después de la descarga.
+   *
+   * @param {string} nameInstructor - El nombre del instructor de seguimiento para filtrar la información.
+   * @returns {void}
+   */
   const ExcelStudentsByInstructor = async () => {
     try {
       const response = await generateExcelStudentsByInstructor(nameInstructor)

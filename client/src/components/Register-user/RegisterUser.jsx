@@ -1,14 +1,28 @@
 import { useRef } from 'react'
-import { Form } from '../Form/Form'
+
+// icons
 import { AiOutlineIdcard, AiOutlineMail } from 'react-icons/ai'
 import { BiLockAlt } from 'react-icons/bi'
 import { PiUser, PiUserGear } from 'react-icons/pi'
+
+// components
+import { Form } from '../Form/Form'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Footer } from '../Footer/Footer'
 
 export const RegisterUser = () => {
   const divRef = useRef(null)
 
+  /**
+   * @type {Object[]}
+   * @name roles
+   *
+   * @description
+   * Arreglo de objetos que contiene roles de usuario con sus valores correspondientes.
+   *
+   * @property {string} value - Valor numérico del rol.
+   * @property {string} name - Nombre del rol.
+   */
   const roles = [
     { value: '1', name: 'Administrador' },
     { value: '2', name: 'Coordinador' },
@@ -16,14 +30,19 @@ export const RegisterUser = () => {
   ]
 
   /**
-   * Configuración del formulario de registro.
-   *
-   * @constant
+   * @type {Object[]}
    * @name registerForm
-   * @type {Array}
    *
-   * @example
-   * const configuracionFormularioRegistro = registerForm;
+   * @description
+   * Arreglo de objetos que define la estructura de un formulario de registro.
+   *
+   * @property {JSX.Element} icon - Ícono relacionado al campo del formulario.
+   * @property {string} placeholder - Texto de marcador de posición del campo.
+   * @property {string} type - Tipo de campo (e.g., 'text', 'select', 'email', 'password').
+   * @property {string} nameInput - Nombre del campo de entrada.
+   * @property {Object[]} [option] - Opciones para campos de tipo 'select'.
+   * @property {string} option[].value - Valor de la opción.
+   * @property {string} option[].key - Clave de la opción.
    */
   const registerForm = [
     { icon: <AiOutlineIdcard />, placeholder: '1017924888', type: 'text', nameInput: 'num_documento' },
@@ -42,6 +61,7 @@ export const RegisterUser = () => {
     { icon: <AiOutlineMail />, placeholder: 'correo@correo.com', type: 'email', nameInput: 'correo_electronico' },
     { icon: <BiLockAlt />, placeholder: '********', type: 'password', nameInput: 'contrasena' }
   ]
+
   return (
     <main className='flex flex-row min-h-screen bg-whitesmoke'>
       <Siderbar />

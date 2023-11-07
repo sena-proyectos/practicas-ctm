@@ -33,6 +33,7 @@ export const GetUsersHttp = async () => {
   return response
 }
 
+/* OBTENER DETALLES DE UN APRENDIZ POR ID */
 export const GetStudentsDetailById = async (userID) => {
   const URL = `${baseUrl}${api}/v1/detailInfoStudent/${userID}`
 
@@ -77,6 +78,7 @@ export const GetClassByNumber = async (data) => {
   return response
 }
 
+/* ENVIAR EMAIL DE ASIGNACION DE FUNCIONES */
 export const sendEmailFunctions = async (data) => {
   const URL = `${baseUrl}${api}/v1/sendEmail/functions`
   const response = await axios.post(URL, data, { headers: { Authorization: publicToken } })
@@ -84,6 +86,7 @@ export const sendEmailFunctions = async (data) => {
   return response
 }
 
+/* OBTENER INFORMACION DETALLADA DE LOS APRENDICES */
 export const detailInfoStudents = async () => {
   const URL = `${baseUrl}${api}/v1/detailInfoStudents`
 
@@ -99,6 +102,7 @@ export const getInscriptions = async () => {
   return response
 }
 
+/* OBTENER REGISTROS POR ID DEL INSTRUCTOR */
 export const getInscriptionsByTeacherId = async (id) => {
   const URL = `${baseUrl}${api}/v1/inscriptions/teacher/${id}`
 
@@ -138,6 +142,7 @@ export const inscriptionDetailsUpdate = async (id, payload) => {
   return response
 }
 
+/* LECTOR DE EXCEL DE LOS REGISTROS */
 export const readExcel = async (fileData) => {
   const URL = `${baseUrl}${api}/v1/inscription-excel-file`
   const response = await axios.post(URL, fileData, {
@@ -180,7 +185,7 @@ export const getClassByTeacherId = async (id) => {
   return response
 }
 
-// OBTENER FICHAS SIN INSTRUCTOR LIDER O SEGUIMIENTO
+// OBTENER FICHAS SIN INSTRUCTOR DE SEGUIMIENTO
 export const getClassFree = async () => {
   const URL = `${baseUrl}${api}/v1/classesFree`
 
@@ -208,6 +213,7 @@ export const getUserById = async (id) => {
   }
 }
 
+// ENVIA CORREO
 export const sendEmail = async (payload) => {
   const URL = `${baseUrl}${api}/v1/sendEmail`
   const response = await axios.post(URL, payload, { headers: { Authorization: publicToken } })
@@ -239,40 +245,44 @@ export const getClassByLiderTeacherId = async (id) => {
 }
 
 // OBTENER MODALIDADES BY ID
-
 export const getModalitiesById = async (id) => {
   const URL = `${baseUrl}${api}/v1/practical-stages/${id}`
   const response = await axios.get(URL, { headers: { Authorization: publicToken } })
   return response
 }
 
-// Obtener inscripcion por nombre
+// OBTENER REGISTROS POR NOMBRE
 export const GetInscriptionByName = async (data) => {
   const URL = `${baseUrl}${api}/v1/inscriptionName?nombreCompleto=${data}`
   const response = await axios.get(URL, { headers: { Authorization: publicToken } })
   return response
 }
 
+// CREAR UN CURSO
 export const createCourse = async (data) => {
   const URL = `${baseUrl}${api}/v1/class`
   return await axios.post(URL, data, { headers: { Authorization: publicToken } })
 }
+
+// CREAR UN APRENDIZ
 export const createStudent = async (data) => {
   const URL = `${baseUrl}${api}/v1/create-students`
   return await axios.post(URL, data, { headers: { Authorization: publicToken } })
 }
 
+// REGISTRAR UN USUARIO
 export const registerUser = async (payload) => {
   const URL = `${baseUrl}${api}/v1/register`
   return await axios.post(URL, payload, { headers: { Authorization: publicToken } })
 }
 
+// OBTENER INSTRUCTOR POR SU ID
 export const getInfoTeacherByID = async (id) => {
   const URL = `${baseUrl}${api}/v1/teacher/${id}`
   return await axios.get(URL, { headers: { Authorization: publicToken } })
 }
 
-/* Edit User */
+/* EDITAR USUARIO */
 export const EditUser = async (id, payload) => {
   const URL = `${baseUrl}${api}/v1/edit-user/${id}`
 
@@ -280,61 +290,73 @@ export const EditUser = async (id, payload) => {
   return response
 }
 
+// OBTENER LOS COORDINADORES
 export const getCoordinators = async () => {
   const URL = `${baseUrl}${api}/v1/coordinators`
   return await axios.get(URL, { headers: { Authorization: publicToken } })
 }
 
+// OBTENER EL NOMBRE DEL COORDINADOR POR SU ID
 export const getCoordinatorNameByID = async (id) => {
   const URL = `${baseUrl}${api}/v1/coordinator/${id}`
   return await axios.get(URL, { headers: { Authorization: publicToken } })
 }
 
+// OBTENER CARTAS POR EL ID DE UN APRENDIZ
 export const getLettersByStudentID = async (id) => {
   const URL = `${baseUrl}${api}/v1/getLetterByStudent/${id}`
   return await axios.get(URL, { headers: { Authorization: publicToken } })
 }
 
+// EDITAR CARTAS POR SU ID
 export const patchLetterByID = async (id, payload) => {
   const URL = `${baseUrl}${api}/v1/modifyLetter/${id}`
   return await axios.patch(URL, payload, { headers: { Authorization: publicToken } })
 }
 
+// OBTENER BITACORAS POR EL ID DE UN APRENDIZ
 export const getBitacorasByStudentId = async (id) => {
   const URL = `${baseUrl}${api}/v1/getBitacorasByStudent/${id}`
   return await axios.get(URL, { headers: { Authorization: publicToken } })
 }
 
+// EDITAR BITACORAS POR SU ID
 export const patchBitacoraById = async (id, payload) => {
   const URL = `${baseUrl}${api}/v1/modifyBitacora/${id}`
   return await axios.patch(URL, payload, { headers: { Authorization: publicToken } })
 }
 
+// EDITAR VISITAS POR SU ID
 export const patchVisitById = async (id, payload) => {
   const URL = `${baseUrl}${api}/v1/modifyVisit/${id}`
   return await axios.patch(URL, payload, { headers: { Authorization: publicToken } })
 }
 
+// OBTENER VISITAS POR EL ID DE UN APRENDIZ
 export const getVisitsByStudent = async (id) => {
   const URL = `${baseUrl}${api}/v1/getVisitsByStudent/${id}`
   return await axios.get(URL, { headers: { Authorization: publicToken } })
 }
 
+// OBTENER DATOS DE UNA VISITA POR SU ID
 export const getVisitDataById = async (id) => {
   const URL = `${baseUrl}${api}/v1/getVisitData/${id}`
   return await axios.get(URL, { headers: { Authorization: publicToken } })
 }
 
+// LECTOR DE EXCEL DE CONTRATOS DE APRENDIZAJE
 export const sendExcelContrato = async (payload) => {
   const URL = `${baseUrl}${api}/v1/read-excel-file/students`
   return await axios.post(URL, payload, { headers: { Authorization: publicToken } })
 }
 
+// lECTOR DE EXCEL DE CURSOS
 export const sendExcelCourse = async (payload) => {
   const URL = `${baseUrl}${api}/v1/read-excel-file/classes`
   return await axios.post(URL, payload, { headers: { Authorization: publicToken } })
 }
 
+// GENERA EXCEL POR NUMERO DE FICHA
 export const generateExcelClass = async (classNumber) => {
   const URL = `${baseUrl}${api}/v1/create-excel-class`
   return await axios.get(URL, {
@@ -346,6 +368,7 @@ export const generateExcelClass = async (classNumber) => {
   })
 }
 
+// GENERA EXCEL DE LOS APRENDICES
 export const generateExcelStudents = async () => {
   const URL = `${baseUrl}${api}/v1/create-excel-students`
   return await axios.get(URL, {
@@ -354,6 +377,7 @@ export const generateExcelStudents = async () => {
   })
 }
 
+// CREAR VISITA
 export const createVisit = async (payload) => {
   const URL = `${baseUrl}${api}/v1/create-visit`
   return await axios.post(URL, payload, { headers: { Authorization: publicToken } })
@@ -375,6 +399,7 @@ export const editStudentState = async (id, payload) => {
   return response
 }
 
+// EDITAR CLASES
 export const editDateClass = async (payload) => {
   const URL = `${baseUrl}${api}/v1/dateClass`
   const response = await axios.patch(URL, payload, { headers: { Authorization: publicToken } })
@@ -425,6 +450,7 @@ export const generateExcelStudentsByInstructor = async (teacherName) => {
   })
 }
 
+// OBTENER CLASES DE UN INSTRUCTOR POR EL NUMERO DE FICHA
 export const getClassTeacherByClassNumber = async (id, data) => {
   const URL = `${baseUrl}${api}/v1/classTeacherNumber/${id}?numero_ficha=${data}`
   const response = await axios.get(URL, { headers: { Authorization: publicToken } })

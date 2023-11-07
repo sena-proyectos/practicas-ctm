@@ -37,14 +37,17 @@ export const Courses = () => {
   const [getCourses, setGetCourses] = useState(false)
   const [originalSearched, setOriginalSearched] = useState([])
   const [currentCoursesList, setCurrentCoursesList] = useState({})
+  const navigate = useNavigate()
 
   /**
-   * Función asincrónica para buscar fichas por numero de ficha.
-   *
-   * @async
    * @function
    * @name searchCourses
-   * @param {string} searchTerm - Término de búsqueda para las fichas.
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para buscar cursos por su número de ficha. Si el término de búsqueda está vacío, restablece el estado de error y la lista de cursos buscados. En caso de éxito, procesa el nombre del programa de formación, actualiza el estado `searchedCourses` con los resultados de la búsqueda y elimina el error. Si se produce un error, muestra un mensaje de error indicando que el curso no existe y restablece la lista de cursos buscados.
+   *
+   * @param {string} searchTerm - Término de búsqueda para el curso.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
    *
@@ -90,6 +93,7 @@ export const Courses = () => {
     setIsOpen(true)
   }
   const handleCloseModal = () => setIsOpen(false)
+
   /**
    * Función para manejar la visualización de los filtros.
    *
@@ -105,16 +109,22 @@ export const Courses = () => {
   }
 
   /**
-   * Función asincrónica para obtener la lista de cursos.
-   *
-   * @async
    * @function
    * @name getCursos
-   * @throws {Error} Error en caso de fallo en la solicitud.
-   * @returns {void}
+   * @async
+   *
+   * @description
+   * Esta función realiza una solicitud para obtener la lista de cursos utilizando la función `getClass`. Luego, procesa el nombre de cada programa de formación para capitalizar las primeras letras de cada palabra. Finalmente, actualiza el estado `courses` con los datos obtenidos y establece el estado `loading` como `false`.
+   *
+   * @throws {Error} Si la solicitud no se procesa con éxito, se lanza un error.
+   * @returns {Promise<void>}
+   *
+   * @reference
+   * Esta función se utiliza para obtener información de cursos y formatear los nombres de los programas de formación antes de actualizar el estado del componente.
    *
    * @example
    * getCursos();
+   *
    */
   const getCursos = async () => {
     try {
@@ -140,7 +150,17 @@ export const Courses = () => {
     getCursos()
   }, [])
 
-  // Cambia el numero de paginas dependiendo de la cantidad de cursos
+  /**
+   * @function
+   *
+   * @description
+   * Este efecto se activa cuando hay cambios en `searchedCourses`, `error` o `courses`. Si `searchedCourses` tiene elementos y no hay errores, actualiza `currentCourses` con los cursos buscados y establece `pageNumber` en 1. En caso contrario, restablece `currentCourses` a la lista completa de cursos almacenada en `courses`.
+   *
+   * @param {function} effect - La función que contiene la lógica del efecto.
+   * @param {array} dependencies - Un arreglo de dependencias que determina cuándo se debe ejecutar el efecto.
+   * @returns {void}
+   *
+   */
   useEffect(() => {
     if (searchedCourses.length > 0 && !error) {
       setCurrentCoursesList(searchedCourses)
@@ -151,54 +171,37 @@ export const Courses = () => {
   }, [searchedCourses, error, courses])
 
   /**
-   * Número de cursos a mostrar por página.
-   *
-   * @constant
-   * @name coursesPerPage
    * @type {number}
+   * @name coursesPerPage
    * @default 6
-   *
-   * @example
-   * const cursosPorPagina = coursesPerPage;
+   * @description
+   * Almacena la cantidad de cursos que se muestran por página en la paginación de cursos.
    */
   const coursesPerPage = 6
+
   /**
-   * Calcula el número de páginas necesarias para la paginación.
-   *
-   * @constant
-   * @name pageCount
    * @type {number}
-   *
-   * @example
-   * const numeroDePaginas = pageCount;
+   * @name pageCount
+   * @description
+   * Almacena el número de páginas necesarias para mostrar todos los cursos disponibles en función de la cantidad de cursos por página.
    */
   const pageCount = Math.ceil(currentCoursesList.length / coursesPerPage)
 
   /**
-   * Índice de inicio de la lista de cursos a mostrar en la página actual.
-   *
-   * @constant
-   * @name startIndex
    * @type {number}
-   *
-   * @example
-   * const indiceInicio = startIndex;
+   * @name startIndex
+   * @description
+   * Almacena el índice de inicio de un rango de cursos en función del número de página actual y la cantidad de cursos por página.
    */
   const startIndex = (pageNumber - 1) * coursesPerPage
 
   /**
-   * Índice de fin de la lista de cursos a mostrar en la página actual.
-   *
-   * @constant
-   * @name endIndex
    * @type {number}
-   *
-   * @example
-   * const indiceFin = endIndex;
+   * @name endIndex
+   * @description
+   * Almacena el índice de fin de un rango de cursos que se muestra en una paginación.
    */
   const endIndex = startIndex + coursesPerPage
-
-  const navigate = useNavigate()
 
   /**
    * Función para navegar a la página de detalles de estudiantes por ficha.
@@ -265,16 +268,18 @@ export const Courses = () => {
   }
 
   /**
-   * Maneja la selección de filtro de tipo y actualiza la lista de cursos.
-   *
    * @function
    * @name handleFilterType
-   * @param {string} filterType - Tipo de filtro ('etapa' o 'nivel').
+   *
+   * @description
+   * Esta función se utiliza para aplicar filtros a la lista de cursos basándose en el tipo de filtro y su valor. Dependiendo del tipo de filtro, se realiza una filtración de la lista de original de cursos (`coursesOriginal`) o de la lista de los cursos que se han buscado (`originalSearched`). Los cursos filtrados se establecen como la nueva lista de cursos en el estado `courses`.
+   *
+   * @param {string} filterType - Tipo de filtro ('etapa', 'nivel', 'inicioLectiva' o 'inicioPractica').
    * @param {string} filter - Valor del filtro seleccionado.
    * @returns {void}
    *
    * @example
-   * handleFilterType('etapa', 'Activo');
+   * handleFilterType('etapa', 'Lectiva');
    */
   const handleFilterType = (filterType, filter) => {
     if (filterType === 'etapa') {
@@ -492,6 +497,20 @@ export const Courses = () => {
     setSearchedCourses(originalSearched)
   }
 
+  /**
+   * @function
+   * @name sendExcelFile
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para enviar un archivo de Excel al servidor. Se obtiene el archivo seleccionado a través del ref `inputFileRef` y se crea un objeto FormData para adjuntarlo. Luego, se realiza una solicitud al servidor utilizando la función `sendExcelCourse`.
+   *
+   * @returns {Promise} - La promesa resultante de la solicitud de envío del archivo.
+   *
+   * @reference
+   * Esta función se utiliza para enviar un archivo de Excel al servidor para procesamiento.
+   *
+   */
   const sendExcelFile = async () => {
     const [file] = inputFileRef.current.files
     const formData = new FormData()
@@ -503,6 +522,20 @@ export const Courses = () => {
     }
   }
 
+  /**
+   * @function
+   * @name handleExcelFile
+   *
+   * @description
+   * Esta función se utiliza para manejar la selección y subida de un archivo de Excel. Cuando se selecciona un archivo, muestra un cuadro de diálogo de confirmación para subir el archivo. Se muestra el nombre del archivo seleccionado y se permite al usuario confirmar o cancelar la subida. Si se confirma la subida, se realiza una solicitud para enviar el archivo al servidor utilizando la función `sendExcelFile`. Si la subida es exitosa, se muestra un mensaje de éxito y se actualiza la lista de cursos llamando a `getCursos`. En caso de error, se muestra un mensaje de error y se registra el error en la consola.
+   *
+   * @param {Event} e - El evento que contiene el archivo seleccionado por el usuario.
+   * @returns {void}
+   *
+   * @reference
+   * Esta función se utiliza para manejar la carga de un archivo Excel, enviarlo al servidor y mostrar el resultado de la operación.
+   *
+   */
   const handleExcelFile = (e) => {
     const [file] = e.target.files
     Swal.fire({
