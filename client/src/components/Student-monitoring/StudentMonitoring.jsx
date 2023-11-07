@@ -1,114 +1,29 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { Pagination } from '@nextui-org/pagination'
+import Swal from 'sweetalert2'
 
 // Components
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Search } from '../Search/Search'
 import { CardStudent } from '../Utils/Card/Card'
-import { FilterModal, InfoStudentModal } from '../Utils/Modals/Modals'
 import { Footer } from '../Footer/Footer'
-import { GetUserByName, detailInfoStudents, GetStudentsDetailById } from '../../api/httpRequest'
-import { Button } from '../Utils/Button/Button'
-import { Select } from '../Utils/Select/Select'
-import { modalities } from '../../import/staticData'
+import { GetUserByName, detailInfoStudents, generateExcelStudents, generateExcelStudentsByModality, generateExcelStudentsNoPractical, generateExcelStudentsPractical, getStudentsByTeacherId, sendExcelContrato } from '../../api/httpRequest'
+import { AiOutlineFileAdd } from 'react-icons/ai'
+import { HiOutlineDocumentText } from 'react-icons/hi'
+import { getUserID } from '../../import/getIDActualUser'
 
 export const StudentMonitoring = () => {
   const [apprentices, setApprentices] = useState([])
   const [searchedApprentices, setSearchedApprentices] = useState([])
   const [error, setError] = useState(null)
-  const [modalFilter, setModalFilter] = useState(false)
-  const [infoStudent, setInfoStudent] = useState(false)
-  const [userInfoById, setInfoUserById] = useState({})
   const [loading, setLoading] = useState(true)
   const [pageNumber, setPageNumber] = useState(1)
-  const [dates, setDates] = useState({})
-
-  /**
-   * Función para manejar el clic en el icono.
-   *
-   * @function
-   * @name handleIconClick
-   * @returns {void}
-   *
-   * @example
-   * handleIconClick();
-   */
-  const handleIconClick = () => {
-    setModalFilter(!modalFilter)
-  }
-
-  /**
-   * Función para manejar el modal.
-   *
-   * @function
-   * @name handleModal
-   * @returns {void}
-   *
-   * @example
-   * handleModal();
-   */
-  const handleModal = () => {
-    setModalFilter(!modalFilter)
-  }
-
-  /**
-   * Función asincrónica para mostrar el modal del estudiante y obtener sus datos.
-   *
-   * @async
-   * @function
-   * @name modalStudent
-   * @param {string} userID - ID del usuario del estudiante.
-   * @throws {Error} Error en caso de fallo en la solicitud.
-   * @returns {void}
-   *
-   * @example
-   * modalStudent('12345');
-   */
-  const modalStudent = async (userID) => {
-    setInfoStudent(true)
-    getUser(userID)
-  }
-
-  /**
-   * Función para manejar el modal de información del estudiante.
-   *
-   * @function
-   * @name handleModalInfo
-   * @returns {void}
-   *
-   * @example
-   * handleModalInfo();
-   */
-  const handleModalInfo = () => {
-    setInfoStudent(!infoStudent)
-  }
-
-  /**
-   * Función asincrónica para obtener los datos del usuario por su ID.
-   *
-   * @async
-   * @function
-   * @name getUser
-   * @param {string} userID - ID del usuario.
-   * @throws {Error} Error en caso de fallo en la solicitud.
-   * @returns {void}
-   *
-   * @example
-   * getUser('12345');
-   */
-  const getUser = async (userID) => {
-    try {
-      const response = await GetStudentsDetailById(userID)
-      const res = response.data.data[0]
-      const { fecha_fin_lectiva, fecha_inicio_practica } = res
-      setDates({ fin_lectiva: fecha_fin_lectiva.split('T')[0], inicio_practicas: fecha_inicio_practica.split('T')[0] })
-      setInfoUserById(res)
-    } catch (error) {
-      console.error('Ha ocurrido un error al mostrar los datos del usuario')
-    }
-  }
+  const [currentStudentList, setCurrentStudentList] = useState({})
+  const inputFileRef = useRef(null)
+  const [optionsExcel, setOptionsExcel] = useState(false)
+  const [optionsModality, setOptionsModality] = useState(false)
 
   /**
    * Función asincrónica para buscar aprendices por nombre de usuario.
@@ -132,6 +47,20 @@ export const StudentMonitoring = () => {
     try {
       const response = await GetUserByName(searchTerm)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_completo = element.nombre_completo
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       if (searchTerm.trim() === '') {
         setError(null)
         setSearchedApprentices([])
@@ -160,9 +89,54 @@ export const StudentMonitoring = () => {
    * getApprentices();
    */
   const getApprentices = async () => {
+    const { id_rol, id_usuario } = getUserID().user
+    if (String(id_rol) === '3') {
+      getApprenticesTrackingInstructor(id_usuario)
+      return
+    }
+
     try {
       const response = await detailInfoStudents()
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_completo = element.nombre_completo
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
+      setApprentices(data)
+      setLoading(false)
+    } catch (error) {
+      setError('Error al obtener los aprendices')
+    }
+  }
+
+  const getApprenticesTrackingInstructor = async (id) => {
+    try {
+      const response = await getStudentsByTeacherId(id)
+      const { data } = response
+      data.forEach((element) => {
+        element.nombre_completo = element.nombre_completo
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+        element.nombre_programa_formacion = element.nombre_programa_formacion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       setApprentices(data)
       setLoading(false)
     } catch (error) {
@@ -173,6 +147,16 @@ export const StudentMonitoring = () => {
   useEffect(() => {
     getApprentices()
   }, [])
+
+  // Cambia el numero de paginas dependiendo de la cantidad de estudiantes
+  useEffect(() => {
+    if (searchedApprentices.length > 0 && !error) {
+      setCurrentStudentList(searchedApprentices)
+      setPageNumber(1)
+    } else {
+      setCurrentStudentList(apprentices)
+    }
+  }, [searchedApprentices, error, apprentices])
 
   /**
    * Número de aprendices a mostrar por página.
@@ -196,7 +180,7 @@ export const StudentMonitoring = () => {
    * @example
    * const numeroDePaginas = pageCount;
    */
-  const pageCount = Math.ceil(apprentices.length / studentsPerPage)
+  const pageCount = Math.ceil(currentStudentList.length / studentsPerPage)
   /**
    * Índice de inicio de la lista de aprendices a mostrar en la página actual.
    *
@@ -220,69 +204,242 @@ export const StudentMonitoring = () => {
    */
   const endIndex = startIndex + studentsPerPage
 
-  /**
-   * Opciones de modalidades para filtrar aprendices.
-   *
-   * @constant
-   * @name option
-   * @type {Array<Object>}
-   *
-   * @example
-   * const opcionesModalidades = option;
-   */
-  const option = modalities.map((modality) => ({
-    value: modality.name,
-    key: modality.value
-  }))
+  const sendExcelFile = async () => {
+    const [file] = inputFileRef.current.files
+    const formData = new FormData()
+    try {
+      formData.append('excelFile', file)
+      return await sendExcelContrato(formData)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const handleExcelFile = (e) => {
+    const [file] = e.target.files
+    Swal.fire({
+      title: '¿Estás seguro que quieres subir este archivo?',
+      text: `Nombre del archivo: ${file.name}`,
+      showCancelButton: true,
+      confirmButtonText: 'Subir archivo',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      preConfirm: () => {
+        return new Promise((resolve, reject) => {
+          sendExcelFile()
+            .then(({ data }) => {
+              const { readedIDs } = data
+              resolve(readedIDs)
+            })
+            .catch(() => {
+              reject(new Error('Error al subir el archivo'))
+            })
+        })
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    })
+      .then(({ value }) => {
+        Swal.fire({
+          title: `${value} aprendices de subidos correctamente.`
+        })
+        getApprentices()
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: 'Error al subir el archivo'
+        })
+        console.error(error)
+      })
+  }
+
+  const disabledOptions = () => {
+    setTimeout(() => {
+      setOptionsExcel(false)
+    }, 100)
+  }
+
+  const handleShowOptionsExcel = () => {
+    setOptionsExcel(!optionsExcel)
+  }
+
+  const showModality = () => {
+    setOptionsModality(!optionsModality)
+  }
+
+  const date = new Date()
+  const fullDate = `${date.getDate()}_${date.getMonth() + 1}_${date.getFullYear()}`
+
+  const generateExcel = async () => {
+    try {
+      const response = await generateExcelStudents()
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `estudiantes_${fullDate}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
+  const generateStudentsPractical = async () => {
+    try {
+      const response = await generateExcelStudentsPractical()
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `estudiantes_en_practicas_${fullDate}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
+  const generateExcelModality = async (modality) => {
+    try {
+      const response = await generateExcelStudentsByModality(modality)
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `estudiantes_${modality}_${fullDate}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
+  const generateExcelNoPractical = async () => {
+    try {
+      const response = await generateExcelStudentsNoPractical()
+
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `estudiantes_sin_practicas_${fullDate}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
 
   return (
-    <>
-      {modalFilter && (
-        <FilterModal title={'Filtrar Aprendices'} width='w-3/4 md:w-1/3' closeModal={handleModal}>
-          <form className='flex flex-col gap-5'>
-            <section className='flex flex-col gap-3'>
-              <section className='grid grid-rows-2'>
-                <label htmlFor='' className='text-sm text-cyan-700'>
-                  Fichas
-                </label>
-                <input type='text' className='border-gray-400 focus:text-gray-900 rounded-lg w-full border-[1.2px] bg-white py-[1px] pl-3 text-sm text-black focus:bg-white focus:outline-none' placeholder='Ej: 2473196' />
-              </section>
-              <section className='grid grid-rows-2'>
-                <label htmlFor='' className='text-sm text-cyan-700'>
-                  Programa de Formación
-                </label>
-                <input type='text' className='border-gray-400 focus:text-gray-900 rounded-lg border-[1.2px] w-full bg-white py-[1px] pl-3 text-sm text-black focus:bg-white focus:outline-none' placeholder='Ej: Análisis y Desarrollo de Software' />
-              </section>
-              <section className='grid grid-rows-2'>
-                <label htmlFor='' className='text-sm text-cyan-700'>
-                  Modalidad
-                </label>
-                <Select placeholder={'Selecciona la modalidad'} options={option} hoverColor='hover:bg-slate-600' hoverTextColor='hover:text-white' placeholderSearch='Ingrese nombre instructor' selectedColor='bg-slate-600 text-white' rounded='rounded-lg' py='py-[2.6px]' borderColor='border-slate-500' textSize={'text-sm'} />
-              </section>
-            </section>
-            <Button rounded='rounded-xl' px='px-8' py='py-1' textSize='text-base'>
-              Filtrar
-            </Button>
-          </form>
-        </FilterModal>
-      )}
-      {infoStudent && (
-        <InfoStudentModal closeModal={handleModalInfo} bodyStudent title={userInfoById.nombre_completo} emailStudent={userInfoById.email_aprendiz} documentStudent={userInfoById.numero_documento_aprendiz} cellPhoneNumber={userInfoById.celular_aprendiz} program={userInfoById.nombre_programa_formacion} courseNumber={userInfoById.numero_ficha} academicLevel={userInfoById.nivel_formacion} formationStage={userInfoById.etapa_formacion} modalitie={userInfoById.nombre_modalidad} lectivaEnd={dates.fin_lectiva} productiveStart={dates.inicio_practicas} company={userInfoById.nombre_empresa} innmediateSuperior={userInfoById.nombre_jefe} positionSuperior={userInfoById.cargo_jefe} emailSuperior={userInfoById.email_jefe} celphoneSuperior={userInfoById.numero_contacto_jefe} arl={userInfoById.nombre_arl} />
-      )}
-      <main className='flex flex-row min-h-screen bg-whitesmoke'>
-        <Siderbar />
-        <section className='relative grid flex-auto w-min grid-rows-3-10-75-15 gap-y-2 '>
-          <header className='grid place-items-center '>
-            <Search searchFilter icon placeholder={'Busca un aprendiz'} iconClick={handleIconClick} searchStudent={searchApprentices} />
-          </header>
+    <main className='flex flex-row min-h-screen bg-whitesmoke'>
+      <Siderbar />
+      <section className='grid flex-auto w-min grid-rows-[auto_1fr_auto] '>
+        <header className='grid place-items-center h-[10vh]'>
+          <Search searchFilter placeholder={'Busca un aprendiz'} searchItem={searchApprentices} />
+          <section className='absolute top-4 right-7'>
+            <button className='flex items-center gap-1 py-1 px-1.5 text-sm bg-blue-200 rounded-lg' onClick={handleShowOptionsExcel}>
+              Reportes
+              <HiOutlineDocumentText />
+            </button>
+            <ul className={`absolute right-0 mt-1 top-full w-40 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${optionsExcel ? 'visible' : 'hidden'} z-50 transition-all duration-200 px-2`} onMouseLeave={disabledOptions}>
+              <li>
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateExcel}>
+                  Todos los aprendices
+                </button>
+              </li>
+              <li>
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateStudentsPractical}>
+                  Aprendices en prácticas
+                </button>
+              </li>
+              <li>
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateExcelNoPractical}>
+                  Aprendices sin prácticas
+                </button>
+              </li>
+              <li>
+                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={showModality}>
+                  Modalidades
+                  {optionsModality && (
+                    <section className='absolute right-full mr-[2px] bg-white top-0 border border-gray rounded-lg' onMouseLeave={showModality}>
+                      <ul className='flex flex-col gap-1 p-2 w-36'>
+                        <li>
+                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('pasantias')}>
+                            Pasantías
+                          </button>
+                        </li>
+                        <li>
+                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('monitoria')}>
+                            Monitoría
+                          </button>
+                        </li>
+                        <li>
+                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('vinculacion laboral')}>
+                            Vinculación laboral
+                          </button>
+                        </li>
+                        <li>
+                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('proyecto productivo')}>
+                            Proyecto productivo
+                          </button>
+                        </li>
+                        <li>
+                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('contrato de aprendizaje')}>
+                            Contrato de aprendizaje
+                          </button>
+                        </li>
+                      </ul>
+                    </section>
+                  )}
+                </button>
+              </li>
+            </ul>
+          </section>
+        </header>
+        <section className='grid grid-rows-[1fr_auto] py-1'>
           {searchedApprentices.length > 0 && !error ? (
-            <div className='h-[80%] grid grid-cols-1 px-4 gap-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+            <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
               {searchedApprentices.slice(startIndex, endIndex).map((apprentice, i) => (
-                <CardStudent key={i} userID={apprentice.id_aprendiz} modalClicked={modalStudent} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
+                <CardStudent key={i} userID={apprentice.id_aprendiz} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
               ))}
             </div>
           ) : (
-            <div className='h-[80%] grid grid-cols-1 px-4 gap-4 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
+            <div className='grid grid-cols-1 gap-5 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
               {loading ? (
                 <>
                   <SkeletonLoading />
@@ -291,24 +448,33 @@ export const StudentMonitoring = () => {
                 <h2 className='text-red-500'>{error}</h2>
               ) : (
                 apprentices.slice(startIndex, endIndex).map((apprentice, i) => {
-                  return <CardStudent key={i} userID={apprentice.id_aprendiz} modalClicked={modalStudent} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
+                  return <CardStudent key={i} userID={apprentice.id_aprendiz} nameStudent={apprentice.nombre_completo} emailStudent={apprentice.email_aprendiz} programStudent={apprentice.nombre_programa_formacion} courseStudent={apprentice.numero_ficha} height={'h-[11.5rem]'} />
                 })
               )}
             </div>
           )}
-          <div className='flex justify-center h-[13vh] relative st1:bottom-[5.5rem] st2:bottom-0 bottom-[-4rem] md:bottom-[5.5rem]'>
-            <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />
+          <div className='grid grid-rows-[auto_auto] gap-0.5 place-items-center px-7 pt-4'>
+            {loading || currentStudentList.length === 0 || error ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className='h-fit' />}
+            <section className='ml-auto '>
+              <div className='ml-auto bg-blue-600 rounded-full shadow-md'>
+                <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-1 text-white rounded-full cursor-pointer'>
+                  <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
+                  <AiOutlineFileAdd />
+                </label>
+                <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={inputFileRef} onChange={handleExcelFile} />
+              </div>
+            </section>
           </div>
-          <Footer />
         </section>
-      </main>
-    </>
+        <Footer />
+      </section>
+    </main>
   )
 }
 
 const SkeletonLoading = ({ number = 6 }) =>
   [...Array(number)].map((_, i) => (
     <div key={i}>
-      <Skeleton height={'14rem'} className='scale-90 rounded-2xl' />
+      <Skeleton height={'11.5rem'} borderRadius={'0.5rem'} className='scale-100' />
     </div>
   ))

@@ -162,11 +162,10 @@ const Form = ({ inputs, isLoginForm }) => {
       await registerUser(data)
       Swal.fire({
         icon: 'success',
-        title: '!Registro exitoso¡',
+        title: '¡Registro exitoso!',
         text: 'Usuario creado correctamente'
       })
       setLoadingBtn(false)
-      // navigate('/')
     } catch (error) {
       setLoadingBtn(false)
       const message = error?.response?.data?.error?.info?.message
@@ -214,6 +213,17 @@ const Form = ({ inputs, isLoginForm }) => {
                 </span>
                 <input type={showPassword} name={item.nameInput} className='border-gray-400 focus:text-gray-900 w-72 rounded-md border-1 bg-white py-1.5 pl-10 text-base text-black focus:bg-white focus:outline-none' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
               </>
+            ) : item.type === 'select' ? (
+              <select name={item.nameInput} className='border-gray-400 focus:text-gray-900 w-72 rounded-md border-1 bg-white py-1.5 pl-10 text-base text-black focus:bg-white focus:outline-none' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)}>
+                <option value=''>Selecciona una opción</option>
+                {item.option.map((op) => {
+                  return (
+                    <option key={op.key} value={op.key}>
+                      {op.value}
+                    </option>
+                  )
+                })}
+              </select>
             ) : (
               <input type={item.type} name={item.nameInput} className='border-gray-400 focus:text-gray-900 w-72 rounded-md border-1 bg-white py-1.5 pl-10 text-base text-black focus:bg-white focus:outline-none' placeholder={item.placeholder} autoComplete='on' onChange={(e) => handleInputChange(e, i)} />
             )}

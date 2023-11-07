@@ -1,78 +1,183 @@
 import { type IRouter, Router } from 'express'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { getClasses, getClassById, getClassByClassNumber, createClass, editClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber, getClassesFree, getClassByInstructorId, editLiderInstructorClass } from '../controllers/classes.controllers.js'
-import { checkClassData, checkClassDate, checkClassNumber, checkLiderTeacherId, checkPracticalTeacherId } from '../middlewares/classes.middlewares.js'
+import { getClasses, getClassById, getClassByClassNumber, createClass, getClassByPracticalInstructorId, editPracticalInstructorClass, getClassDetail, editClassDates, getStudentsClassByClassNumber, getClassesFree, getClassByInstructorId, editLiderInstructorClass, createClassWithStudents, getClassFreeByClassNumber, getClassTeacherByClassNumber } from '../controllers/classes.controllers.js'
+import { checkClassData, checkClassDate, checkClassNumber, checkLiderTeacherId, checkPracticalTeacherId, formatExcelFileClasses, readExcelFileClasses } from '../middlewares/classes.middlewares.js'
+import { configureMulterExcel } from '../middlewares/inscriptions.middlewares.js'
 
 const classRoutes: IRouter = Router()
 
-// * GET
+/**
+ * Configura el middleware para subir archivos excel
+ * @function configureMulterExcel
+ * @returns {RequestHandler}
+ */
+const multerFile = configureMulterExcel()
 
-/* `classRoutes.get('/classes', getClasses)` está definiendo una ruta GET para el punto final
-'/classes'. Cuando se realiza una solicitud GET a este punto final, se ejecutará la función
-`getClasses` del archivo 'classes.controllers.js'. */
-classRoutes.get('/classes', getClasses)
+/**
+ * Obtiene todas las clases
+ * @route GET /v1/classes
+ * @returns {Promise<Array.<classes>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.get('/v1/classes', getClasses)
 
-/* `classRoutes.get('/studentsClassByClassNumber/:classNumber', checkClassNumber, getStudentsClassByClassNumber)` */
-classRoutes.get('/classesFree', getClassesFree)
+/**
+ * Obtiene todas las clases sin instructor de seguimiento
+ * @route GET /v1/classesFree
+ * @returns {Promise<Array.<classes>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.get('/v1/classesFree', getClassesFree)
 
-/* `classRoutes.get('/classesDetail', getClassDetail)` está definiendo una ruta GET para el punto final
-'/classesDetail'. Cuando se realiza una solicitud GET a este punto final, ejecutará la función del
-controlador `getClassDetail`. */
-classRoutes.get('/classesDetail', getClassDetail)
+/**
+ * Obtiene todos los detalles de las fichas
+ * @route GET /v1/classesDetail
+ * @param {string} request.params.numero_ficha
+ * @returns {Promise<Array.<classes>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.get('/v1/classesDetail', getClassDetail)
 
-/* `classRoutes.get('/class/:id', checkIdReq, getClassById)` está definiendo una ruta GET para el punto
-final '/class/:id'. Cuando se realiza una solicitud GET a este punto final, ejecutará la función de
-middleware `checkIdReq` seguida de la función de controlador `getClassById`. El middleware
-`checkIdReq` es responsable de verificar si el parámetro `id` en la solicitud es válido, y la
-función del controlador `getClassById` es responsable de recuperar una clase por su `id`. */
-classRoutes.get('/class/:id', checkIdReq, getClassById)
+/**
+ * Obtiene una clase por su id
+ * @route GET /v1/class/:id
+ * @param {string} request.params.id
+ * @returns {Promise<Array.<class>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.get('/v1/class/:id', checkIdReq, getClassById)
 
-/* `classRoutes.get('/teacherClasses/:id', checkIdReq, getClassByTeacherId)` está definiendo una ruta
-GET para el punto final '/teacherClasses/:id'. Cuando se realiza una solicitud GET a este punto
-final, ejecutará la función de middleware `checkIdReq` seguida de la función del controlador
-`getClassByTeacherId`. */
-classRoutes.get('/teacherClasses/:id', checkIdReq, getClassByPracticalInstructorId)
+/**
+ * Obtiene todos las fichas relacionadas a un instructor de seguimiento
+ * @route GET /v1/teacherClasses/:id
+ * @param {string} request.params.id
+ * @returns {Promise<Array.<classes>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.get('/v1/teacherClasses/:id', checkIdReq, getClassByPracticalInstructorId)
 
-classRoutes.get('/teacherLiderClasses/:id', checkIdReq, getClassByInstructorId)
+/**
+ * @deprecated Obtiene todas las fichas relacionadas a un instructor de lider
+ * @route GET /v1/teacherLiderClasses/:id
+ * @param {string} request.params.id
+ * @returns {Promise<Array.<classes>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.get('/v1/teacherLiderClasses/:id', checkIdReq, getClassByInstructorId)
 
-/* `classRoutes.get('/classNumber', checkClassNumber, getClassByClassNumber)` está definiendo una ruta
-GET para el punto final '/classNumber'. Cuando se realiza una solicitud GET a este punto final,
-ejecutará el middleware `checkClassNumber` seguido de la función de controlador
-`getClassByClassNumber`. */
-classRoutes.get('/classNumber', checkClassNumber, getClassByClassNumber)
+/**
+ * Obtiene una ficha por su numero de ficha
+ * @route GET /v1/classNumber
+ * @param {string} request.query.numero_ficha
+ * @returns {Promise<Array.<class>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.get('/v1/classNumber', getClassByClassNumber)
 
-/* La línea `classRoutes.get('/classStudents', checkClassNumber, getStudentsClassByClassNumber)` define
-una ruta GET para el punto final '/classStudents'. Cuando se realiza una solicitud GET a este punto
-final, ejecutará la función de middleware `checkClassNumber` seguida de la función de controlador
-`getStudentsClassByClassNumber`. */
-classRoutes.get('/classStudents', checkClassNumber, getStudentsClassByClassNumber)
+/**
+ * Obtiene una ficha que no tenga instructor de seguimiento mediante su número de ficha.
+ * @route GET /v1/classFreeNumber
+ * @param {string} request.query.numero_ficha
+ * @returns {Promise<Array.<class>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.get('/v1/classFreeNumber', getClassFreeByClassNumber)
 
-// * POST
-/* `classRoutes.post('/class', checkClassData, createClass)` está definiendo una ruta para el método
-POST en el punto final '/class'. Cuando se realiza una solicitud POST a este punto final, ejecutará
-la función de middleware `checkClassData` seguida de la función del controlador `createClass`. */
-classRoutes.post('/class', checkClassData, createClass)
+/**
+ * Obtiene el instructor de seguimiento mediante en número de ficha relacionado
+ * @route GET /v1/classTeacherNumber
+ * @param {string} request.query.numero_ficha
+ * @returns {Promise<Array>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.get('/v1/classTeacherNumber/:id', checkIdReq, getClassTeacherByClassNumber)
 
-// * PATCH
-/* `classRoutes.patch('/class/:id', checkIdReq, checkClassData, editClass)` está definiendo una ruta
-para el método PATCH en el punto final '/class/:id'. Cuando se realiza una solicitud PATCH a este
-punto final, ejecutará la función de middleware `checkIdReq` seguida de la función de middleware
-`checkClassData` y, finalmente, la función de controlador `editClass`. */
-classRoutes.patch('/class/:id', checkIdReq, checkClassData, editClass)
+/**
+ * Obtiene todos los estudiantes de una ficha
+ * @param {string} request.query.numero_ficha
+ * @returns {Promise<Array.<students>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.get('/v1/classStudents', getStudentsClassByClassNumber)
 
-/* `classRoutes.patch('/teacherClass/:id', checkClassNumber, checkPracticalTeacherId,
-editPracticalInstructorClass)` define una ruta para el método PATCH en el extremo
-'/teacherClass/:id'. Cuando se realiza una solicitud PATCH a este punto final, ejecutará la función
-de middleware `checkClassNumber`, seguida de la función de middleware `checkPracticalTeacherId` y,
-finalmente, la función de controlador `editPracticalInstructorClass`. */
-classRoutes.patch('/teacherClass', checkClassNumber, checkPracticalTeacherId, editPracticalInstructorClass)
+/**
+ * Crea una ficha
+ * @route POST /v1/class
+ * @param {string} request.body.numero_ficha
+ * @param {string} request.body.nombre_programa_formacion
+ * @param {string} request.body.fecha_inicio_lectiva
+ * @param {string} request.body.fecha_inicio_practica
+ * @param {string} request.body.id_instructor_seguimiento
+ * @param {string} request.body.id_nivel_formacion
+ * @returns {Promise<string>} 200 - OK
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.post('/v1/class', checkClassData, createClass)
 
-classRoutes.patch('/teacherLiderClass', checkClassNumber, checkLiderTeacherId, editLiderInstructorClass)
+/**
+ * Crea un numero n de fichas mediante un archivo excel
+ * @route POST /v1/read-excel-file/classes
+ * @param {File} request.file
+ * @returns {Promise<string>} 200 - Ok
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.post('/v1/read-excel-file/classes', multerFile, readExcelFileClasses, formatExcelFileClasses, createClassWithStudents)
 
-/* La línea `classRoutes.patch('/dateClass', checkClassNumber, checkClassDate, editClassDates)` define
-una ruta para el método PATCH en el punto final '/dateClass'. Cuando se realiza una solicitud PATCH
-a este punto final, ejecutará la función de middleware `checkClassNumber`, seguida de la función de
-middleware `checkClassDate` y, finalmente, la función de controlador `editClassDates`. */
-classRoutes.patch('/dateClass', checkClassNumber, checkClassDate, editClassDates)
+/**
+ * @deprecated Edita una ficha
+ * @route PATCH /class/:id
+ * @param {string} request.params.id
+ * @returns {Promise<string>} 200 - OK
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.patch('/class/:id', checkIdReq, checkClassData)
+
+/**
+ * Modifica el instructor de seguimiento de una ficha
+ * @route PATCH /v1/teacherClass
+ * @param {string} request.query.numero_ficha
+ * @param {string} request.body.id_instructor_seguimiento
+ * @returns {Promise<string>} 200 - OK
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.patch('/v1/teacherClass', checkClassNumber, checkPracticalTeacherId, editPracticalInstructorClass)
+
+/**
+ * @deprecated Modifica el instructor de lider de una ficha
+ * @route PATCH /v1/teacherLiderClass
+ * @param {string} request.query.numero_ficha
+ * @param {string} request.body.id_instructor_lider
+ * @returns {Promise<string>} 200 - OK
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.patch('/v1/teacherLiderClass', checkClassNumber, checkLiderTeacherId, editLiderInstructorClass)
+
+/**
+ * Modifica la fecha de inicio de lectiva y práctica de una ficha
+ * @route PATCH /v1/dateClass
+ * @param {string} request.body.numero_ficha
+ * @param {string} request.body.fecha_inicio_lectiva
+ * @param {string} request.body.fecha_inicio_practica
+ * @param {string} request.body.id_nivel_formacion
+ * @returns {Promise<string>} 200 - OK
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+classRoutes.patch('/v1/dateClass', checkClassDate, editClassDates)
 
 export { classRoutes }

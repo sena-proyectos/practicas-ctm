@@ -3,7 +3,7 @@ import { LuSettings2 } from 'react-icons/lu'
 import { Button } from '../Utils/Button/Button'
 import { useRef, useEffect } from 'react'
 
-const Search = ({ searchStudent, searchFilter = false, filter = false, icon = false, iconClick, placeholder }) => {
+const Search = ({ searchItem, searchFilter = false, filter = false, icon = false, iconClick, placeholder }) => {
   const search = useRef()
   const debounceTimeout = useRef(null)
 
@@ -24,7 +24,7 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, icon = fa
 
     clearTimeout(debounceTimeout.current)
     debounceTimeout.current = setTimeout(() => {
-      searchStudent(searchTerm)
+      searchItem(searchTerm)
     }, 200)
   }
 
@@ -60,22 +60,24 @@ const Search = ({ searchStudent, searchFilter = false, filter = false, icon = fa
   }, [])
 
   return (
-    <section className={` ${searchFilter === true ? 'w-[22rem]' : 'w-1/5'}  flex h-9 items-center justify-center`}>
+    <section className={` ${searchFilter === true ? 'w-2/6' : 'w-1/5'}  flex h-9 items-center justify-center`}>
       {searchFilter && (
         <>
-          <form action='' method='get' className='flex min-w-fit w-full items-center rounded-3xl bg-[#E8E8E8] shadow-md saturate-[100%] backdrop-blur-sm ' onChange={handleSearch} onSubmit={evnt}>
-            <Button bg={'bg-transparent'} rounded='rounded-md' font='font-semibold' textSize='text-lg' px='px-3' textColor='text-black' className='absolute right-[6px]'>
-              <IoSearchOutline />
-            </Button>
-            <input type='text' placeholder={placeholder} className='flex-1 py-1 bg-transparent outline-none w-fit focus:placeholder-transparent' ref={search} name='nombreCompleto' autoComplete='off' />
-            {icon && (
-              <article className='absolute right-[8px] w-fit flex items-center'>
-                <Button bg={'bg-transparent'} px={'px-3'} textColor='text-black' onClick={iconClick}>
-                  <LuSettings2 />
-                </Button>
-              </article>
-            )}
-          </form>
+          <search>
+            <form action='' method='get' className='flex min-w-fit w-full items-center rounded-3xl bg-[#E8E8E8] shadow-md saturate-[100%] backdrop-blur-sm ' onChange={handleSearch} onSubmit={evnt}>
+              <Button bg={'bg-transparent'} rounded='rounded-md' font='font-semibold' textSize='text-lg' px='px-3' textColor='text-black' className='absolute right-[6px]'>
+                <IoSearchOutline />
+              </Button>
+              <input type='text' placeholder={placeholder} className='flex-1 py-1 pr-2 bg-transparent outline-none w-fit focus:placeholder-transparent' ref={search} name='nombreCompleto' autoComplete='off' />
+              {icon && (
+                <article className='absolute right-[8px] w-fit flex items-center'>
+                  <Button bg={'bg-[#E8E8E8]'} px={'px-3'} textColor='text-black' onClick={iconClick}>
+                    <LuSettings2 />
+                  </Button>
+                </article>
+              )}
+            </form>
+          </search>
         </>
       )}
       {filter && (

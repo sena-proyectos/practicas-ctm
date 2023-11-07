@@ -51,6 +51,7 @@ DB_HOST=localhost
 DB_DATABASE=practicas_sena
 # Puerto de conexión de SQL
 DB_PORT=3306
+SECRET=foo
 ```
 
 Reemplazar credenciales para conectarte a MySQL. Este archivo va ser ignorado en la subida a github, ya que contiene información sensible.

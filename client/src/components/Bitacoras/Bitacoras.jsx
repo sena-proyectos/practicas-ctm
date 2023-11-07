@@ -1,159 +1,131 @@
-import { Accordion, AccordionItem } from '@nextui-org/accordion'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { toast, ToastContainer } from 'react-toastify'
 
 // Icons
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi'
 import { LuSave } from 'react-icons/lu'
-import { HiOutlinePencil } from 'react-icons/hi'
 
 // Components
-import { Siderbar } from '../Siderbar/Sidebar'
-import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
+import { GetStudentsDetailById, getBitacorasByStudentId, patchBitacoraById } from '../../api/httpRequest'
+import { getUserID } from '../../import/getIDActualUser'
+import { CardWithChildren } from '../Utils/Card/Card'
+import { PiBooksLight } from 'react-icons/pi'
 
 export const Bitacoras = () => {
-  const form = (
-    <form action='' className='flex flex-col gap-2.5 p-3'>
-      <div className='flex flex-row justify-between'>
-        <input type='date' className='px-2 text-sm border-gray-600 rounded-[10px] focus:outline-none border-1' />
-        <h3>2473196 - ADSO</h3>
-      </div>
-      <div className='flex flex-row justify-between'>
-        <h3>Estudiante No. 1</h3>
-        <h3>CC 000000000</h3>
-      </div>
-      <textarea name='' className='w-full h-20 p-1.5 overflow-y-auto text-sm border-gray-600 focus:outline-none resize-none rounded-xl border-1' placeholder='Observaciones...' />
-      <div className='flex flex-row justify-end gap-4'>
-        <Button name='edit' type='button' bg={'bg-[#ffba00]'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
-          <HiOutlinePencil />
-          Modificar
-        </Button>
-        <Button name='save' type='button' bg={'bg-[#16a34a]'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline>
-          <LuSave /> Guardar
-        </Button>
-      </div>
-    </form>
-  )
+  const { id } = useParams()
+  const [dataStudent, setDataStudent] = useState([])
+  const [bitacorasInfo, setBitacorasInfo] = useState([])
+
+  const getInfoStudent = async () => {
+    try {
+      const { data } = await GetStudentsDetailById(id)
+      const info = await data.data[0]
+      info.nombre_completo = info.nombre_completo
+        .split(' ')
+        .map((word) => {
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        })
+        .join(' ')
+      setDataStudent(info)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const getDataBitacoras = async () => {
+    try {
+      const response = await getBitacorasByStudentId(id)
+      setBitacorasInfo(response.data)
+    } catch (error) {
+      const { message } = error.response.data.error.info
+      toast.error(message ?? 'Error')
+    }
+  }
+
+  useEffect(() => {
+    getDataBitacoras()
+    getInfoStudent()
+  }, [])
+
+  const handleBitacora = (e, id_bitacora) => {
+    e.preventDefault()
+    const { id_usuario: usuario_responsable } = getUserID().user
+    const formData = new FormData(e.target)
+    const data = Object.fromEntries(formData)
+    if (data.calificacion_bitacora === 'on') {
+      data.calificacion_bitacora = 'Calificado'
+    } else {
+      data.calificacion_bitacora = 'Pendiente'
+    }
+
+    modifyBitacora(id_bitacora, { ...data, usuario_responsable })
+  }
+
+  const modifyBitacora = async (id, payload) => {
+    try {
+      await patchBitacoraById(id, payload)
+      toast.success('Bitácora modificada correctamente', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        className: 'text-sm'
+      })
+      getDataBitacoras()
+    } catch (error) {
+      const message = error.response.data.error.info.message
+      toast.error(message ?? 'Error')
+    }
+  }
 
   return (
-    <main className='flex flex-row min-h-screen bg-whitesmoke'>
-      <Siderbar />
-      <section className='relative grid flex-auto w-min grid-rows-2-80-20'>
-        <section className='grid items-start py-5 grid-rows-80-20'>
-          <div className='w-11/12 mx-auto bg-white border-gray-600 rounded-2xl border-[0.5px]'>
-            <Accordion>
-              <AccordionItem
-                key='1'
-                aria-label='Accordion 1'
-                indicator={({ isOpen }) =>
-                  isOpen ? (
-                    <FiChevronUp className='text-xl' />
-                  ) : (
-                    <div className='flex flex-row gap-16'>
-                      <div className='bg-[#bbf7d0] text-[#047857] text-sm  font-medium rounded-xl w-[130px]'>Aprobado</div>
-                      <FiChevronDown className='text-xl' />
+    <section className='w-full'>
+      <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme='colored' />
+      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+        {bitacorasInfo.map((x) => {
+          return (
+            <CardWithChildren key={x.id_bitacora} classNames='w-full'>
+              <form onSubmit={(e) => handleBitacora(e, x.id_bitacora)} className='flex flex-col gap-1.5'>
+                <header className='flex flex-row items-center justify-between'>
+                  <div className='flex flex-row items-center gap-2'>
+                    <PiBooksLight className='text-3xl' />
+                    <div className='flex flex-col '>
+                      <h2 className='font-medium'>Bitácora {x.numero_bitacora}</h2>
+                      <span className={`text-xs ${x.calificacion_bitacora === 'Calificado' ? 'visible' : 'hidden'}`}>{x.fecha_modificacion}</span>
                     </div>
-                  )
-                }
-                className='p-2'
-                title='Carta Inicial'
-              >
-                {form}
-              </AccordionItem>
-              <AccordionItem
-                key='2'
-                aria-label='Accordion 2'
-                indicator={({ isOpen }) =>
-                  isOpen ? (
-                    <FiChevronUp className='text-xl' />
-                  ) : (
-                    <div className='flex flex-row gap-16'>
-                      <div className='bg-[#bbf7d0] text-[#047857] text-sm font-medium rounded-xl w-[130px]'>Aprobado</div>
-                      <FiChevronDown className='text-xl' />
+                  </div>
+                  <input name='calificacion_bitacora' type='checkbox' required className='w-4 h-4 rounded-xl accent-teal-600' defaultChecked={x.calificacion_bitacora === 'Calificado'} />
+                </header>
+                <hr className='border-gray-300' />
+                <section className='flex flex-col gap-1 px-2 text-sm'>
+                  <div className='flex flex-row justify-between'>
+                    <h3>{dataStudent.nombre_completo}</h3>
+                    <h3 className='uppercase'>{dataStudent.tipo_documento_aprendiz + ' ' + dataStudent.numero_documento_aprendiz}</h3>
+                  </div>
+                  <textarea name='observaciones_bitacora' defaultValue={x.observaciones_bitacora} className='w-full h-14 p-1.5 overflow-y-auto text-sm border-gray-300 focus:outline-none resize-none rounded-xl border-1' placeholder='Observaciones...' />
+                  <div className='flex flex-row items-center justify-between pt-2'>
+                    <h3>
+                      {dataStudent.numero_ficha} - {dataStudent.nombre_programa_formacion}
+                    </h3>
+                    <div className='w-fit'>
+                      <Button bg={'bg-teal-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                        <LuSave />
+                        Guardar
+                      </Button>
                     </div>
-                  )
-                }
-                className='p-2'
-                title='Evaluacion Inicial'
-              >
-                {form}
-              </AccordionItem>
-              <AccordionItem
-                key='3'
-                aria-label='Accordion 3'
-                indicator={({ isOpen }) =>
-                  isOpen ? (
-                    <FiChevronUp className='text-xl' />
-                  ) : (
-                    <div className='flex flex-row gap-16'>
-                      <div className='bg-[#bbf7d0] text-[#047857] text-sm font-medium rounded-xl w-[130px]'>Aprobado</div>
-                      <FiChevronDown className='text-xl' />
-                    </div>
-                  )
-                }
-                className='p-2'
-                title='Bitácora 1'
-              >
-                {form}
-              </AccordionItem>
-              <AccordionItem
-                key='4'
-                aria-label='Accordion 4'
-                indicator={({ isOpen }) =>
-                  isOpen ? (
-                    <FiChevronUp className='text-xl' />
-                  ) : (
-                    <div className='flex flex-row gap-16'>
-                      <div className='bg-[#bbf7d0] text-[#047857] text-sm font-medium rounded-xl w-[130px]'>Aprobado</div>
-                      <FiChevronDown className='text-xl' />
-                    </div>
-                  )
-                }
-                className='p-2'
-                title='Bitácora 2'
-              >
-                {form}
-              </AccordionItem>
-              <AccordionItem
-                key='5'
-                aria-label='Accordion 5'
-                indicator={({ isOpen }) =>
-                  isOpen ? (
-                    <FiChevronUp className='text-xl' />
-                  ) : (
-                    <div className='flex flex-row gap-16'>
-                      <div className='bg-[#e2e8f0] text-[#475569] text-sm font-medium rounded-xl w-[130px]'>Sin revisar </div>
-                      <FiChevronDown className='text-xl' />
-                    </div>
-                  )
-                }
-                className='p-2'
-                title='Bitácora 3'
-              >
-                {form}
-              </AccordionItem>
-              <AccordionItem
-                key='6'
-                aria-label='Accordion 6'
-                indicator={({ isOpen }) =>
-                  isOpen ? (
-                    <FiChevronUp className='text-xl' />
-                  ) : (
-                    <div className='flex flex-row gap-16'>
-                      <div className='bg-[#e2e8f0] text-[#475569] text-sm font-medium rounded-xl w-[130px]'>Sin revisar </div>
-                      <FiChevronDown className='text-xl' />
-                    </div>
-                  )
-                }
-                className='p-2'
-                title='Bitácora 4'
-              >
-                {form}
-              </AccordionItem>
-            </Accordion>
-          </div>
-        </section>
-        <Footer />
-      </section>
-    </main>
+                  </div>
+                </section>
+              </form>
+            </CardWithChildren>
+          )
+        })}
+      </div>
+    </section>
   )
 }

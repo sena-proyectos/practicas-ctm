@@ -2,6 +2,7 @@ import { type NextFunction, type Request, type Response } from 'express'
 import { type CustomError, DataNotValid, NumberIsNaN } from '../errors/customErrors.js'
 import { classDates, classSchema } from '../schemas/classes.schemas.js'
 import { handleHTTP } from '../errors/errorsHandler.js'
+import XLSX from 'xlsx'
 
 /**
  * La función `checkClassData` en TypeScript valida los datos recibidos en una solicitud y arroja un
@@ -17,14 +18,11 @@ import { handleHTTP } from '../errors/errorsHandler.js'
  * usa para pasar a la siguiente función después de que el middleware actual haya completado su tarea.
  */
 export const checkClassData = (req: Request, res: Response, next: NextFunction): void => {
-  const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_lider, id_instructor_seguimiento, id_nivel_formacion } = req.body
-
-  const classNumber = Number(numero_ficha)
+  const { numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion } = req.body
   try {
-    if (isNaN(classNumber)) throw new NumberIsNaN('el numero de la ficha no es un número.')
-
-    const { error } = classSchema.validate({ numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica, id_instructor_lider, id_instructor_seguimiento, id_nivel_formacion })
+    const { error } = classSchema.validate({ numero_ficha, nombre_programa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, id_instructor_seguimiento, id_nivel_formacion })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados para la ficha no son válidos')
+
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)
@@ -92,12 +90,67 @@ export const checkClassNumber = (req: Request, res: Response, next: NextFunction
 }
 
 export const checkClassDate = (req: Request, res: Response, next: NextFunction): void => {
-  const { fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica } = req.body
+  const { numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica, id_nivel_formacion } = req.body
   try {
-    const { error } = classDates.validate({ fecha_inicio_lectiva, fecha_fin_lectiva, fecha_inicio_practica })
+    const { error } = classDates.validate({ numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica, id_nivel_formacion })
     if (error !== undefined) throw new DataNotValid('Los datos ingresados para la ficha no son válidos')
     next()
   } catch (error) {
     handleHTTP(res, error as CustomError)
+  }
+}
+
+export const readExcelFileClasses = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { file } = req
+  try {
+    if (file === undefined) throw new DataNotValid('No se ha encontrado el archivo.')
+    const excelFile = file.buffer
+    const workbook = XLSX.read(excelFile, { type: 'buffer' })
+    const sheetName = workbook.SheetNames[0]
+    const worksheet = workbook.Sheets[sheetName]
+    const excelData: object[] = XLSX.utils.sheet_to_json(worksheet, {
+      raw: false,
+      dateNF: 'yyyy-mm-dd',
+      blankrows: false
+    })
+    req.body.parsedData = excelData
+    next()
+  } catch (error) {
+    handleHTTP(res, (error as CustomError) ?? 'Error')
+  }
+}
+
+export const formatExcelFileClasses = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { parsedData } = req.body as { parsedData: object[] }
+  try {
+    const formattedData = parsedData.toSpliced(1, 3).map((item: any) => {
+      if (typeof item !== 'object') return item
+      const trimmedObject: Record<string, any> = {}
+      for (const [key, value] of Object.entries(item)) {
+        const normalizedKey = key
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\s+/g, '_')
+          .toLowerCase()
+          .trim()
+        const normalizedValue = String(value).toLowerCase().trim()
+        normalizedKey === 'reporte_de_aprendices' && (trimmedObject.tipo_documento_aprendiz = normalizedValue)
+        normalizedKey === '__empty' && (trimmedObject.numero_documento_aprendiz = normalizedValue)
+        normalizedKey === '__empty_1' && (trimmedObject.nombre_aprendiz = normalizedValue)
+        normalizedKey === '__empty_2' && (trimmedObject.apellido_aprendiz = normalizedValue)
+        normalizedKey === '__empty_3' && (trimmedObject.celular_aprendiz = normalizedValue)
+        normalizedKey === '__empty_4' && (trimmedObject.email_aprendiz = normalizedValue)
+        normalizedKey === '__empty_5' && (trimmedObject.estado_aprendiz = normalizedValue)
+      }
+      return trimmedObject
+    })
+    formattedData[0].numero_ficha = String(formattedData[0].nombre_aprendiz).split('-')[0].trim()
+    formattedData[0].nombre_programa_formacion = String(formattedData[0].nombre_aprendiz).split('-')[1].trim()
+    delete formattedData[0].tipo_documento_aprendiz
+    delete formattedData[0].nombre_aprendiz
+    req.body.parsedData = formattedData
+    next()
+  } catch (error) {
+    handleHTTP(res, (error as CustomError) ?? 'Error')
   }
 }

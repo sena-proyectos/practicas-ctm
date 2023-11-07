@@ -1,77 +1,126 @@
 import { type IRouter, Router } from 'express'
-import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsById, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData, getInscriptionsDetailsByName } from '../controllers/inscriptions.controllers.js'
+import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsById, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData, getInscriptionsDetailsByName, getInscriptionsByTeacherId } from '../controllers/inscriptions.controllers.js'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
 import { checkInscriptionData, checkInscriptionDetailData, configureMulterExcel, readExcelFile } from '../middlewares/inscriptions.middlewares.js'
 import { checkName } from '../middlewares/users.middlewares.js'
 
+/**
+ * Configurar el middleware para leer excels
+ * @returns {RequestHandler}
+ */
 const multerFile = configureMulterExcel()
 const inscriptionRoutes: IRouter = Router()
 
-// * GET
-
 /**
- * @description Ruta para obtener todas las inscripciones.
+ * Obtener todas las inscripciones.
  * @route GET /inscriptions
+ * @returns {Promise<Array.<Inscriptions>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
-inscriptionRoutes.get('/inscriptions', getInscriptions)
+inscriptionRoutes.get('/v1/inscriptions', getInscriptions)
 
 /**
- * @description Ruta para obtener una inscripción por su ID.
+ * Obtiene todas las incripciones relacionadas a un instructor de seguimiento
+ * @route GET /v1/inscriptions/teacher/:id
+ * @param {string} request.param.id
+ * @returns {Promise<Array.<Inscriptions>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+inscriptionRoutes.get('/v1/inscriptions/teacher/:id', checkIdReq, getInscriptionsByTeacherId)
+
+/**
+ * Obtener una inscripción por su ID.
  * @route GET /inscription/:id
- * @param id El ID de la inscripción.
+ * @param {string} request.param.id
+ * @returns {Promise<Array>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
-inscriptionRoutes.get('/inscription/:id', checkIdReq, getInscriptionById)
+inscriptionRoutes.get('/v1/inscription/:id', checkIdReq, getInscriptionById)
 
 /**
- * @description Ruta para obtener detalles de inscripción por su ID.
+ * Obtener detalles de inscripción por su ID.
  * @route GET /inscriptionDetails/:id
- * @param id El ID de la inscripción.
+ * @param {string} request.param.id
+ * @returns {Promise<Array>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
-inscriptionRoutes.get('/inscriptionDetails/:id', checkIdReq, getInscriptionsDetailsByInscription)
+inscriptionRoutes.get('/v1/inscriptionDetails/:id', checkIdReq, getInscriptionsDetailsByInscription)
 
 /**
- * @description Ruta para obtener detalles de inscripción por el ID del usuario responsable.
+ * Obtener detalles de inscripción por el ID del usuario responsable
  * @route GET /inscriptionDetailsUser/:id
- * @param id El ID del usuario responsable.
+ * @param {string} request.param.id
+ * @returns {Promise<Array>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
-inscriptionRoutes.get('/inscriptionDetailsUser/:id', checkIdReq, getInscriptionsDetailsByUser)
+inscriptionRoutes.get('/v1/inscriptionDetailsUser/:id', checkIdReq, getInscriptionsDetailsByUser)
 
-inscriptionRoutes.get('/inscriptionDetail/:id', checkIdReq, getInscriptionsDetailsById)
-
-inscriptionRoutes.get('/inscriptionName', checkName, getInscriptionsDetailsByName)
-
-// * POST
 /**
- * @description Ruta para crear inscripciones.
+ * Obtener detalles de inscripción por su ID.
+ * @routeGET /v1/inscriptionDetail/:id
+ * @param {string} request.param.id
+ * @returns {Promise<Array>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+inscriptionRoutes.get('/v1/inscriptionDetail/:id', checkIdReq, getInscriptionsDetailsById)
+
+/**
+ * Obtener una inscripción mediante el nombre completo del aprendiz
+ * @route GET /v1/inscriptionName
+ * @param {string} req.query.nombreCompleto
+ * @returns {Promise<Array>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+inscriptionRoutes.get('/v1/inscriptionName', checkName, getInscriptionsDetailsByName)
+
+/**
+ * Crear inscripciones mediante un array
  * @route POST /create-inscriptions
- * @bodyparam inscriptions Datos de las inscripciones a crear.
+ * @param {inscriptionData[]} request.body.inscriptions
+ * @returns {Promise<string>} 200 - OK
+ * @returns {Error} HTTP Status - Error en el request
  */
-inscriptionRoutes.post('/create-inscriptions', checkInscriptionData, createInscriptions)
+inscriptionRoutes.post('/v1/create-inscriptions', checkInscriptionData, createInscriptions)
 
 /**
- * @description Ruta para leer excel de inscripciones.
+ * Leer excel de inscripciones y devolverlos
  * @route POST /inscription-excel-file
- * @fileparam Archivo excel.
+ * @param {buffer} request.file
+ * @returns {Promise<Array>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
-inscriptionRoutes.post('/inscription-excel-file', multerFile, readExcelFile, returnExcelData)
+inscriptionRoutes.post('/v1/inscription-excel-file', multerFile, readExcelFile, returnExcelData)
 
-// * PATCH
 /**
- * @description Ruta para actualizar detalles de inscripción por el ID del usuario responsable.
+ * Actualizar detalles de inscripción por el ID del usuario responsable.
  * @route PATCH /update-inscription-detail/:responsable_aval
- * @param responsable_aval El ID del usuario responsable.
- * @bodyparam id_inscripcion El ID de la inscripción.
- * @bodyparam estado_aval El estado de aval a actualizar.
- * @bodyparam observaciones Las observaciones a actualizar.
+ * @param {string} responsable_aval
+ * @param {string} id_inscripcion
+ * @param {string} estado_aval
+ * @param {string} observaciones
+ * @returns {Promise<Array>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
-inscriptionRoutes.patch('/update-inscription-detail/:id', checkInscriptionDetailData, editInscriptionDetail)
+inscriptionRoutes.patch('/v1/update-inscription-detail/:id', checkInscriptionDetailData, editInscriptionDetail)
 
 /**
- * @description Ruta para actualizar una inscripción por su ID.
+ * Actualizar una inscripción por su ID.
  * @route PATCH /update-inscription/:id
- * @param id El ID de la inscripción a actualizar.
- * @bodyparam Todos los datos de la inscripción a actualizar.
+ * @param {string} request.param.id
+ * @param {inscriptionData[]} req.body.inscriptionData[]
+ * @returns {Promise<string>} 200 - OK
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
  */
-inscriptionRoutes.patch('/update-inscription/:id', checkIdReq, checkInscriptionData, editInscription)
+inscriptionRoutes.patch('/v1/update-inscription/:id', checkIdReq, checkInscriptionData, editInscription)
 
 export { inscriptionRoutes }

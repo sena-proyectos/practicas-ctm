@@ -12,7 +12,7 @@ import { Pagination } from '@nextui-org/pagination'
 // icons
 import { BsPatchCheck, BsHourglass, BsXOctagon } from 'react-icons/bs'
 import { AiOutlineCloudUpload, AiOutlineFileAdd } from 'react-icons/ai'
-import { IoAddCircleOutline } from 'react-icons/io5'
+// import { IoAddCircleOutline } from 'react-icons/io5'
 import { PiMicrosoftExcelLogoBold, PiCaretRightBold } from 'react-icons/pi'
 import { BiSad } from 'react-icons/bi'
 import { TiDelete } from 'react-icons/ti'
@@ -23,9 +23,10 @@ import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
 import { Button } from '../Utils/Button/Button'
 
-import { InscriptionApprentice, getInscriptions, readExcel, GetInscriptionByName } from '../../api/httpRequest'
+import { InscriptionApprentice, getInscriptions, readExcel, GetInscriptionByName, getInscriptionsByTeacherId } from '../../api/httpRequest'
 import { keysRoles } from '../../import/staticData'
 import { LoadingModal, ModalConfirm } from '../Utils/Modals/Modals'
+import { getUserID } from '../../import/getIDActualUser'
 
 export const modalOptionList = {
   confirmModal: 'confirm',
@@ -43,13 +44,14 @@ export const RegisterList = () => {
   const [username, setUsername] = useState(null)
   const [loadingData, setLoadingData] = useState(true)
   const excelRef = useRef()
-  const navigate = useNavigate()
   const [showFiltros, setShowFiltros] = useState(false)
   const [filtersButtons, setFiltersButtons] = useState({ modalidad: false, estado: false, fecha: false })
   const [activeFilter, setActiveFilter] = useState(false)
   const [inscriptionOriginal, setInscriptionOriginal] = useState([])
   const [error, setError] = useState(null)
   const [searchedInscriptions, setSearchedInscriptions] = useState([])
+  const [originalSearched, setOriginalSearched] = useState([])
+  const [currentRegisterList, setCurrentRegisterList] = useState({})
 
   /**
    * Función asincrónica para buscar aprendices por nombre de usuario.
@@ -68,17 +70,35 @@ export const RegisterList = () => {
     if (searchTerm.trim() === '') {
       setError(null)
       setSearchedInscriptions([])
+      setOriginalSearched([])
       return
     }
     try {
       const response = await GetInscriptionByName(searchTerm)
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_inscripcion = element.nombre_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+
+        element.apellido_inscripcion = element.apellido_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       if (searchTerm.trim() === '') {
         setError(null)
         setSearchedInscriptions([])
+        setOriginalSearched([])
       } else {
         setError(null)
         setSearchedInscriptions(data)
+        setOriginalSearched(data)
       }
     } catch (error) {
       const message = error?.response?.data?.error?.info?.message
@@ -87,6 +107,16 @@ export const RegisterList = () => {
       setSearchedInscriptions([])
     }
   }
+
+  // Cambia el numero de paginas dependiendo de la cantidad de registros
+  useEffect(() => {
+    if (searchedInscriptions.length > 0 && !error) {
+      setCurrentRegisterList(searchedInscriptions)
+      setPageNumber(1)
+    } else {
+      setCurrentRegisterList(inscriptions)
+    }
+  }, [searchedInscriptions, error, inscriptions])
 
   /**
    * Número de inscripciones por página.
@@ -100,7 +130,7 @@ export const RegisterList = () => {
    */
   const inscriptionsPerPage = 6
   /**
-   * Número total de páginas para la paginación de inscripciones.
+   * Número total de páginas para la paginación de inscripciones y las busquedad de inscripciones
    *
    * @constant
    * @name pageCount
@@ -109,7 +139,8 @@ export const RegisterList = () => {
    * @example
    * const totalPaginas = pageCount;
    */
-  const pageCount = Math.ceil(inscriptions.length / inscriptionsPerPage)
+  const pageCount = Math.ceil(currentRegisterList.length / inscriptionsPerPage)
+
   /**
    * Índice de inicio de la página actual.
    *
@@ -121,6 +152,7 @@ export const RegisterList = () => {
    * const indiceInicio = startIndex;
    */
   const startIndex = (pageNumber - 1) * inscriptionsPerPage
+
   /**
    * Índice de fin de la página actual.
    *
@@ -132,6 +164,7 @@ export const RegisterList = () => {
    * const indiceFin = endIndex;
    */
   const endIndex = startIndex + inscriptionsPerPage
+
   /**
    * Identificador del rol del usuario almacenado en el almacenamiento local.
    *
@@ -154,9 +187,9 @@ export const RegisterList = () => {
    * @example
    * handleRegister();
    */
-  const handleRegister = () => {
-    return navigate('/registrar-aprendiz')
-  }
+  // const handleRegister = () => {
+  //   return navigate('/registrar-aprendiz')
+  // }
 
   useEffect(() => {
     const token = Cookies.get('token')
@@ -231,9 +264,56 @@ export const RegisterList = () => {
    * getRegistros();
    */
   const getRegistros = async () => {
+    const { id_rol, id_usuario } = getUserID().user
+    if (String(id_rol) === '3') {
+      getRegistersTrackingInstructor(id_usuario)
+      return
+    }
     try {
       const response = await getInscriptions()
       const { data } = response.data
+      data.forEach((element) => {
+        element.nombre_inscripcion = element.nombre_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+
+        element.apellido_inscripcion = element.apellido_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
+      setInscriptions(data)
+      setInscriptionOriginal(data)
+      setLoadingData(false)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const getRegistersTrackingInstructor = async (id) => {
+    try {
+      const response = await getInscriptionsByTeacherId(id)
+      const { data } = response
+      data.forEach((element) => {
+        element.nombre_inscripcion = element.nombre_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+
+        element.apellido_inscripcion = element.apellido_inscripcion
+          .split(' ')
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          })
+          .join(' ')
+      })
       setInscriptions(data)
       setInscriptionOriginal(data)
       setLoadingData(false)
@@ -400,44 +480,88 @@ export const RegisterList = () => {
    */
   const handleTypeFilter = (filterType, filter) => {
     if (filterType === 'modalidad') {
-      const filterMap = inscriptionOriginal.filter((inscription) => inscription.nombre_modalidad === filter)
+      let filterMap
+      if (originalSearched.length > 0 && !error) {
+        filterMap = originalSearched.filter((inscription) => inscription.nombre_modalidad === filter)
+        setSearchedInscriptions({})
+      } else {
+        filterMap = inscriptionOriginal.filter((inscription) => inscription.nombre_modalidad === filter)
+      }
       setInscriptions(filterMap)
     }
     if (filterType === 'estado') {
-      const filterMap = inscriptionOriginal.filter((inscription) => inscription.estado_general_inscripcion === filter)
+      let filterMap
+      if (originalSearched.length > 0 && !error) {
+        filterMap = originalSearched.filter((inscription) => inscription.estado_general_inscripcion === filter)
+        setSearchedInscriptions({})
+      } else {
+        filterMap = inscriptionOriginal.filter((inscription) => inscription.estado_general_inscripcion === filter)
+      }
       setInscriptions(filterMap)
     }
     if (filterType === 'fecha') {
       let filterMap = []
-
       if (filter === 'Hoy') {
         const today = new Date()
-        filterMap = inscriptionOriginal.filter((inscription) => {
-          const inscriptionDate = new Date(inscription.fecha_creacion) // Asegúrate de que la columna 'fecha' sea de tipo fecha
-          return inscriptionDate.toDateString() === today.toDateString()
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((inscription) => {
+            setSearchedInscriptions({})
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate.toDateString() === today.toDateString()
+          })
+        } else {
+          filterMap = inscriptionOriginal.filter((inscription) => {
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate.toDateString() === today.toDateString()
+          })
+        }
       } else if (filter === 'Semana') {
         const today = new Date()
         const lastWeek = new Date(today)
         lastWeek.setDate(today.getDate() - 7)
-        filterMap = inscriptionOriginal.filter((inscription) => {
-          const inscriptionDate = new Date(inscription.fecha_creacion)
-          return inscriptionDate >= lastWeek && inscriptionDate <= today
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((inscription) => {
+            setSearchedInscriptions({})
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= lastWeek && inscriptionDate <= today
+          })
+        } else {
+          filterMap = inscriptionOriginal.filter((inscription) => {
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= lastWeek && inscriptionDate <= today
+          })
+        }
       } else if (filter === 'Mes') {
         const today = new Date()
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
-        filterMap = inscriptionOriginal.filter((inscription) => {
-          const inscriptionDate = new Date(inscription.fecha_creacion)
-          return inscriptionDate >= firstDayOfMonth && inscriptionDate <= lastDayOfMonth
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.filter((inscription) => {
+            setSearchedInscriptions({})
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= firstDayOfMonth && inscriptionDate <= lastDayOfMonth
+          })
+        } else {
+          filterMap = inscriptionOriginal.filter((inscription) => {
+            const inscriptionDate = new Date(inscription.fecha_creacion)
+            return inscriptionDate >= firstDayOfMonth && inscriptionDate <= lastDayOfMonth
+          })
+        }
       } else if (filter === 'Más Antiguos') {
-        filterMap = inscriptionOriginal.slice().sort((a, b) => {
-          const dateA = new Date(a.fecha_creacion)
-          const dateB = new Date(b.fecha_creacion)
-          return dateA - dateB
-        })
+        if (originalSearched.length > 0 && !error) {
+          filterMap = originalSearched.slice().sort((a, b) => {
+            setSearchedInscriptions({})
+            const dateA = new Date(a.fecha_creacion)
+            const dateB = new Date(b.fecha_creacion)
+            return dateA - dateB
+          })
+        } else {
+          filterMap = inscriptionOriginal.slice().sort((a, b) => {
+            const dateA = new Date(a.fecha_creacion)
+            const dateB = new Date(b.fecha_creacion)
+            return dateA - dateB
+          })
+        }
       }
 
       setInscriptions(filterMap)
@@ -460,6 +584,7 @@ export const RegisterList = () => {
     setInscriptions(inscriptionOriginal)
     disableShowFiltros()
     setActiveFilter(false)
+    setSearchedInscriptions(originalSearched)
   }
 
   return (
@@ -469,9 +594,9 @@ export const RegisterList = () => {
       {isModalOpen && modalOption === modalOptionList.loadingExcelModal && <LoadingExcelFileModal />}
       {isModalOpen && modalOption === modalOptionList.uploadingExcelModal && <UploadingExcelFileModal />}
       <Siderbar />
-      <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
-        <header className='grid place-items-center'>
-          <Search searchFilter placeholder={'Busca un aprendiz'} icon iconClick={handleFilter} searchStudent={searchInscriptions} />
+      <section className='relative grid flex-auto w-min grid-rows-[auto_1fr_auto]'>
+        <header className='grid h-[10vh] place-items-center'>
+          <Search searchFilter placeholder={'Busca un aprendiz'} icon iconClick={handleFilter} searchItem={searchInscriptions} />
           <ul className={`absolute right-80 mt-1 top-4 w-36 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${showFiltros ? 'visible' : 'hidden'} z-10 transition-all duration-200`} onMouseLeave={disableShowFiltros}>
             <li>
               <button type='button' className='relative flex items-center justify-between w-full h-full px-3 py-1 hover:bg-whitesmoke text-slate-800' onClick={() => ShowFilter('modalidad')}>
@@ -554,23 +679,23 @@ export const RegisterList = () => {
             </section>
           )}
         </header>
-        <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto'>
+        <section className='flex flex-col w-11/12 gap-3 mx-auto overflow-x-auto justify-evenly'>
           <TableList inscriptions={inscriptions} startIndex={startIndex} endIndex={endIndex} loadingData={loadingData} searchedInscriptions={searchedInscriptions} error={error} />
-          <div className='flex justify-center h-[11.5vh] relative bottom-0'>{(searchedInscriptions > 0 || !error || inscriptions > 0) && <Pagination total={pageCount} color='secondary' variant='flat' onChange={setPageNumber} className=' h-fit' />}</div>
-          {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-            <div className='absolute flex flex-row-reverse gap-3 right-12 bottom-16'>
-              <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleRegister} inline>
-                <IoAddCircleOutline className='text-xl' /> Agregar
-              </Button>
-              <div className='rounded-full shadow-md bg-cyan-600'>
-                <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
-                  <AiOutlineFileAdd />
-                  <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
-                </label>
-                <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
+
+          <div className='flex flex-col items-center gap-1 py-1'>
+            <div className='flex justify-center w-full'>{currentRegisterList.length === 0 || error || loadingData ? <></> : <Pagination total={pageCount} color='secondary' variant='flat' page={pageNumber} onChange={setPageNumber} className=' h-fit' />}</div>
+            {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+              <div className='grid w-full grid-flow-col-dense gap-3 place-content-end'>
+                <div className='rounded-full shadow-md bg-cyan-600'>
+                  <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
+                    <AiOutlineFileAdd />
+                    <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
+                  </label>
+                  <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </section>
         <Footer />
       </section>

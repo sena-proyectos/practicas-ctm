@@ -48,31 +48,31 @@ export const rolesCard = {
       link: '/seguimiento-aprendices'
     },
     {
-      title: 'Bitácoras',
+      title: 'Fichas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de bitácoras.',
+      description: 'Ver fichas que se encuentran en etapa productiva o con aprendices que tenga modalidad registrada.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
       sombra: 'shadow-shadowSalmon',
-      link: '/bitacoras'
+      link: '/fichas'
     },
     {
       title: 'Registro',
       titleColor: 'black',
-      description: 'Podrás ver los aprendices que registros para la modalidad de prácticas.',
+      description: 'Podrás ver los aprendices que se registraron para una modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-[#385C57]',
       sombra: 'shadow-shadowGray',
       link: '/registros'
     },
     {
-      title: 'Visitas',
+      title: 'Instructores',
       titleColor: 'black',
-      description: 'Podrás ver el listado de las visitas.',
+      description: 'Podrás ver el listado de instructores de seguimiento que se encuentran en el CTM.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadow-shadowThird',
-      link: '/visitas'
+      link: '/instructores'
     },
     {
       title: 'Registrar un aprendiz',
@@ -82,6 +82,15 @@ export const rolesCard = {
       bgColor: 'bg-aqua',
       sombra: 'shadow-shadowAqua',
       link: '/registrar-aprendiz'
+    },
+    {
+      title: 'Crear nuevo usuario',
+      titleColor: 'black',
+      description: 'Podrás acceder al formulario de registro de nuevos usuarios al sistema.',
+      buttonText: 'LLÉVAME AHÍ',
+      bgColor: 'bg-seventh',
+      sombra: 'shadow-shadowSeventh',
+      link: '/registrar-usuario'
     }
   ],
   2: [
@@ -95,13 +104,13 @@ export const rolesCard = {
       link: '/seguimiento-aprendices'
     },
     {
-      title: 'Bitácoras',
+      title: 'Fichas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de bitácoras.',
+      description: 'Ver fichas que se encuentran en etapa productiva o con aprendices que tenga modalidad registrada.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
       sombra: 'shadow-shadowSalmon',
-      link: '/bitacoras'
+      link: '/fichas'
     },
     {
       title: 'Registro',
@@ -113,13 +122,13 @@ export const rolesCard = {
       link: '/registros'
     },
     {
-      title: 'Visitas',
+      title: 'Instructores',
       titleColor: 'black',
-      description: 'Podrás ver el listado de las visitas.',
+      description: 'Podrás ver el listado de instructores de seguimiento que se encuentran en el CTM.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-third',
       sombra: 'shadow-shadowThird',
-      link: '/visitas'
+      link: '/instructores'
     },
     {
       title: 'Registrar un aprendiz',
@@ -142,40 +151,22 @@ export const rolesCard = {
       link: '/seguimiento-aprendices'
     },
     {
-      title: 'Bitácoras',
+      title: 'Fichas',
       titleColor: 'black',
-      description: 'Podrás ver el listado de bitácoras.',
+      description: 'Ver fichas que se encuentran en etapa productiva o con aprendices que tenga modalidad registrada.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-salmon',
       sombra: 'shadow-shadowSalmon',
-      link: '/bitacoras'
+      link: '/fichas'
     },
     {
       title: 'Registro',
       titleColor: 'black',
-      description: 'Podrás ver los aprendices que registros para la modalidad de prácticas.',
+      description: 'Podrás ver los aprendices que se registraron para una modalidad de prácticas.',
       buttonText: 'LLÉVAME AHÍ',
       bgColor: 'bg-[#385C57]',
       sombra: 'shadow-shadowGray',
       link: '/registros'
-    },
-    {
-      title: 'Visitas',
-      titleColor: 'black',
-      description: 'Podrás ver el listado de las visitas.',
-      buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-third',
-      sombra: 'shadow-shadowThird',
-      link: '/visitas'
-    },
-    {
-      title: 'Registrar un aprendiz',
-      titleColor: 'black',
-      description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
-      buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-aqua',
-      sombra: 'shadow-shadowAqua',
-      link: '/registrar-aprendiz'
     }
   ]
 }
@@ -491,7 +482,8 @@ export const colorIcon = {
   '/fichas': 'text-coffee',
   // '/fichas-instructor/:id': 'text-coffee',
   '/visitas': 'text-primary',
-  '/config': 'text-fifth'
+  '/config': 'text-fifth',
+  '/registrar-usuario': 'text-purple-500'
 }
 
 /**

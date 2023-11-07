@@ -2,7 +2,7 @@ import { nextui } from '@nextui-org/theme'
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './node_modules/react-tailwindcss-select/dist/index.esm.js', './node_modules/@nextui-org/theme/dist/components/pagination.js'],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './node_modules/react-tailwindcss-select/dist/index.esm.js', './node_modules/@nextui-org/theme/dist/components/pagination.js', './node_modules/@nextui-org/theme/dist/components/accordion.js', './node_modules/@nextui-org/theme/dist/components/table.js'],
   theme: {
     extend: {
       colors: {
@@ -57,7 +57,8 @@ export default {
         '2-50-50': '50% 50%',
         '2-80-20': '80% 20%',
         '2-20-80': '20% 80%',
-        '2-93-6': '93.5% 6.5%'
+        '2-93-6': '93.5% 6.5%',
+        '3-rows': '10% 80% 10%'
       },
       borderWidth: {
         1: '1.5px'

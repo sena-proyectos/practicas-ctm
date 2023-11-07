@@ -1,83 +1,106 @@
-import { Card } from '../Utils/Card/Card'
-import { Footer } from '../Footer/Footer'
-import { Search } from '../Search/Search'
-import { Siderbar } from '../Siderbar/Sidebar'
-import { estadoIcons } from '../../import/staticData'
+import { toast } from 'react-toastify'
 
-const Visits = () => {
-  const visits = [
-    {
-      id: 1,
-      nameAprendiz: 'Juan David Gómez',
-      correoAprendiz: 'jdgomez@gmail.com',
-      fichaAprendiz: 2473196,
-      programaAprendiz: 'Analisis y desarrollo de software',
-      estadoAprendiz: 1,
-      link: '/aprendices'
-    },
-    {
-      id: 2,
-      nameAprendiz: 'Juan David Gómez',
-      correoAprendiz: 'jdgomez@gmail.com',
-      fichaAprendiz: 2473196,
-      programaAprendiz: 'Analisis y desarrollo de software',
-      estadoAprendiz: 2,
-      link: '/aprendices'
-    },
-    {
-      id: 3,
-      nameAprendiz: 'Juan David Gómez',
-      correoAprendiz: 'jdgomez@gmail.com',
-      fichaAprendiz: 2473196,
-      programaAprendiz: 'Analisis y desarrollo de software',
-      estadoAprendiz: 1,
-      link: '/aprendices'
-    },
-    {
-      id: 4,
-      nameAprendiz: 'Juan David Gómez',
-      correoAprendiz: 'jdgomez@gmail.com',
-      fichaAprendiz: 2473196,
-      programaAprendiz: 'Analisis y desarrollo de software',
-      estadoAprendiz: 2,
-      link: '/aprendices'
-    },
-    {
-      id: 5,
-      nameAprendiz: 'Juan David Gómez',
-      correoAprendiz: 'jdgomez@gmail.com',
-      fichaAprendiz: 2473196,
-      programaAprendiz: 'Analisis y desarrollo de software',
-      estadoAprendiz: 1,
-      link: '/aprendices'
-    },
-    {
-      id: 6,
-      nameAprendiz: 'Juan David Gómez',
-      correoAprendiz: 'jdgomez@gmail.com',
-      fichaAprendiz: 2473196,
-      programaAprendiz: 'Analisis y desarrollo de software',
-      estadoAprendiz: 2,
-      link: '/aprendices'
+import { useParams } from 'react-router-dom'
+import { apprenticeStore } from '../../store/config'
+import { useEffect, useState } from 'react'
+import { Button } from '../Utils/Button/Button'
+
+import { getVisitsByStudent, patchVisitById } from '../../api/httpRequest'
+import { getUserID } from '../../import/getIDActualUser'
+import { CardWithChildren } from '../Utils/Card/Card'
+import { PiCalendarCheckLight } from 'react-icons/pi'
+import { LuSave } from 'react-icons/lu'
+
+export const Visits = () => {
+  const { id } = useParams()
+  const { apprenticeData } = apprenticeStore()
+
+  const [visitsData, setVisitData] = useState([])
+
+  useEffect(() => {
+    const cachedData = JSON.parse(sessionStorage.getItem('apprenticeData'))
+    if (cachedData) {
+      apprenticeStore.setState({ apprenticeData: cachedData })
     }
-  ]
+  }, [])
+
+  const getVisits = async () => {
+    try {
+      const { data } = await getVisitsByStudent(id)
+      setVisitData(data)
+    } catch (error) {
+      toast.error('Error al conseguir las visitas')
+    }
+  }
+  useEffect(() => {
+    getVisits()
+  }, [])
+
+  const handleSubmit = (e, id_visita, numero_visita) => {
+    e.preventDefault()
+    const { id_usuario: usuario_responsable } = getUserID().user
+    const formData = new FormData(e.target)
+    const data = Object.fromEntries(formData)
+    if (data.estado_visita === 'on') {
+      data.estado_visita = 'Realizado'
+    } else {
+      data.estado_visita = 'Pendiente'
+    }
+    data.numero_visita = numero_visita
+    sendData(id_visita, { ...data, usuario_responsable })
+  }
+
+  const sendData = async (id, payload) => {
+    try {
+      await patchVisitById(id, payload)
+      toast.success('Visita modificada correctamente')
+      getVisits()
+    } catch (error) {
+      toast.error('Error al actualizar la visita')
+    }
+  }
 
   return (
-    <main className='flex flex-row min-h-screen'>
-      <Siderbar />
-      <section className='relative grid flex-auto w-min grid-rows-3-10-75-15'>
-        <header className='grid place-items-center'>
-          <Search searchFilter />
-        </header>
-        <div className='grid grid-cols-1 gap-1 p-4 sm:grid-cols-2 md:grid-cols-3'>
-          {visits.map((visit) => {
-            return <Card cardVisits shadow={'shadow-2xl'} scale={'scale-90'} title={visit.nameAprendiz} subtitle={visit.correoAprendiz} key={visit.id} icon={visit.estadoAprendiz === 1 ? estadoIcons.visitado : estadoIcons.visitadont} info1={visit.fichaAprendiz} info2={visit.programaAprendiz} description={visit.estadoAprendiz === 1 ? 'Este aprendiz ya ha sido visitado' : 'Este aprendiz no ha sido visitado'} roundedLink={'rounded-xl'} borderColor={'border-primary'} buttonText={'Más información'} isButton showModal />
-          })}
-        </div>
-        <Footer />
-      </section>
-    </main>
+    <section className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+      {visitsData &&
+        visitsData.length !== 0 &&
+        visitsData.map((visit) => {
+          return (
+            <CardWithChildren key={visit.id_visita} classNames='w-full'>
+              <form className='flex flex-col gap-1.5' onSubmit={(e) => handleSubmit(e, visit.id_visita, visit.numero_visita)}>
+                <header className='flex flex-row items-center justify-between'>
+                  <div className='flex flex-row items-center gap-2'>
+                    <PiCalendarCheckLight className='text-3xl' />
+                    <div className='flex flex-col '>
+                      <h2 className='font-medium'>Visita {visit.numero_visita === '1' ? 'Inicial' : visit.numero_visita === '2' ? 'Final' : 'Extracurricular'}</h2>
+                      <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'}`}>{visit.fecha_modificacion}</span>
+                    </div>
+                  </div>
+                  <input name='estado_visita' type='checkbox' required className='w-4 h-4 rounded-xl accent-teal-600' defaultChecked={visit.estado_visita === 'Realizado'} />
+                </header>
+                <hr className='border-gray-300' />
+                <section className='flex flex-col gap-1 px-2 text-sm'>
+                  <div className='flex flex-row justify-between'>
+                    <h3>{apprenticeData.nombre_completo}</h3>
+                    <h3 className='uppercase'>{apprenticeData.tipo_documento_aprendiz + ' ' + apprenticeData.numero_documento_aprendiz}</h3>
+                  </div>
+                  <textarea name='observaciones_visita' defaultValue={visit.observaciones_visita} className='w-full h-14 p-1.5 overflow-y-auto text-sm border-gray-300 focus:outline-none resize-none rounded-xl border-1' placeholder='Observaciones...' />
+                  <div className='flex flex-row items-center justify-between pt-2'>
+                    <h3>
+                      {apprenticeData.numero_ficha} - {apprenticeData.nombre_programa_formacion}
+                    </h3>
+                    <div className='w-fit'>
+                      <Button bg={'bg-teal-600'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
+                        <LuSave />
+                        Guardar
+                      </Button>
+                    </div>
+                  </div>
+                </section>
+              </form>
+            </CardWithChildren>
+          )
+        })}
+    </section>
   )
 }
-
-export { Visits }

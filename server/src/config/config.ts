@@ -2,17 +2,31 @@ import { config } from 'dotenv'
 import nodemailer from 'nodemailer'
 import smtpTransport from 'nodemailer-smtp-transport'
 
+/**
+ * Configura y obtiene las variables de entorno de la aplicación
+ * @example process.env.PORT
+ */
 config()
 
 const PORT = process.env.PORT ?? 3000
-const DB_USER = process.env.DB_USER ?? 'Stiven'
-const DB_PASSWORD = process.env.DB_PASSWORD ?? 'Stigmata14/'
+const DB_USER = process.env.DB_USER ?? 'root'
+const DB_PASSWORD = process.env.DB_PASSWORD ?? ''
 const DB_HOST = process.env.DB_HOST ?? 'localhost'
 const DB_DATABASE = process.env.DB_DATABASE ?? 'practicas_sena'
 const DB_PORT = process.env.DB_PORT ?? 3306
 const MAIL_USER = process.env.MAIL_USER ?? 'null'
 const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? 'null'
 
+/**
+ * Configura el transporte de correos con el SMTP de outlook (office) junto con las credenciales del .env
+ * @callback smtpTransport
+ * @property {string} host - Host del servidor SMTP
+ * @property {number} port - Puerto del servidor SMTP
+ * @property {boolean} secure - Si el servidor SMTP es seguro
+ * @property {object} auth - Objeto con las credenciales del usuario
+ * @property {string} auth.user - Correo electrónico del usuario alojado en 'process.env.MAIL_USER'
+ * @property {string} auth.pass - Contraseña del usuario alojado en 'process.env.MAIL_PASSWORD'
+ */
 const emailConfig = nodemailer.createTransport(
   smtpTransport({
     host: 'smtp-mail.outlook.com',

@@ -1,37 +1,57 @@
 import Cookies from 'js-cookie'
-import { useEffect } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { isExpired } from 'react-jwt'
+import { Navigate, useLocation } from 'react-router-dom'
 
-const ProtectedRoute = ({ idRol, children, redirectTo = '/' }) => {
-  const navigate = useNavigate()
-  if (idRol !== false) {
-    idRol = Number(localStorage.getItem('idRol'))
-  }
-
-  useEffect(() => {
-    if (!idRol) {
-      return navigate(redirectTo)
-    }
-  }, [idRol, navigate])
-
-  return children || <Outlet />
-}
-
-const CheckExistingUser = ({ children, redirectTo = '/home' }) => {
-  const navigate = useNavigate()
-  const idRol = Number(localStorage.getItem('idRol'))
-  const cookie = Cookies.get('token')
+export const ProtectedRoute = ({ redirectTo, children }) => {
   const location = useLocation()
-  let locationKeyHome
-  if (location.pathname === '/home') {
-    locationKeyHome = location.key
+  const idRol = localStorage.getItem('idRol')
+  const token = Cookies.get('token')
+  const publicToken = sessionStorage.getItem('public-token')
+  const isExpiredToken = token && isExpired(token)
+  const isExpiredPublicToken = publicToken && isExpired(publicToken)
+  const auth = !idRol && !token && isExpiredToken && isExpiredPublicToken
+  if (auth) {
+    return <Navigate to={redirectTo} state={{ from: location }} />
   }
-  useEffect(() => {
-    if ((cookie && idRol && location.pathname === '/' && location.key === locationKeyHome) === true) {
-      return navigate(redirectTo, { replace: true })
-    }
-  }, [cookie, idRol, navigate])
-  return children || <Outlet />
+
+  return children
 }
 
-export { ProtectedRoute, CheckExistingUser }
+export const IsLogged = ({ redirectTo, children }) => {
+  const location = useLocation()
+  const idRol = localStorage.getItem('idRol')
+  const token = Cookies.get('token')
+
+  const publicToken = sessionStorage.getItem('public-token')
+  const isExpiredToken = token ? isExpired(token) : true
+  const isExpiredPublicToken = publicToken ? isExpired(publicToken) : true
+
+  const auth = !!(idRol && token && !isExpiredToken && !isExpiredPublicToken)
+  if (auth) {
+    return <Navigate to={redirectTo} state={{ from: location }} />
+  }
+
+  return children
+}
+
+export const IsAdminOrCoordinator = ({ redirectTo, children }) => {
+  const location = useLocation()
+  const idRol = localStorage.getItem('idRol')
+  const auth = idRol === '1' || idRol === '2'
+  if (!auth) {
+    return <Navigate to={redirectTo} state={{ from: location }} />
+  }
+
+  return children
+}
+
+export const IsAdmin = ({ redirectTo, children }) => {
+  const location = useLocation()
+  const idRol = localStorage.getItem('idRol')
+  const auth = idRol === '1'
+  if (!auth) {
+    return <Navigate to={redirectTo} state={{ from: location }} />
+  }
+
+  return children
+}

@@ -14,6 +14,8 @@ import { Footer } from '../Footer/Footer'
 import { Button } from '../Utils/Button/Button'
 import { PasswordModal } from '../Utils/Modals/Modals'
 import { getUserById, EditUser } from '../../api/httpRequest'
+import { settingsValidation } from '../../validation/settingsValidation'
+import { ToastContainer, toast } from 'react-toastify'
 
 export const Settings = () => {
   const [mostrarModal, setMostrarModal] = useState(false)
@@ -61,15 +63,36 @@ export const Settings = () => {
     formValues.id_rol = id_rol
     password === '' ? (formValues.contrasena = user.contrasena_usuario) : (formValues.contrasena = password)
     const id_usuario = user.id_usuario
-    setEdit(false)
     setPassword('')
+
     try {
+      const { error } = settingsValidation.validate(formValues)
+      if (error !== undefined) {
+        let errorMessage
+        const customErrorMessages = {
+          nombre: 'El nombre debe tener al menos 3 caracteres.',
+          apellido: 'El apellido debe tener al menos 3 caracteres.',
+          num_documento: 'El número de documento debe tener entre 8 y 10 caracteres',
+          num_celular: 'El número de celular debe tener entre 8 y 10 caracteres',
+          correo_electronico: 'El correo electronico no tiene un formato valido',
+          contrasena: 'La contraseñan debe tener 8 caracteres, 1 mayuscula, 1 minuscula y 1 número'
+        }
+
+        const path = error.details[0].path[0]
+        if (customErrorMessages[path]) {
+          errorMessage = customErrorMessages[path]
+        }
+
+        toast.error(errorMessage)
+        return
+      }
       await EditUser(id_usuario, formValues)
       Swal.fire({
         icon: 'success',
         title: '!Exitoso¡',
         text: 'Datos editados correctamente'
       })
+      setEdit(false)
     } catch (error) {
       console.error(error)
     }
@@ -79,6 +102,7 @@ export const Settings = () => {
     <>
       {mostrarModal && <PasswordModal bodyPassword title={'Cambiar Contraseña'} onSavePassword={handleChangePassword} closeModal={handleModal} />}
       <main className='flex flex-row min-h-screen bg-whitesmoke'>
+        <ToastContainer position='top-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme='colored' />
         <Siderbar />
         <section className='relative grid flex-auto w-min grid-rows-2-93-6'>
           <div className='grid place-items-center '>
@@ -104,7 +128,7 @@ export const Settings = () => {
                     </div>
                     <div className='flex flex-col'>
                       <label htmlFor='email'>Correo electrónico</label>
-                      <input name='correo_electronico' type='text' defaultValue={user.email_usuario} className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2 disabled:bg-gray-200' disabled={!edit} />
+                      <input name='correo_electronico' type='email' defaultValue={user.email_usuario} className='rounded-[10px] border-1 border-gray-300 focus:outline-none px-2 disabled:bg-gray-200' disabled={!edit} />
                     </div>
                     <div className='flex flex-col'>
                       <label htmlFor='contacto'>No. Contacto</label>
