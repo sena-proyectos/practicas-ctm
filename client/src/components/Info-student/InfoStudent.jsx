@@ -1,9 +1,12 @@
 import { Link, useParams } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify'
 
 // Icons
 import { IoReturnDownBack } from 'react-icons/io5'
 import { HiOutlinePencil } from 'react-icons/hi'
+import { LuSave } from 'react-icons/lu'
+import { PiCalendarPlus } from 'react-icons/pi'
 
 // Components
 import { Footer } from '../Footer/Footer'
@@ -15,10 +18,7 @@ import { Letters } from '../Letters/Letters'
 import { Visits } from '../Visits/Visits'
 import { Button } from '../Utils/Button/Button'
 import { AddVisitModal } from '../Utils/Modals/Modals'
-import { PiCalendarPlus } from 'react-icons/pi'
 import { CardWithChildren } from '../Utils/Card/Card'
-import { LuSave } from 'react-icons/lu'
-import { toast } from 'react-toastify'
 
 export const InfoStudent = () => {
   const { id } = useParams()
@@ -27,6 +27,22 @@ export const InfoStudent = () => {
 
   const [{ cargo_jefe, celular_aprendiz, email_aprendiz, email_jefe, etapa_formacion, fecha_inicio_lectiva, fecha_inicio_practica, nivel_formacion, nombre_arl, nombre_completo, nombre_empresa, nombre_jefe, nombre_modalidad, nombre_programa_formacion, numero_contacto_jefe, numero_documento_aprendiz, numero_ficha }, setInfoStudent] = useState({})
 
+  /**
+   * @function
+   * @name getInfoStudent
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para obtener información detallada del estudiante utilizando su ID y la función `GetStudentsDetailById`. Luego, se realiza una transformación de las fechas de inicio de lectiva y práctica para mostrarlas en formato localizado ('es-ES'). Finalmente, se actualizan los datos del estudiante y del aprendiz con la información obtenida.
+   *
+   * @param {number} id - El id del estudiante que se desea obetener la informacion
+   * @throws {Error} - Si ocurre un error al obtener la información del estudiante.
+   * @returns {void}
+   *
+   * @reference
+   * Esta función se utiliza para cargar y formatear la información de un estudiante y actualizar el estado de los datos del estudiante y el aprendiz en la aplicación.
+   *
+   */
   const getInfoStudent = async () => {
     try {
       const { data } = await GetStudentsDetailById(id)
@@ -185,6 +201,22 @@ const Novedades = () => {
   const [edit, setEdit] = useState(false)
   const formRef = useRef(null)
 
+  /**
+   * @function
+   * @name getStateStudent
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para obtener el estado del estudiante utilizando su ID y la función `getStudentState`. Luego, se actualizan los datos de estado con la información obtenida.
+   *
+   * @param {number} id - El id del estudiante que se desea obetener la informacion
+   * @throws {Error} - Si ocurre un error al obtener el estado del estudiante.
+   * @returns {void}
+   *
+   * @reference
+   * Esta función se utiliza para cargar y actualizar el estado del estudiante en la aplicación con los datos obtenidos del servidor.
+   *
+   */
   const getStateStudent = async () => {
     try {
       const { data } = await getStudentState(id)
@@ -201,7 +233,22 @@ const Novedades = () => {
   const handleEdit = () => {
     setEdit(true)
   }
-
+  /**
+   * @function
+   * @name handleState
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para manejar la modificación del estado del estudiante. Se previene la acción predeterminada del evento para evitar que se recargue la página. Luego, se obtienen los datos del formulario a través del ref `formRef` y se extrae el estado del aprendiz. Se realiza una solicitud para editar el estado del estudiante utilizando la función `editStudentState`. Si la solicitud es exitosa, se muestra una notificación de éxito y se actualiza el estado del estudiante llamando a `getStateStudent`. Finalmente, se desactiva la edición del estado (si estaba habilitada).
+   *
+   * @param {Event} e - El evento del formulario que desencadenó la función.
+   * @throws {Error} - Si ocurre un error al modificar el estado del estudiante.
+   * @returns {void}
+   *
+   * @reference
+   * Esta función se utiliza para manejar la edición del estado de un estudiante, realizar una solicitud al servidor y mostrar notificaciones al usuario según el resultado.
+   *
+   */
   const handleState = async (e) => {
     e.preventDefault()
 

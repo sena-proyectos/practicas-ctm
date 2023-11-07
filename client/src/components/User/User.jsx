@@ -1,9 +1,11 @@
 import { useRef } from 'react'
 
+// icons
 import { AiOutlineIdcard } from 'react-icons/ai'
 import { BiLockAlt } from 'react-icons/bi'
 // import { IoPersonOutline } from 'react-icons/io5'
 
+// components
 import { Form } from '../Form/Form'
 
 const User = () => {
@@ -22,14 +24,16 @@ const User = () => {
   const divRef = useRef(null)
 
   /**
-   * Configuración del formulario de inicio de sesión.
-   *
-   * @constant
+   * @type {Object[]}
    * @name loginForm
-   * @type {Array}
    *
-   * @example
-   * const configuracionFormularioLogin = loginForm;
+   * @description
+   * Arreglo de objetos que define la estructura de un formulario de inicio de sesion.
+   *
+   * @property {JSX.Element} icon - Ícono relacionado al campo del formulario.
+   * @property {string} placeholder - Texto de marcador de posición del campo.
+   * @property {string} type - Tipo de campo (e.g., 'text', 'select', 'email', 'password').
+   * @property {string} nameInput - Nombre del campo de entrada.
    */
   const loginForm = [
     {
@@ -47,7 +51,7 @@ const User = () => {
   ]
 
   /**
-   * Títulos para las secciones de inicio de sesión y registro.
+   * Título para la seccion de inicio de sesión.
    *
    * @constant
    * @name title
@@ -57,8 +61,7 @@ const User = () => {
    * const titulos = title;
    */
   const title = {
-    login: 'Bienvenido de vuelta',
-    register: 'Bienvenido a SENA'
+    login: 'Bienvenido de vuelta'
   }
 
   return (
@@ -89,8 +92,8 @@ const User = () => {
           <div className='z-10 flex flex-col p-8 bg-white border shadow-xl justify-self-center rounded-2xl border-neutral-400 '>
             <h2 className='text-xl font-bold text-center'>{title.login}</h2>
             <span className='text-lg font-light '>Es un placer para nosotros tenerte aquí</span>
-            <div className={`flex w-72 flex-row justify-items-center rounded-lg border border-gray-400 relative mx-auto my-2.5 `}>
-              <div className={`absolute ml-2 mt-1 h-6 w-32 rounded-md bg-white transition-all `} ref={divRef}></div>
+            <div className='flex w-72 flex-row justify-items-center rounded-lg border border-gray-400 relative mx-auto my-2.5'>
+              <div className='absolute w-32 h-6 mt-1 ml-2 transition-all bg-white rounded-md' ref={divRef}></div>
             </div>
             <Form inputs={loginForm} isLoginForm={true} />
           </div>

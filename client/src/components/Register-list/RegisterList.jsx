@@ -54,17 +54,19 @@ export const RegisterList = () => {
   const [currentRegisterList, setCurrentRegisterList] = useState({})
 
   /**
-   * Función asincrónica para buscar aprendices por nombre de usuario.
-   *
-   * @async
    * @function
    * @name searchInscriptions
-   * @param {string} searchTerm - Término de búsqueda para el aprendiz.
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para buscar registros por el nombre del aprendiz. Si el término de búsqueda está vacío, restablece el estado de error y la lista de registros buscados. En caso de éxito, procesa el nombre del aprendiz, actualiza el estado `searchedInscriptions` con los resultados de la búsqueda y elimina el error. Si se produce un error, muestra un mensaje de error indicando que el registro no existe y restablece la lista de registros buscados.
+   *
+   * @param {string} searchTerm - Término de búsqueda para los registros.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
    *
    * @example
-   * searchInscriptions('John Doe');
+   * searchCourses('John Doe');
    */
   const searchInscriptions = async (searchTerm) => {
     if (searchTerm.trim() === '') {
@@ -108,7 +110,17 @@ export const RegisterList = () => {
     }
   }
 
-  // Cambia el numero de paginas dependiendo de la cantidad de registros
+  /**
+   * @function
+   *
+   * @description
+   * Este efecto se activa cuando hay cambios en `searchedInscriptions`, `error` o `inscriptions`. Si `searchedInscriptions` tiene elementos y no hay errores, actualiza `currentRegisterList` con los registros buscados y establece `pageNumber` en 1. En caso contrario, restablece `currentRegisterList` a la lista completa de registros almacenada en `inscriptions`.
+   *
+   * @param {function} effect - La función que contiene la lógica del efecto.
+   * @param {array} dependencies - Un arreglo de dependencias que determina cuándo se debe ejecutar el efecto.
+   * @returns {void}
+   *
+   */
   useEffect(() => {
     if (searchedInscriptions.length > 0 && !error) {
       setCurrentRegisterList(searchedInscriptions)
@@ -119,49 +131,35 @@ export const RegisterList = () => {
   }, [searchedInscriptions, error, inscriptions])
 
   /**
-   * Número de inscripciones por página.
-   *
-   * @constant
-   * @name inscriptionsPerPage
    * @type {number}
-   *
-   * @example
-   * const inscripcionesPorPagina = inscriptionsPerPage;
+   * @name inscriptionsPerPage
+   * @default 6
+   * @description
+   * Almacena la cantidad de inscripciones que se muestran por página en la paginación de inscripciones.
    */
   const inscriptionsPerPage = 6
+
   /**
-   * Número total de páginas para la paginación de inscripciones y las busquedad de inscripciones
-   *
-   * @constant
-   * @name pageCount
    * @type {number}
-   *
-   * @example
-   * const totalPaginas = pageCount;
+   * @name pageCount
+   * @description
+   * Almacena el número de páginas necesarias para mostrar todos las inscripciones en función de la cantidad de inscripciones por página.
    */
   const pageCount = Math.ceil(currentRegisterList.length / inscriptionsPerPage)
 
   /**
-   * Índice de inicio de la página actual.
-   *
-   * @constant
-   * @name startIndex
    * @type {number}
-   *
-   * @example
-   * const indiceInicio = startIndex;
+   * @name startIndex
+   * @description
+   * Almacena el índice de inicio de un rango de inscripciones en función del número de página actual y la cantidad de inscripciones por página.
    */
   const startIndex = (pageNumber - 1) * inscriptionsPerPage
 
   /**
-   * Índice de fin de la página actual.
-   *
-   * @constant
-   * @name endIndex
    * @type {number}
-   *
-   * @example
-   * const indiceFin = endIndex;
+   * @name endIndex
+   * @description
+   * Almacena el índice de fin de un rango de inscripciones que se muestra en una paginación.
    */
   const endIndex = startIndex + inscriptionsPerPage
 
@@ -178,19 +176,14 @@ export const RegisterList = () => {
   const idRol = Number(localStorage.getItem('idRol'))
 
   /**
-   * Función para redirigir al usuario a la página de registro de aprendices.
-   *
    * @function
-   * @name handleRegister
+   *
+   * @description
+   * Este efecto se utiliza para obtener el token de autenticación almacenado en las cookies y extraer el nombre de usuario (nombres y apellidos) de dicho token. Luego, se actualiza el estado `username` con el nombre de usuario obtenido. Este efecto se ejecuta una vez, al montar el componente, ya que el arreglo de dependencias está vacío.
+   *
    * @returns {void}
    *
-   * @example
-   * handleRegister();
    */
-  // const handleRegister = () => {
-  //   return navigate('/registrar-aprendiz')
-  // }
-
   useEffect(() => {
     const token = Cookies.get('token')
     const { nombres_usuario, apellidos_usuario } = decode(token).data.user
@@ -252,11 +245,13 @@ export const RegisterList = () => {
   }
 
   /**
-   * Función para obtener los registros.
-   *
-   * @async
    * @function
    * @name getRegistros
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para obtener los registros de inscripciones. Dependiendo del rol del usuario, se obtienen los registros del instructor de seguimiento o las registros generales. Los nombres y apellidos de las inscripciones se convierten a formato capitalizado antes de guardar en el estado de inscripciones y hacer una copia en inscripciones originales. Finalmente, se establece `loadingData` en falso para indicar que los datos han sido cargados.
+   *
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
    *
@@ -295,6 +290,22 @@ export const RegisterList = () => {
     }
   }
 
+  /**
+   * @function
+   * @name getRegistersTrackingInstructor
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para obtener los registros de seguimiento del instructor utilizando su ID y la función `getInscriptionsByTeacherId`. Los nombres y apellidos de las inscripciones se convierten a formato capitalizado antes de actualizar los datos de inscripciones y la versión original de inscripciones. Finalmente, se establece `loadingData` en falso para indicar que los datos han sido cargados.
+   *
+   * @param {number} id - El ID del instructor para el cual se desean obtener los registros de inscripciones.
+   * @throws {Error} - Si ocurre un error al obtener los registros de inscripciones del instructor.
+   * @returns {void}
+   *
+   * @reference
+   * Esta función se utiliza en el componente para cargar registros de inscripciones de estudiantes relacionadas con un instructor específico y mostrarlos en la interfaz de usuario.
+   *
+   */
   const getRegistersTrackingInstructorOrCoordinator = async (id) => {
     try {
       const response = await getInscriptionsByTeacherId(id)
@@ -326,16 +337,27 @@ export const RegisterList = () => {
     getRegistros()
   }, [])
 
+  /**
+   * Efecto para leer un archivo Excel cuando `modalOption` cambia a `modalOptionList.loadingExcelModal`.
+   *
+   * @description
+   * Este efecto se utiliza para leer un archivo Excel cuando la variable `modalOption` cambia a `modalOptionList.loadingExcelModal`. Dependiendo del valor de `modalOption`, se llama a la función `readExcelFile`. Este efecto se activa cuando cambia la dependencia `modalOption`.
+   *
+   * @returns {void}
+   *
+   */
   useEffect(() => {
     if (modalOption === modalOptionList.loadingExcelModal) readExcelFile()
   }, [modalOption])
 
   /**
-   * Función para leer un archivo de Excel.
-   *
-   * @async
    * @function
    * @name readExcelFile
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para leer un archivo Excel y procesar los datos del archivo. Primero, obtiene el archivo seleccionado desde el estado `excelRef` y lo guarda en la variable `file`. Luego, crea un objeto `FormData` llamado `fileData` y agrega el archivo a este objeto. A continuación, se realiza una solicitud para leer el archivo Excel utilizando la función `readExcel` y se obtiene la respuesta que contiene los datos y el código. Luego, se procesan los datos para agregar un campo `responsable_inscripcion` con el valor de `username` a cada elemento del arreglo de datos. Finalmente, se utiliza un `setTimeout` para llamar a la función `uploadExcelFile` después de 1 segundo con los datos procesados y el código.
+   *
    * @throws {Error} Error en caso de fallo en la lectura del archivo.
    * @returns {void}
    *
@@ -360,11 +382,13 @@ export const RegisterList = () => {
   }
 
   /**
-   * Función para cargar un archivo de Excel.
-   *
-   * @async
    * @function
    * @name uploadExcelFile
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para subir un archivo Excel procesado a la aplicación de inscripción. Toma un arreglo de datos `payload` y un código `code` como argumentos. Primero, realiza una solicitud para inscribir a los aprendices utilizando los datos del archivo Excel. Luego, establece la opción modal `code` en el estado `modalOption`. Finalmente, utiliza un `setTimeout` para cerrar el modal, notificar, y obtener los registros actualizados después de 1 segundo.
+   *
    * @param {Object} payload - Datos a enviar.
    * @param {string} code - Código de la operación.
    * @throws {Error} Error en caso de fallo en la solicitud.
@@ -394,10 +418,12 @@ export const RegisterList = () => {
   }
 
   /**
-   * Función para manejar la carga de un archivo de Excel.
-   *
    * @function
    * @name handleExcelFile
+   *
+   * @description
+   * Esta función se utiliza para manejar la selección de un archivo Excel. Verifica si el archivo seleccionado está vacío y muestra un mensaje de error en caso afirmativo. Luego, obtiene el nombre del archivo y lo establece en el estado `fileName`. Finalmente, abre o cierra el modal modal `isModalOpen` para mostrar el nombre del archivo seleccionado.
+   *
    * @returns {void}
    *
    * @example
@@ -467,16 +493,18 @@ export const RegisterList = () => {
   }
 
   /**
-   * Función para manejar el tipo de filtro (modalidad, estado, fecha).
-   *
    * @function
-   * @name handleTypeFilter
-   * @param {string} filterType - Tipo de filtro a aplicar.
-   * @param {string} filter - Valor del filtro.
+   * @name handleFilterType
+   *
+   * @description
+   * Esta función se utiliza para aplicar filtros a la lista de registros basándose en el tipo de filtro y su valor. Dependiendo del tipo de filtro, se realiza una filtración de la lista de original de registros (`inscriptionOriginal`) o de la lista de los registros que se han buscado (`originalSearched`). Los registros filtrados se establecen como la nueva lista de registros en el estado `inscriptions`.
+   *
+   * @param {string} filterType - Tipo de filtro ('modalidad', 'estado', o 'fecha').
+   * @param {string} filter - Valor del filtro seleccionado.
    * @returns {void}
    *
    * @example
-   * handleTypeFilter('modalidad', 'Presencial');
+   * handleFilterType('modalidad', 'monitoria');
    */
   const handleTypeFilter = (filterType, filter) => {
     if (filterType === 'modalidad') {

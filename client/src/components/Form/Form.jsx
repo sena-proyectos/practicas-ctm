@@ -15,14 +15,13 @@ const Form = ({ inputs, isLoginForm }) => {
   const [loadingBtn, setLoadingBtn] = useState(false)
 
   /**
-   * Iconos para mostrar y ocultar la contraseña.
+   * @type {object}
    *
-   * @constant
-   * @name passwordIcons
-   * @type {Object}
+   * @description
+   * Este objeto constante almacena iconos que representan un ojo abierto y un ojo cerrado para la visualización de contraseñas en un formulario.
    *
-   * @example
-   * const iconosPassword = passwordIcons;
+   * @property {JSX.Element} openEye - Icono de un ojo abierto.
+   * @property {JSX.Element} closeEye - Icono de un ojo cerrado.
    */
   const passwordIcons = {
     openEye: <AiOutlineEye />,
@@ -30,14 +29,13 @@ const Form = ({ inputs, isLoginForm }) => {
   }
 
   /**
-   * Estados para controlar la visibilidad de la contraseña.
+   * @type {object}
    *
-   * @constant
-   * @name passwordStatus
-   * @type {Object}
+   * @description
+   * Este objeto constante almacena valores que representan el estado de visibilidad de una contraseña en un formulario. Los valores son 'text' cuando la contraseña se muestra y 'password' cuando se oculta.
    *
-   * @example
-   * const estadosContraseña = passwordStatus;
+   * @property {string} shown - Representa el estado en el que la contraseña se muestra.
+   * @property {string} hidden - Representa el estado en el que la contraseña se oculta.
    */
   const passwordStatus = {
     shown: 'text',
@@ -63,8 +61,6 @@ const Form = ({ inputs, isLoginForm }) => {
    * @name formValuesRef
    * @type {Object}
    *
-   * @example
-   * const referenciaValoresFormulario = formValuesRef;
    */
   const formValuesRef = useRef({})
 
@@ -115,11 +111,13 @@ const Form = ({ inputs, isLoginForm }) => {
   }
 
   /**
-   * Función asincrónica para enviar datos al servidor.
-   *
-   * @async
    * @function
    * @name sendData
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para enviar datos de inicio de sesión al servidor a través de la función `Login`. Si la solicitud es exitosa, se almacena el token de acceso en una cookie y se obtiene el ID del rol del usuario para guardarlo en el almacenamiento local. Luego, se redirige al usuario a la página de inicio ('/home'). En caso de error, se muestra un mensaje de error utilizando la biblioteca Swal.
+   *
    * @param {Object} data - Datos a enviar.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
@@ -154,6 +152,20 @@ const Form = ({ inputs, isLoginForm }) => {
       })
     }
   }
+
+  /**
+   * @function
+   * @name sendRegisterData
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para enviar datos de registro de usuario al servidor a través de la función `registerUser`. Se genera un número de celular aleatorio de 8 dígitos y se agrega a los datos de registro. Luego, se realiza la solicitud al servidor. Si el registro es exitoso, se muestra un mensaje de éxito utilizando la biblioteca Swal. En caso de error, se muestra un mensaje de error con detalles si están disponibles.
+   *
+   * @param {object} data - Los datos de registro de usuario que se envían al servidor.
+   * @throws {Error} - Si ocurre un error en la solicitud de registro de usuario.
+   * @returns {void}
+   *
+   */
   const sendRegisterData = async (data) => {
     const num_celular = randomNumberGenerator(8)
     data.num_celular = num_celular.toString()

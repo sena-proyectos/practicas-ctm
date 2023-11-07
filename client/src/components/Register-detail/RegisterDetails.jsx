@@ -342,6 +342,16 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     }
   }
 
+  /**
+   * @function
+   * @name getCoordinatorName
+   *
+   * @description
+   * Esta función asincrónica se utiliza para obtener el nombre completo de un coordinador a partir de su ID y establecerlo en el estado.
+   *
+   * @param {string} payload - El ID del coordinador del que se desea obtener el nombre.
+   * @throws {Error} Si ocurre un error al obtener los datos del coordinador.
+   */
   const getCoordinatorName = async (payload) => {
     try {
       const res = await getCoordinatorNameByID(payload)
@@ -613,6 +623,17 @@ const Coordinador = ({ idRol, avalCoordinador }) => {
     }
   }
 
+  /**
+   * @function
+   * @name saveSelectOnChange
+   * @async
+   *
+   * @description
+   * Esta función asincrónica se utiliza para guardar la selección de un coordinador en el contexto de una inscripción. Actualiza el responsable del aval del coordinador con el valor proporcionado y muestra una notificación de éxito.
+   *
+   * @param {string} e - El valor seleccionado que representa al coordinador.
+   * @throws {Error} Si ocurre un error al guardar la selección del coordinador.
+   */
   const saveSelectOnChange = async (e) => {
     try {
       await inscriptionDetailsUpdate(avalCoordinador, { responsable_aval: e })
@@ -966,6 +987,17 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     }
   }
 
+  /**
+   * @function
+   * @name fetchFullNameInstructor
+   * @async
+   *
+   * @description
+   * Esta función asincrónica se utiliza para obtener el nombre completo de un instructor a partir de su ID y establecerlo en el estado. La función busca los datos del instructor por su ID y combina su nombre y apellidos para formar el nombre completo.
+   *
+   * @param {string} payload - El ID del instructor del que se desea obtener el nombre completo.
+   * @throws {Error} Si ocurre un error al buscar el instructor asignado.
+   */
   const fetchFullNameInstructor = async (payload) => {
     try {
       const { data } = await getInfoTeacherByID(payload)
@@ -1147,6 +1179,16 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
     }
   }
 
+  /**
+   * @function
+   * @name setApprovalDetailUser
+   *
+   * @description
+   * Esta función asincrónica se utiliza para establecer un instructor como responsable de la revisión de una carta de funciones. La función busca los datos del instructor a partir de su ID, actualiza el detalle de inscripción con el ID de aprobación y envía un correo electrónico de notificación. Finalmente, muestra una notificación de éxito o error.
+   *
+   * @param {string} id - El ID del instructor que se va a establecer como responsable.
+   * @throws {Error} Si ocurre un error al guardar al instructor o al enviar el correo de notificación.
+   */
   const setApprovalDetailUser = async (id) => {
     const idApprovalDetail = avalInfoFunciones.id_detalle_inscripcion
     try {

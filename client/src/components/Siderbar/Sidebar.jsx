@@ -56,6 +56,7 @@ const Siderbar = () => {
    * const idRol = idRol;
    */
   const idRol = Number(localStorage.getItem('idRol'))
+
   /**
    * Función para eliminar el ID de rol del almacenamiento local.
    *

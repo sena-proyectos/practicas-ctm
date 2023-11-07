@@ -9,6 +9,7 @@ import { Pagination } from '@nextui-org/pagination'
 import { HiOutlineUserAdd } from 'react-icons/hi'
 import { BsJournalBookmark } from 'react-icons/bs'
 import { IoReturnDownBack } from 'react-icons/io5'
+import { BiSad } from 'react-icons/bi'
 
 // Componentes
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -17,7 +18,6 @@ import { Search } from '../Search/Search'
 import { Button } from '../Utils/Button/Button'
 import { AsignTeacherModal } from '../Utils/Modals/Modals'
 import { getClassFree, GetClassFreeByNumber } from '../../api/httpRequest'
-import { BiSad } from 'react-icons/bi'
 
 export const AssignClass = () => {
   const [modalAsign, setModalAsign] = useState(false)
@@ -31,12 +31,14 @@ export const AssignClass = () => {
   const [currentCourses, setCurrentCourses] = useState([])
 
   /**
-   * Función asincrónica para buscar fichas por numero de ficha.
-   *
-   * @async
    * @function
    * @name searchCourses
-   * @param {string} searchTerm - Término de búsqueda para el aprendiz.
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para buscar cursos sin instructor por su número de ficha. Si el término de búsqueda está vacío, restablece el estado de error y la lista de cursos buscados. En caso de éxito, procesa el nombre del programa de formación, actualiza el estado `searchedFreeCourses` con los resultados de la búsqueda y elimina el error. Si se produce un error, muestra un mensaje de error indicando que el curso no existe y restablece la lista de cursos buscados.
+   *
+   * @param {string} searchTerm - Término de búsqueda para el curso.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
    *
@@ -76,16 +78,22 @@ export const AssignClass = () => {
   }
 
   /**
-   * Función asincrónica para obtener la lista de cursos que no tengan instructor asignado.
-   *
-   * @async
    * @function
    * @name getCursos
-   * @throws {Error} Error en caso de fallo en la solicitud.
-   * @returns {void}
+   * @async
+   *
+   * @description
+   * Esta función realiza una solicitud para obtener la lista de cursos sin instructor utilizando la función `getClassFree`. Luego, procesa el nombre de cada programa de formación para capitalizar las primeras letras de cada palabra. Finalmente, actualiza el estado `courses` con los datos obtenidos y establece el estado `loading` como `false`.
+   *
+   * @throws {Error} Si la solicitud no se procesa con éxito, se lanza un error.
+   * @returns {Promise<void>}
+   *
+   * @reference
+   * Esta función se utiliza para obtener información de cursos disponibles y formatear los nombres de los programas de formación antes de actualizar el estado del componente.
    *
    * @example
    * getCursos();
+   *
    */
   const getCursos = async () => {
     try {
@@ -123,11 +131,13 @@ export const AssignClass = () => {
   const handleModal = () => setModalAsign(false)
 
   /**
-   * Función asincrónica para obtener y establecer los detalles de un curso.
-   *
-   * @async
    * @function
    * @name handleDetailCourse
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para mostrar un modal de detalles del curso y obtener información detallada del curso identificado por `numero_ficha`. Se realiza una solicitud mediante la función `GetClassFreeByNumber`. Luego, se procesa el nombre del programa de formación capitalizando las primeras letras de cada palabra y se actualiza el estado `detailCourse` con los datos obtenidos.
+   *
    * @param {string} numero_ficha - Número de ficha del curso.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
@@ -154,7 +164,17 @@ export const AssignClass = () => {
     }
   }
 
-  // Cambia el numero de paginas dependiendo de la cantidad de cursos
+  /**
+   * @function
+   *
+   * @description
+   * Este efecto se activa cuando hay cambios en `searchedFreeCourses`, `error` o `courses`. Si `searchedFreeCourses` tiene elementos y no hay errores, actualiza `currentCourses` con los cursos buscados y establece `pageNumber` en 1. En caso contrario, restablece `currentCourses` a la lista completa de cursos almacenada en `courses`.
+   *
+   * @param {function} effect - La función que contiene la lógica del efecto.
+   * @param {array} dependencies - Un arreglo de dependencias que determina cuándo se debe ejecutar el efecto.
+   * @returns {void}
+   *
+   */
   useEffect(() => {
     if (searchedFreeCourses.length > 0 && !error) {
       setCurrentCourses(searchedFreeCourses)
@@ -165,63 +185,47 @@ export const AssignClass = () => {
   }, [searchedFreeCourses, error, courses])
 
   /**
-   * Número de cursos a mostrar por página.
-   *
-   * @constant
-   * @name coursesPerPage
    * @type {number}
+   * @name coursesPerPage
    * @default 6
-   *
-   * @example
-   * const cursosPorPagina = coursesPerPage;
+   * @description
+   * Almacena la cantidad de cursos que se muestran por página en la paginación de cursos.
    */
   const coursesPerPage = 6
+
   /**
-   * Calcula el número de páginas necesarias para la paginación de cursos.
-   *
-   * @constant
-   * @name pageCount
    * @type {number}
-   *
-   * @example
-   * const numeroDePaginas = pageCount;
+   * @name pageCount
+   * @description
+   * Almacena el número de páginas necesarias para mostrar todos los cursos disponibles en función de la cantidad de cursos por página.
    */
   const pageCount = Math.ceil(currentCourses.length / coursesPerPage)
 
   /**
-   * Índice de inicio de la lista de cursos a mostrar en la página actual.
-   *
-   * @constant
-   * @name startIndex
    * @type {number}
-   *
-   * @example
-   * const indiceInicio = startIndex;
+   * @name startIndex
+   * @description
+   * Almacena el índice de inicio de un rango de cursos en función del número de página actual y la cantidad de cursos por página.
    */
   const startIndex = (pageNumber - 1) * coursesPerPage
 
   /**
-   * Índice de fin de la lista de cursos a mostrar en la página actual.
-   *
-   * @constant
-   * @name endIndex
    * @type {number}
-   *
-   * @example
-   * const indiceFin = endIndex;
+   * @name endIndex
+   * @description
+   * Almacena el índice de fin de un rango de cursos que se muestra en una paginación.
    */
   const endIndex = startIndex + coursesPerPage
 
   /**
-   * Efecto secundario para mostrar una notificación de asignación de instructor y actualizar la lista de cursos.
-   *
    * @function
-   * @name useEffectMostrarNotificacionYActualizarCursos
+   *
+   * @description
+   * Este efecto se activa cuando cambia el valor de `notify`. Si `notify` es verdadero, muestra una notificación de éxito indicando que se ha asignado un instructor. Luego, establece `notify` como falso y llama a la función `getCursos` para actualizar la lista de cursos.
+   *
    * @param {boolean} notify - Estado de notificación.
    * @returns {void}
    *
-   * @example
-   * useEffectMostrarNotificacionYActualizarCursos(true);
    */
   useEffect(() => {
     if (notify) {

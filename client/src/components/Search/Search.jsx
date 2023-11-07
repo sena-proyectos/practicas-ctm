@@ -1,7 +1,11 @@
+import { useRef, useEffect } from 'react'
+
+// icons
 import { IoSearchOutline } from 'react-icons/io5'
 import { LuSettings2 } from 'react-icons/lu'
+
+// components
 import { Button } from '../Utils/Button/Button'
-import { useRef, useEffect } from 'react'
 
 const Search = ({ searchItem, searchFilter = false, filter = false, icon = false, iconClick, placeholder }) => {
   const search = useRef()

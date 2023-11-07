@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
+import Swal from 'sweetalert2'
 
 // icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { BsCheck2Circle } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
 import { LuSave } from 'react-icons/lu'
+import { PiTrashBold } from 'react-icons/pi'
 
 // componentes
 import { Button } from '../Button/Button'
@@ -13,10 +15,8 @@ import { Select } from '../Select/Select'
 import { modalOptionList } from '../../Register-list/RegisterList'
 import { GetTeacherByName, createCourse, createStudent, getTeachers, inscriptionDetailsUpdate, updateTeacherSeguimiento, registerUser, createVisit } from '../../../api/httpRequest'
 import { studentsValidation } from '../../../validation/studentsValidation'
-import Swal from 'sweetalert2'
 import { coursesValidation } from '../../../validation/coursesValidation'
 import { addTeacherValidation } from '../../../validation/addTeacherValidation'
-import { PiTrashBold } from 'react-icons/pi'
 import { visitValidation } from '../../../validation/visitValidation'
 import { getUserID } from '../../../import/getIDActualUser'
 
@@ -24,6 +24,27 @@ const RegisterStudentModal = ({ closedModal, title }) => {
   const handleModal = () => {
     closedModal()
   }
+
+  /**
+   * @constant initialState
+   *
+   * @description
+   * Este objeto representa los datos iniciales para un aprendiz en una aplicación. Contiene varias propiedades que almacenan información sobre el aprendiz, como su nombre, tipo de documento, correo electrónico, estado, empresa, modalidad, apellido, número de documento, teléfono celular, fecha de finalización de prácticas, ARL y jefe.
+   *
+   * @type {Object}
+   * @property {string} nombre_aprendiz - El nombre del aprendiz.
+   * @property {string} tipo_documento_aprendiz - El tipo de documento del aprendiz.
+   * @property {string} email_aprendiz - El correo electrónico del aprendiz.
+   * @property {string} estado_aprendiz - El estado del aprendiz.
+   * @property {string} id_empresa - El ID de la empresa a la que pertenece el aprendiz.
+   * @property {string} id_modalidad - El ID de la modalidad de formación del aprendiz.
+   * @property {string} apellido_aprendiz - El apellido del aprendiz.
+   * @property {string} numero_documento_aprendiz - El número de documento del aprendiz.
+   * @property {string} celular_aprendiz - El número de teléfono celular del aprendiz.
+   * @property {string} fecha_fin_practica_aprendiz - La fecha de finalización de las prácticas del aprendiz.
+   * @property {string} id_arl - El ID de la ARL (Administradora de Riesgos Laborales) del aprendiz.
+   * @property {string} id_jefe - El ID del jefe del aprendiz.
+   */
   const initialState = {
     nombre_aprendiz: '',
     tipo_documento_aprendiz: '',
@@ -40,6 +61,15 @@ const RegisterStudentModal = ({ closedModal, title }) => {
   }
   const [formData, setFormData] = useState(initialState)
 
+  /**
+   * @function
+   * @name handleInputChange
+   *
+   * @description
+   * Esta función maneja el cambio en los valores de los campos de un formulario. Toma un evento de cambio como argumento y actualiza los datos del formulario con los nuevos valores.
+   *
+   * @param {Event} e - El evento de cambio que contiene los datos del campo modificado.
+   */
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
@@ -47,6 +77,18 @@ const RegisterStudentModal = ({ closedModal, title }) => {
   const resetForm = () => {
     setFormData(initialState)
   }
+
+  /**
+   * @function
+   * @name handleSubmit
+   * @async
+   *
+   * @description
+   * Esta función se encarga de procesar los datos del formulario del estudiante. Realiza ciertas transformaciones en los campos como asignar valores predeterminados para ciertas selecciones y valida los datos del formulario. Luego, utiliza la función 'createStudent' para crear un estudiante con los datos proporcionados y muestra una notificación de éxito o error.
+   *
+   * @param {Event} e - El evento de formulario que desencadena el envío del formulario.
+   * @throws {Error} Si la solicitud no se procesa con éxito, se registra un mensaje de error en la consola.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -98,6 +140,7 @@ const RegisterStudentModal = ({ closedModal, title }) => {
     })
     resetForm()
   }
+
   return (
     <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
       <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter'>
@@ -229,6 +272,23 @@ const RegisterCourses = ({ closedModal, title, setGetCourses }) => {
   const handleModal = () => {
     closedModal()
   }
+
+  /**
+   * @constant initialState
+   *
+   * @description
+   * Este objeto representa los datos iniciales para un cursos. Contiene varias propiedades que almacenan información sobre el aprendiz, como su nombre, tipo de documento, correo electrónico, estado, empresa, modalidad, apellido, número de documento, teléfono celular, fecha de finalización de prácticas, ARL y jefe.
+   *
+   * @type {Object}
+   * @property {string} numero_ficha - El numero de ficha del cursos.
+   * @property {string} nombre_programa_formacion - El nombre de programa de formacion del cursos.
+   * @property {string} fecha_inicio_lectiva - La fecha de inicio de lectiva del curso.
+   * @property {string} fecha_inicio_practica - La fecha de inciio de practica del curso.
+   * @property {string} nivel_formacion - El nivel de formacion del curso.
+   * @property {string} id_nivel_formacion - El ID de nivel de formacion del curso.
+   * @property {string} seguimiento_nombre_completo - El nombre completo del instructor de seguimiento.
+   * @property {string} id_instructor_seguimiento - El id del instructor de seguimiento.
+   */
   const initialState = {
     numero_ficha: '',
     nombre_programa_formacion: '',
@@ -241,6 +301,15 @@ const RegisterCourses = ({ closedModal, title, setGetCourses }) => {
   }
   const [formData, setFormData] = useState(initialState)
 
+  /**
+   * @function
+   * @name handleInputChange
+   *
+   * @description
+   * Esta función maneja el cambio en los valores de los campos de un formulario. Toma un evento de cambio como argumento y actualiza los datos del formulario con los nuevos valores.
+   *
+   * @param {Event} e - El evento de cambio que contiene los datos del campo modificado.
+   */
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
@@ -248,6 +317,18 @@ const RegisterCourses = ({ closedModal, title, setGetCourses }) => {
   const resetForm = (e) => {
     setFormData(initialState)
   }
+
+  /**
+   * @function
+   * @name handleSubmit
+   * @async
+   *
+   * @description
+   * Esta función se encarga de procesar los datos del formulario del curso. Realiza ciertas transformaciones en los campos como asignar valores predeterminados para ciertas selecciones y valida los datos del formulario. Luego, utiliza la función 'createCourse' para crear un curso con los datos proporcionados y muestra una notificación de éxito o error.
+   *
+   * @param {Event} e - El evento de formulario que desencadena el envío del formulario.
+   * @throws {Error} Si la solicitud no se procesa con éxito, se registra un mensaje de error en la consola.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault()
     const instructorSeguimiento = formData.seguimiento_nombre_completo
@@ -449,21 +530,9 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
     hidden: 'password'
   }
 
-  const [showOldPassword, setShowOldPassword] = useState(passwordStatus.hidden)
   const [showNewPassword, setShowNewPassword] = useState(passwordStatus.hidden)
   const [showConfirmPassword, setShowConfirmPassword] = useState(passwordStatus.hidden)
 
-  /**
-   * Función para manejar el cambio de visibilidad de la antigua contraseña.
-   *
-   * @function
-   * @name handleOldPassword
-   * @returns {void}
-   *
-   * @example
-   * handleOldPassword();
-   */
-  const handleOldPassword = () => (showOldPassword === passwordStatus.shown ? setShowOldPassword(passwordStatus.hidden) : setShowOldPassword(passwordStatus.shown))
   /**
    * Función para manejar el cambio de visibilidad de la nueva contraseña.
    *
@@ -475,6 +544,7 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
    * handleNewPassword();
    */
   const handleNewPassword = () => (showNewPassword === passwordStatus.shown ? setShowNewPassword(passwordStatus.hidden) : setShowNewPassword(passwordStatus.shown))
+
   /**
    * Función para manejar el cambio de visibilidad de la confirmación de contraseña.
    *
@@ -487,13 +557,30 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
    */
   const handleConfirmPassword = () => (showConfirmPassword === passwordStatus.shown ? setShowConfirmPassword(passwordStatus.hidden) : setShowConfirmPassword(passwordStatus.shown))
 
+  /**
+   * @function
+   * @name handleSavePassword
+   * @async
+   *
+   * @param {Event} e - Evento de formulario.
+   * @returns {void}
+   *
+   * @description
+   * Esta función se encarga de gestionar el proceso de guardar una contraseña. Obtiene los datos del formulario,
+   * llama a la función onSavePassword para guardar la contraseña y luego cierra el modal.
+   *
+   */
   const handleSavePassword = async (e) => {
     e.preventDefault()
 
     const formPassword = Object.fromEntries(new FormData(e.target))
-    onSavePassword(formPassword)
 
-    closeModal()
+    if (formPassword.newPassword !== formPassword.confirmPassword) {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Las contraseñas no coinciden' })
+    } else {
+      onSavePassword(formPassword)
+      closeModal()
+    }
   }
 
   return (
@@ -507,17 +594,6 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
         <section className='flex justify-center'>
           <section className='w-11/12 p-4'>
             <form onSubmit={handleSavePassword} className='flex flex-col gap-3 pt-6'>
-              <section className='grid grid-cols-2'>
-                <label className='font-semibold w-fit whitespace-nowrap' htmlFor=''>
-                  Contraseña Anterior
-                </label>
-                <div className='relative w-full mx-auto text-gray-400'>
-                  <span onClick={handleOldPassword} className='absolute inset-y-0 right-0 flex items-center pr-3 transition cursor-pointer select-none text-slate-600 hover:text-slate-800'>
-                    {showOldPassword === passwordStatus.shown ? passwordIcons.closeEye : passwordIcons.openEye}
-                  </span>
-                  <input name='oldPassword' minLength={8} type={showOldPassword} className='border-gray-400 focus:text-gray-900 w-full rounded-md border-[1.2px] bg-white py-[0.9px] pl-3 text-base text-black focus:bg-white focus:outline-none' autoComplete='on' />
-                </div>
-              </section>
               <section className='grid grid-cols-2-50-50'>
                 <label className='font-semibold w-fit whitespace-nowrap' htmlFor=''>
                   Nueva Contraseña
@@ -553,110 +629,6 @@ const PasswordModal = ({ closeModal, title, onSavePassword }) => {
                 </Button>
               </div>
             </form>
-          </section>
-        </section>
-      </section>
-    </section>
-  )
-}
-
-const InfoStudentModal = ({ closeModal, title, emailStudent, documentStudent, cellPhoneNumber, program, courseNumber, academicLevel, formationStage, modalitie, lectivaEnd, productiveStart, company, innmediateSuperior, positionSuperior, emailSuperior, celphoneSuperior, arl }) => {
-  /**
-   * Función para manejar el cierre del modal.
-   *
-   * @function
-   * @name handleModal
-   * @returns {void}
-   *
-   * @example
-   * handleModal();
-   */
-  const handleModal = () => {
-    closeModal()
-  }
-
-  return (
-    <section className='fixed top-0 left-0 z-50 flex items-center justify-center w-screen h-screen'>
-      <aside className='absolute inset-0 w-full h-full bg-black/50 backdrop-blur-sm backdrop-filter' onClick={handleModal} />
-      <section className='relative flex flex-col w-11/12 h-auto bg-white md:w-1/2 rounded-2xl bounce'>
-        <IoMdClose className='absolute right-5 top-[20px] h-7 w-7 cursor-pointer ' onClick={handleModal} />
-        <header className='grid pt-5 place-items-center '>
-          <h2 className='text-xl font-medium text-center w-fit border-b-1 border-primary'>{title}</h2>
-        </header>
-        <section className='flex justify-center'>
-          <section className='w-11/12 p-4'>
-            <section className='pt-3 pb-2'>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Email:</span>
-                <span>{emailStudent}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Documento de identidad:</span>
-                <span>{documentStudent}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Contacto:</span>
-                <span>{cellPhoneNumber}</span>
-              </section>
-            </section>
-            <hr className='w-full text-primary' />
-            <section className='py-2'>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Programa:</span>
-                <span>{program}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Ficha:</span>
-                <span>{courseNumber}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Nivel académico:</span>
-                <span>{academicLevel}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Etapa:</span>
-                <span>{formationStage}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Modalidad:</span>
-                <span>{modalitie}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Fin lectiva:</span>
-                <span>{lectivaEnd}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Inicio productiva:</span>
-                <span>{productiveStart}</span>
-              </section>
-            </section>
-            <hr className='w-full text-primary' />
-            <section className='py-3 pt-2'>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Empresa:</span>
-                <span>{company}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Jefe Inmediato:</span>
-                <span>{innmediateSuperior}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Cargo:</span>
-                <span>{positionSuperior}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Email:</span>
-                <span>{emailSuperior}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>Contacto:</span>
-                <span>{celphoneSuperior}</span>
-              </section>
-              <section className='grid grid-cols-2-45-55'>
-                <span className='font-medium'>ARL:</span>
-                <span>{arl}</span>
-              </section>
-            </section>
           </section>
         </section>
       </section>
@@ -971,6 +943,18 @@ const AddTeacherModal = ({ closeModal, title, setNotify }) => {
     closeModal()
   }
 
+  /**
+   * @function
+   * @name handleAddedTeacher
+   * @async
+   *
+   * @description
+   * Este función maneja el evento de registro de un nuevo profesor. Realiza la validación de los datos del formulario, muestra mensajes de error en caso de datos inválidos y, en caso de éxito, registra al profesor en el sistema.
+   *
+   * @param {Event} e - El evento del formulario.
+   * @throws {Error} Error - Se produce un error si ocurre algún problema durante el proceso de registro del instructor.
+   * @returns {void}
+   */
   const handleAddedTeacher = async (e) => {
     e.preventDefault()
 
@@ -1093,6 +1077,18 @@ const AddVisitModal = ({ closeModal, title, id }) => {
     closeModal()
   }
 
+  /**
+   * @function
+   * @name handleVisit
+   * @async
+   *
+   * @description
+   * Esta función se encarga de gestionar el proceso de registro de una visita. Realiza la validación de los datos del formulario y muestra mensajes de error en caso de datos inválidos. Si la validación es exitosa, registra la visita en el sistema.
+   *
+   * @param {Event} e - Evento de formulario.
+   * @throws {Error} Error si ocurre alguna excepción durante el proceso.
+   * @returns {void}
+   */
   const handleVisit = async (e) => {
     e.preventDefault()
 
@@ -1184,4 +1180,4 @@ const AddVisitModal = ({ closeModal, title, id }) => {
   )
 }
 
-export { ModalWithChildren, PasswordModal, InfoStudentModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, AddTeacherModal, RegisterCourses, RegisterStudentModal, AddVisitModal }
+export { ModalWithChildren, PasswordModal, AsignTeacherModal, ModalConfirm, DenyModal, LoadingModal, AddTeacherModal, RegisterCourses, RegisterStudentModal, AddVisitModal }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode'
 import Swal from 'sweetalert2'
+import { ToastContainer, toast } from 'react-toastify'
 
 // Icons
 import { IoSettingsOutline } from 'react-icons/io5'
@@ -15,7 +16,6 @@ import { Button } from '../Utils/Button/Button'
 import { PasswordModal } from '../Utils/Modals/Modals'
 import { getUserById, EditUser } from '../../api/httpRequest'
 import { settingsValidation } from '../../validation/settingsValidation'
-import { ToastContainer, toast } from 'react-toastify'
 
 export const Settings = () => {
   const [mostrarModal, setMostrarModal] = useState(false)
@@ -35,6 +35,15 @@ export const Settings = () => {
     setEdit(!edit)
   }
 
+  /**
+   * Obtiene los datos del usuario.
+   *
+   * @description
+   * Esta función se utiliza en un efecto de React para obtener los datos del usuario utilizando el token de autenticación almacenado en las cookies. El efecto se ejecuta una vez al cargar el componente, ya que tiene una dependencia vacía `[]`. Se decodifica el token para obtener el ID del usuario y se llama a la función `getUser(id_usuario)` para obtener los datos del usuario a partir de su ID.
+   *
+   * @returns {void}
+   *
+   */
   useEffect(() => {
     const token = Cookies.get('token')
 
@@ -43,6 +52,18 @@ export const Settings = () => {
     getUser(id_usuario)
   }, [])
 
+  /**
+   * @function
+   * @name getUser
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para obtener y actualizar la información de un usuario basada en su ID. Toma el ID del usuario como argumento. Realiza una solicitud para obtener los datos del usuario con el ID proporcionado y actualiza el estado user con los datos obtenidos. En caso de error, lanza una excepción.
+   *
+   * @param {number} id - El ID del usuario que se desea recuperar.
+   * @throws {Error} Si ocurre un error al realizar la solicitud.
+   * @returns {void}
+   */
   const getUser = async (id) => {
     try {
       const response = await getUserById(id)
@@ -52,16 +73,41 @@ export const Settings = () => {
       throw new Error(error)
     }
   }
+
+  /**
+   * @function
+   * @name handleChangePassword
+   *
+   * @description
+   * Esta función se utiliza para manejar el cambio de contraseña del usuario. Toma un objeto `formPassword` como argumento, que debe contener una nueva contraseña (`newPassword`) y una confirmación de la contraseña (`confirmPassword`). Compara las dos contraseñas y si coinciden, actualiza la contraseña del usuario con la nueva contraseña. En caso de no coincidencia, muestra un mensaje de error. Esta función no realiza ninguna solicitud de red, simplemente maneja el cambio de contraseña en el cliente.
+   *
+   * @param {Object} formPassword - Objeto que contiene las contraseñas.
+   * @param {string} formPassword.newPassword - La nueva contraseña.
+   * @param {string} formPassword.confirmPassword - La confirmación de la nueva contraseña.
+   * @returns {void}
+   */
   const handleChangePassword = (formPassword) => {
     formPassword.newPassword === formPassword.confirmPassword ? setPassword(formPassword.newPassword) : Swal.fire({ icon: 'error', title: 'Error', text: 'Las contraseñas no coinciden' })
   }
 
+  /**
+   * @function
+   * @name handleSettingsForm
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para manejar el envío del formulario de configuración. Toma el evento `e` como argumento. Primero, previene la acción por defecto del formulario. Luego, obtiene el ID del rol del usuario y las valores del formulario. Si no se proporciona una contraseña, se utiliza la contraseña actual del usuario. Después de obtener los valores, valida los datos del formulario. Si se encuentra un error de validación, muestra un mensaje de error específico. Finalmente, realiza una solicitud para editar los datos del usuario y muestra un mensaje de éxito en caso de éxito.
+   *
+   * @param {Event} e - El evento que desencadenó la función (generalmente un evento de formulario).
+   * @returns {void}
+   *
+   */
   const handleSettingsForm = async (e) => {
     e.preventDefault()
     const id_rol = user.id_rol
     const formValues = Object.fromEntries(new FormData(e.target))
     formValues.id_rol = id_rol
-    password === '' ? (formValues.contrasena = user.contrasena_usuario) : (formValues.contrasena = password)
+    password !== '' && (formValues.contrasena = password)
     const id_usuario = user.id_usuario
     setPassword('')
 

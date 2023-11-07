@@ -38,11 +38,13 @@ export const Students = () => {
   const idRol = Number(localStorage.getItem('idRol'))
 
   /**
-   * Función asincrónica para obtener la lista de estudiantes por curso.
-   *
-   * @async
    * @function
    * @name getStudents
+   * @async
+   *
+   * @description
+   * Esta función envía una solicitud para obtener la lista de estudiantes relacionados con un curso específico utilizando la información proporcionada en el objeto `payload`. Luego, formatea los nombres de los estudiantes para que la primera letra de cada palabra esté en mayúscula y el resto en minúscula. Finalmente, actualiza el estado de los estudiantes del curso en la aplicación, lo que permite su visualización.
+   *
    * @param {number} payload - Número de curso.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
@@ -69,6 +71,7 @@ export const Students = () => {
       throw new Error(err)
     }
   }
+
   // const handleStudentModal = () => {
   //   setIsOpen(true)
   // }
@@ -79,11 +82,13 @@ export const Students = () => {
   }, [])
 
   /**
-   * Función asincrónica para obtener los detalles del curso.
-   *
-   * @async
    * @function
    * @name getCourseData
+   * @async
+   *
+   * @description
+   * Esta función envía una solicitud para obtener información detallada de un curso específico utilizando la información proporcionada en el objeto `payload`. Luego, formatea el nombre del programa de formación para que la primera letra de cada palabra esté en mayúscula y el resto en minúscula. También formatea las fechas de inicio lectiva y práctica del curso. Finalmente, actualiza el estado del curso en la aplicación, lo que permite su visualización.
+   *
    * @param {number} payload - Número de curso.
    * @throws {Error} Error en caso de fallo en la solicitud.
    * @returns {void}
@@ -119,48 +124,35 @@ export const Students = () => {
   // const handleCloseModal = () => setIsOpen(false)
 
   /**
-   * Número de estudiantes a mostrar por página.
-   *
-   * @constant
-   * @name studentsPerPage
    * @type {number}
+   * @name studentsPerPage
    * @default 5
-   *
-   * @example
-   * const estudiantesPorPagina = studentsPerPage;
+   * @description
+   * Almacena la cantidad de aprendices que se muestran por página en la paginación de aprendices.
    */
   const studentsPerPage = 5
+
   /**
-   * Calcula el número de páginas necesarias para la paginación.
-   *
-   * @constant
-   * @name pageCount
    * @type {number}
-   *
-   * @example
-   * const numeroDePaginas = pageCount;
+   * @name pageCount
+   * @description
+   * Almacena el número de páginas necesarias para mostrar todos los aprendices disponibles en función de la cantidad de aprendices por página.
    */
   const pageCount = Math.ceil(studentsCourse.length / studentsPerPage)
+
   /**
-   * Índice de inicio de la lista de estudiantes a mostrar en la página actual.
-   *
-   * @constant
-   * @name startIndex
    * @type {number}
-   *
-   * @example
-   * const indiceInicio = startIndex;
+   * @name startIndex
+   * @description
+   * Almacena el índice de inicio de un rango de aprendices en función del número de página actual y la cantidad de aprendices por página.
    */
   const startIndex = (pageNumber - 1) * studentsPerPage
+
   /**
-   * Índice de fin de la lista de estudiantes a mostrar en la página actual.
-   *
-   * @constant
-   * @name endIndex
    * @type {number}
-   *
-   * @example
-   * const indiceFin = endIndex;
+   * @name endIndex
+   * @description
+   * Almacena el índice de fin de un rango de aprendices que se muestra en una paginación.
    */
   const endIndex = startIndex + studentsPerPage
 
@@ -252,6 +244,19 @@ export const Students = () => {
     setActiveFilter(false)
   }
 
+  /**
+   * Genera un excel con todos los aprendices que estan ligados a una ficha y permite descargarlo
+   *
+   * @function
+   * @name generateExcel
+   * @async
+   *
+   * @description
+   * Esta función realiza una solicitud para generar un archivo Excel que contiene registros del curso identificado por `courseNumber`. Luego, crea un archivo Blob a partir de la respuesta de la solicitud y lo convierte en un enlace descargable. El archivo descargado tendrá un nombre basado en el número de curso y la fecha actual.
+   *
+   * @throws {Error} Si ocurre un error durante la generación del archivo o la descarga.
+   * @returns {void}
+   */
   const generateExcel = async () => {
     try {
       const response = await generateExcelClass(courseNumber)
@@ -283,6 +288,18 @@ export const Students = () => {
     setModalDates(!modalDates)
   }
 
+  /**
+   * @function
+   * @name handleEditCourse
+   * @async
+   *
+   * @description
+   * Esta función se utiliza para editar y actualizar la información de un curso (ficha) a partir de los datos proporcionados en un formulario. Después de la edición exitosa, se cierra el modal de edición de fechas.
+   *
+   * @param {Event} e - El evento del formulario que desencadena la función.
+   * @throws {Error} Si ocurre un error durante la edición o actualización del curso.
+   * @returns {void}
+   */
   const handleEditCourse = async (e) => {
     e.preventDefault()
 
