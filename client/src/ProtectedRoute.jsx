@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 import { isExpired } from 'react-jwt'
 import { Navigate, useLocation } from 'react-router-dom'
+import { getPublicTokenFromSession } from './import/getPublicToken'
 
 export const ProtectedRoute = ({ redirectTo, children }) => {
   const location = useLocation()
@@ -22,7 +23,8 @@ export const IsLogged = ({ redirectTo, children }) => {
   const idRol = localStorage.getItem('idRol')
   const token = Cookies.get('token')
 
-  const publicToken = sessionStorage.getItem('public-token')
+  const publicToken = getPublicTokenFromSession()
+
   const isExpiredToken = token ? isExpired(token) : true
   const isExpiredPublicToken = publicToken ? isExpired(publicToken) : true
 

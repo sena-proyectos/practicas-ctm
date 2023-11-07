@@ -265,8 +265,8 @@ export const RegisterList = () => {
    */
   const getRegistros = async () => {
     const { id_rol, id_usuario } = getUserID().user
-    if (String(id_rol) === '3') {
-      getRegistersTrackingInstructor(id_usuario)
+    if (String(id_rol) === '3' || String(id_rol) === '2') {
+      getRegistersTrackingInstructorOrCoordinator(id_usuario)
       return
     }
     try {
@@ -295,7 +295,7 @@ export const RegisterList = () => {
     }
   }
 
-  const getRegistersTrackingInstructor = async (id) => {
+  const getRegistersTrackingInstructorOrCoordinator = async (id) => {
     try {
       const response = await getInscriptionsByTeacherId(id)
       const { data } = response
