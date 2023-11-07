@@ -22,10 +22,10 @@ export const getInscriptions = async (_req: Request, res: Response): Promise<Res
   }
 }
 
-export const getInscriptionsByTeacherId = async (req: Request, res: Response): Promise<Response> => {
+export const getInscriptionsByTeacherOrCoordinatorId = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params
   try {
-    const [inscriptions] = await connection.query('SELECT i.*, m.nombre_modalidad, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i INNER JOIN modalidades m ON i.modalidad_inscripcion = m.id_modalidad INNER JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.responsable_aval = 4 GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END , i.fecha_creacion DESC', [id])
+    const [inscriptions] = await connection.query('SELECT i.*, m.nombre_modalidad, COUNT(d.estado_aval) AS avales_aprobados FROM inscripciones i INNER JOIN modalidades m ON i.modalidad_inscripcion = m.id_modalidad INNER JOIN detalles_inscripciones d ON i.id_inscripcion = d.id_inscripcion AND d.responsable_aval = ? GROUP BY i.id_inscripcion ORDER BY CASE WHEN i.estado_general_inscripcion = "Pendiente" THEN 0 WHEN i.estado_general_inscripcion = "Aprobado" THEN 1 WHEN i.estado_general_inscripcion = "Rechazado" THEN 2 END , i.fecha_creacion DESC', [id])
     return res.status(httpStatus.OK).json({ data: inscriptions })
   } catch (error) {
     return handleHTTP(res, error as CustomError)

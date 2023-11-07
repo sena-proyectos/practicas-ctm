@@ -1,5 +1,5 @@
 import { type IRouter, Router } from 'express'
-import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsById, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData, getInscriptionsDetailsByName, getInscriptionsByTeacherId } from '../controllers/inscriptions.controllers.js'
+import { createInscriptions, editInscription, editInscriptionDetail, getInscriptionById, getInscriptions, getInscriptionsDetailsById, getInscriptionsDetailsByInscription, getInscriptionsDetailsByUser, returnExcelData, getInscriptionsDetailsByName, getInscriptionsByTeacherOrCoordinatorId } from '../controllers/inscriptions.controllers.js'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
 import { checkInscriptionData, checkInscriptionDetailData, configureMulterExcel, readExcelFile } from '../middlewares/inscriptions.middlewares.js'
 import { checkName } from '../middlewares/users.middlewares.js'
@@ -21,14 +21,14 @@ const inscriptionRoutes: IRouter = Router()
 inscriptionRoutes.get('/v1/inscriptions', getInscriptions)
 
 /**
- * Obtiene todas las incripciones relacionadas a un instructor de seguimiento
+ * Obtiene todas las incripciones relacionadas a un instructor de seguimiento o coordinador
  * @route GET /v1/inscriptions/teacher/:id
  * @param {string} request.param.id
  * @returns {Promise<Array.<Inscriptions>>}
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-inscriptionRoutes.get('/v1/inscriptions/teacher/:id', checkIdReq, getInscriptionsByTeacherId)
+inscriptionRoutes.get('/v1/inscriptions/teacher/:id', checkIdReq, getInscriptionsByTeacherOrCoordinatorId)
 
 /**
  * Obtener una inscripción por su ID.

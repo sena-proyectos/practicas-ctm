@@ -260,8 +260,8 @@ export const RegisterList = () => {
    */
   const getRegistros = async () => {
     const { id_rol, id_usuario } = getUserID().user
-    if (String(id_rol) === '3') {
-      getRegistersTrackingInstructor(id_usuario)
+    if (String(id_rol) === '3' || String(id_rol) === '2') {
+      getRegistersTrackingInstructorOrCoordinator(id_usuario)
       return
     }
     try {
@@ -306,7 +306,7 @@ export const RegisterList = () => {
    * Esta función se utiliza en el componente para cargar registros de inscripciones de estudiantes relacionadas con un instructor específico y mostrarlos en la interfaz de usuario.
    *
    */
-  const getRegistersTrackingInstructor = async (id) => {
+  const getRegistersTrackingInstructorOrCoordinator = async (id) => {
     try {
       const response = await getInscriptionsByTeacherId(id)
       const { data } = response
