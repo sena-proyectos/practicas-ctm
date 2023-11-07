@@ -16,20 +16,29 @@ import { TeacherClass } from './components/Teacher-class/TeacherClass'
 import { InfoStudent } from './components/Info-student/InfoStudent'
 import { RegisterUser } from './components/Register-user/RegisterUser'
 import { getPublicToken } from './api/httpRequest'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getPublicTokenFromSession } from './import/getPublicToken'
 
 const App = () => {
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     const publicToken = getPublicTokenFromSession()
     if (!publicToken) {
       getAndSavePublicToken()
+    } else {
+      setLoading(false)
     }
   }, [])
 
   const getAndSavePublicToken = async () => {
     const response = await getPublicToken()
     sessionStorage.setItem('public-token', response)
+    setLoading(false)
+  }
+
+  if (loading) {
+    return <div>Terminando de configurar algunos ajustes...</div>
   }
 
   return (
