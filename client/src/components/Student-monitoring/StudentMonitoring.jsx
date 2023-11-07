@@ -13,6 +13,7 @@ import { GetUserByName, detailInfoStudents, generateExcelStudents, generateExcel
 import { AiOutlineFileAdd } from 'react-icons/ai'
 import { HiOutlineDocumentText } from 'react-icons/hi'
 import { getUserID } from '../../import/getIDActualUser'
+import { keysRoles } from '../../import/staticData'
 
 export const StudentMonitoring = () => {
   const [apprentices, setApprentices] = useState([])
@@ -77,6 +78,18 @@ export const StudentMonitoring = () => {
       setSearchedApprentices([])
     }
   }
+
+  /**
+   * Identificador del rol del usuario almacenado en el almacenamiento local.
+   *
+   * @constant
+   * @name idRol
+   * @type {number}
+   *
+   * @example
+   * const idRolUsuario = idRol;
+   */
+  const idRol = Number(localStorage.getItem('idRol'))
 
   /**
    * @function
@@ -461,65 +474,67 @@ export const StudentMonitoring = () => {
       <section className='grid flex-auto w-min grid-rows-[auto_1fr_auto] '>
         <header className='grid place-items-center h-[10vh]'>
           <Search searchFilter placeholder={'Busca un aprendiz'} searchItem={searchApprentices} />
-          <section className='absolute top-4 right-7'>
-            <button className='flex items-center gap-1 py-1 px-1.5 text-sm bg-blue-200 rounded-lg' onClick={handleShowOptionsExcel}>
-              Reportes
-              <HiOutlineDocumentText />
-            </button>
-            <ul className={`absolute right-0 mt-1 top-full w-40 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${optionsExcel ? 'visible' : 'hidden'} z-50 transition-all duration-200 px-2`} onMouseLeave={disabledOptions}>
-              <li>
-                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateExcel}>
-                  Todos los aprendices
-                </button>
-              </li>
-              <li>
-                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateStudentsPractical}>
-                  Aprendices en prácticas
-                </button>
-              </li>
-              <li>
-                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateExcelNoPractical}>
-                  Aprendices sin prácticas
-                </button>
-              </li>
-              <li>
-                <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={showModality}>
-                  Modalidades
-                  {optionsModality && (
-                    <section className='absolute right-full mr-[2px] bg-white top-0 border border-gray rounded-lg' onMouseLeave={showModality}>
-                      <ul className='flex flex-col gap-1 p-2 w-36'>
-                        <li>
-                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('pasantias')}>
-                            Pasantías
-                          </button>
-                        </li>
-                        <li>
-                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('monitoria')}>
-                            Monitoría
-                          </button>
-                        </li>
-                        <li>
-                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('vinculacion laboral')}>
-                            Vinculación laboral
-                          </button>
-                        </li>
-                        <li>
-                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('proyecto productivo')}>
-                            Proyecto productivo
-                          </button>
-                        </li>
-                        <li>
-                          <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('contrato de aprendizaje')}>
-                            Contrato de aprendizaje
-                          </button>
-                        </li>
-                      </ul>
-                    </section>
-                  )}
-                </button>
-              </li>
-            </ul>
-          </section>
+          {(idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
+            <section className='absolute top-4 right-7'>
+              <button className='flex items-center gap-1 py-1 px-1.5 text-sm bg-blue-200 rounded-lg' onClick={handleShowOptionsExcel}>
+                Reportes
+                <HiOutlineDocumentText />
+              </button>
+              <ul className={`absolute right-0 mt-1 top-full w-40 flex flex-col gap-y-1 py-2 text-sm border border-gray rounded-lg bg-white ${optionsExcel ? 'visible' : 'hidden'} z-50 transition-all duration-200 px-2`} onMouseLeave={disabledOptions}>
+                <li>
+                  <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateExcel}>
+                    Todos los aprendices
+                  </button>
+                </li>
+                <li>
+                  <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateStudentsPractical}>
+                    Aprendices en prácticas
+                  </button>
+                </li>
+                <li>
+                  <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={generateExcelNoPractical}>
+                    Aprendices sin prácticas
+                  </button>
+                </li>
+                <li>
+                  <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={showModality}>
+                    Modalidades
+                    {optionsModality && (
+                      <section className='absolute right-full mr-[2px] bg-white top-0 border border-gray rounded-lg' onMouseLeave={showModality}>
+                        <ul className='flex flex-col gap-1 p-2 w-36'>
+                          <li>
+                            <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('pasantias')}>
+                              Pasantías
+                            </button>
+                          </li>
+                          <li>
+                            <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('monitoria')}>
+                              Monitoría
+                            </button>
+                          </li>
+                          <li>
+                            <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('vinculacion laboral')}>
+                              Vinculación laboral
+                            </button>
+                          </li>
+                          <li>
+                            <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('proyecto productivo')}>
+                              Proyecto productivo
+                            </button>
+                          </li>
+                          <li>
+                            <button className='flex items-center justify-center w-full h-[34px] text-xs font-light bg-blue-200 rounded-lg py-0.5 px-1.5' onClick={() => generateExcelModality('contrato de aprendizaje')}>
+                              Contrato de aprendizaje
+                            </button>
+                          </li>
+                        </ul>
+                      </section>
+                    )}
+                  </button>
+                </li>
+              </ul>
+            </section>
+          )}
         </header>
         <section className='grid grid-rows-[1fr_auto] py-1'>
           {searchedApprentices.length > 0 && !error ? (
