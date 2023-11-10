@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import { Pagination } from '@nextui-org/pagination'
 import Swal from 'sweetalert2'
@@ -27,6 +27,7 @@ export const TeacherClass = () => {
   const [searchedCourses, setSearchedCourses] = useState([])
   const [currentCourses, setCurrentCourses] = useState({})
   const idRol = Number(localStorage.getItem('idRol'))
+  const navigate = useNavigate()
 
   /**
    * @function
@@ -174,6 +175,21 @@ export const TeacherClass = () => {
   const endIndex = startIndex + coursesPerPage
 
   /**
+   * Función para navegar a la página de detalles de estudiantes por ficha.
+   *
+   * @function
+   * @name handleStudents
+   * @param {string} ficha - Número de ficha de aprendices.
+   * @returns {void}
+   *
+   * @example
+   * handleStudents('12345');
+   */
+  const handleStudents = (ficha) => {
+    return navigate(`/fichas/aprendices/${ficha}`)
+  }
+
+  /**
    * Genera un excel con todos los aprendices por un instructor y permite descargarlo
 
    * @function
@@ -221,7 +237,7 @@ export const TeacherClass = () => {
           {searchedCourses.length > 0 && !error ? (
             <section className='grid grid-cols-1 gap-6 pt-3 px-7 st2:grid-cols-1 st1:grid-cols-2 md:grid-cols-3'>
               {searchedCourses.slice(startIndex, endIndex).map((course, i) => {
-                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
+                return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
               })}
             </section>
           ) : error ? (
@@ -237,7 +253,7 @@ export const TeacherClass = () => {
                 </>
               ) : dataTeacherClass.length > 0 ? (
                 dataTeacherClass.slice(startIndex, endIndex).map((course, i) => {
-                  return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
+                  return <Card3D key={i} header={course.numero_ficha} title={course.nombre_programa_formacion} subtitle={course.estado} item1={course.seguimiento_nombre_completo} item2={course.nivel_formacion} item3={course.fecha_inicio_lectiva} item4={course.fecha_inicio_practica} onClick={() => handleStudents(course.numero_ficha)} item1text={'Instructor de seguimiento'} item2text={'Nivel de formación'} item3text={'Inicio Lectiva'} item4text={'Inicio Practica'} />
                 })
               ) : null}
             </section>
