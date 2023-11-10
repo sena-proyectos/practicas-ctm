@@ -1,6 +1,6 @@
 # Bienvenido a ctm_practicas 👋
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue.svg?cacheSeconds=2592000)
+![Version](https://img.shields.io/badge/version-1.0.1-blue.svg?cacheSeconds=2592000)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 > Proyecto dedicado al registro y seguimiento de los aprendices que se encuentren actualmente en la etapa practica de su programa de formacion
@@ -15,7 +15,7 @@
 
 ### Instalación de la base de datos
 
-Para poder importar la base correctamente debes tener <a href="https://dev.mysql.com/downloads/" target="_blank">MySQL Community</a> descargado. Luego de eso deberás abrir los servicios de tu sistema operativo (añadir imagen de los servicios). Luego, abrirás **MySQL Community** y entrarás a tu servidor local (añadir imágen). Irás a ```Server -> Data Import``` y seleccionarás los el archivo **.sql** alojado en ```server/src/db/db.sql```. Le das a **Import data** y listo.
+Para poder importar la base correctamente debes tener <a href="https://dev.mysql.com/downloads/" target="_blank">MySQL Community</a> descargado. Luego de eso deberás abrir los servicios de tu sistema operativo (añadir imagen de los servicios). Luego, abrirás **MySQL Community** y entrarás a tu servidor local (añadir imágen). Irás a ```Server -> Data Import``` y seleccionarás los el archivo **.sql** que descargaste en los `Releases`. Le das a **Import data** y listo.
 
 <hr />
 
