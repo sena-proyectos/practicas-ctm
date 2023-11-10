@@ -74,15 +74,6 @@ export const rolesCard = {
       link: '/instructores'
     },
     {
-      title: 'Registrar un aprendiz',
-      titleColor: 'black',
-      description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
-      buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-aqua',
-      sombra: 'shadow-shadowAqua',
-      link: '/registrar-aprendiz'
-    },
-    {
       title: 'Crear nuevo usuario',
       titleColor: 'black',
       description: 'Podrás acceder al formulario de registro de nuevos usuarios al sistema.',
@@ -128,15 +119,6 @@ export const rolesCard = {
       bgColor: 'bg-third',
       sombra: 'shadow-shadowThird',
       link: '/instructores'
-    },
-    {
-      title: 'Registrar un aprendiz',
-      titleColor: 'black',
-      description: 'Podrás acceder al formulario de inscripción del aprendiz a su modalidad de prácticas.',
-      buttonText: 'LLÉVAME AHÍ',
-      bgColor: 'bg-aqua',
-      sombra: 'shadow-shadowAqua',
-      link: '/registrar-aprendiz'
     }
   ],
   3: [
