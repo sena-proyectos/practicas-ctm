@@ -1,36 +1,26 @@
 import { toast } from 'react-toastify'
-
 import { useParams } from 'react-router-dom'
 import { apprenticeStore } from '../../store/config'
 import { useEffect, useState } from 'react'
 import { Button } from '../Utils/Button/Button'
-
-import { getVisitsByStudent, patchVisitById } from '../../api/httpRequest'
+import { getVisitsByStudent, patchVisitById, getAllInfoTeacher } from '../../api/httpRequest'
 import { getUserID } from '../../import/getIDActualUser'
 import { CardWithChildren } from '../Utils/Card/Card'
 import { PiCalendarCheckLight } from 'react-icons/pi'
 import { LuSave } from 'react-icons/lu'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 export const Visits = () => {
   const { id } = useParams()
   const { apprenticeData } = apprenticeStore()
 
   const [visitsData, setVisitData] = useState([])
+  const [fullNameInstructor, setFullNameInstructor] = useState([])
+  const [searchTerms, setSearchTerms] = useState([])
+  const [visitShowInstructors, setVisitShowInstructors] = useState({})
+  const [selectedInstructors, setSelectedInstructors] = useState({})
 
-  /**
-   * @function
-   *
-   * @description
-   * Este efecto de React se utiliza para cargar datos de un estudiante desde la memoria caché de la sesión y actualizar el estado del componente cuando se monta por primera vez.
-   *
-   * @param {function} effect - La función que contiene la lógica del efecto.
-   * @param {array} dependencies - Un arreglo de dependencias que determina cuándo se debe ejecutar el efecto. Si está vacío, el efecto se ejecuta solo una vez al montar el componente.
-   * @returns {void}
-   *
-   * @reference
-   * Este efecto se utiliza para cargar datos de estudiante almacenados en la memoria caché de la sesión y actualizar el estado del componente al montarse por primera vez.
-   *
-   */
   useEffect(() => {
     const cachedData = JSON.parse(sessionStorage.getItem('apprenticeData'))
     if (cachedData) {
@@ -38,56 +28,39 @@ export const Visits = () => {
     }
   }, [])
 
-  /**
-   * @function
-   * @name getVisits
-   * @async
-   *
-   * @description
-   * Esta función realiza una solicitud para obtener los datos de las visitas realizadas por el estudiante identificado por `id`. Luego, actualiza el estado `visitData` con los datos obtenidos. En caso de error, muestra un mensaje de error genérico.
-   *
-   * @param {number} id - El ID del estudiante para el cual se desean obtener las visitas.
-   * @throws {Error} Si la solicitud no se procesa con éxito, se muestra un mensaje de error.
-   * @returns {Promise<void>}
-   *
-   * @reference
-   * Esta función se utiliza para obtener datos de visitas de un estudiante y se invoca en respuesta a eventos o acciones en el componente.
-   *
-   * @example
-   * getVisits();
-   *
-   */
-  const getVisits = async () => {
-    try {
-      const { data } = await getVisitsByStudent(id)
-      setVisitData(data)
-    } catch (error) {
-      toast.error('Error al conseguir las visitas')
-    }
-  }
   useEffect(() => {
     getVisits()
   }, [])
 
-  /**
-   * @function handleSubmit
-   *
-   * @description
-   * Esta función se utiliza para gestionar la presentación de un formulario y el envío de datos para actualizar el estado de una visita identificada por `id_visita`. Dependiendo de la selección en el formulario, se establece el estado de la visita como 'Realizado' o 'Pendiente'. Además, se incluye el número de la visita en los datos antes de enviarlos mediante la función `sendData`.
-   *
-   * @param {Event} e - El evento del formulario que se está manejando.
-   * @param {number} id_visita - El ID de la visita que se va a actualizar.
-   * @param {number} numero_visita - El número de la visita que se va a actualizar.
-   * @returns {void}
-   *
-   * @reference
-   * Esta función se utiliza en un formulario para actualizar el estado de una visita y enviar los datos actualizados al servidor.
-   *
-   * @example
-   * handleSubmit(e, visitaID, numeroVisita);
-   *
-   */
-  const handleSubmit = (e, id_visita, numero_visita) => {
+  const getVisits = async () => {
+    try {
+      const { data } = await getVisitsByStudent(id)
+      console.log(data)
+      setVisitData(data)
+      setSearchTerms(Array(data.length).fill(''))
+    } catch (error) {
+      toast.error('Error al conseguir las visitas')
+    }
+  }
+
+  const handleSearchChange = (index, value) => {
+    const newSearchTerms = [...searchTerms]
+    newSearchTerms[index] = value
+    setSearchTerms(newSearchTerms)
+  }
+
+  const handleSelectInstructor = (index, instructorId) => {
+    setSelectedInstructors((prevState) => ({
+      ...prevState,
+      [index]: instructorId
+    }))
+    setVisitShowInstructors((prevState) => ({
+      ...prevState,
+      [index]: false
+    }))
+  }
+
+  const handleSubmit = (e, id_visita, numero_visita, index) => {
     e.preventDefault()
     const { id_usuario: usuario_responsable } = getUserID().user
     const formData = new FormData(e.target)
@@ -98,29 +71,10 @@ export const Visits = () => {
       data.estado_visita = 'Pendiente'
     }
     data.numero_visita = numero_visita
+    data.instructor = selectedInstructors[index]
     sendData(id_visita, { ...data, usuario_responsable })
   }
 
-  /**
-   * @function
-   * @name sendData
-   * @async
-   *
-   * @description
-   * Esta función realiza una solicitud para enviar los datos actualizados de una visita al servidor, identificada por `id`, utilizando el objeto `payload`. En caso de éxito, muestra un mensaje de éxito y actualiza la lista de visitas mediante la función `getVisits`. En caso de error, muestra un mensaje de error genérico.
-   *
-   * @param {number} id - El ID de la visita que se va a actualizar.
-   * @param {Object} payload - Los datos a enviar para actualizar la visita.
-   * @throws {Error} Si la solicitud no se procesa con éxito, se muestra un mensaje de error.
-   * @returns {Promise<void>}
-   *
-   * @reference
-   * Esta función se utiliza para enviar datos y actualizar una visita en el servidor, y se invoca en respuesta a eventos o acciones en el componente.
-   *
-   * @example
-   * sendData(visitaID, { ...data, usuario_responsable });
-   *
-   */
   const sendData = async (id, payload) => {
     try {
       await patchVisitById(id, payload)
@@ -131,20 +85,53 @@ export const Visits = () => {
     }
   }
 
+  useEffect(() => {
+    const fetchAllInstructors = async () => {
+      try {
+        const { data } = await getAllInfoTeacher('')
+        setFullNameInstructor(data.data)
+        console.log(data.data) // Verificar los datos obtenidos
+      } catch (error) {
+        toast.error('Error al obtener la lista de instructores', {
+          isLoading: false,
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'colored',
+          closeButton: true,
+          className: 'text-base'
+        })
+      }
+    }
+
+    fetchAllInstructors()
+  }, [])
+
+  const handleShowInstructors = (index) => {
+    setVisitShowInstructors((prevState) => ({
+      ...prevState,
+      [index]: !prevState[index]
+    }))
+  }
+
   return (
     <section className='grid grid-cols-1 gap-4 md:grid-cols-2'>
       {visitsData &&
         visitsData.length !== 0 &&
-        visitsData.map((visit) => {
+        visitsData.map((visit, index) => {
           return (
             <CardWithChildren key={visit.id_visita} classNames='w-full'>
-              <form className='flex flex-col gap-1.5' onSubmit={(e) => handleSubmit(e, visit.id_visita, visit.numero_visita)}>
+              <form className='flex flex-col gap-1.5' onSubmit={(e) => handleSubmit(e, visit.id_visita, visit.numero_visita, index)}>
                 <header className='flex flex-row items-center justify-between'>
                   <div className='flex flex-row items-center gap-2'>
                     <PiCalendarCheckLight className='text-3xl' />
                     <div className='flex flex-col '>
                       <h2 className='font-medium'>Visita {visit.numero_visita === '1' ? 'Inicial' : visit.numero_visita === '2' ? 'Final' : 'Extracurricular'}</h2>
                       <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'}`}>{visit.fecha_modificacion}</span>
+                      <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'}`}>{visit.nombre_instructor}</span>
                     </div>
                   </div>
                   <input name='estado_visita' type='checkbox' required className='w-4 h-4 rounded-xl accent-teal-600' defaultChecked={visit.estado_visita === 'Realizado'} />
@@ -166,6 +153,29 @@ export const Visits = () => {
                         Guardar
                       </Button>
                     </div>
+                  </div>
+
+                  <div className='relative mx-auto'>
+                    <div className='bg-teal-500 text-white font-bold py-2 px-4 rounded-full shadow cursor-pointer w-52 text-center ' onClick={() => handleShowInstructors(index)}>
+                      {visitShowInstructors[index] ? 'Ocultar Instructores' : 'Seleccionar Instructor'}
+                    </div>
+                    {visitShowInstructors[index] && (
+                      <ul className='max-h-40 overflow-y-auto mt-2 absolute z-10 bg-white border border-gray-300 rounded shadow-md'>
+                        <input type='text' placeholder='Buscar instructor...' className='w-full p-2 border border-gray-300 rounded' value={searchTerms[index]} onChange={(e) => handleSearchChange(index, e.target.value)} />
+                        {Array.isArray(fullNameInstructor) &&
+                          fullNameInstructor
+                            .filter((instructor) => {
+                              const fullName = `${instructor.nombres_usuario} ${instructor.apellidos_usuario}`
+                              return fullName.toLowerCase().includes(searchTerms[index].toLowerCase())
+                            })
+                            .map((instructor) => (
+                              <li key={instructor.id_usuario} className='hover:bg-blue-50 transition-colors duration-200 p-2 rounded-md shadow-md my-1 cursor-pointer' onClick={() => handleSelectInstructor(index, instructor.id_usuario)}>
+                                <div>{`${instructor.nombres_usuario} ${instructor.apellidos_usuario}`}</div>
+                                <div className='text-sm text-blue-600'>{instructor.email_usuario}</div>
+                              </li>
+                            ))}
+                      </ul>
+                    )}
                   </div>
                 </section>
               </form>

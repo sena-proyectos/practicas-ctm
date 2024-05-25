@@ -8,14 +8,17 @@ import smtpTransport from 'nodemailer-smtp-transport'
  */
 config()
 
+
 const PORT = process.env.PORT ?? 3000
 const DB_USER = process.env.DB_USER ?? 'root'
-const DB_PASSWORD = process.env.DB_PASSWORD ?? ''
+const DB_PASSWORD = process.env.DB_PASSWORD ?? '1234'
 const DB_HOST = process.env.DB_HOST ?? 'localhost'
-const DB_DATABASE = process.env.DB_DATABASE ?? 'practicas_sena'
+const DB_DATABASE = process.env.DB_DATABASE ?? 'sena_practicas'
 const DB_PORT = process.env.DB_PORT ?? 3306
-const MAIL_USER = process.env.MAIL_USER ?? 'null'
-const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? 'null'
+const MAIL_USER = process.env.MAIL_USER ?? 'inf.practicasctm@outlook.com'
+const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? '6^og!8S$T^&7H!Z89^gZrwDS5Ws5Hku!'
+
+
 
 /**
  * Configura el transporte de correos con el SMTP de outlook (office) junto con las credenciales del .env
