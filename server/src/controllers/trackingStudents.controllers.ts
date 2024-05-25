@@ -56,6 +56,7 @@ export const getVisitsByStudent = async (
           av.estado_visita, 
           av.observaciones_visita, 
           av.usuario_responsable, 
+          DATE_FORMAT(av.visita_hora, "%Y-%m-%d") AS visita_hora,
           u_instructor.nombres_usuario AS nombre_instructor,  
           DATE_FORMAT(av.fecha_modificacion, "%Y-%m-%d %H:%i:%s") AS fecha_modificacion 
       FROM 
@@ -136,16 +137,18 @@ export const modifyVisitByID = async (
     observaciones_visita,
     usuario_responsable,
     instructor,
+    visita_hora, // Actualizamos para incluir la nueva columna visita_hora
   } = req.body;
   const { id } = req.params;
   try {
     const [query] = await connection.query<ResultSetHeader>(
-      "UPDATE aprendices_visitas SET numero_visita = IFNULL(?, numero_visita), estado_visita = IFNULL(?, estado_visita), observaciones_visita = IFNULL(?, observaciones_visita), usuario_responsable = IFNULL(?, usuario_responsable), instructor = IFNULL(?, instructor) WHERE id_visita = ?",
+      "UPDATE aprendices_visitas SET numero_visita = IFNULL(?, numero_visita), estado_visita = IFNULL(?, estado_visita), observaciones_visita = IFNULL(?, observaciones_visita), usuario_responsable = IFNULL(?, usuario_responsable), visita_hora = ?, instructor = IFNULL(?, instructor) WHERE id_visita = ?",
       [
         numero_visita,
         estado_visita,
         observaciones_visita,
         usuario_responsable,
+        visita_hora, // Usamos la nueva columna visita_hora en lugar de fecha_modificacion
         instructor,
         id,
       ]
@@ -157,6 +160,7 @@ export const modifyVisitByID = async (
     return handleHTTP(res, error as CustomError);
   }
 };
+
 export const createVisit = async (
   req: Request,
   res: Response

@@ -8,8 +8,6 @@ import { getUserID } from '../../import/getIDActualUser'
 import { CardWithChildren } from '../Utils/Card/Card'
 import { PiCalendarCheckLight } from 'react-icons/pi'
 import { LuSave } from 'react-icons/lu'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
 
 export const Visits = () => {
   const { id } = useParams()
@@ -60,7 +58,7 @@ export const Visits = () => {
     }))
   }
 
-  const handleSubmit = (e, id_visita, numero_visita, index) => {
+  const handleSubmit = async (e, id_visita, numero_visita, index) => {
     e.preventDefault()
     const { id_usuario: usuario_responsable } = getUserID().user
     const formData = new FormData(e.target)
@@ -72,6 +70,10 @@ export const Visits = () => {
     }
     data.numero_visita = numero_visita
     data.instructor = selectedInstructors[index]
+
+    // Aquí agregamos la fecha de visita al objeto de datos
+    data.visita_hora = formData.get('visita_hora')
+
     sendData(id_visita, { ...data, usuario_responsable })
   }
 
@@ -117,6 +119,12 @@ export const Visits = () => {
     }))
   }
 
+  const filterInstructors = (instructor, searchTerm) => {
+    const fullName = `${instructor.nombres_usuario} ${instructor.apellidos_usuario}`
+    const email = instructor.email_usuario
+    return fullName.toLowerCase().includes(searchTerm.toLowerCase()) || email.toLowerCase().includes(searchTerm.toLowerCase())
+  }
+
   return (
     <section className='grid grid-cols-1 gap-4 md:grid-cols-2'>
       {visitsData &&
@@ -130,8 +138,34 @@ export const Visits = () => {
                     <PiCalendarCheckLight className='text-3xl' />
                     <div className='flex flex-col '>
                       <h2 className='font-medium'>Visita {visit.numero_visita === '1' ? 'Inicial' : visit.numero_visita === '2' ? 'Final' : 'Extracurricular'}</h2>
-                      <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'}`}>{visit.fecha_modificacion}</span>
-                      <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'}`}>{visit.nombre_instructor}</span>
+                      <div className=' flex items-center  '>
+                        <span className='text-sm'>Fecha visita: </span>
+                        <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'} ml-2 `}>{visit.visita_hora}</span>
+                      </div>
+                      <input type='date' name='visita_hora' defaultValue={visit.visita_hora} className='text-xs border-gray-300 focus:outline-none resize-none rounded-xl border-1 w-28 ' />
+                      <div className=' flex items-center'>
+                        <span className='text-sm'>Intructor: </span>
+                        <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'} ml-2 `}>{visit.nombre_instructor}</span>
+                      </div>
+                      <div className='relative mx-auto'>
+                        <div className='bg-teal-500 text-white font-bold py-1 px-2 rounded-full shadow cursor-pointer w-22 text-center text-sm ' onClick={() => handleShowInstructors(index)}>
+                          {visitShowInstructors[index] ? 'Ocultar Instructores' : 'Seleccionar Instructor'}
+                        </div>
+                        {visitShowInstructors[index] && (
+                          <ul className='max-h-40 overflow-y-auto mt-2 absolute z-10 bg-white border border-gray-300 rounded shadow-md'>
+                            <input type='text' placeholder='Buscar instructor...' className='w-full p-1 border border-gray-300 rounded' value={searchTerms[index]} onChange={(e) => handleSearchChange(index, e.target.value)} />
+                            {Array.isArray(fullNameInstructor) &&
+                              fullNameInstructor
+                                .filter((instructor) => filterInstructors(instructor, searchTerms[index]))
+                                .map((instructor) => (
+                                  <li key={instructor.id_usuario} className='hover:bg-blue-50 transition-colors duration-200 p-2 rounded-md shadow-md my-1 cursor-pointer text-sm ' onClick={() => handleSelectInstructor(index, instructor.id_usuario)}>
+                                    <div>{`${instructor.nombres_usuario} ${instructor.apellidos_usuario}`}</div>
+                                    <div className='text-sm text-teal-500'>{instructor.email_usuario}</div>
+                                  </li>
+                                ))}
+                          </ul>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <input name='estado_visita' type='checkbox' required className='w-4 h-4 rounded-xl accent-teal-600' defaultChecked={visit.estado_visita === 'Realizado'} />
@@ -153,29 +187,6 @@ export const Visits = () => {
                         Guardar
                       </Button>
                     </div>
-                  </div>
-
-                  <div className='relative mx-auto'>
-                    <div className='bg-teal-500 text-white font-bold py-2 px-4 rounded-full shadow cursor-pointer w-52 text-center ' onClick={() => handleShowInstructors(index)}>
-                      {visitShowInstructors[index] ? 'Ocultar Instructores' : 'Seleccionar Instructor'}
-                    </div>
-                    {visitShowInstructors[index] && (
-                      <ul className='max-h-40 overflow-y-auto mt-2 absolute z-10 bg-white border border-gray-300 rounded shadow-md'>
-                        <input type='text' placeholder='Buscar instructor...' className='w-full p-2 border border-gray-300 rounded' value={searchTerms[index]} onChange={(e) => handleSearchChange(index, e.target.value)} />
-                        {Array.isArray(fullNameInstructor) &&
-                          fullNameInstructor
-                            .filter((instructor) => {
-                              const fullName = `${instructor.nombres_usuario} ${instructor.apellidos_usuario}`
-                              return fullName.toLowerCase().includes(searchTerms[index].toLowerCase())
-                            })
-                            .map((instructor) => (
-                              <li key={instructor.id_usuario} className='hover:bg-blue-50 transition-colors duration-200 p-2 rounded-md shadow-md my-1 cursor-pointer' onClick={() => handleSelectInstructor(index, instructor.id_usuario)}>
-                                <div>{`${instructor.nombres_usuario} ${instructor.apellidos_usuario}`}</div>
-                                <div className='text-sm text-blue-600'>{instructor.email_usuario}</div>
-                              </li>
-                            ))}
-                      </ul>
-                    )}
                   </div>
                 </section>
               </form>
