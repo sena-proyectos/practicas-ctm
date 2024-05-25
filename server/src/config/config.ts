@@ -15,8 +15,8 @@ const DB_PASSWORD = process.env.DB_PASSWORD ?? '1234'
 const DB_HOST = process.env.DB_HOST ?? 'localhost'
 const DB_DATABASE = process.env.DB_DATABASE ?? 'sena_practicas'
 const DB_PORT = process.env.DB_PORT ?? 3306
-const MAIL_USER = process.env.MAIL_USER ?? 'inf.practicasctm@outlook.com'
-const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? '6^og!8S$T^&7H!Z89^gZrwDS5Ws5Hku!'
+const MAIL_USER = process.env.MAIL_USER ?? 'luismidev09@gmail.com'
+const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? 'kjoc qgzq nanz hnst'
 
 
 
@@ -32,9 +32,9 @@ const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? '6^og!8S$T^&7H!Z89^gZrwDS5Ws5
  */
 const emailConfig = nodemailer.createTransport(
   smtpTransport({
-    host: 'smtp-mail.outlook.com',
-    port: 587,
-    secure: false,
+    host: 'smtp.gmail.com',
+    port:465,
+    secure: true,
     auth: {
       user: MAIL_USER,
       pass: MAIL_PASSWORD
