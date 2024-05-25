@@ -18,7 +18,7 @@ export const Visits = () => {
   const [searchTerms, setSearchTerms] = useState([])
   const [visitShowInstructors, setVisitShowInstructors] = useState({})
   const [selectedInstructors, setSelectedInstructors] = useState({})
-  const [visitCheckboxStates, setVisitCheckboxStates] = useState({});
+  const [visitCheckboxStates, setVisitCheckboxStates] = useState({})
 
   useEffect(() => {
     const cachedData = JSON.parse(sessionStorage.getItem('apprenticeData'))
@@ -126,12 +126,22 @@ export const Visits = () => {
   }
 
   const handleCheckboxChange = (e, visitId) => {
-    const isChecked = e.target.checked;
+    const isChecked = e.target.checked
     setVisitCheckboxStates((prevState) => ({
       ...prevState,
-      [visitId]: isChecked,
-    }));
-  };
+      [visitId]: isChecked
+    }))
+  }
+
+  useEffect(() => {
+    if (visitsData && visitsData.length > 0) {
+      const checkboxStates = {}
+      visitsData.forEach((visit) => {
+        checkboxStates[visit.id_visita] = visit.estado_visita === 'Realizado'
+      })
+      setVisitCheckboxStates(checkboxStates)
+    }
+  }, [visitsData])
 
   return (
     <section className='grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -179,14 +189,7 @@ export const Visits = () => {
                       </div>
                     </div>
                   </div>
-                  <input
-                    id={`estado_visita_${visit.id_visita}`}
-                    name='estado_visita'
-                    type='checkbox'
-                    onChange={(e) => handleCheckboxChange(e, visit.id_visita)}
-                    checked={visitCheckboxStates[visit.id_visita] || false}
-                    className='w-4 h-4 rounded-xl accent-teal-600'
-                  />
+                  <input id={`estado_visita_${visit.id_visita}`} name='estado_visita' type='checkbox' onChange={(e) => handleCheckboxChange(e, visit.id_visita)} checked={visitCheckboxStates[visit.id_visita] || false} className='w-4 h-4 rounded-xl accent-teal-600' />
                 </header>
                 <hr className='border-gray-300' />
                 <section className='flex flex-col gap-1 px-2 text-sm'>
