@@ -68,18 +68,16 @@ export const modifyLetterByID = async (
     estado_carta_aprendiz,
     observaciones,
     usuario_responsable,
-    instructor, // Nuevo campo para modificar
   } = req.body;
   const { id } = req.params;
   try {
     const [query] = await connection.query<ResultSetHeader>(
-      "UPDATE aprendices_cartas SET tipo_carta_aprendiz = IFNULL(?, tipo_carta_aprendiz), estado_carta_aprendiz = IFNULL(?, estado_carta_aprendiz), observaciones = IFNULL(?, observaciones), usuario_responsable = IFNULL(?, usuario_responsable), instructor = IFNULL(?, instructor) WHERE id_carta_aprendiz = ?",
+      "UPDATE aprendices_cartas SET tipo_carta_aprendiz = IFNULL(?, tipo_carta_aprendiz), estado_carta_aprendiz = IFNULL(?, estado_carta_aprendiz), observaciones = IFNULL(?, observaciones), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_carta_aprendiz = ?",
       [
         tipo_carta_aprendiz,
         estado_carta_aprendiz,
         observaciones,
         usuario_responsable,
-        instructor,
         id,
       ]
     );
