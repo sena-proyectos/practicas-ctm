@@ -522,3 +522,10 @@ export const getClassTeacherByClassNumber = async (id, data) => {
 
   return response
 }
+
+// OBTENER NOTIFICACIONES
+export const getNotification = async () => {
+  const URL = `${baseUrl}${api}/v1/alertVisita`
+  const publicToken = getPublicTokenFromSession()
+  return await axios.get(URL, { headers: { Authorization: publicToken } })
+}

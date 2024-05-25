@@ -183,3 +183,30 @@ export const createVisit = async (
     return handleHTTP(res, error as CustomError);
   }
 };
+
+export const checkPendingVisits = async () => {
+  try {
+    const [query] = await connection.query<RowDataPacket[]>(
+      `SELECT 
+          av.id_visita, 
+          av.numero_visita, 
+          av.estado_visita, 
+          av.observaciones_visita, 
+          av.usuario_responsable, 
+          DATE_FORMAT(av.visita_hora, "%Y-%m-%d") AS visita_hora,
+          CONCAT(u_instructor.nombres_usuario, ' ', u_instructor.apellidos_usuario) AS nombre_instructor,  
+          DATE_FORMAT(av.fecha_modificacion, "%Y-%m-%d %H:%i:%s") AS fecha_modificacion 
+      FROM 
+          aprendices_visitas av 
+      LEFT JOIN 
+          usuarios u_instructor ON av.instructor = u_instructor.id_usuario  
+      WHERE 
+          av.estado_visita = 'Pendiente' AND 
+          av.visita_hora < NOW()`
+    );
+    return query;
+  } catch (error) {
+    console.error("Error al obtener las visitas pendientes:", error);
+    throw error;
+  }
+};
