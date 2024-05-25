@@ -133,11 +133,13 @@ export const Visits = () => {
           return (
             <CardWithChildren key={visit.id_visita} classNames='w-full'>
               <form className='flex flex-col gap-1.5' onSubmit={(e) => handleSubmit(e, visit.id_visita, visit.numero_visita, index)}>
-                <header className='flex flex-row items-center justify-between'>
+                <header className='flex flex-row items-center justify-between relative '>
                   <div className='flex flex-row items-center gap-2'>
-                    <PiCalendarCheckLight className='text-3xl' />
                     <div className='flex flex-col '>
-                      <h2 className='font-medium'>Visita {visit.numero_visita === '1' ? 'Inicial' : visit.numero_visita === '2' ? 'Final' : 'Extracurricular'}</h2>
+                      <div className='flex items-center'>
+                        <PiCalendarCheckLight className='text-3xl  top-0 ' />
+                        <h2 className='font-medium  ml-2 '>Visita {visit.numero_visita === '1' ? 'Inicial' : visit.numero_visita === '2' ? 'Final' : 'Extracurricular'}</h2>
+                      </div>
                       <div className=' flex items-center  '>
                         <span className='text-sm'>Fecha visita: </span>
                         <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'} ml-2 `}>{visit.visita_hora}</span>
@@ -146,8 +148,9 @@ export const Visits = () => {
                       <div className=' flex items-center'>
                         <span className='text-sm'>Instructor: </span>
                         <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'} ml-2 `}>{visit.nombre_instructor}</span>
+                        <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'} ml-2 `}>{visit.apellidos_usuario}</span>
                       </div>
-                      <div className='relative mx-auto'>
+                      <div className='relative mx-auto mt-1'>
                         <div className='bg-teal-500 text-white font-bold py-1 px-2 rounded-full shadow cursor-pointer w-22 text-center text-sm ' onClick={() => handleShowInstructors(index)}>
                           {visitShowInstructors[index] ? 'Ocultar Instructores' : 'Seleccionar Instructor'}
                         </div>

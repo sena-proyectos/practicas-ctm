@@ -50,23 +50,23 @@ export const getVisitsByStudent = async (
   try {
     const [query] = await connection.query<RowDataPacket[]>(
       `SELECT 
-          ad.id_aprendiz, 
-          av.id_visita, 
-          av.numero_visita, 
-          av.estado_visita, 
-          av.observaciones_visita, 
-          av.usuario_responsable, 
-          DATE_FORMAT(av.visita_hora, "%Y-%m-%d") AS visita_hora,
-          u_instructor.nombres_usuario AS nombre_instructor,  
-          DATE_FORMAT(av.fecha_modificacion, "%Y-%m-%d %H:%i:%s") AS fecha_modificacion 
-      FROM 
-          aprendices_visitas_detalles ad 
-      INNER JOIN 
-          aprendices_visitas av ON ad.id_visita = av.id_visita 
-      LEFT JOIN 
-          usuarios u_instructor ON av.instructor = u_instructor.id_usuario  
-      WHERE 
-          ad.id_aprendiz = ?`,
+      ad.id_aprendiz, 
+      av.id_visita, 
+      av.numero_visita, 
+      av.estado_visita, 
+      av.observaciones_visita, 
+      av.usuario_responsable, 
+      DATE_FORMAT(av.visita_hora, "%Y-%m-%d") AS visita_hora,
+      CONCAT(u_instructor.nombres_usuario, ' ', u_instructor.apellidos_usuario) AS nombre_instructor,  
+      DATE_FORMAT(av.fecha_modificacion, "%Y-%m-%d %H:%i:%s") AS fecha_modificacion 
+  FROM 
+      aprendices_visitas_detalles ad 
+  INNER JOIN 
+      aprendices_visitas av ON ad.id_visita = av.id_visita 
+  LEFT JOIN 
+      usuarios u_instructor ON av.instructor = u_instructor.id_usuario  
+  WHERE 
+      ad.id_aprendiz = ?`,
       [id]
     );
     if (query.length === 0)
