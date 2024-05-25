@@ -563,7 +563,7 @@ export const StudentMonitoring = () => {
             <section className='ml-auto '>
               <div className='ml-auto bg-blue-600 rounded-full shadow-md'>
                 <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-1 text-white rounded-full cursor-pointer'>
-                  <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
+                  <span className='text-sm font-medium text-white select-none'>Subir Archivo</span>
                   <AiOutlineFileAdd />
                 </label>
                 <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={inputFileRef} onChange={handleExcelFile} />

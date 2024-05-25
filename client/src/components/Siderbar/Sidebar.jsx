@@ -12,6 +12,7 @@ import { IoHomeOutline, IoLogOutOutline, IoPersonOutline, IoSettingsOutline, IoP
 import { colorIcon, rolesNames, keysRoles } from '../../import/staticData'
 import { userStore } from '../../store/config'
 import { AiOutlineUsergroupAdd } from 'react-icons/ai'
+import { useNotification } from '../../context/NotificationContext'
 
 const Siderbar = () => {
   const location = useLocation()
@@ -20,6 +21,7 @@ const Siderbar = () => {
   const [dataFullName, setDataFullName] = useState(null)
   const { setUserId } = userStore()
   const { userId } = userStore()
+  const { toggleNotification } = useNotification()
 
   /**
    * Efecto para manejar el redimensionamiento de la ventana y la apertura/cierre del menú en pantallas pequeñas.
@@ -153,9 +155,10 @@ const Siderbar = () => {
   return (
     <aside className={`bg-secondary/10 ${open ? 'w-[13rem]' : 'w-[4.5rem]'} sticky left-0 top-0 h-screen rounded-r-3xl shadow-slate-400 shadow-md`}>
       <nav className='grid h-screen grid-rows-3-10-78-12 md:grid-rows-3-10-78-12'>
-        <section className={`w-[80%] ${open === true ? 'flex flex-row mx-auto' : 'mx-auto flex flex-col items-center'} my-auto`}>
-          <div className='my-auto w-[2.5rem] rounded-full'>
-            <img className='object-cover' src='/user.png' alt='img_user' />
+        <section className={`w-[80%] ${open === true ? 'flex flex-row-reverse mx-auto' : 'mx-auto flex flex-col items-center'} my-auto`}>
+          <div onClick={toggleNotification} className='my-auto w-[2.3rem] rounded-xl bg-white shadow-md cursor-pointer p-[3px]  relative'>
+            <img className='object-cover ' src='/notification.svg' alt='img_user' />
+            <div className='animate-ping absolute w-[0.6rem] h-[0.6rem] top-[0.5rem] left-5 bg-green-500 border border-white rounded-full text-white text-xs flex justify-center items-center'></div>
           </div>
           <div className={`w-fit mx-auto ${!open && 'hidden'}`}>
             <h5 className='text-xs font-light text-center'>{dataFullName || <Skeleton width={100} />}</h5>
