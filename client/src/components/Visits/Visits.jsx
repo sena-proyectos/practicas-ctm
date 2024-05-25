@@ -18,7 +18,7 @@ export const Visits = () => {
   const [searchTerms, setSearchTerms] = useState([])
   const [visitShowInstructors, setVisitShowInstructors] = useState({})
   const [selectedInstructors, setSelectedInstructors] = useState({})
-  const [visitStatus, setVisitStatus] = useState('Pendiente')
+  const [visitCheckboxStates, setVisitCheckboxStates] = useState({});
 
   useEffect(() => {
     const cachedData = JSON.parse(sessionStorage.getItem('apprenticeData'))
@@ -125,9 +125,13 @@ export const Visits = () => {
     return fullName.toLowerCase().includes(searchTerm.toLowerCase()) || email.toLowerCase().includes(searchTerm.toLowerCase())
   }
 
-  const handleCheckboxChange = (e) => {
-    setVisitStatus(e.target.checked ? 'Realizado' : 'Pendiente') // Actualizamos el estado de la visita según el estado del checkbox
-  }
+  const handleCheckboxChange = (e, visitId) => {
+    const isChecked = e.target.checked;
+    setVisitCheckboxStates((prevState) => ({
+      ...prevState,
+      [visitId]: isChecked,
+    }));
+  };
 
   return (
     <section className='grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -146,13 +150,13 @@ export const Visits = () => {
                       </div>
                       <div className=' flex items-center  '>
                         <span className='text-sm'>Fecha visita: </span>
-                        <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'} ml-2 `}>{visit.visita_hora}</span>
+                        <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : ''} ml-2 `}>{visit.visita_hora}</span>
                       </div>
                       <input type='date' name='visita_hora' defaultValue={visit.visita_hora} className='text-xs border-gray-300 focus:outline-none resize-none rounded-xl border-1 w-28 ' />
                       <div className=' flex items-center'>
                         <span className='text-sm'>Instructor: </span>
-                        <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'} ml-2 `}>{visit.nombre_instructor}</span>
-                        <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'} ml-2 `}>{visit.apellidos_usuario}</span>
+                        <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : ''} ml-2 `}>{visit.nombre_instructor}</span>
+                        <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : ''} ml-2 `}>{visit.apellidos_usuario}</span>
                       </div>
                       <div className='relative  w-29 mt-1'>
                         <div className='bg-teal-500 text-white font-bold py-1 px-2 rounded-full shadow cursor-pointer w-25 text-center text-sm ' onClick={() => handleShowInstructors(index)}>
@@ -175,7 +179,14 @@ export const Visits = () => {
                       </div>
                     </div>
                   </div>
-                  <input id='estado_visita' name='estado_visita' type='checkbox' onChange={handleCheckboxChange} checked={visitStatus === 'Realizado'} className='w-4 h-4 rounded-xl accent-teal-600' />
+                  <input
+                    id={`estado_visita_${visit.id_visita}`}
+                    name='estado_visita'
+                    type='checkbox'
+                    onChange={(e) => handleCheckboxChange(e, visit.id_visita)}
+                    checked={visitCheckboxStates[visit.id_visita] || false}
+                    className='w-4 h-4 rounded-xl accent-teal-600'
+                  />
                 </header>
                 <hr className='border-gray-300' />
                 <section className='flex flex-col gap-1 px-2 text-sm'>
