@@ -144,7 +144,7 @@ export const Visits = () => {
                       </div>
                       <input type='date' name='visita_hora' defaultValue={visit.visita_hora} className='text-xs border-gray-300 focus:outline-none resize-none rounded-xl border-1 w-28 ' />
                       <div className=' flex items-center'>
-                        <span className='text-sm'>Intructor: </span>
+                        <span className='text-sm'>Instructor: </span>
                         <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'} ml-2 `}>{visit.nombre_instructor}</span>
                       </div>
                       <div className='relative mx-auto'>
