@@ -49,7 +49,23 @@ export const getVisitsByStudent = async (
   const { id } = req.params;
   try {
     const [query] = await connection.query<RowDataPacket[]>(
-      'SELECT aprendices_visitas_detalles.id_aprendiz, aprendices_visitas.id_visita, aprendices_visitas.numero_visita, aprendices_visitas.estado_visita, aprendices_visitas.observaciones_visita, aprendices_visitas.usuario_responsable, aprendices_visitas.instructor, DATE_FORMAT(aprendices_visitas.fecha_modificacion, "%Y-%m-%d %H:%i:%s") AS fecha_modificacion FROM aprendices_visitas_detalles INNER JOIN aprendices_visitas on aprendices_visitas_detalles.id_visita = aprendices_visitas.id_visita WHERE aprendices_visitas_detalles.id_aprendiz = ?',
+      `SELECT 
+          ad.id_aprendiz, 
+          av.id_visita, 
+          av.numero_visita, 
+          av.estado_visita, 
+          av.observaciones_visita, 
+          av.usuario_responsable, 
+          u_instructor.nombres_usuario AS nombre_instructor,  
+          DATE_FORMAT(av.fecha_modificacion, "%Y-%m-%d %H:%i:%s") AS fecha_modificacion 
+      FROM 
+          aprendices_visitas_detalles ad 
+      INNER JOIN 
+          aprendices_visitas av ON ad.id_visita = av.id_visita 
+      LEFT JOIN 
+          usuarios u_instructor ON av.instructor = u_instructor.id_usuario  
+      WHERE 
+          ad.id_aprendiz = ?`,
       [id]
     );
     if (query.length === 0)
@@ -59,6 +75,7 @@ export const getVisitsByStudent = async (
     return handleHTTP(res, error as CustomError);
   }
 };
+
 export const modifyLetterByID = async (
   req: Request,
   res: Response
