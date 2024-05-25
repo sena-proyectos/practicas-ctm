@@ -18,6 +18,7 @@ export const Visits = () => {
   const [searchTerms, setSearchTerms] = useState([])
   const [visitShowInstructors, setVisitShowInstructors] = useState({})
   const [selectedInstructors, setSelectedInstructors] = useState({})
+  const [visitStatus, setVisitStatus] = useState('Pendiente')
 
   useEffect(() => {
     const cachedData = JSON.parse(sessionStorage.getItem('apprenticeData'))
@@ -33,7 +34,6 @@ export const Visits = () => {
   const getVisits = async () => {
     try {
       const { data } = await getVisitsByStudent(id)
-      console.log(data)
       setVisitData(data)
       setSearchTerms(Array(data.length).fill(''))
     } catch (error) {
@@ -125,6 +125,10 @@ export const Visits = () => {
     return fullName.toLowerCase().includes(searchTerm.toLowerCase()) || email.toLowerCase().includes(searchTerm.toLowerCase())
   }
 
+  const handleCheckboxChange = (e) => {
+    setVisitStatus(e.target.checked ? 'Realizado' : 'Pendiente') // Actualizamos el estado de la visita según el estado del checkbox
+  }
+
   return (
     <section className='grid grid-cols-1 gap-4 md:grid-cols-2'>
       {visitsData &&
@@ -171,7 +175,7 @@ export const Visits = () => {
                       </div>
                     </div>
                   </div>
-                  <input name='estado_visita' type='checkbox' required className='w-4 h-4 rounded-xl accent-teal-600' defaultChecked={visit.estado_visita === 'Realizado'} />
+                  <input id='estado_visita' name='estado_visita' type='checkbox' onChange={handleCheckboxChange} checked={visitStatus === 'Realizado'} className='w-4 h-4 rounded-xl accent-teal-600' />
                 </header>
                 <hr className='border-gray-300' />
                 <section className='flex flex-col gap-1 px-2 text-sm'>
