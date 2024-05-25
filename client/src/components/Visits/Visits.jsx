@@ -150,8 +150,8 @@ export const Visits = () => {
                         <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'} ml-2 `}>{visit.nombre_instructor}</span>
                         <span className={`text-xs ${visit.estado_visita === 'Realizado' ? 'visible' : 'hidden'} ml-2 `}>{visit.apellidos_usuario}</span>
                       </div>
-                      <div className='relative mx-auto mt-1'>
-                        <div className='bg-teal-500 text-white font-bold py-1 px-2 rounded-full shadow cursor-pointer w-22 text-center text-sm ' onClick={() => handleShowInstructors(index)}>
+                      <div className='relative  w-29 mt-1'>
+                        <div className='bg-teal-500 text-white font-bold py-1 px-2 rounded-full shadow cursor-pointer w-25 text-center text-sm ' onClick={() => handleShowInstructors(index)}>
                           {visitShowInstructors[index] ? 'Ocultar Instructores' : 'Seleccionar Instructor'}
                         </div>
                         {visitShowInstructors[index] && (
