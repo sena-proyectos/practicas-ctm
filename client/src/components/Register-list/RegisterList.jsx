@@ -717,7 +717,7 @@ export const RegisterList = () => {
                 <div className='rounded-full shadow-md bg-cyan-600'>
                   <label htmlFor='upload' className='flex items-center w-full h-full gap-2 px-3 py-2 text-white rounded-full cursor-pointer'>
                     <AiOutlineFileAdd />
-                    <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
+                    <span className='text-sm font-medium text-white select-none'>Subir Archivo</span>
                   </label>
                   <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={excelRef} onChange={handleExcelFile} />
                 </div>

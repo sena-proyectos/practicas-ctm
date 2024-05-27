@@ -18,6 +18,8 @@ import { RegisterUser } from './components/Register-user/RegisterUser'
 import { getPublicToken, getNotification } from './api/httpRequest'
 import { useEffect, useState } from 'react'
 import { getPublicTokenFromSession } from './import/getPublicToken'
+import { NotificationProvider } from './context/NotificationContext'
+import { Notification } from './components/Notification/Notification'
 
 const App = () => {
   const [loading, setLoading] = useState(true)
@@ -65,6 +67,8 @@ const App = () => {
   }
 
   return (
+    <NotificationProvider>
+      <Notification></Notification>
     <Routes>
       <Route
         path='/'
@@ -195,6 +199,7 @@ const App = () => {
         }
       />
     </Routes>
+    </NotificationProvider>
   )
 }
 

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 // icons
 import { AiOutlineIdcard } from 'react-icons/ai'
@@ -7,8 +7,13 @@ import { BiLockAlt } from 'react-icons/bi'
 
 // components
 import { Form } from '../Form/Form'
+import { useNotification } from '../../context/NotificationContext'
 
 const User = () => {
+  const { closeNotification } = useNotification()
+  useEffect(() => {
+    closeNotification()
+  }, [])
   /**
    * Función asincrónica para redirigir al usuario a la página de inicio si ya está autenticado.
    *
@@ -88,7 +93,12 @@ const User = () => {
           </div>
         </div>
 
-        <div className='relative flex items-center justify-center w-full'>
+        <div className='relative flex flex-col items-center justify-center w-full gap-y-20'>
+          <span>
+            <h1 className='text-5xl font-semibold drop-shadow-xl text-center'>
+              Etapa Productiva
+            </h1>
+            </span>
           <div className='z-10 flex flex-col p-8 bg-white border shadow-xl justify-self-center rounded-2xl border-neutral-400 '>
             <h2 className='text-xl font-bold text-center'>{title.login}</h2>
             <span className='text-lg font-light '>Es un placer para nosotros tenerte aquí</span>

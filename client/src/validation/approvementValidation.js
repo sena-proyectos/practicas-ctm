@@ -3,7 +3,7 @@ import Joi from 'joi'
 const approveOptionRegex = /^Si|No$/i
 
 const approvementSchema = Joi.object({
-  observations: Joi.string().required(),
+  observations: Joi.string().optional(),
   approveOption: Joi.string().required().pattern(approveOptionRegex)
 })
 
