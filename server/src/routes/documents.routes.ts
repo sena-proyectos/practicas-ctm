@@ -1,9 +1,21 @@
-import { type IRouter, Router } from 'express'
-import { excelGeneratorClass, excelGeneratorStudents, excelGeneratorStudentsCategory, excelGeneratorStudentsInstructor, excelGeneratorStudentsNoPractical, excelGeneratorStudentsPractical } from '../controllers/documents.controllers.js'
-import { checkClassNumber } from '../middlewares/classes.middlewares.js'
-import { checkInstructor, checkModality } from '../middlewares/documents.middlewares.js'
+import { type IRouter, Router } from "express";
+import {
+  excelGeneratorClass,
+  excelGeneratorStudents,
+  excelGeneratorStudentsCategory,
+  excelGeneratorStudentsInstructor,
+  excelGeneratorStudentsNoPractical,
+  excelGeneratorStudentsPractical,
+  excelGeneratorFichasByInstructor,
+  excelGeneratorStudentsInPracticsByInstructor,
+} from "../controllers/documents.controllers.js";
+import { checkClassNumber } from "../middlewares/classes.middlewares.js";
+import {
+  checkInstructor,
+  checkModality,
+} from "../middlewares/documents.middlewares.js";
 
-const documentRoutes: IRouter = Router()
+const documentRoutes: IRouter = Router();
 
 /**
  * Genera un archivo de Excel relacionado con las clases.
@@ -13,7 +25,11 @@ const documentRoutes: IRouter = Router()
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-documentRoutes.get('/v1/create-excel-class', checkClassNumber, excelGeneratorClass)
+documentRoutes.get(
+  "/v1/create-excel-class",
+  checkClassNumber,
+  excelGeneratorClass
+);
 
 /**
  * Genera un archivo de Excel de todos los estudiantes.
@@ -22,7 +38,7 @@ documentRoutes.get('/v1/create-excel-class', checkClassNumber, excelGeneratorCla
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-documentRoutes.get('/v1/create-excel-students', excelGeneratorStudents)
+documentRoutes.get("/v1/create-excel-students", excelGeneratorStudents);
 
 /**
  * Genera un archivo de Excel relacionado con los estudiantes en prácticas.
@@ -31,7 +47,10 @@ documentRoutes.get('/v1/create-excel-students', excelGeneratorStudents)
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-documentRoutes.get('/v1/create-excel-students-practical', excelGeneratorStudentsPractical)
+documentRoutes.get(
+  "/v1/create-excel-students-practical",
+  excelGeneratorStudentsPractical
+);
 
 /**
  * Genera un archivo de Excel relacionado con los estudiantes sin prácticas.
@@ -40,7 +59,10 @@ documentRoutes.get('/v1/create-excel-students-practical', excelGeneratorStudents
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-documentRoutes.get('/v1/create-excel-students-nopractical', excelGeneratorStudentsNoPractical)
+documentRoutes.get(
+  "/v1/create-excel-students-nopractical",
+  excelGeneratorStudentsNoPractical
+);
 
 /**
  * Genera un archivo de Excel relacionado con los estudiantes por modalidad de practicas.
@@ -50,7 +72,11 @@ documentRoutes.get('/v1/create-excel-students-nopractical', excelGeneratorStuden
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-documentRoutes.get('/v1/create-excel-students-category', checkModality, excelGeneratorStudentsCategory)
+documentRoutes.get(
+  "/v1/create-excel-students-category",
+  checkModality,
+  excelGeneratorStudentsCategory
+);
 
 /**
  * Genera un archivo de Excel relacionado con los estudiantes por instructor.
@@ -60,6 +86,38 @@ documentRoutes.get('/v1/create-excel-students-category', checkModality, excelGen
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-documentRoutes.get('/v1/create-excel-students-instructor', checkInstructor, excelGeneratorStudentsInstructor)
+documentRoutes.get(
+  "/v1/create-excel-students-instructor",
+  checkInstructor,
+  excelGeneratorStudentsInstructor
+);
 
-export { documentRoutes }
+/**
+ * Genera un archivo de Excel relacionado con los estudiantes por instructor.
+ * @route GET /create-excel-students-instructor
+ * @param {string} request.query.instructor
+ * @returns {Promise<Buffer>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+documentRoutes.get(
+  "/v1/create-excel-ficha-instructor",
+  checkInstructor,
+  excelGeneratorFichasByInstructor
+);
+
+/**
+ * Genera un archivo de Excel relacionado con los estudiantes por instructor.
+ * @route GET /create-excel-students-instructor
+ * @param {string} request.query.instructor
+ * @returns {Promise<Buffer>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+documentRoutes.get(
+  "/v1/create-excel-students-practics",
+  checkInstructor,
+  excelGeneratorStudentsInPracticsByInstructor
+);
+
+export { documentRoutes };

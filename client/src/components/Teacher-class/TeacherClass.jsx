@@ -9,7 +9,7 @@ import { IoReturnDownBack } from 'react-icons/io5'
 import { BiSad } from 'react-icons/bi'
 
 // Components
-import { generateExcelStudentsByInstructor, getClassByTeacherId, getClassTeacherByClassNumber } from '../../api/httpRequest'
+import { generateExcelStudentsByInstructor, getClassByTeacherId, getClassTeacherByClassNumber, generateExcelFichasByInstructor, generateExcelStudentsInPracticsByInstructor } from '../../api/httpRequest'
 import { Footer } from '../Footer/Footer'
 import { Search } from '../Search/Search'
 import { Siderbar } from '../Siderbar/Sidebar'
@@ -28,6 +28,7 @@ export const TeacherClass = () => {
   const [currentCourses, setCurrentCourses] = useState({})
   const idRol = Number(localStorage.getItem('idRol'))
   const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(false)
 
   /**
    * @function
@@ -189,6 +190,15 @@ export const TeacherClass = () => {
     return navigate(`/fichas/aprendices/${ficha}`)
   }
 
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen)
+  }
+
+  const handleDownload = async (func) => {
+    toggleDropdown() // Cerrar el dropdown al seleccionar una opción
+    await func() // Ejecutar la función correspondiente al reporte seleccionado
+  }
+
   /**
    * Genera un excel con todos los aprendices por un instructor y permite descargarlo
 
@@ -205,17 +215,56 @@ export const TeacherClass = () => {
   const ExcelStudentsByInstructor = async () => {
     try {
       const response = await generateExcelStudentsByInstructor(nameInstructor)
-
+      const date = new Date().toLocaleDateString().replace(/\//g, '-') // Formato de fecha sin barras
       const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-
       const url = window.URL.createObjectURL(blob)
-
       const a = document.createElement('a')
       a.href = url
-      a.download = `estudiantes_de_${nameInstructor}.xlsx`
+      a.download = `estudiantes_de_${nameInstructor}_${date}.xlsx`
       document.body.appendChild(a)
       a.click()
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
 
+  const ExcelFichasByInstructor = async () => {
+    try {
+      const response = await generateExcelFichasByInstructor(nameInstructor)
+      const date = new Date().toLocaleDateString().replace(/\//g, '-') // Formato de fecha sin barras
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `fichas_de_${nameInstructor}_${date}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al generar el archivo excel.',
+        icon: 'error'
+      })
+      console.error(error)
+    }
+  }
+
+  const ExcelStudentsInPracticsByInstructor = async () => {
+    try {
+      const response = await generateExcelStudentsInPracticsByInstructor(nameInstructor)
+      const date = new Date().toLocaleDateString().replace(/\//g, '-') // Formato de fecha sin barras
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `estudiantes_con_practicas_${nameInstructor}_${date}.xlsx`
+      document.body.appendChild(a)
+      a.click()
       window.URL.revokeObjectURL(url)
     } catch (error) {
       Swal.fire({
@@ -273,10 +322,23 @@ export const TeacherClass = () => {
               <></>
             ) : (
               (idRol === Number(keysRoles[0]) || idRol === Number(keysRoles[1])) && (
-                <div className='w-full px-7'>
-                  <UIButton type='button' onClick={ExcelStudentsByInstructor} rounded='full' classNames='ml-auto rounded-full bg-green-600 text-sm shadow-md'>
-                    Informe Aprendices
-                  </UIButton>
+                <div className='relative ml-auto mr-3'>
+                  <button onClick={toggleDropdown} className='rounded-full bg-green-400 text-sm shadow-md px-4 py-2'>
+                    Descargar Reportes
+                  </button>
+                  {isOpen && (
+                    <div className='absolute bg-white border rounded shadow-md mt-2'>
+                      <button onClick={() => handleDownload(ExcelStudentsByInstructor)} className='block px-4 py-2 text-sm hover:bg-gray-100'>
+                        Informe Aprendices
+                      </button>
+                      <button onClick={() => handleDownload(ExcelFichasByInstructor)} className='block px-4 py-2 text-sm hover:bg-gray-100'>
+                        Informe Fichas
+                      </button>
+                      <button onClick={() => handleDownload(ExcelStudentsInPracticsByInstructor)} className='block px-4 py-2 text-sm hover:bg-gray-100'>
+                        Estudiantes en Prácticas
+                      </button>
+                    </div>
+                  )}
                 </div>
               )
             )}
