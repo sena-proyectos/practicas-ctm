@@ -15,12 +15,12 @@ export const checkModality = (req: Request, res: Response, next: NextFunction): 
 }
 
 export const checkInstructor = (req: Request, res: Response, next: NextFunction): void => {
-  const { instructor } = req.query;
+  const { instructor } = req.query
   try {
-    const { error } = instructorFullNameSchema.validate({ instructor });
-    if (error !== undefined) throw new DataNotValid('El query enviado contiene un error o no existe, verifiquelo');
-    next();
+    const { error } = instructorFullNameSchema.validate({ instructor })
+    if (error !== undefined) throw new DataNotValid('El query enviado contiene un error o no existe, verifiquelo')
+    next()
   } catch (error) {
-    handleHTTP(res, error as CustomError);
+    handleHTTP(res, error as CustomError)
   }
-};
+}
