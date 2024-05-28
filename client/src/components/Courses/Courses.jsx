@@ -724,7 +724,7 @@ export const Courses = () => {
               <div className='grid w-full grid-flow-col-dense gap-3 place-content-end px-7'>
                 <div className='ml-auto bg-green-600 rounded-full shadow-md'>
                   <label htmlFor='upload' className='flex items-center w-full h-full gap-1.5 px-3 py-1.5 text-white rounded-full cursor-pointer'>
-                    <span className='text-sm font-medium text-white select-none'>Subir arhivo</span>
+                    <span className='text-sm font-medium text-white select-none'>Subir Archivo</span>
                     <AiOutlineFileAdd />
                   </label>
                   <input id='upload' accept='.xlsx, .xls' type='file' className='hidden w-full' ref={inputFileRef} onChange={handleExcelFile} />

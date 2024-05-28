@@ -8,14 +8,17 @@ import smtpTransport from 'nodemailer-smtp-transport'
  */
 config()
 
+
 const PORT = process.env.PORT ?? 3000
 const DB_USER = process.env.DB_USER ?? 'root'
-const DB_PASSWORD = process.env.DB_PASSWORD ?? ''
+const DB_PASSWORD = process.env.DB_PASSWORD ?? '1234'
 const DB_HOST = process.env.DB_HOST ?? 'localhost'
-const DB_DATABASE = process.env.DB_DATABASE ?? 'practicas_sena'
+const DB_DATABASE = process.env.DB_DATABASE ?? 'sena_practicas'
 const DB_PORT = process.env.DB_PORT ?? 3306
-const MAIL_USER = process.env.MAIL_USER ?? 'null'
-const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? 'null'
+const MAIL_USER = process.env.MAIL_USER ?? 'practicasctm739@gmail.com'
+const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? 'z u z j e t m e t k n r cm h p'
+
+
 
 /**
  * Configura el transporte de correos con el SMTP de outlook (office) junto con las credenciales del .env
@@ -29,9 +32,9 @@ const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? 'null'
  */
 const emailConfig = nodemailer.createTransport(
   smtpTransport({
-    host: 'smtp-mail.outlook.com',
-    port: 587,
-    secure: false,
+    host: 'smtp.gmail.com',
+    port:465,
+    secure: true,
     auth: {
       user: MAIL_USER,
       pass: MAIL_PASSWORD

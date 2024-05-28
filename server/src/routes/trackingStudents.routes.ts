@@ -1,9 +1,23 @@
-import { type IRouter, Router } from 'express'
-import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
-import { createVisit, getBitacorasByStudent, getLettersByStudent, getVisitsByStudent, modifyBitacoraById, modifyLetterByID, modifyVisitByID } from '../controllers/trackingStudents.controllers.js'
-import { checkBitacoraData, checkLetterData, checkVisitData } from '../middlewares/trackingStudents.middlewares.js'
+import { type IRouter, Router } from "express";
+import { checkIdReq } from "../middlewares/idCheck.middlewares.js";
+import {
+  createVisit,
+  getBitacorasByStudent,
+  getLettersByStudent,
+  getVisitsByStudent,
+  modifyBitacoraById,
+  modifyLetterByID,
+  modifyVisitByID,
+  checkPendingVisits,
+} from "../controllers/trackingStudents.controllers.js";
+import {
+  checkBitacoraData,
+  checkLetterData,
+  checkVisitData,
+  alertVisitaMiddleware,
+} from "../middlewares/trackingStudents.middlewares.js";
 
-const trackingRoute: IRouter = Router()
+const trackingRoute: IRouter = Router();
 
 /**
  * Obtener todas las cartas mediante el ID del aprendiz
@@ -13,7 +27,11 @@ const trackingRoute: IRouter = Router()
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-trackingRoute.get('/v1/getLetterByStudent/:id', checkIdReq, getLettersByStudent)
+trackingRoute.get(
+  "/v1/getLetterByStudent/:id",
+  checkIdReq,
+  getLettersByStudent
+);
 
 /**
  * Obtener todas las bitacoras mediante el ID del aprendiz
@@ -23,7 +41,11 @@ trackingRoute.get('/v1/getLetterByStudent/:id', checkIdReq, getLettersByStudent)
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-trackingRoute.get('/v1/getBitacorasByStudent/:id', checkIdReq, getBitacorasByStudent)
+trackingRoute.get(
+  "/v1/getBitacorasByStudent/:id",
+  checkIdReq,
+  getBitacorasByStudent
+);
 
 /**
  * Obtener todas las visitas mediante el ID del aprendiz
@@ -33,7 +55,7 @@ trackingRoute.get('/v1/getBitacorasByStudent/:id', checkIdReq, getBitacorasByStu
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-trackingRoute.get('/v1/getVisitsByStudent/:id', checkIdReq, getVisitsByStudent)
+trackingRoute.get("/v1/getVisitsByStudent/:id", checkIdReq, getVisitsByStudent);
 
 /**
  * Modificar una carta mediante su ID
@@ -43,7 +65,12 @@ trackingRoute.get('/v1/getVisitsByStudent/:id', checkIdReq, getVisitsByStudent)
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-trackingRoute.patch('/v1/modifyLetter/:id', checkIdReq, checkLetterData, modifyLetterByID)
+trackingRoute.patch(
+  "/v1/modifyLetter/:id",
+  checkIdReq,
+  checkLetterData,
+  modifyLetterByID
+);
 
 /**
  * Modificar una bitacora mediante su ID
@@ -53,7 +80,12 @@ trackingRoute.patch('/v1/modifyLetter/:id', checkIdReq, checkLetterData, modifyL
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-trackingRoute.patch('/v1/modifyBitacora/:id', checkIdReq, checkBitacoraData, modifyBitacoraById)
+trackingRoute.patch(
+  "/v1/modifyBitacora/:id",
+  checkIdReq,
+  checkBitacoraData,
+  modifyBitacoraById
+);
 
 /**
  * Modificar una bitacora mediante su ID
@@ -63,7 +95,12 @@ trackingRoute.patch('/v1/modifyBitacora/:id', checkIdReq, checkBitacoraData, mod
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-trackingRoute.patch('/v1/modifyVisit/:id', checkIdReq, checkVisitData, modifyVisitByID)
+trackingRoute.patch(
+  "/v1/modifyVisit/:id",
+  checkIdReq,
+  checkVisitData,
+  modifyVisitByID
+);
 
 /**
  * Crear una visita extracurricular
@@ -76,6 +113,15 @@ trackingRoute.patch('/v1/modifyVisit/:id', checkIdReq, checkVisitData, modifyVis
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-trackingRoute.post('/v1/create-visit', checkVisitData, createVisit)
+trackingRoute.post("/v1/create-visit", checkVisitData, createVisit);
 
-export { trackingRoute }
+/**
+ * Ruta para obtener alerta de visitas pendientes
+ * @route GET /v1/alertVisita
+ * @returns {Promise<string>} 200 - OK
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+trackingRoute.get("/v1/alertVisita", alertVisitaMiddleware, checkPendingVisits);
+
+export { trackingRoute };

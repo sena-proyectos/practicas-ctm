@@ -980,6 +980,11 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
       const res = await getAvalById(payload)
       const response = await res.data.data[0]
       setAvalInfoFunciones(response)
+      if (response.estado_aval === 'Aprobado') {
+        setSelectedApproveButton('Si')
+      } else if (response.estado_aval === 'Rechazado') {
+        setSelectedApproveButton('No')
+      }
       if (response.responsable_aval === null) return
       fetchFullNameInstructor(response.responsable_aval)
     } catch (error) {
@@ -1135,6 +1140,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
       if (selectedApproveButton === approveOptions.Si) return acceptFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
       if (selectedApproveButton === approveOptions.No) return denyFuntionsApprove({ observations, approveOption, avalFunciones }, loadingToast)
     } catch (err) {
+      console.log(err)
       if (toast.isActive('loadingToast')) return
       toast.error('Los campos son incorrectos, corríjalos.', {
         toastId: 'error-full-docs',
@@ -1270,7 +1276,7 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
           </section>
           <section>
             {fullNameInstructor === null ? (
-              <Select name='name_instructor' placeholder='Instructor' isSearch hoverColor='hover:bg-teal-600' hoverTextColor='hover:text-white' selectedColor='bg-teal-600 text-white' characters='25' placeholderSearch='Nombre instructor' rounded='rounded-xl' textSearch='text-sm' shadow='shadow-md' textSize='text-sm' options={option} selectedKey={selectedOptionKey} manual onChange={handleSelectChange} />
+              <Select name='name_instructor' placeholder='Instructor' isSearch hoverColor='hover:bg-teal-600' hoverTextColor='hover:text-white' selectedColor='bg-teal-600 text-white' characters='25' placeholderSearch='Nombre instructor' rounded='rounded-xl' textSearch='text-sm' shadow='shadow-md' textSize='text-sm' options={option} selectedKey={selectedOptionKey} onChange={handleSelectChange} />
             ) : (
               <div className='flex flex-col flex-wrap gap-1 rounded-lg cursor-default w-fit bg-gray place-self-center'>
                 <section className='flex'>
@@ -1294,42 +1300,42 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
           <label htmlFor='functionsApprovalObservations' className='text-sm font-light'>
             Observaciones
           </label>
-          <textarea name='functionsApprovalObservations' id='editor' defaultValue={avalInfoFunciones.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
+          <textarea readOnly={idRol !== Number(keysRoles[2])} name='functionsApprovalObservations' id='editor' defaultValue={avalInfoFunciones.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
         </div>
-        <div className='grid grid-cols-2 gap-2 h-[6vh] items-center'>
-          {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) && (
+        <div className='flex'>
+          {(idRol === Number(keysRoles[2])) && (
             <div className='flex flex-row gap-2 place-self-center'>
               {!selectedApproveButton ? (
                 <>
-                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-3'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
                     <PiCheckCircleBold className='text-xl' /> Sí
                   </Button>
-                  <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                  <Button name='deny' type='button' bg={'bg-red-500'} px={'px-3'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
                     <PiXCircleBold className='text-xl' /> No
                   </Button>
                 </>
               ) : selectedApproveButton === 'No' ? (
                 <>
-                  <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                  <Button name='confirm' type='button' bg='bg-slate-500' px={'px-3'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
                     <PiCheckCircleBold className='text-xl' /> Sí
                   </Button>
-                  <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                  <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
                     <PiXCircleBold className='text-xl' /> No
                   </Button>
                 </>
               ) : (
                 <>
-                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-3'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
                     <PiCheckCircleBold className='text-xl' /> Sí
                   </Button>
-                  <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                  <Button name='deny' type='button' bg='bg-slate-500' px={'px-3'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
                     <PiXCircleBold className='text-xl' /> No
                   </Button>
                 </>
               )}
             </div>
           )}
-          {(idRol === Number(keysRoles[2]) || idRol === Number(keysRoles[0])) &&
+          {(idRol === Number(keysRoles[2])) &&
             (disableSubmitButton ? (
               <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
                 <LuSave />
@@ -1349,29 +1355,13 @@ const FunctionsApproval = ({ idRol, avalFunciones }) => {
 
 const FullDocsApproval = ({ idRol, avalDocumentos }) => {
   const fullDocsRef = useRef(null)
-  const descriptionRef = useRef(null)
   const { inscriptionData } = inscriptionStore()
 
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
-  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
   const [avalInfoDocumentos, setAvalInfoDocumentos] = useState([])
   const [nameResponsableDocumentos, setNameResponsableDocumentos] = useState('')
   const { id } = useParams()
   const [modalidad, setModalidad] = useState([])
-
-  /**
-   * Función para actualizar el estado usando setState.
-   *
-   * @function
-   * @name handleUseState
-   * @param {function} setState - Función para actualizar el estado.
-   * @param {any} value - Valor para actualizar el estado.
-   * @returns {void}
-   *
-   * @example
-   * handleUseState(setStateFuncion, valorActualizado);
-   */
-  const handleUseState = (setState, value) => setState(value)
 
   /**
    * Función para obtener y almacenar información de documentos.
@@ -1391,6 +1381,12 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     const fullName = `${nombres_usuario} ${apellidos_usuario}`
     setNameResponsableDocumentos(fullName)
     setAvalInfoDocumentos(data[0])
+
+    if (data[0].estado_aval === 'Aprobado') {
+      selectButtonToSubmit('Si')
+    } else if (data[0].estado_aval === 'Rechazado') {
+      selectButtonToSubmit('No')
+    }
   }
 
   /**
@@ -1427,22 +1423,8 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     setModalidad(res.data.data)
   }
 
-  const handleSubmitButton = () => {
-    if (!selectedApproveButton) return
-    if (descriptionRef.current.value.length === 0) {
-      setDisableSubmitButton(true)
-      return
-    }
-    handleUseState(setDisableSubmitButton, false)
-  }
-
   const selectButtonToSubmit = (value) => {
     setSelectedApproveButton(value)
-    if (descriptionRef.current.value.length === 0 || !value) {
-      setDisableSubmitButton(true)
-      return
-    }
-    handleUseState(setDisableSubmitButton, false)
   }
 
   /**
@@ -1462,13 +1444,12 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
 
     const formData = new FormData(fullDocsRef.current)
     formData.append('approveOption', approveOptions[selectedApproveButton])
-    const observations = formData.get('fullDocsObservations')
     const approveOption = formData.get('approveOption')
     try {
-      await checkApprovementData({ observations, approveOption })
+      await checkApprovementData({ approveOption })
       const loadingToast = toast.loading('Enviando...')
-      if (selectedApproveButton === approveOptions.Si) return acceptFullDocsApprove({ observations, approveOption, avalDocumentos }, loadingToast)
-      if (selectedApproveButton === approveOptions.No) return denyFullDocsApprove({ observations, approveOption, avalDocumentos }, loadingToast)
+      if (selectedApproveButton === approveOptions.Si) return acceptFullDocsApprove({ approveOption, avalDocumentos }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyFullDocsApprove({ approveOption, avalDocumentos }, loadingToast)
     } catch (err) {
       if (toast.isActive('loadingToast')) return
       toast.error('Los campos son incorrectos, corríjalos.', {
@@ -1503,7 +1484,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     const cookie = Cookies.get('token')
     const { id_usuario: responsable } = decode(cookie).data.user
 
-    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    const data = { estado_aval: estado_aval[payload.approveOption], responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)
       toast.update(toastId, { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
@@ -1533,7 +1514,7 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
     const cookie = Cookies.get('token')
     const { id_usuario: responsable } = decode(cookie).data.user
 
-    const data = { estado_aval: estado_aval[payload.approveOption], observaciones: payload.observations, responsable_aval: responsable }
+    const data = { estado_aval: estado_aval[payload.approveOption], responsable_aval: responsable }
     try {
       await inscriptionDetailsUpdate(id, data)('inscripcion updated')
       await sendEmail({ to: email_inscripcion, htmlData: [null, { nombre_inscripcion, apellido_inscripcion, observations: payload.observations }], subject: 'Rechazado de solicitud de inscripción de etapa práctica' })
@@ -1562,58 +1543,61 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
             Estado: <span className={`font-semibold ${colorTextStatus[avalInfoDocumentos.estado_aval]}`}>{avalInfoDocumentos.estado_aval}</span>
           </h5>
         </section>
-        <div>
+        {/* <div>
           <label htmlFor='fullDocsObservations' className='text-sm font-light'>
             Observaciones <span className='font-bold text-red-500'>*</span>
           </label>
           <textarea name='fullDocsObservations' id='editor' defaultValue={avalInfoDocumentos.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' onInput={handleSubmitButton} ref={descriptionRef} />
-        </div>
-        <div className='h-[6vh] grid items-center grid-cols-2 gap-2'>
-          {idRol === Number(keysRoles[0]) && (
-            <div className='flex flex-row gap-2 place-self-center'>
-              {!selectedApproveButton ? (
-                <>
-                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
-                    <PiCheckCircleBold className='text-xl' /> Sí
-                  </Button>
-                  <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
-                    <PiXCircleBold className='text-xl' /> No
-                  </Button>
-                </>
-              ) : selectedApproveButton === 'No' ? (
-                <>
-                  <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
-                    <PiCheckCircleBold className='text-xl' /> Sí
-                  </Button>
-                  <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
-                    <PiXCircleBold className='text-xl' /> No
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
-                    <PiCheckCircleBold className='text-xl' /> Sí
-                  </Button>
-                  <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
-                    <PiXCircleBold className='text-xl' /> No
-                  </Button>
-                </>
+        </div> */}
+                    <div className='mt-6 flex justify-between'>
+              {idRol === Number(keysRoles[0]) && (
+                <div className='flex gap-x-3'>
+                  {!selectedApproveButton ? (
+                    <>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-3'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg={'bg-red-500'} px={'px-3'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  ) : selectedApproveButton === 'No' ? (
+                    <>
+                      <Button name='confirm' type='button' bg='bg-slate-500' px={'px-3'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-3'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                        <PiCheckCircleBold className='text-xl' /> Sí
+                      </Button>
+                      <Button name='deny' type='button' bg='bg-slate-500' px={'px-3'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                        <PiXCircleBold className='text-xl' /> No
+                      </Button>
+                    </>
+                  )}
+                </div>
               )}
+              <div>
+              {idRol === Number(keysRoles[0]) &&
+                (((avalInfoDocumentos.estado_aval === 'Rechazado' && selectedApproveButton !== 'Si') || (avalInfoDocumentos.estado_aval === 'Aprobado' && selectedApproveButton !== 'No') || (avalInfoDocumentos.estado_aval === 'Pendiente' && selectedApproveButton == null)) ? (
+                  <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} type='submit' isDisabled inline>
+                    <LuSave />
+                    Guardar
+                  </Button>
+                ) : (
+                  <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} type='submit' inline>
+                    <LuSave />
+                    Guardar
+                  </Button>
+                ))}
+              </div>
+
             </div>
-          )}
-          {idRol === Number(keysRoles[0]) &&
-            (disableSubmitButton ? (
-              <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} isDisabled inline>
-                <LuSave />
-                Guardar
-              </Button>
-            ) : (
-              <Button bg={'bg-primary'} px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} inline>
-                <LuSave />
-                Guardar
-              </Button>
-            ))}
-        </div>
       </form>
     </div>
   )
@@ -1622,7 +1606,6 @@ const FullDocsApproval = ({ idRol, avalDocumentos }) => {
 const RAPS = ({ idRol, avalRaps }) => {
   const { id } = useParams()
   const formRef = useRef(null)
-  const descriptionRef = useRef(null)
 
   const { inscriptionData } = inscriptionStore()
 
@@ -1630,40 +1613,6 @@ const RAPS = ({ idRol, avalRaps }) => {
   const [htmlContent, setHtmlContent] = useState('')
   const [nameResponsable, setNameResponsable] = useState('')
   const [selectedApproveButton, setSelectedApproveButton] = useState(null)
-  const [disableSubmitButton, setDisableSubmitButton] = useState(true)
-
-  /**
-   * Función para manejar la actualización de un estado utilizando useState.
-   *
-   * @function
-   * @name handleUseState
-   * @param {function} setState - Función de estado para actualizar el valor.
-   * @param {*} value - Nuevo valor para el estado.
-   * @returns {void}
-   *
-   * @example
-   * handleUseState(setDisableSubmitButton, false);
-   */
-  const handleUseState = (setState, value) => setState(value)
-
-  /**
-   * Función para manejar el envío de formulario.
-   *
-   * @function
-   * @name handleSubmitButton
-   * @returns {void}
-   *
-   * @example
-   * handleSubmitButton();
-   */
-  const handleSubmitButton = () => {
-    if (!selectedApproveButton) return
-    if (descriptionRef.current.value.length === 0) {
-      setDisableSubmitButton(true)
-      return
-    }
-    handleUseState(setDisableSubmitButton, false)
-  }
 
   /**
    * Función para seleccionar un botón de aprobación para enviar.
@@ -1678,11 +1627,6 @@ const RAPS = ({ idRol, avalRaps }) => {
    */
   const selectButtonToSubmit = (value) => {
     setSelectedApproveButton(value)
-    if (descriptionRef.current.value.length === 0 || !value) {
-      setDisableSubmitButton(true)
-      return
-    }
-    handleUseState(setDisableSubmitButton, false)
   }
 
   /**
@@ -1705,6 +1649,11 @@ const RAPS = ({ idRol, avalRaps }) => {
     const fullName = `${nombres_usuario} ${apellidos_usuario}`
     setNameResponsable(fullName)
     setAvalInfo(data[0])
+    if (data[0].estado_aval === 'Aprobado') {
+      selectButtonToSubmit('Si')
+    } else if (data[0].estado_aval === 'Rechazado') {
+      selectButtonToSubmit('No')
+    }
   }
 
   /**
@@ -1724,56 +1673,19 @@ const RAPS = ({ idRol, avalRaps }) => {
 
     const formData = new FormData(formRef.current)
     formData.append('approveOption', approveOptions[selectedApproveButton])
-    const observations = formData.get('description')
     const approveOption = formData.get('approveOption')
     try {
-      await checkApprovementData({ observations, approveOption })
+      await checkApprovementData({ approveOption })
       if (toast.isActive('loadingToast')) return
       const loadingToast = toast.loading('Enviando...', {
         toastId: 'loadingToast'
       })
-      if (selectedApproveButton === approveOptions.Si) return acceptApprove({ observations, approveOption, avalRaps, htmlContent }, loadingToast)
-      if (selectedApproveButton === approveOptions.No) return denyApprove({ observations, approveOption, avalRaps, htmlContent }, loadingToast)
+      if (selectedApproveButton === approveOptions.Si) return acceptApprove({ approveOption, avalRaps, htmlContent }, loadingToast)
+      if (selectedApproveButton === approveOptions.No) return denyApprove({ approveOption, avalRaps, htmlContent }, loadingToast)
     } catch (err) {
       if (toast.isActive('loadingToast')) return
       toast.update('loadingToast', { render: '¡Aval aceptado correctamente!', isLoading: false, type: 'success', position: 'top-right', autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: false, draggable: false, progress: undefined, theme: 'colored', closeButton: true, className: 'text-base' })
     }
-  }
-
-  /**
-   * Función para manejar la acción de pegar contenido en un elemento.
-   *
-   * @function
-   * @name handleContentPaste
-   * @param {Event} e - Evento de pegado de contenido.
-   * @returns {void}
-   *
-   * @example
-   * handleContentPaste(event);
-   */
-  const handleContentPaste = (e) => {
-    const pastedContent = e.clipboardData.getData('text/html')
-    setHtmlContent(pastedContent)
-    e.preventDefault()
-  }
-
-  /**
-   * Función para manejar la entrada de texto en un elemento.
-   *
-   * @function
-   * @name handleInputText
-   * @param {Event} e - Evento de entrada de texto.
-   * @returns {void}
-   *
-   * @example
-   * handleInputText(event);
-   */
-  const handleInputText = (e) => {
-    const content = e.target.innerHTML
-    if (content.length === 0) {
-      setHtmlContent('')
-    }
-    setHtmlContent(content)
   }
 
   /**
@@ -1862,78 +1774,73 @@ const RAPS = ({ idRol, avalRaps }) => {
     <section className='grid grid-cols-1 w-[95%] gap-3 mx-auto'>
       <section className='flex flex-col w-[95%] gap-2 mx-auto'>
         <div className='w-[95%] mx-auto h-full'>
+          <h1 className='text-2xl font-semibold mb-10'>RAPS</h1>
           <form className='flex flex-col gap-2' onSubmit={handleSubmit} ref={formRef}>
             <section className='grid items-start grid-cols-2 w-fit gap-x-10'>
-              <span className='text-sm font-semibold'>Líder Prácticas:</span>
-              <h3 className='text-sm whitespace-nowrap'>{nameResponsable}</h3>
-              <span className='text-sm font-semibold'>Modificación:</span>
-              <h3 className='text-sm whitespace-nowrap'>{avalInfo.fecha_modificacion}</h3>
+              <span className=' font-semibold'>Líder Prácticas:</span>
+              <h3 className=' whitespace-nowrap'>{nameResponsable}</h3>
+              <span className=' font-semibold'>Modificación:</span>
+              <h3 className=' whitespace-nowrap'>{avalInfo.fecha_modificacion}</h3>
+              <span className=' font-semibold'>Ficha:</span>
+
               {info.map((item) => (
                 <div key={item.id_inscripcion}>
-                  <p className='text-sm'>{item.numero_ficha_inscripcion}</p>
+                  <p className=''>{item.numero_ficha_inscripcion}</p>
                 </div>
               ))}
-              <h5 className='text-sm whitespace-nowrap'>
-                Estado: <span className={`font-semibold ${colorTextStatus[avalInfo.estado_aval]}`}>{avalInfo.estado_aval}</span>
+              <span className=' font-semibold'>Estado:</span>
+              <h5 className=' whitespace-nowrap'>
+                <span className={`font-semibold ${colorTextStatus[avalInfo.estado_aval]}`}>{avalInfo.estado_aval}</span>
               </h5>
+              <span className=' font-semibold'>Nombre:</span>
               {info.map((item) => (
                 <div key={item.id_inscripcion}>
-                  <p className='text-sm'>{item.nombre_inscripcion + ' ' + item.apellido_inscripcion}</p>
+                  <p className=''>{item.nombre_inscripcion + ' ' + item.apellido_inscripcion}</p>
                 </div>
               ))}
+              <span className=' font-semibold'>Cedula:</span>
               {info.map((item) => (
                 <div key={item.id_inscripcion}>
-                  <p className='text-sm'>{item.tipo_documento_inscripcion + ' ' + item.documento_inscripcion}</p>
+                  <p className=''>{item.tipo_documento_inscripcion + ' ' + item.documento_inscripcion}</p>
                 </div>
               ))}
             </section>
-            <div className='flex flex-col gap-3'>
-              <section className='flex flex-col gap-2'>
-                <label htmlFor='description' className='text-sm font-light'>
-                  Observaciones <span className='font-medium text-red-500'>*</span>
-                </label>
-                <textarea name='description' id='editor' defaultValue={avalInfo.observaciones} rows='3' className='block w-full h-[4.5rem] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' placeholder='Deja una observación' ref={descriptionRef} onInput={handleSubmitButton} />
-              </section>
-              <section className='flex flex-col gap-2'>
-                <p className='text-sm font-light'>Tabla de envidencia</p>
-                <div contentEditable onPaste={handleContentPaste} className='block w-full h-[30vh] px-3 py-2 overflow-y-auto text-sm text-black bg-white shadow-md border-t-[0.5px] border-slate-200 resize-none focus:text-gray-900 rounded-xl shadow-slate-400 focus:bg-white focus:outline-none placeholder:text-slate-400 placeholder:font-light' onInput={handleInputText} dangerouslySetInnerHTML={{ __html: htmlContent }}></div>
-              </section>
-            </div>
-            <div className='grid grid-cols-2 gap-2 relative top-1.5 items-center'>
+            <div className='mt-20 flex justify-between'>
               {idRol === Number(keysRoles[0]) && (
-                <div className='flex flex-row gap-2 place-self-center'>
+                <div className='flex gap-x-3'>
                   {!selectedApproveButton ? (
                     <>
-                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-3'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit('Si')}>
                         <PiCheckCircleBold className='text-xl' /> Sí
                       </Button>
-                      <Button name='deny' type='button' bg={'bg-red-500'} px={'px-2'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                      <Button name='deny' type='button' bg={'bg-red-500'} px={'px-3'} hover hoverConfig='bg-red-700' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
                         <PiXCircleBold className='text-xl' /> No
                       </Button>
                     </>
                   ) : selectedApproveButton === 'No' ? (
                     <>
-                      <Button name='confirm' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
+                      <Button name='confirm' type='button' bg='bg-slate-500' px={'px-3'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' onClick={() => selectButtonToSubmit('Si')} inline>
                         <PiCheckCircleBold className='text-xl' /> Sí
                       </Button>
-                      <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-2'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
+                      <Button name='deny' type='button' bg={'bg-red-500'} hover hoverConfig='bg-red-700' px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit(null)}>
                         <PiXCircleBold className='text-xl' /> No
                       </Button>
                     </>
                   ) : (
                     <>
-                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-2'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
+                      <Button name='confirm' type='button' bg={'bg-primary'} px={'px-3'} hover hoverConfig='bg-[#287500]' font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} inline onClick={() => selectButtonToSubmit(null)}>
                         <PiCheckCircleBold className='text-xl' /> Sí
                       </Button>
-                      <Button name='deny' type='button' bg='bg-slate-500' px={'px-2'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
+                      <Button name='deny' type='button' bg='bg-slate-500' px={'px-3'} hover font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow='2xl' inline onClick={() => selectButtonToSubmit('No')}>
                         <PiXCircleBold className='text-xl' /> No
                       </Button>
                     </>
                   )}
                 </div>
               )}
+              <div>
               {idRol === Number(keysRoles[0]) &&
-                (disableSubmitButton ? (
+                (((avalInfo.estado_aval === 'Rechazado' && selectedApproveButton !== 'Si') || (avalInfo.estado_aval === 'Aprobado' && selectedApproveButton !== 'No') || (avalInfo.estado_aval === 'Pendiente' && selectedApproveButton == null)) ? (
                   <Button px={'px-3'} font={'font-medium'} textSize={'text-sm'} py={'py-1'} rounded={'rounded-xl'} shadow={'lg'} type='submit' isDisabled inline>
                     <LuSave />
                     Guardar
@@ -1944,6 +1851,8 @@ const RAPS = ({ idRol, avalRaps }) => {
                     Guardar
                   </Button>
                 ))}
+              </div>
+
             </div>
           </form>
         </div>

@@ -317,6 +317,12 @@ export const getInfoTeacherByID = async (id) => {
   return await axios.get(URL, { headers: { Authorization: publicToken } })
 }
 
+export const getAllInfoTeacher = async () => {
+  const URL = `${baseUrl}${api}/v1/teachers` // Ruta para obtener todos los instructores
+  const publicToken = getPublicTokenFromSession()
+  return await axios.get(URL, { headers: { Authorization: publicToken } })
+}
+
 /* EDITAR USUARIO */
 export const EditUser = async (id, payload) => {
   const URL = `${baseUrl}${api}/v1/edit-user/${id}`
@@ -508,6 +514,23 @@ export const generateExcelStudentsByInstructor = async (teacherName) => {
   })
 }
 
+export const generateExcelFichasByInstructor = async (teacherName) => {
+  const URL = `${baseUrl}${api}/v1/create-excel-ficha-instructor?instructor=${teacherName}`
+  const publicToken = getPublicTokenFromSession()
+  return await axios.get(URL, {
+    headers: { Authorization: publicToken },
+    responseType: 'arraybuffer'
+  })
+}
+export const generateExcelStudentsInPracticsByInstructor = async (teacherName) => {
+  const URL = `${baseUrl}${api}/v1/create-excel-students-practics?instructor=${teacherName}`
+  const publicToken = getPublicTokenFromSession()
+  return await axios.get(URL, {
+    headers: { Authorization: publicToken },
+    responseType: 'arraybuffer'
+  })
+}
+
 // OBTENER CLASES DE UN INSTRUCTOR POR EL NUMERO DE FICHA
 export const getClassTeacherByClassNumber = async (id, data) => {
   const URL = `${baseUrl}${api}/v1/classTeacherNumber/${id}?numero_ficha=${data}`
@@ -515,4 +538,11 @@ export const getClassTeacherByClassNumber = async (id, data) => {
   const response = await axios.get(URL, { headers: { Authorization: publicToken } })
 
   return response
+}
+
+// OBTENER NOTIFICACIONES
+export const getNotification = async () => {
+  const URL = `${baseUrl}${api}/v1/alertVisita`
+  const publicToken = getPublicTokenFromSession()
+  return await axios.get(URL, { headers: { Authorization: publicToken } })
 }

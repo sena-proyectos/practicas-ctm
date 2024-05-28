@@ -6,25 +6,11 @@ import { sendEmailAnyBody, sendEmailAnyBodyNotfile } from '../controllers/email.
 import XLSX from 'xlsx'
 import { type IStudentData } from '../interfaces/scheduler.interfaces.js'
 
-/**
- * Especifíca las reglas de ejecución del programador semanal
- * @property {number} rule.dayOfWeek - Que dia de la semana se va a ejecutar siendo 0 = Domingo y 6 = Sabado
- * @property {number} rule.hour - Que hora se va a ejecutar
- * @property {number} rule.minute - Que minuto se va a ejecutar
- */
 const rule = new schedule.RecurrenceRule()
 rule.dayOfWeek = 1
 rule.hour = 10
 rule.minute = 0
 
-/**
- * Se encarga de generar el informe de aprendices sin practicas, enviar los correos a los aprendices y generar el excel para retornar los dos correos principales
- * @param {schedule.RecurrenceRule} rule
- * @param {JobCallback}
- * @callback
- * @returns {Job}
- * @async
- */
 export const schedulerTasks = schedule.scheduleJob(rule, async () => {
   try {
     const data = await querySchedule()
@@ -72,24 +58,19 @@ export const schedulerTasks = schedule.scheduleJob(rule, async () => {
       ${table}
     `
 
-    sendEmailAnyBody({ body, subject: 'Informe bisemanal aprendices sin practicas en Practicas CTM', to: 'inf.practicasctm@outlook.com', file })
-      .then(() => {
-        console.log('Correo enviado')
-      })
-      .catch((err) => {
-        console.error(err)
-      })
+    await sendEmailAnyBody({
+      body,
+      subject: 'Informe bisemanal aprendices sin practicas en Practicas CTM',
+      to: 'practicasctm739@gmail.com',
+      file
+    })
+
+    console.log('Correo enviado')
   } catch (error) {
-    console.error('Ha ocurrido un error al ejecutar el scheduler')
+    console.error('Ha ocurrido un error al ejecutar el scheduler', error)
   }
 })
 
-/**
- * Generador de excel del archivo enviado al correo junto con un parseo de columans
- * @param {Object[]} payload
- * @returns {Buffer} - Archivo excel
- * @throws {Error} Error mandado por XLSX
- */
 const generateExcel = (payload: object[]): Buffer => {
   try {
     const data = payload.map((student: any) => {
@@ -112,34 +93,29 @@ const generateExcel = (payload: object[]): Buffer => {
   }
 }
 
-/**
- * Se encarga de enviar los correos a todos los aprendices que se encuentran actualmente en un estado diferente 'Prácticas' o su fecha de fin de practicas no es especifícado
- * @param {IStudentData[]} payload
- * @returns {Promise<void>}
- * @async
- */
 const sendEmailsToStudents = async (payload: IStudentData[]): Promise<void> => {
   try {
-    for (let i = 0; i < payload.length; i++) {
-      const item = payload[i]
-      const body = `<html><head><style>body{font-family:Arial, sans-sefif;}.container{background-color: #A6E29B;border-radius: 15px;max-width:500px;margin:0 auto;padding: 20px;display:grid;grid-template-columns:1fr;gap:10px;color:black;}.title{text-align:center;margin:0;}.name-student{font-weight:bold;text-transform:uppercase;}.divider{width:50%;border-color: black;}.info-content{font-size:15px;text-align:center;margin:0;}.link{font-weight:bold;}.span{text-align:center;font-size:12.5px;font-weight:bold;}.image{width:50px; height:48px;margin-right:10px;}.info-footer{width: fit-content;display: grid;grid-template-columns: 1fr;margin: 0;padding: 0;text-align: center;justify-items: center;}.title-footer{margin:0px;}.footer{display:flex;gap:10px;width:fit-content;margin:auto;align-items:center;}</style></head><body><section class="container"><h3 class="title">Cordial saludo, aprendiz <span class="name-student">${item.nombre_aprendiz} ${item.apellido_aprendiz}.</span></h3><hr class='divider'></hr><p class="info-content">Usted se encuentra reportado sin prácticas actualmente, por favor contáctese con <a class="link" href="mailto:practicasctm@sena.edu.co">practicasctm@sena.edu.co</a> para buscar una alternativa de prácticas o actualizar su estado.</p><p class="span">***Correo generado automáticamente - No responder***</p><section class="footer"><img src="https://certificadossena.net/wp-content/uploads/2022/10/logo-sena-negro-png-2022-300x294.png" alt="logo" class="image"><div class="info-footer"><h3 class="title-footer">Servicio Nacional de Aprendizaje</h3><span>Centro Tecnológico del Mobiliario</span></div></section></section></body></html>`
+    for (const item of payload) {
+      if (item.email_aprendiz) {
+        const body = `<html><head><style>body{font-family:Arial, sans-serif;}.container{background-color: #A6E29B;border-radius: 15px;max-width:500px;margin:0 auto;padding: 20px;display:grid;grid-template-columns:1fr;gap:10px;color:black;}.title{text-align:center;margin:0;}.name-student{font-weight:bold;text-transform:uppercase;}.divider{width:50%;border-color: black;}.info-content{font-size:15px;text-align:center;margin:0;}.link{font-weight:bold;}.span{text-align:center;font-size:12.5px;font-weight:bold;}.image{width:50px; height:48px;margin-right:10px;}.info-footer{width: fit-content;display: grid;grid-template-columns: 1fr;margin: 0;padding: 0;text-align: center;justify-items: center;}.title-footer{margin:0px;}.footer{display:flex;gap:10px;width:fit-content;margin:auto;align-items:center;}</style></head><body><section class="container"><h3 class="title">Cordial saludo, aprendiz <span class="name-student">${item.nombre_aprendiz} ${item.apellido_aprendiz}.</span></h3><hr class='divider'></hr><p class="info-content">Usted se encuentra reportado sin prácticas actualmente, por favor contáctese con <a class="link" href="mailto:practicasctm@sena.edu.co">practicasctm@sena.edu.co</a> para buscar una alternativa de prácticas o actualizar su estado.</p><p class="span">***Correo generado automáticamente - No responder***</p><section class="footer"><img src="https://certificadossena.net/wp-content/uploads/2022/10/logo-sena-negro-png-2022-300x294.png" alt="logo" class="image"><div class="info-footer"><h3 class="title-footer">Servicio Nacional de Aprendizaje</h3><span>Centro Tecnológico del Mobiliario</span></div></section></section></body></html>`
 
-      await sendEmailAnyBodyNotfile({ body, subject: 'Información: aprendiz notificado sin prácticas', to: item.email_aprendiz })
+        await sendEmailAnyBodyNotfile({
+          body,
+          subject: 'Información: aprendiz notificado sin prácticas',
+          to: item.email_aprendiz
+        })
 
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      } else {
+        console.warn(`Email no definido para el aprendiz: ${item.nombre_aprendiz} ${item.apellido_aprendiz}`)
+      }
     }
   } catch (error) {
-    console.log(error)
+    console.error('Error al enviar correos a los estudiantes:', error)
     throw new Error(error as string)
   }
 }
 
-/**
- * Llama el procedimiento almacenado que genera el informe semanal
- * @returns {Promise<any>}
- * @throws {DbError} Error estandar escrito
- * @async
- */
 const querySchedule = async (): Promise<any> => {
   try {
     const [query] = await connection.query<RowDataPacket[]>('call alerta_bisemanal()', [])
