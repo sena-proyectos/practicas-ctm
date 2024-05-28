@@ -61,7 +61,7 @@ export const schedulerTasks = schedule.scheduleJob(rule, async () => {
     await sendEmailAnyBody({
       body,
       subject: 'Informe bisemanal aprendices sin practicas en Practicas CTM',
-      to: 'luismidev09@gmail.com',
+      to: 'practicasctm739@gmail.com',
       file
     })
 
