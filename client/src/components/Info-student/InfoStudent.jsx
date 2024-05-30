@@ -33,7 +33,7 @@ export const InfoStudent = () => {
    * @async
    *
    * @description
-   * Esta función se utiliza para obtener información detallada del estudiante utilizando su ID y la función `GetStudentsDetailById`. Luego, se realiza una transformación de las fechas de inicio de lectiva y práctica para mostrarlas en formato localizado ('es-ES'). Finalmente, se actualizan los datos del estudiante y del aprendiz con la información obtenida.
+   * Esta función se utiliza para obtener información detallada del estudiante utilizando su ID y la función GetStudentsDetailById. Luego, se realiza una transformación de las fechas de inicio de lectiva y práctica para mostrarlas en formato localizado ('es-ES'). Finalmente, se actualizan los datos del estudiante y del aprendiz con la información obtenida.
    *
    * @param {number} id - El id del estudiante que se desea obetener la informacion
    * @throws {Error} - Si ocurre un error al obtener la información del estudiante.
@@ -172,16 +172,8 @@ export const InfoStudent = () => {
               <Novedades />
             </section>
             <section className='p-4 border-gray-500 border-b-1'>
-              <h2 className='py-2 text-2xl font-medium text-center'>Cartas</h2>
-              <Letters />
-            </section>
-            <section className='p-4 border-gray-500 border-b-1'>
               <h2 className='py-2 text-2xl font-medium text-center'>Visitas</h2>
               <Visits />
-              <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleModal} inline classNames='mt-3'>
-                <PiCalendarPlus className='text-xl' />
-                Visita extracurricular
-              </Button>
             </section>
             <section className='p-4 '>
               <h2 className='py-2 text-2xl font-medium text-center'>Bitácoras</h2>
@@ -207,7 +199,7 @@ const Novedades = () => {
    * @async
    *
    * @description
-   * Esta función se utiliza para obtener el estado del estudiante utilizando su ID y la función `getStudentState`. Luego, se actualizan los datos de estado con la información obtenida.
+   * Esta función se utiliza para obtener el estado del estudiante utilizando su ID y la función getStudentState. Luego, se actualizan los datos de estado con la información obtenida.
    *
    * @param {number} id - El id del estudiante que se desea obetener la informacion
    * @throws {Error} - Si ocurre un error al obtener el estado del estudiante.
@@ -239,7 +231,7 @@ const Novedades = () => {
    * @async
    *
    * @description
-   * Esta función se utiliza para manejar la modificación del estado del estudiante. Se previene la acción predeterminada del evento para evitar que se recargue la página. Luego, se obtienen los datos del formulario a través del ref `formRef` y se extrae el estado del aprendiz. Se realiza una solicitud para editar el estado del estudiante utilizando la función `editStudentState`. Si la solicitud es exitosa, se muestra una notificación de éxito y se actualiza el estado del estudiante llamando a `getStateStudent`. Finalmente, se desactiva la edición del estado (si estaba habilitada).
+   * Esta función se utiliza para manejar la modificación del estado del estudiante. Se previene la acción predeterminada del evento para evitar que se recargue la página. Luego, se obtienen los datos del formulario a través del ref formRef y se extrae el estado del aprendiz. Se realiza una solicitud para editar el estado del estudiante utilizando la función editStudentState. Si la solicitud es exitosa, se muestra una notificación de éxito y se actualiza el estado del estudiante llamando a getStateStudent. Finalmente, se desactiva la edición del estado (si estaba habilitada).
    *
    * @param {Event} e - El evento del formulario que desencadenó la función.
    * @throws {Error} - Si ocurre un error al modificar el estado del estudiante.

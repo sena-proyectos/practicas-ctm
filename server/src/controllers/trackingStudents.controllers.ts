@@ -31,17 +31,34 @@ export const getBitacorasByStudent = async (
   const { id } = req.params;
   try {
     const [query] = await connection.query<RowDataPacket[]>(
-      'SELECT aprendices_bitacoras_detalles.id_aprendiz, aprendices_bitacoras.id_bitacora, aprendices_bitacoras.calificacion_bitacora, aprendices_bitacoras.observaciones_bitacora, aprendices_bitacoras.numero_bitacora, DATE_FORMAT(aprendices_bitacoras.fecha_modificacion, "%Y-%m-%d %H:%i:%s") as fecha_modificacion FROM aprendices_bitacoras_detalles INNER JOIN aprendices_bitacoras ON aprendices_bitacoras.id_bitacora = aprendices_bitacoras_detalles.id_aprendiz_bitacora_detalle WHERE aprendices_bitacoras_detalles.id_aprendiz = ?',
+      `SELECT 
+         aprendices_bitacoras_detalles.id_aprendiz, 
+         aprendices_bitacoras.id_bitacora, 
+         aprendices_bitacoras.calificacion_bitacora, 
+         aprendices_bitacoras.observaciones_bitacora, 
+         aprendices_bitacoras.numero_bitacora, 
+         DATE_FORMAT(aprendices_bitacoras.fecha_modificacion, "%Y-%m-%d %H:%i:%s") as fecha_modificacion, 
+         DATE_FORMAT(aprendices_bitacoras.fecha_entrega, "%Y-%m-%d") as fecha_entrega
+       FROM 
+         aprendices_bitacoras_detalles 
+       INNER JOIN 
+         aprendices_bitacoras 
+       ON 
+         aprendices_bitacoras.id_bitacora = aprendices_bitacoras_detalles.id_aprendiz_bitacora_detalle 
+       WHERE 
+         aprendices_bitacoras_detalles.id_aprendiz = ?`,
       [id]
     );
-    if (query.length === 0)
+
+    if (query.length === 0) {
       throw new DbError("No existen bitácoras para este aprendiz");
+    }
+
     return res.status(httpStatus.OK).json(query);
   } catch (error) {
     return handleHTTP(res, error as CustomError);
   }
 };
-
 export const getVisitsByStudent = async (
   req: Request,
   res: Response
@@ -111,18 +128,47 @@ export const modifyBitacoraById = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const { calificacion_bitacora, observaciones_bitacora, usuario_responsable } =
-    req.body;
+  const {
+    calificacion_bitacora,
+    observaciones_bitacora,
+    usuario_responsable,
+    fecha_entrega,
+  } = req.body;
   const { id } = req.params;
+
+  console.log("Datos recibidos en el backend:", {
+    calificacion_bitacora,
+    observaciones_bitacora,
+    usuario_responsable,
+    fecha_entrega,
+  });
+
   try {
     const [query] = await connection.query<ResultSetHeader>(
-      "UPDATE aprendices_bitacoras SET calificacion_bitacora = IFNULL(?, calificacion_bitacora), observaciones_bitacora = IFNULL(?, observaciones_bitacora), usuario_responsable = IFNULL(?, usuario_responsable) WHERE id_bitacora = ?",
-      [calificacion_bitacora, observaciones_bitacora, usuario_responsable, id]
+      `UPDATE aprendices_bitacoras SET 
+         calificacion_bitacora = IFNULL(?, calificacion_bitacora), 
+         observaciones_bitacora = IFNULL(?, observaciones_bitacora), 
+         usuario_responsable = IFNULL(?, usuario_responsable), 
+         fecha_entrega = IFNULL(?, fecha_entrega) 
+       WHERE id_bitacora = ?`,
+      [
+        calificacion_bitacora,
+        observaciones_bitacora,
+        usuario_responsable,
+        fecha_entrega,
+        id,
+      ]
     );
-    if (query.affectedRows === 0)
+
+    console.log("Resultado de la consulta:", query);
+
+    if (query.affectedRows === 0) {
       throw new DbError("Error al modificar los datos de la bitácora");
+    }
+
     return res.status(httpStatus.OK).json(query);
   } catch (error) {
+    console.error("Error al modificar la bitácora:", error);
     return handleHTTP(res, error as CustomError);
   }
 };
