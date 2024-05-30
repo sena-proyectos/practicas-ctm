@@ -172,16 +172,8 @@ export const InfoStudent = () => {
               <Novedades />
             </section>
             <section className='p-4 border-gray-500 border-b-1'>
-              <h2 className='py-2 text-2xl font-medium text-center'>Cartas</h2>
-              <Letters />
-            </section>
-            <section className='p-4 border-gray-500 border-b-1'>
               <h2 className='py-2 text-2xl font-medium text-center'>Visitas</h2>
               <Visits />
-              <Button rounded='rounded-full' bg='bg-green-600' px='px-3' py='py-[4px]' textSize='text-sm' font='font-medium' textColor='text-white' onClick={handleModal} inline classNames='mt-3'>
-                <PiCalendarPlus className='text-xl' />
-                Visita extracurricular
-              </Button>
             </section>
             <section className='p-4 '>
               <h2 className='py-2 text-2xl font-medium text-center'>Bitácoras</h2>
