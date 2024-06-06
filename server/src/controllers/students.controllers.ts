@@ -360,7 +360,6 @@ const dataUnified = (payload: any): any[] => {
       id_modalidad: 2,
       id_arl: 2,
       id_contrato: contractPayload[index],
-<<<<<<< HEAD
       id_ficha: fichaPayload[index],
     };
   });
@@ -457,35 +456,3 @@ export const editStudentState: RequestHandler<
     return handleHTTP(res, error as CustomError);
   }
 };
-=======
-      id_ficha: fichaPayload[index]
-    }
-  })
-  return data
-}
-
-export const getStudentState: RequestHandler<{ id: string }, Response, unknown> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
-  const { id } = req.params
-  const idNumber = Number(id)
-  try {
-    const [student] = await connection.query('SELECT estado_aprendiz FROM aprendices WHERE id_aprendiz = ?', [idNumber])
-    if (!Array.isArray(student) || student.length === 0) throw new DbErrorNotFound('No se encontró el estudiante.', errorCodes.ERROR_GET_STUDENT)
-    return res.status(httpStatus.OK).json({ data: student })
-  } catch (error) {
-    return handleHTTP(res, error as CustomError)
-  }
-}
-
-export const editStudentState: RequestHandler<{ id: string }, Response, unknown> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
-  const { estado_aprendiz } = req.body
-  const { id } = req.params
-  const idNumber = Number(id)
-  try {
-    const [student] = await connection.query('UPDATE aprendices SET estado_aprendiz = IFNULL(?, estado_aprendiz) WHERE id_aprendiz = ?', [estado_aprendiz, idNumber])
-    if (!Array.isArray(student) && student?.affectedRows === 0) throw new DbErrorNotFound('No se pudo actualizar el usuario.')
-    return res.status(httpStatus.OK).json({ message: 'Estado actualizado exitosamente.' })
-  } catch (error) {
-    return handleHTTP(res, error as CustomError)
-  }
-}
->>>>>>> b5f4f07 (Bug fix (descarga reportes))
