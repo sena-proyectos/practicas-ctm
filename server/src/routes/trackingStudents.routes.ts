@@ -15,6 +15,7 @@ import {
   checkLetterData,
   checkVisitData,
   alertVisitaMiddleware,
+  checkCreateVisita
 } from "../middlewares/trackingStudents.middlewares.js";
 
 const trackingRoute: IRouter = Router();
@@ -113,7 +114,7 @@ trackingRoute.patch(
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-trackingRoute.post("/v1/create-visit", checkVisitData, createVisit);
+trackingRoute.post("/v1/create-visit", checkCreateVisita, createVisit);
 
 /**
  * Ruta para obtener alerta de visitas pendientes

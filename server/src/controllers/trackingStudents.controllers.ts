@@ -216,7 +216,7 @@ export const createVisit = async (
     estado_visita,
     observaciones_visita,
     usuario_responsable,
-  } = req.body as visitForm;
+  } = req.body  ;
   try {
     await connection.query(
       "call sena_practicas.subir_visita_con_detalles(?, ?, ?, ?)",

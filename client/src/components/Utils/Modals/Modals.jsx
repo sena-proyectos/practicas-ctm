@@ -1098,7 +1098,7 @@ const AddVisitModal = ({ closeModal, title, id }) => {
     formData.append('usuario_responsable', usuario_responsable)
     formData.append('id_aprendiz', id_aprendiz)
     const data = Object.fromEntries(formData)
-
+    console.log(data)
     const { error } = visitValidation.validate(data)
     if (error !== undefined) {
       let errorMessage

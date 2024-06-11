@@ -133,6 +133,7 @@ export const InfoStudent = () => {
                     <p>{fecha_inicio_practica}</p>
                   </div>
                 </section>
+                
               </section>
               <section className='grid w-full bg-white shadow-lg border-t-1 grid-rows-2-20-80 rounded-xl'>
                 <header className='flex items-center justify-center h-full'>
@@ -167,14 +168,18 @@ export const InfoStudent = () => {
               </section>
             </section>
           </section>
+          
           <section className='flex flex-col gap-2 px-6 pb-1'>
             <section className='p-4 border-gray-500 border-b-1'>
               <Novedades />
             </section>
-            <section className='p-4 border-gray-500 border-b-1'>
-              <h2 className='py-2 text-2xl font-medium text-center'>Visitas</h2>
-              <Visits />
-            </section>
+            <section className='p-4 border-gray-500 border-b-1 text-center'>
+                <h2 className='py-2 text-2xl font-medium'>Visitas</h2>
+                <Visits />
+                <div className="flex justify-center mt-2">
+                  <Button onClick={handleModal}>Agregar visita</Button>
+                </div>
+              </section>  
             <section className='p-4 '>
               <h2 className='py-2 text-2xl font-medium text-center'>Bitácoras</h2>
               <Bitacoras />
@@ -182,6 +187,7 @@ export const InfoStudent = () => {
           </section>
           <Footer />
         </section>
+        
       </main>
     </>
   )
