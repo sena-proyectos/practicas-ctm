@@ -230,30 +230,38 @@ export const createVisit = async (
   }
 };
 
+
 export const checkPendingVisits = async () => {
   try {
     const [query] = await connection.query<RowDataPacket[]>(
-      `   SELECT 
-      av.id_visita, 
-      av.numero_visita, 
-      av.estado_visita, 
-      av.observaciones_visita, 
-      av.usuario_responsable, 
-      DATE_FORMAT(av.visita_hora, "%Y-%m-%d") AS visita_hora,
-      CONCAT(u_instructor.nombres_usuario, ' ', u_instructor.apellidos_usuario) AS nombre_instructor,  
-      DATE_FORMAT(av.fecha_modificacion, "%Y-%m-%d %H:%i:%s") AS fecha_modificacion,
-      CONCAT(a.nombre_aprendiz, ' ', a.apellido_aprendiz) AS nombre_aprendiz
-  FROM 
-      aprendices_visitas av 
-  LEFT JOIN 
-      usuarios u_instructor ON av.instructor = u_instructor.id_usuario
-  LEFT JOIN 
-      aprendices_visitas_detalles avd ON av.id_visita = avd.id_visita
-  LEFT JOIN 
-      aprendices a ON avd.id_aprendiz = a.id_aprendiz
-  WHERE 
-      av.estado_visita = 'Pendiente' AND 
-      av.visita_hora < NOW();`
+      ` SELECT 
+    av.id_visita, 
+    av.numero_visita, 
+    av.estado_visita, 
+    av.observaciones_visita, 
+    av.usuario_responsable, 
+    DATE_FORMAT(av.visita_hora, "%Y-%m-%d") AS visita_hora,
+    CONCAT(u_instructor.nombres_usuario, ' ', u_instructor.apellidos_usuario) AS nombre_instructor,  
+    DATE_FORMAT(av.fecha_modificacion, "%Y-%m-%d %H:%i:%s") AS fecha_modificacion,
+    CONCAT(a.nombre_aprendiz, ' ', a.apellido_aprendiz) AS nombre_aprendiz,
+    DATE_FORMAT(f.fecha_inicio_practica, "%Y-%m-%d") AS fecha_inicio_practica
+FROM 
+    aprendices_visitas av 
+LEFT JOIN 
+    usuarios u_instructor ON av.instructor = u_instructor.id_usuario
+LEFT JOIN 
+    aprendices_visitas_detalles avd ON av.id_visita = avd.id_visita
+LEFT JOIN 
+    aprendices a ON avd.id_aprendiz = a.id_aprendiz
+LEFT JOIN 
+    detalle_fichas_aprendices dfa ON a.id_aprendiz = dfa.id_aprendiz
+LEFT JOIN 
+    fichas f ON dfa.id_ficha = f.id_ficha
+WHERE 
+    av.estado_visita = 'Pendiente' AND 
+    f.fecha_inicio_practica IS NOT NULL AND
+    DATE_ADD(f.fecha_inicio_practica, INTERVAL 30 DAY) < NOW();
+ `
     );
     return query;
   } catch (error) {
@@ -261,3 +269,5 @@ export const checkPendingVisits = async () => {
     throw error;
   }
 };
+
+
