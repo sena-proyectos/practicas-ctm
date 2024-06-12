@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { apprenticeStore } from '../../store/config'
 import { useEffect, useState } from 'react'
 import { Button } from '../Utils/Button/Button'
-import { getVisitsByStudent, patchVisitById, getAllInfoTeacher } from '../../api/httpRequest'
+import { getVisitsByStudent, patchVisitById, getAllTeacher } from '../../api/httpRequest'
 import { getUserID } from '../../import/getIDActualUser'
 import { CardWithChildren } from '../Utils/Card/Card'
 import { PiCalendarCheckLight } from 'react-icons/pi'
@@ -30,6 +30,8 @@ export const Visits = () => {
   useEffect(() => {
     getVisits()
   }, [])
+
+ 
 
   const getVisits = async () => {
     try {
@@ -90,9 +92,9 @@ export const Visits = () => {
   useEffect(() => {
     const fetchAllInstructors = async () => {
       try {
-        const { data } = await getAllInfoTeacher('')
-        setFullNameInstructor(data.data)
-        console.log(data.data) // Verificar los datos obtenidos
+        const  data  = await getAllTeacher()
+        setFullNameInstructor(data.data.data)
+        console.log(data.data.data) // Verificar los datos obtenidos
       } catch (error) {
         toast.error('Error al obtener la lista de instructores', {
           isLoading: false,
