@@ -555,3 +555,12 @@ export const getNotification = async () => {
   const publicToken = getPublicTokenFromSession()
   return await axios.get(URL, { headers: { Authorization: publicToken } })
 }
+
+
+
+// OBTENER NOTIFICACIONES
+export const getNotificationInstructor = async (id) => {
+  const URL = `${baseUrl}${api}/v1/alertVisita-instructores/${id}`
+  const publicToken = getPublicTokenFromSession()
+  return await axios.get(URL, { headers: { Authorization: publicToken } })
+}

@@ -20,6 +20,8 @@ import { useEffect, useState } from 'react'
 import { getPublicTokenFromSession } from './import/getPublicToken'
 import { NotificationProvider } from './context/NotificationContext'
 import { Notification } from './components/Notification/Notification'
+import { getNotificationInstructor } from './api/httpRequest'
+
 
 const App = () => {
   const [loading, setLoading] = useState(true)
@@ -38,29 +40,9 @@ const App = () => {
     sessionStorage.setItem('public-token', response)
     setLoading(false)
   }
-  useEffect(() => {
-    const showNotifications = async () => {
-      try {
-        // Obtener el rol del usuario del localStorage
-        const userRole = localStorage.getItem('idRol')
+  
 
-        // Verificar si el rol del usuario es 1 o 2
-        if (userRole === '1' || userRole === '2') {
-          // Si el rol es 1 o 2, obtener las notificaciones
-          const notifications = await getNotification()
-          console.log('Notificaciones:', notifications)
-        } else {
-          // Si el rol no es 1 ni 2, mostrar un mensaje indicando que el usuario no tiene permiso para ver las notificaciones
-          console.log('El usuario no tiene permiso para ver las notificaciones.')
-        }
-      } catch (error) {
-        // Manejar cualquier error que pueda ocurrir al obtener las notificaciones
-        console.error('Error al obtener las notificaciones:', error)
-      }
-    }
 
-    showNotifications()
-  }, [])
 
   if (loading) {
     return <div>Terminando de configurar algunos ajustes...</div>
