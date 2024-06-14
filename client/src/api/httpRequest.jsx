@@ -323,6 +323,15 @@ export const getAllInfoTeacher = async () => {
   return await axios.get(URL, { headers: { Authorization: publicToken } })
 }
 
+
+export const getAllTeacher = async () => {
+  const URL = `${baseUrl}${api}/v1/allteachers` // Ruta para obtener todos los instructores
+  const publicToken = getPublicTokenFromSession()
+  return await axios.get(URL, { headers: { Authorization: publicToken } })
+}
+
+
+
 /* EDITAR USUARIO */
 export const EditUser = async (id, payload) => {
   const URL = `${baseUrl}${api}/v1/edit-user/${id}`
@@ -543,6 +552,15 @@ export const getClassTeacherByClassNumber = async (id, data) => {
 // OBTENER NOTIFICACIONES
 export const getNotification = async () => {
   const URL = `${baseUrl}${api}/v1/alertVisita`
+  const publicToken = getPublicTokenFromSession()
+  return await axios.get(URL, { headers: { Authorization: publicToken } })
+}
+
+
+
+// OBTENER NOTIFICACIONES
+export const getNotificationInstructor = async (id) => {
+  const URL = `${baseUrl}${api}/v1/alertVisita-instructores/${id}`
   const publicToken = getPublicTokenFromSession()
   return await axios.get(URL, { headers: { Authorization: publicToken } })
 }

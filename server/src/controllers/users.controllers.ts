@@ -65,6 +65,16 @@ export const getTeachers = async (req: Request, res: Response): Promise<Response
   }
 }
 
+
+export const getAllTeachers = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const [teachers] = await connection.query('SELECT * FROM usuarios WHERE id_rol = 3');
+    return res.status(httpStatus.OK).json({ data: teachers });
+  } catch (error) {
+    return handleHTTP(res, error as CustomError)
+  }
+}
+
 export const getTeachersById: RequestHandler<{ id: string }, Response, LoginData> = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
   const { id } = req.params
   const idNumber = Number(id)
