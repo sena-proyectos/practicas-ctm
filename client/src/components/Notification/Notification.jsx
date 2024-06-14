@@ -7,7 +7,7 @@ const Notification = () => {
   if (!showNotification) return null
 
   return (
-    <div className='absolute left-[14rem] top-5 w-96 h-80 z-50'>
+    <div className='absolute left-[14rem] top-5 w-96 h-90 z-50'>
       <div className='relative h-full'>
         <div className='bg-white rounded-lg p-4 h-full shadow-md '>
           <p className='text-xl font-semibold'>Notificaciones</p>
