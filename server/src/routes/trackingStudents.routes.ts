@@ -9,12 +9,12 @@ import {
   modifyLetterByID,
   modifyVisitByID,
   checkPendingVisits,
+  notificationVisitInstructor
 } from "../controllers/trackingStudents.controllers.js";
 import {
   checkBitacoraData,
   checkLetterData,
   checkVisitData,
-  alertVisitaMiddleware,
   checkCreateVisita
 } from "../middlewares/trackingStudents.middlewares.js";
 
@@ -117,12 +117,23 @@ trackingRoute.patch(
 trackingRoute.post("/v1/create-visit", checkCreateVisita, createVisit);
 
 /**
- * Ruta para obtener alerta de visitas pendientes
+ * Ruta para obtener alerta de visitas pendientes-general
  * @route GET /v1/alertVisita
  * @returns {Promise<string>} 200 - OK
  * @returns {Error} HTTP Status - Error en el request
  * @async
  */
-trackingRoute.get("/v1/alertVisita", alertVisitaMiddleware, checkPendingVisits);
+trackingRoute.get("/v1/alertVisita", checkPendingVisits);
+
+
+/**
+ * Ruta para obtener alerta de visitas pendientes-instructor
+ * @route GET /v1/alertVisita-instructor
+ * @returns {Promise<string>} 200 - OK
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+trackingRoute.get("/v1/alertVisita-instructores/:id" ,notificationVisitInstructor);
+
 
 export { trackingRoute };

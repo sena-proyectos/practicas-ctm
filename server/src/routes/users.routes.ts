@@ -1,5 +1,5 @@
 import { type IRouter, Router } from 'express'
-import { createUser, editUser, getCoordinatorById, getCoordinators, getTeacherByName, getTeachers, getTeachersById, getUserById, getUsers, login } from '../controllers/users.controllers.js'
+import { createUser, editUser, getCoordinatorById, getCoordinators, getTeacherByName, getTeachers, getAllTeachers, getTeachersById, getUserById, getUsers, login } from '../controllers/users.controllers.js'
 import { checkIdReq } from '../middlewares/idCheck.middlewares.js'
 import { checkEditData, checkExistingUser, checkLoginData, checkName, checkRegisterData, generateToken } from '../middlewares/users.middlewares.js'
 
@@ -42,6 +42,19 @@ userRoutes.get('/v1/teacherName', checkName, getTeacherByName)
  * @async
  */
 userRoutes.get('/v1/teachers', getTeachers)
+
+
+
+
+/**
+ * Obtener todos los instructores sin paginacion
+ * @route GET /v1/teachers
+ * @returns {Promise<Array.<Users>>}
+ * @returns {Error} HTTP Status - Error en el request
+ * @async
+ */
+userRoutes.get('/v1/allteachers', getAllTeachers)
+
 
 /**
  * Obtener un instructor mediante su ID

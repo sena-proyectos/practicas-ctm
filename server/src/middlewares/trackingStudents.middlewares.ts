@@ -53,13 +53,3 @@ export const checkCreateVisita = (req: Request, res: Response, next: NextFunctio
 
 
 
-export const alertVisitaMiddleware = async (req:Request, res:Response, next:NextFunction) => {
-  try {
-    const pendingVisits = await checkPendingVisits();
-    res.status(200).json(pendingVisits);
-    next();
-  } catch (error) {
-    console.error("Error al obtener las visitas pendientes:", error);
-    res.status(500).json({ error: "Hubo un error al obtener las visitas pendientes" });
-  }
-};
