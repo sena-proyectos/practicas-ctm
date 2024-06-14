@@ -18,9 +18,13 @@ const AlertVisita = () => {
               <p className='font-bold text-teal-500'>Aprendiz:</p>
               <p>{notification.nombre_aprendiz}</p>
             </div>
-            <div className='col-span-2'>
+            <div className=''>
               <p className='font-bold text-teal-500'>Fecha de Visita:</p>
               <p>{notification.visita_hora}</p>
+            </div>
+            <div className=''>
+              <p className='font-bold text-teal-500'>Numero de ficha:</p>
+              <p>{notification.numero_ficha}</p>
             </div>
           </div>
         </li>
@@ -37,9 +41,13 @@ const AlertVisita = () => {
               <p className='font-bold text-teal-500'>Aprendiz:</p>
               <p>{notification.nombre_aprendiz}</p>
             </div>
-            <div className='col-span-2'>
+            <div className=''>
               <p className='font-bold text-teal-500'>Fecha Visita:</p>
               <p>{notification.visita_hora}</p>
+            </div>
+            <div className=''>
+              <p className='font-bold text-teal-500'>Numero de ficha:</p>
+              <p>{notification.numero_ficha}</p>
             </div>
           </div>
         </li>
