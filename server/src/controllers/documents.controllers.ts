@@ -61,7 +61,7 @@ export const excelGeneratorClass = async (
 const getStudents = async (): Promise<any> => {
   try {
     const [query] = await connection.query<RowDataPacket[]>(
-      "call sena_practicas.full_info_aprendiz()",
+      "call sena_practicas2.full_info_aprendiz()",
       []
     );
     const data = query[0];
@@ -113,7 +113,7 @@ export const excelGeneratorStudents = async (
 const getStudentsPractical = async (): Promise<any> => {
   try {
     const [query] = await connection.query<RowDataPacket[]>(
-      "call sena_practicas.conseguir_aprendices_en_practica()",
+      "call conseguir_aprendices_en_practica()",
       []
     );
     const data = query[0];
@@ -166,7 +166,7 @@ export const excelGeneratorStudentsPractical = async (
 const getStudentsWithNoPractical = async (): Promise<any> => {
   try {
     const [query] = await connection.query<RowDataPacket[]>(
-      "call sena_practicas.alerta_bisemanal()",
+      "call alerta_bisemanal()",
       []
     );
     const data = query[0];
@@ -219,7 +219,7 @@ export const excelGeneratorStudentsNoPractical = async (
 const getStudentsByCategory = async (modality: string): Promise<any> => {
   try {
     const [query] = await connection.query<RowDataPacket[]>(
-      "call sena_practicas.conseguir_aprendices_por_modalidad(?)",
+      "call conseguir_aprendices_por_modalidad(?)",
       [modality]
     );
     const data = query[0];
@@ -271,7 +271,7 @@ export const excelGeneratorStudentsCategory = async (
 const getStudentsByInstructor = async (instructor: string): Promise<any> => {
   try {
     const [query] = await connection.query<RowDataPacket[]>(
-      "call sena_practicas.conseguir_aprendices_por_instructor(?)",
+      "call conseguir_aprendices_por_instructor(?)",
       [instructor]
     );
     const data = query[0];

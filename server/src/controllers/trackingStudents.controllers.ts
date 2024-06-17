@@ -219,7 +219,7 @@ export const createVisit = async (
   } = req.body  ;
   try {
     await connection.query(
-      "call sena_practicas.subir_visita_con_detalles(?, ?, ?, ?)",
+      "CALL subir_visita_con_detalles(?, ?, ?, ?)",
       [id_aprendiz, estado_visita, observaciones_visita, usuario_responsable]
     );
     return res

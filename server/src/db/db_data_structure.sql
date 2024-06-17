@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `sena_practicas2` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `sena_practicas2`;
+CREATE DATABASE  IF NOT EXISTS `sena_practicas` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `sena_practicas`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
 --
--- Host: localhost    Database: sena_practicas2
+-- Host: localhost    Database: sena_practicas
 -- ------------------------------------------------------
 -- Server version	8.0.37-0ubuntu0.24.04.1
 
@@ -685,7 +685,7 @@ INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanito@gmai
 UNLOCK TABLES;
 
 --
--- Dumping routines for database 'sena_practicas2'
+-- Dumping routines for database 'sena_practicas'
 --
 /*!50003 DROP PROCEDURE IF EXISTS `actualizar_fecha_ficha` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;

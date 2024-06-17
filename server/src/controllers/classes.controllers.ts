@@ -246,7 +246,7 @@ export const editClassDates: RequestHandler<{}, Response, classes> = async (req:
   const { numero_ficha, fecha_inicio_lectiva, fecha_inicio_practica, id_nivel_formacion } = req.body
   const classNumber = Number(numero_ficha)
   try {
-    const [classQuery] = await connection.query('call sena_practicas.actualizar_fecha_ficha(?, ?, ?, ?)', [classNumber, fecha_inicio_lectiva, fecha_inicio_practica, id_nivel_formacion])
+    const [classQuery] = await connection.query('call actualizar_fecha_ficha(?, ?, ?, ?)', [classNumber, fecha_inicio_lectiva, fecha_inicio_practica, id_nivel_formacion])
     return res.status(httpStatus.OK).json({ data: classQuery })
   } catch (error) {
     return handleHTTP(res, error as CustomError)
