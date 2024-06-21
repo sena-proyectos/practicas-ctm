@@ -97,6 +97,9 @@ El contenido de server fue creado usando: npm init y tsc --init.
 - 👤 **Tatiana Mosquera**
 - 👤 **Cristian David Bedoya Torres**
 - 👤 **Carlos Eduardo Morales Estrada**
+- 👤 **Luis Miguel Alvarez Marin**
+- 👤 **Diana Carolina Galeano Carmona**
+- 👤 **Daniel Piedrahita Molina**
 
 ## Perfiles Github
 
@@ -108,6 +111,9 @@ El contenido de server fue creado usando: npm init y tsc --init.
 - [@Tattoarco](https://github.com/Tattoarco)
 - [@Cristian10-24](https://github.com/Cristian10-24)
 - [@KrlosPK](https://github.com/KrlosPK)
+- [@LuisMiguelDevelopment](https://github.com/LuisMiguelDevelopment)
+- [@Dgaleano01](https://github.com/Dgaleano01)
+- [@DanmYoungFlexx](https://github.com/DanmYoungFlexx)
 
 ## 🤝 Contribuciones
 
