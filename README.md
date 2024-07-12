@@ -89,6 +89,9 @@ El contenido de server fue creado usando: npm init y tsc --init.
 - 👤 **Kevin Chica**
 - 👤 **Juan Carlos Prasca**
 - 👤 **Jairo Elías Bellaco**
+- 👤 **Luis Miguel Alvarez Marin**
+- 👤 **Diana Carolina Galeano Carmona**
+- 👤 **Daniel Piedrahita Molina**
 
 ## 🤝 Contribuyentes
 
@@ -97,9 +100,7 @@ El contenido de server fue creado usando: npm init y tsc --init.
 - 👤 **Tatiana Mosquera**
 - 👤 **Cristian David Bedoya Torres**
 - 👤 **Carlos Eduardo Morales Estrada**
-- 👤 **Luis Miguel Alvarez Marin**
-- 👤 **Diana Carolina Galeano Carmona**
-- 👤 **Daniel Piedrahita Molina**
+
 
 ## Perfiles Github
 
