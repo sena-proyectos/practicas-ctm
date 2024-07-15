@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `sena_practicas2` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `sena_practicas2`;
--- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: sena_practicas2
 -- ------------------------------------------------------
--- Server version	8.0.37-0ubuntu0.24.04.1
+-- Server version	8.0.37
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -50,8 +50,108 @@ CREATE TABLE `aprendices` (
   CONSTRAINT `aprendices_ibfk_3` FOREIGN KEY (`id_jefe`) REFERENCES `jefes` (`id_jefe`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `aprendices_ibfk_4` FOREIGN KEY (`id_arl`) REFERENCES `arl` (`id_arl`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `aprendices_ibfk_5` FOREIGN KEY (`id_contrato`) REFERENCES `contratos_aprendizajes` (`id_contratos_aprendizaje`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=443 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=447 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices`
+--
+
+LOCK TABLES `aprendices` WRITE;
+/*!40000 ALTER TABLE `aprendices` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprendices_crear_cartas` AFTER INSERT ON `aprendices` FOR EACH ROW BEGIN
+	DECLARE ID_aprendiz INT;
+	DECLARE ID_carta_inicio_creada INT;
+	DECLARE ID_carta_fin_creada INT;
+    SET ID_aprendiz = NEW.id_aprendiz;
+    INSERT INTO aprendices_cartas (tipo_carta_aprendiz, estado_carta_aprendiz) VALUES ('inicio', 'No presentado');
+	SET ID_carta_inicio_creada = LAST_INSERT_ID();
+    
+    INSERT INTO aprendices_cartas (tipo_carta_aprendiz, estado_carta_aprendiz) VALUES ('fin', 'No presentado');
+    SET ID_carta_fin_creada = last_insert_id();
+    
+    INSERT INTO aprendices_cartas_detalles (id_aprendiz, id_carta_aprendiz) VALUES (ID_aprendiz, ID_carta_inicio_creada), (ID_aprendiz, ID_carta_fin_creada);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprendices_crear_visitas` AFTER INSERT ON `aprendices` FOR EACH ROW BEGIN
+    DECLARE ID_aprendiz INT;
+    DECLARE ID_visita INT;
+    DECLARE i INT DEFAULT 1;    
+    SET ID_aprendiz = NEW.id_aprendiz;
+    
+    WHILE i <= 2 DO
+        INSERT INTO aprendices_visitas (numero_visita) VALUES (i);
+        SET ID_visita = last_insert_id();
+        INSERT INTO aprendices_visitas_detalles (id_aprendiz, id_visita) VALUES (ID_aprendiz, ID_visita);
+        SET i = i + 1;
+    END WHILE;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprendices_crear_bitacoras` AFTER INSERT ON `aprendices` FOR EACH ROW BEGIN
+	DECLARE ID_aprendiz INT;
+	DECLARE ID_bitacora INT;
+
+	DECLARE fecha_fin_practica DATE;
+    DECLARE fecha_inicio_practicas DATE;
+    DECLARE fecha_15_dias DATE;
+    DECLARE i INT DEFAULT 1;
+    
+    SET fecha_fin_practica = NEW.fecha_fin_practica_aprendiz;
+	SET fecha_inicio_practicas = DATE_SUB(fecha_fin_practica, INTERVAL 6 MONTH);
+    SET ID_aprendiz = NEW.id_aprendiz;
+
+-- Bucle para calcular las 12 fechas
+	WHILE i <= 12 DO
+		
+        # Insertar bitácora
+        INSERT INTO aprendices_bitacoras (numero_bitacora) VALUES (i);
+        SET ID_bitacora = last_insert_id();
+        INSERT INTO aprendices_bitacoras_detalles(id_aprendiz, id_bitacora) VALUES (ID_aprendiz, ID_bitacora);
+        SET i = i + 1;
+	END WHILE;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `aprendices_bitacoras`
@@ -71,8 +171,53 @@ CREATE TABLE `aprendices_bitacoras` (
   PRIMARY KEY (`id_bitacora`),
   KEY `fk_usuario_responsable_edita_idx` (`usuario_responsable`),
   CONSTRAINT `fk_usuario_responsable_edita` FOREIGN KEY (`usuario_responsable`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5042 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5090 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_bitacoras`
+--
+
+LOCK TABLES `aprendices_bitacoras` WRITE;
+/*!40000 ALTER TABLE `aprendices_bitacoras` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_bitacoras` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprendices_bitacoras_BEFORE_INSERT` BEFORE INSERT ON `aprendices_bitacoras` FOR EACH ROW BEGIN
+	SET @fecha_actual = current_timestamp();
+    SET NEW.fecha_modificacion = @fecha_actual;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprendices_bitacoras_BEFORE_UPDATE` BEFORE UPDATE ON `aprendices_bitacoras` FOR EACH ROW BEGIN
+	SET @fecha_actual = current_timestamp();
+    SET NEW.fecha_modificacion = @fecha_actual;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `aprendices_bitacoras_detalles`
@@ -90,8 +235,17 @@ CREATE TABLE `aprendices_bitacoras_detalles` (
   KEY `fk_idbitacora_bitacoraD_idx` (`id_bitacora`),
   CONSTRAINT `fk_idaprendiz_bitacoraD` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON UPDATE CASCADE,
   CONSTRAINT `fk_idbitacora_bitacoraD` FOREIGN KEY (`id_bitacora`) REFERENCES `aprendices_bitacoras` (`id_bitacora`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5042 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_bitacoras_detalles`
+--
+
+LOCK TABLES `aprendices_bitacoras_detalles` WRITE;
+/*!40000 ALTER TABLE `aprendices_bitacoras_detalles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_bitacoras_detalles` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `aprendices_cartas`
@@ -110,8 +264,53 @@ CREATE TABLE `aprendices_cartas` (
   PRIMARY KEY (`id_carta_aprendiz`),
   KEY `usuario_responsable_Fk_idx` (`usuario_responsable`),
   CONSTRAINT `usuario_responsable_Fk` FOREIGN KEY (`usuario_responsable`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=853 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=861 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_cartas`
+--
+
+LOCK TABLES `aprendices_cartas` WRITE;
+/*!40000 ALTER TABLE `aprendices_cartas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_cartas` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `actualizar_fecha_modificacion` BEFORE INSERT ON `aprendices_cartas` FOR EACH ROW BEGIN
+	SET @fecha_actual = current_timestamp();
+    SET NEW.fecha_modificacion = @fecha_actual;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprendices_cartas_BEFORE_UPDATE` BEFORE UPDATE ON `aprendices_cartas` FOR EACH ROW BEGIN
+	SET @fecha_actual = current_timestamp();
+    SET NEW.fecha_modificacion = @fecha_actual;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `aprendices_cartas_detalles`
@@ -129,8 +328,17 @@ CREATE TABLE `aprendices_cartas_detalles` (
   KEY `fk_idcarta_aprendiz_cartasD_idx` (`id_carta_aprendiz`),
   CONSTRAINT `fk_idaprendiz_cartasD` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON UPDATE CASCADE,
   CONSTRAINT `fk_idcarta_aprendiz_cartasD` FOREIGN KEY (`id_carta_aprendiz`) REFERENCES `aprendices_cartas` (`id_carta_aprendiz`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=849 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_cartas_detalles`
+--
+
+LOCK TABLES `aprendices_cartas_detalles` WRITE;
+/*!40000 ALTER TABLE `aprendices_cartas_detalles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_cartas_detalles` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `aprendices_visitas`
@@ -151,8 +359,51 @@ CREATE TABLE `aprendices_visitas` (
   PRIMARY KEY (`id_visita`),
   KEY `usuario_responsable_fk_idx` (`usuario_responsable`),
   CONSTRAINT `fk_usuario_responsable` FOREIGN KEY (`usuario_responsable`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=787 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=805 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_visitas`
+--
+
+LOCK TABLES `aprendices_visitas` WRITE;
+/*!40000 ALTER TABLE `aprendices_visitas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_visitas` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprendices_visitas_BEFORE_INSERT` BEFORE INSERT ON `aprendices_visitas` FOR EACH ROW BEGIN
+  SET NEW.fecha_modificacion = current_timestamp();
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprendices_visitas_BEFORE_UPDATE` BEFORE UPDATE ON `aprendices_visitas` FOR EACH ROW BEGIN
+SET NEW.fecha_modificacion = current_timestamp();
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `aprendices_visitas_detalles`
@@ -170,8 +421,17 @@ CREATE TABLE `aprendices_visitas_detalles` (
   KEY `fk_idvisita_visitasD_idx` (`id_visita`),
   CONSTRAINT `fk_idaprendiz_visitasD` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON UPDATE CASCADE,
   CONSTRAINT `fk_idvisita_visitasD` FOREIGN KEY (`id_visita`) REFERENCES `aprendices_visitas` (`id_visita`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=785 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aprendices_visitas_detalles`
+--
+
+LOCK TABLES `aprendices_visitas_detalles` WRITE;
+/*!40000 ALTER TABLE `aprendices_visitas_detalles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aprendices_visitas_detalles` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `arl`
@@ -188,6 +448,16 @@ CREATE TABLE `arl` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `arl`
+--
+
+LOCK TABLES `arl` WRITE;
+/*!40000 ALTER TABLE `arl` DISABLE KEYS */;
+INSERT INTO `arl` VALUES (1,'SENA'),(2,'Empresa'),(3,'No aplica');
+/*!40000 ALTER TABLE `arl` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `codigos_centros`
 --
 
@@ -202,6 +472,16 @@ CREATE TABLE `codigos_centros` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `codigos_centros`
+--
+
+LOCK TABLES `codigos_centros` WRITE;
+/*!40000 ALTER TABLE `codigos_centros` DISABLE KEYS */;
+INSERT INTO `codigos_centros` VALUES (1,'920500');
+/*!40000 ALTER TABLE `codigos_centros` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `contratos_aprendizajes`
 --
 
@@ -214,8 +494,17 @@ CREATE TABLE `contratos_aprendizajes` (
   `fecha_fin_contrato` date DEFAULT NULL,
   `estado_contrato` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id_contratos_aprendizaje`)
-) ENGINE=InnoDB AUTO_INCREMENT=225 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=226 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `contratos_aprendizajes`
+--
+
+LOCK TABLES `contratos_aprendizajes` WRITE;
+/*!40000 ALTER TABLE `contratos_aprendizajes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `contratos_aprendizajes` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `detalle_empresas`
@@ -228,8 +517,17 @@ CREATE TABLE `detalle_empresas` (
   `id_detalle_empresa` int NOT NULL AUTO_INCREMENT,
   `direccion_sede_empresa` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id_detalle_empresa`)
-) ENGINE=InnoDB AUTO_INCREMENT=264 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=267 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `detalle_empresas`
+--
+
+LOCK TABLES `detalle_empresas` WRITE;
+/*!40000 ALTER TABLE `detalle_empresas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `detalle_empresas` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `detalle_fichas_aprendices`
@@ -248,8 +546,17 @@ CREATE TABLE `detalle_fichas_aprendices` (
   KEY `id_aprendiz` (`id_aprendiz`),
   CONSTRAINT `detalle_fichas_aprendices_ibfk_1` FOREIGN KEY (`id_ficha`) REFERENCES `fichas` (`id_ficha`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `detalle_fichas_aprendices_ibfk_2` FOREIGN KEY (`id_aprendiz`) REFERENCES `aprendices` (`id_aprendiz`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=546 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=550 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `detalle_fichas_aprendices`
+--
+
+LOCK TABLES `detalle_fichas_aprendices` WRITE;
+/*!40000 ALTER TABLE `detalle_fichas_aprendices` DISABLE KEYS */;
+/*!40000 ALTER TABLE `detalle_fichas_aprendices` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `detalles_inscripciones`
@@ -273,8 +580,252 @@ CREATE TABLE `detalles_inscripciones` (
   CONSTRAINT `detalles_inscripciones_ibfk_1` FOREIGN KEY (`id_inscripcion`) REFERENCES `inscripciones` (`id_inscripcion`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_detalles_inscripciones_2` FOREIGN KEY (`rol_responsable`) REFERENCES `roles` (`id_rol`) ON UPDATE CASCADE,
   CONSTRAINT `fk_rol_responsable_aval` FOREIGN KEY (`rol_responsable`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=929 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `detalles_inscripciones`
+--
+
+LOCK TABLES `detalles_inscripciones` WRITE;
+/*!40000 ALTER TABLE `detalles_inscripciones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `detalles_inscripciones` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `actualizar_timestamp` BEFORE UPDATE ON `detalles_inscripciones` FOR EACH ROW BEGIN
+    SET NEW.fecha_modificacion = CURRENT_TIMESTAMP;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `detalles_inscripciones_AFTER_UPDATE_1` AFTER UPDATE ON `detalles_inscripciones` FOR EACH ROW BEGIN
+  IF NEW.estado_aval = 'Rechazado' THEN
+    -- Actualizar el estado de "inscripciones" a "Rechazado"
+    UPDATE inscripciones
+    SET estado_general_inscripcion = 'Rechazado'
+    WHERE id_inscripcion = NEW.id_inscripcion;
+  -- Verificar si el nuevo estado es "Pendiente"
+  ELSEIF NEW.estado_aval = 'Pendiente' THEN
+    -- Verificar si hay algún detalle_inscripcion con estado diferente de "Pendiente"
+    IF NOT EXISTS (
+        SELECT 1
+        FROM detalles_inscripciones
+        WHERE id_inscripcion = NEW.id_inscripcion AND estado_aval != 'Pendiente'
+    ) THEN
+      -- Si no hay otros detalles_inscripciones con estado diferente de "Pendiente",
+      -- entonces actualizamos el estado de "inscripciones" a "Pendiente"
+      UPDATE inscripciones
+      SET estado_general_inscripcion = 'Pendiente'
+      WHERE id_inscripcion = NEW.id_inscripcion;
+    END IF;
+  END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `aprobar_inscripcion` AFTER UPDATE ON `detalles_inscripciones` FOR EACH ROW BEGIN
+    # Aprendiz
+    DECLARE total_aprobados INT;
+    DECLARE var_nombre_aprendiz VARCHAR(100);
+    DECLARE var_apellido_aprendiz VARCHAR(100);
+    DECLARE var_tipo_documento_aprendiz VARCHAR(50);
+    DECLARE var_numero_documento_aprendiz VARCHAR(100);
+    DECLARE var_email_aprendiz VARCHAR(500);
+    DECLARE var_celular_aprendiz VARCHAR(100);
+    DECLARE var_fecha_fin_practica_aprendiz DATE;
+    DECLARE var_estado_aprendiz VARCHAR(300);
+    DECLARE var_arl_paga VARCHAR(100);
+    DECLARE var_modalidad_inscripcion INT;
+    DECLARE id_arl INT;
+	DECLARE fecha_fin_lectiva_inscripcion_sum DATE;
+    
+    # Empresa
+    DECLARE var_nit_empresa VARCHAR(300);
+    DECLARE var_nombre_empresa VARCHAR(300);
+    DECLARE var_direccion_empresa VARCHAR(300);
+    
+    # Jefe
+    DECLARE var_nombre_jefe_empresa_inscripcion VARCHAR(200);
+    DECLARE var_cargo_jefe_empresa_inscripcion VARCHAR(200);
+    DECLARE var_telefono_jefe_empresa_inscripcion VARCHAR(200);
+    DECLARE var_email_jefe_empresa_inscripcion VARCHAR(200);
+    DECLARE id_jefe_insertado INT;
+    
+    # Ficha
+    DECLARE var_numero_ficha_inscripcion VARCHAR(200);
+    DECLARE var_nombre_programa_inscripcion VARCHAR(200);
+    DECLARE var_nivel_formacion_inscripcion VARCHAR(200);
+    DECLARE var_nivel_formacion_inscripcion_int INT;
+    DECLARE var_id_ficha_creada INT;
+    DECLARE var_id_estudiante_registrado INT;
+    
+	SET @check_approve = NEW.estado_aval;
+    
+    IF @check_approve IS NOT NULL THEN
+		-- Verificar si todos los detalles_inscripciones relacionados al id_inscripcion están en "Aprobado"
+		SELECT 
+			COUNT(*)
+		INTO total_aprobados FROM
+			detalles_inscripciones
+		WHERE
+			id_inscripcion = NEW.id_inscripcion
+				AND estado_aval = 'Aprobado';
+
+		IF total_aprobados = 4 THEN
+			-- Cambiar el estado_general_inscripcion a "Aprobado" en la tabla inscripciones
+			UPDATE inscripciones SET estado_general_inscripcion = 'Aprobado' WHERE id_inscripcion = NEW.id_inscripcion;
+
+			-- Obtener los datos necesarios para crear el nuevo aprendiz (aprendiz)
+	SELECT 
+    LOWER(nombre_inscripcion) AS nombre_inscripcion,
+    LOWER(apellido_inscripcion) AS apellido_inscripcion,
+    LOWER(tipo_documento_inscripcion) AS tipo_documento_inscripcion,
+    LOWER(documento_inscripcion) AS documento_inscripcion,
+    LOWER(email_inscripcion) AS email_inscripcion,
+    LOWER(inscripcion_celular) AS celular_inscripcion,
+    LOWER(arl) AS arl,
+    LOWER(modalidad_inscripcion) AS modalidad_inscripcion,
+    fecha_fin_lectiva_inscripcion,
+    numero_ficha_inscripcion,
+    LOWER(nombre_programa_inscripcion) AS nombre_programa_inscripcion,
+    LOWER(nivel_formacion_inscripcion) AS nivel_formacion_inscripcion
+		INTO 
+		var_nombre_aprendiz,
+		var_apellido_aprendiz,
+		var_tipo_documento_aprendiz,
+		var_numero_documento_aprendiz,
+		var_email_aprendiz,
+		var_celular_aprendiz,
+		var_arl_paga,
+		var_modalidad_inscripcion,
+		fecha_fin_lectiva_inscripcion_sum,
+		var_numero_ficha_inscripcion,
+		var_nombre_programa_inscripcion,
+		var_nivel_formacion_inscripcion
+		FROM
+			inscripciones
+	WHERE
+		id_inscripcion = NEW.id_inscripcion;
+		
+		-- Obtener datos de la empresa
+		SELECT LOWER(nit_empresa_inscripcion), LOWER(nombre_empresa_inscripcion), LOWER(direccion_empresa_inscripcion) INTO var_nit_empresa, var_nombre_empresa, var_direccion_empresa FROM inscripciones WHERE id_inscripcion = NEW.id_inscripcion;
+		IF var_nit_empresa IS NOT NULL THEN
+			SELECT direccion_sede_empresa INTO @check_direccion FROM detalle_empresas WHERE direccion_sede_empresa = var_direccion_empresa;
+			# Agregar datos a la tabla empresas
+			IF @check_direccion IS NULL THEN
+				INSERT INTO detalle_empresas (direccion_sede_empresa) VALUES (var_direccion_empresa);
+				SET @id_detalle_empresa_insertada = LAST_INSERT_ID();
+      ELSE
+        SELECT id_detalle_empresa INTO @id_detalle_empresa_insertada FROM detalle_empresas WHERE direccion_sede_empresa = var_direccion_empresa LIMIT 1;
+			END IF;
+			
+			SELECT nit_empresa INTO @check_nit FROM empresas WHERE nit_empresa = var_nit_empresa;
+			IF @check_nit IS NULL THEN
+				INSERT INTO empresas (nit_empresa, nombre_empresa, id_detalle_empresa)
+				VALUES (var_nit_empresa, var_nombre_empresa, @id_detalle_empresa_insertada);
+				SET @id_empresa_insertada = LAST_INSERT_ID();
+			ELSE
+				SELECT id_empresa INTO @id_empresa_existente FROM empresas WHERE nit_empresa = @check_nit;
+				SET @id_empresa_insertada = @id_empresa_existente;
+			END IF;
+		END IF;
+		
+			# Tomar datos del jefe
+		SELECT LOWER(nombre_jefe_empresa_inscripcion), LOWER(cargo_jefe_empresa_inscripcion), LOWER(telefono_jefe_empresa_inscripcion), LOWER(email_jefe_empresa_inscripcion) INTO var_nombre_jefe_empresa_inscripcion, var_cargo_jefe_empresa_inscripcion, var_telefono_jefe_empresa_inscripcion, var_email_jefe_empresa_inscripcion FROM inscripciones WHERE id_inscripcion = NEW.id_inscripcion;
+    SELECT COUNT(*) INTO @check_jefe FROM jefes where nombre_jefe LIKE var_nombre_jefe_empresa_inscripcion;
+		IF @check_jefe = 0 THEN
+			INSERT INTO jefes (nombre_jefe, cargo_jefe, numero_contacto_jefe, email_jefe) VALUES (IFNULL(var_nombre_jefe_empresa_inscripcion, null), IFNULL(var_cargo_jefe_empresa_inscripcion, null), IFNULL(var_telefono_jefe_empresa_inscripcion, null), IFNULL(var_email_jefe_empresa_inscripcion, null));
+			SET id_jefe_insertado = LAST_INSERT_ID();
+    ELSE
+      SELECT id_jefe INTO id_jefe_insertado FROM jefes where nombre_jefe LIKE var_nombre_jefe_empresa_inscripcion LIMIT 1;
+		END IF;
+
+		-- Calcular la fecha de fin de práctica sumando 6 meses a la fecha_fin_lectiva_inscripcion
+		IF fecha_fin_lectiva_inscripcion_sum IS NOT NULL THEN
+			SET var_fecha_fin_practica_aprendiz = DATE_ADD(fecha_fin_lectiva_inscripcion_sum, INTERVAL 6 MONTH);
+		END IF;
+		
+		-- Obtener el nivel de formación
+		SELECT id_nivel_formacion INTO var_nivel_formacion_inscripcion_int FROM niveles_formacion WHERE nivel_formacion = var_nivel_formacion_inscripcion;
+		-- Crear la ficha si no existe
+		SELECT COUNT(*) INTO var_id_ficha_creada FROM fichas WHERE numero_ficha = var_numero_ficha_inscripcion;
+		IF var_id_ficha_creada = 0 THEN
+			INSERT INTO fichas (numero_ficha, nombre_programa_formacion, id_nivel_formacion) VALUES (var_numero_ficha_inscripcion, var_nombre_programa_inscripcion, var_nivel_formacion_inscripcion_int);
+			SET var_id_ficha_creada = LAST_INSERT_ID();
+    ELSE
+      SELECT id_ficha INTO var_id_ficha_creada FROM fichas WHERE numero_ficha = var_numero_ficha_inscripcion;
+		END IF;
+			
+			-- Determinar quien paga ARL
+			IF var_arl_paga is null then
+				set id_arl = 3;
+			ELSEIF var_arl_paga = 'La empresa' THEN
+				set id_arl = 2;
+			ELSE
+				set id_arl = 1;
+			END IF;
+
+			-- Determinar el estado del aprendiz
+			IF CURDATE() BETWEEN fecha_fin_lectiva_inscripcion_sum AND var_fecha_fin_practica_aprendiz THEN
+				SET var_estado_aprendiz = 'Practicas';
+			ELSEIF CURDATE() < fecha_fin_lectiva_inscripcion_sum THEN
+				SET var_estado_aprendiz = 'Lectiva';
+			ELSE
+				SET var_estado_aprendiz = 'Terminado';
+			END IF;
+
+			-- Insertar el nuevo aprendiz en la tabla 'aprendices'
+      SELECT COUNT(*) INTO @check_aprendiz_exist FROM aprendices where numero_documento_aprendiz = var_numero_documento_aprendiz;
+      IF @check_aprendiz_exist = 0 THEN
+        INSERT INTO aprendices (nombre_aprendiz, apellido_aprendiz, tipo_documento_aprendiz, numero_documento_aprendiz, email_aprendiz, celular_aprendiz, fecha_fin_practica_aprendiz, estado_aprendiz, id_empresa, id_modalidad, id_jefe, id_arl)
+        VALUES (var_nombre_aprendiz, var_apellido_aprendiz, var_tipo_documento_aprendiz, var_numero_documento_aprendiz, var_email_aprendiz, var_celular_aprendiz, var_fecha_fin_practica_aprendiz, var_estado_aprendiz, @id_empresa_insertada, var_modalidad_inscripcion, id_jefe_insertado, id_arl);
+        SET var_id_estudiante_registrado = LAST_INSERT_ID();
+        SELECT COUNT(*) INTO @check_ficha_relacion FROM detalle_fichas_aprendices where id_ficha =var_id_ficha_creada AND id_aprendiz = var_id_estudiante_registrado;
+        IF @check_ficha_relacion = 0 THEN
+          INSERT INTO detalle_fichas_aprendices(id_ficha, id_aprendiz) VALUES (var_id_ficha_creada, var_id_estudiante_registrado);
+        END IF;
+      ELSE
+          SELECT id_aprendiz INTO @s_id_aprendiz FROM aprendices where numero_documento_aprendiz = var_numero_documento_aprendiz; 
+          UPDATE aprendices SET nombre_aprendiz = IFNULL(var_nombre_aprendiz, nombre_aprendiz), apellido_aprendiz = IFNULL(var_apellido_aprendiz, apellido_aprendiz), tipo_documento_aprendiz = IFNULL(var_tipo_documento_aprendiz, tipo_documento_aprendiz), numero_documento_aprendiz = IFNULL(var_numero_documento_aprendiz, numero_documento_aprendiz), email_aprendiz = IFNULL(var_email_aprendiz, email_aprendiz), celular_aprendiz = IFNULL(var_celular_aprendiz, celular_aprendiz), fecha_fin_practica_aprendiz = IFNULL(var_fecha_fin_practica_aprendiz, fecha_fin_practica_aprendiz), estado_aprendiz = IFNULL(var_estado_aprendiz, estado_aprendiz), id_empresa = IFNULL(@id_empresa_insertada, id_empresa), id_modalidad = IFNULL(var_modalidad_inscripcion, id_modalidad), id_jefe = IFNULL(id_jefe_insertado, id_jefe), id_arl = IFNULL(id_arl, id_arl) WHERE id_aprendiz = @s_id_aprendiz;
+      END IF;
+		END IF;
+	END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `empresas`
@@ -291,8 +842,17 @@ CREATE TABLE `empresas` (
   PRIMARY KEY (`id_empresa`),
   KEY `id_detalle_empresa` (`id_detalle_empresa`),
   CONSTRAINT `empresas_ibfk_1` FOREIGN KEY (`id_detalle_empresa`) REFERENCES `detalle_empresas` (`id_detalle_empresa`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=259 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=262 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `empresas`
+--
+
+LOCK TABLES `empresas` WRITE;
+/*!40000 ALTER TABLE `empresas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `empresas` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `fichas`
@@ -320,8 +880,17 @@ CREATE TABLE `fichas` (
   CONSTRAINT `fk_codigo_centro` FOREIGN KEY (`id_codigo_centro`) REFERENCES `codigos_centros` (`id_codigo_centro`) ON UPDATE CASCADE,
   CONSTRAINT `fk_fichas_1` FOREIGN KEY (`id_instructor_seguimiento`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_fichas_2` FOREIGN KEY (`id_instructor_lider`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `fichas`
+--
+
+LOCK TABLES `fichas` WRITE;
+/*!40000 ALTER TABLE `fichas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `fichas` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `inscripciones`
@@ -362,8 +931,76 @@ CREATE TABLE `inscripciones` (
   `fecha_creacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `responsable_inscripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id_inscripcion`)
-) ENGINE=InnoDB AUTO_INCREMENT=233 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=237 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inscripciones`
+--
+
+LOCK TABLES `inscripciones` WRITE;
+/*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `inscripcion_trigger` AFTER INSERT ON `inscripciones` FOR EACH ROW BEGIN
+  DECLARE instructor_seguimiento_id INT;
+  DECLARE instructor_lider_practicas_id INT;
+  DECLARE coordinador_id INT;
+  DECLARE rol_instructor_lider_practicas INT;
+  DECLARE rol_coordinador INT;
+  DECLARE rol_instructor_seguimiento INT;
+  
+  -- Obtener rol coordinador
+  SELECT id_rol INTO rol_coordinador
+  FROM roles
+  WHERE nombre_rol = 'Coordinador' LIMIT 1;
+  
+  -- Obtener rol instructor de seguimiento
+  SELECT id_rol INTO rol_instructor_seguimiento
+  FROM roles
+  WHERE nombre_rol = 'Instructor de Seguimiento' LIMIT 1;
+  
+  -- Obtener rol instructor líder de prácticas
+  SELECT id_rol INTO rol_instructor_lider_practicas
+  FROM roles
+  WHERE nombre_rol = 'Instructor líder de prácticas' LIMIT 1;
+
+  -- Obtener el ID del instructor de seguimiento basado en el número de ficha
+  SELECT id_instructor_seguimiento INTO instructor_seguimiento_id
+  FROM fichas
+  WHERE numero_ficha = NEW.numero_ficha_inscripcion LIMIT 1;
+  
+  -- Obtener el ID del instructor líder de prácticas basado en el id de usuario
+  SELECT id_usuario INTO instructor_lider_practicas_id
+  FROM usuarios
+  WHERE id_rol = 1 LIMIT 1;
+  
+  -- Obtener el ID del usuario con rol coordinador acádemico
+  SELECT id_usuario INTO coordinador_id
+  FROM usuarios
+  WHERE numero_documento_usuario = '1234567098' LIMIT 1;
+  
+  -- Insertar los tres registros en detalles_inscripciones
+  INSERT INTO detalles_inscripciones (responsable_aval, estado_aval, id_inscripcion, rol_responsable, descripcion_detalle)
+  VALUES (instructor_lider_practicas_id, 'Pendiente', NEW.id_inscripcion, rol_instructor_lider_practicas, 'Documento completo'),
+  (instructor_lider_practicas_id, 'Pendiente', NEW.id_inscripcion, rol_instructor_lider_practicas, 'RAPS aprobados'),
+  (null, 'Pendiente', NEW.id_inscripcion, rol_instructor_seguimiento, 'Funciones'),
+  (null, 'Pendiente', NEW.id_inscripcion, rol_coordinador, 'Aval');
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `jefes`
@@ -379,8 +1016,17 @@ CREATE TABLE `jefes` (
   `numero_contacto_jefe` varchar(100) DEFAULT NULL,
   `email_jefe` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`id_jefe`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `jefes`
+--
+
+LOCK TABLES `jefes` WRITE;
+/*!40000 ALTER TABLE `jefes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `jefes` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `localidades`
@@ -396,6 +1042,16 @@ CREATE TABLE `localidades` (
   PRIMARY KEY (`id_localidad`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `localidades`
+--
+
+LOCK TABLES `localidades` WRITE;
+/*!40000 ALTER TABLE `localidades` DISABLE KEYS */;
+INSERT INTO `localidades` VALUES (1,'Medellin','Colombia');
+/*!40000 ALTER TABLE `localidades` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `modalidades`
@@ -414,6 +1070,16 @@ CREATE TABLE `modalidades` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `modalidades`
+--
+
+LOCK TABLES `modalidades` WRITE;
+/*!40000 ALTER TABLE `modalidades` DISABLE KEYS */;
+INSERT INTO `modalidades` VALUES (1,'Pasantías',100,300),(2,'Contrato de aprendizaje',200,800),(3,'Proyecto Productivo',100,100),(4,'Monitoría',100,100),(5,'Vinculación laboral',100,100);
+/*!40000 ALTER TABLE `modalidades` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `niveles_formacion`
 --
 
@@ -428,6 +1094,16 @@ CREATE TABLE `niveles_formacion` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `niveles_formacion`
+--
+
+LOCK TABLES `niveles_formacion` WRITE;
+/*!40000 ALTER TABLE `niveles_formacion` DISABLE KEYS */;
+INSERT INTO `niveles_formacion` VALUES (1,'Técnico'),(2,'Tecnología'),(3,'Auxiliar');
+/*!40000 ALTER TABLE `niveles_formacion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `roles`
 --
 
@@ -440,6 +1116,16 @@ CREATE TABLE `roles` (
   PRIMARY KEY (`id_rol`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `roles`
+--
+
+LOCK TABLES `roles` WRITE;
+/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+INSERT INTO `roles` VALUES (1,'Instructor líder de prácticas'),(2,'Coordinador'),(3,'Instructor de Seguimiento'),(4,'Instructor Líder'),(5,'Instructor Sin Rol');
+/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `usuarios`
@@ -463,6 +1149,20 @@ CREATE TABLE `usuarios` (
   CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `usuarios`
+--
+
+LOCK TABLES `usuarios` WRITE;
+/*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
+INSERT INTO `usuarios` VALUES (1,'Admin','Admin','CC','1234567890','juanito@gmail.com','3195810996','$2b$10$G/qBWAkBBWWYv168liiN4.yNHoflbKb9y6nUEFZvtVomsVCNQhmo6',1),(2,'Stiven','Blandón','CC','1017924888','blandon0207s@gmail.com','3183577499','$2b$10$GWUNM.FJKmU81l5dW0pDBOuc5EGYTeYjJxa9ENNNaioKoWM3QR.aq',2),(3,'Adelaida','Benavidez','CC','1017923453','adelaida@misena.edu.co','3183575433','$2b$10$wskcGpv.zlFyAp1gWLZSpunAe5uqGcgJ2yAhpzOQyRWdlpp./jUkG',4),(30,'Luis Miguel','Alvarez','CC','1001470143','luismiguelalvarezmarin109@gmail.com','3043953888','$2b$10$NHxfsKtt8cJCoWi/VgO/m.nTbTBT1zotRApg775vXixvH15.gr59W',1),(31,'Maribel ','Marin','CC','43289261','maribelmarin300@gmail.com','087962039','$2b$10$fI3gp0WpTbGUqP/K.qbdaOh2V01qX.y96yZ6/iB9ZF4bkyZwTTUxO',3),(32,'COORDINADOR','LUCHO','CC','1001470144','luismidev09@gmail.com','092794295','$2b$10$jS9t0dxRkL1CD4kzmu9feOfIoyWZDPRpQEuQIspR2DgsgwjGDqL6C',2);
+/*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping events for database 'sena_practicas2'
+--
 
 --
 -- Dumping routines for database 'sena_practicas2'
@@ -1275,4 +1975,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-14 14:15:16
+-- Dump completed on 2024-07-15 14:37:28

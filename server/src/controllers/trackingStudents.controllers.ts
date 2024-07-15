@@ -32,21 +32,21 @@ export const getBitacorasByStudent = async (
   try {
     const [query] = await connection.query<RowDataPacket[]>(
       `SELECT 
-         aprendices_bitacoras_detalles.id_aprendiz, 
-         aprendices_bitacoras.id_bitacora, 
-         aprendices_bitacoras.calificacion_bitacora, 
-         aprendices_bitacoras.observaciones_bitacora, 
-         aprendices_bitacoras.numero_bitacora, 
-         DATE_FORMAT(aprendices_bitacoras.fecha_modificacion, "%Y-%m-%d %H:%i:%s") as fecha_modificacion, 
-         DATE_FORMAT(aprendices_bitacoras.fecha_entrega, "%Y-%m-%d") as fecha_entrega
-       FROM 
-         aprendices_bitacoras_detalles 
-       INNER JOIN 
-         aprendices_bitacoras 
-       ON 
-         aprendices_bitacoras.id_bitacora = aprendices_bitacoras_detalles.id_aprendiz_bitacora_detalle 
-       WHERE 
-         aprendices_bitacoras_detalles.id_aprendiz = ?`,
+    detalles.id_aprendiz, 
+    bitacoras.id_bitacora, 
+    bitacoras.calificacion_bitacora, 
+    bitacoras.observaciones_bitacora, 
+    bitacoras.numero_bitacora, 
+    DATE_FORMAT(bitacoras.fecha_modificacion, "%Y-%m-%d %H:%i:%s") as fecha_modificacion, 
+    DATE_FORMAT(bitacoras.fecha_entrega, "%Y-%m-%d") as fecha_entrega
+FROM 
+    aprendices_bitacoras_detalles as detalles
+INNER JOIN 
+    aprendices_bitacoras as bitacoras
+ON 
+    bitacoras.id_bitacora = detalles.id_bitacora
+WHERE 
+    detalles.id_aprendiz = ?;`,
       [id]
     );
 
@@ -216,12 +216,14 @@ export const createVisit = async (
     estado_visita,
     observaciones_visita,
     usuario_responsable,
-  } = req.body  ;
+  } = req.body;
   try {
-    await connection.query(
-      "CALL subir_visita_con_detalles(?, ?, ?, ?)",
-      [id_aprendiz, estado_visita, observaciones_visita, usuario_responsable]
-    );
+    await connection.query("CALL subir_visita_con_detalles(?, ?, ?, ?)", [
+      id_aprendiz,
+      estado_visita,
+      observaciones_visita,
+      usuario_responsable,
+    ]);
     return res
       .status(httpStatus.OK)
       .json({ message: "Visita creada con éxito" });
@@ -229,7 +231,6 @@ export const createVisit = async (
     return handleHTTP(res, error as CustomError);
   }
 };
-
 
 export const checkPendingVisits = async (
   req: Request,
@@ -274,10 +275,12 @@ WHERE
   }
 };
 
-
-export const notificationVisitInstructor = async (req: Request, res: Response): Promise<void> => {
+export const notificationVisitInstructor = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const userId = Number(req.params.id); // Assuming userId is passed as a URL parameter
-  
+
   try {
     const [query] = await connection.query<RowDataPacket[]>(
       `SELECT 

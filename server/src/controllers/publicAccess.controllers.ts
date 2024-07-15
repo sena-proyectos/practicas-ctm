@@ -18,7 +18,6 @@ export const generatePublicToken = (_req: Request, res: Response): Response => {
 
 export const checkPublicToken = (req: Request, res: Response, next: NextFunction): void => {
   const token = req.headers.authorization
-  console.log(token);
   if (token !== undefined) {
     try {
       const payload: ITokenPayload = jwt.verify(token, String(process.env.PRIVATE)) as ITokenPayload
